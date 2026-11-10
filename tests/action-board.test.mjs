@@ -32,13 +32,13 @@ test('action board labels relative dates and counts deadlines needing confirmati
   assert.equal(unconfirmedDeadlineCount({ one: { deadline: { status: 'needs_confirmation' } }, two: { deadline: { status: 'confirmed' } } }), 1);
 });
 
-test('planner refresh accepts its account, reconnect and focus, and removes listeners on unmount', () => {
+test('planner refresh follows changed tables, with reconnect reconciliation owned by cloud sync', () => {
   const document = new EventTarget(), window = new EventTarget();
   let reads = 0;
   const stop = subscribePreparationRefresh(document, window, 'owner', () => reads++);
-  function cloud(userId) {
+  function cloud(userId,changedTables) {
     const event = new Event('workspace:cloud-ready');
-    event.detail = { userId };
+    event.detail = { userId,changedTables };
     document.dispatchEvent(event);
   }
   cloud('other'); cloud(null);
@@ -46,10 +46,12 @@ test('planner refresh accepts its account, reconnect and focus, and removes list
   cloud('owner');
   window.dispatchEvent(new Event('focus'));
   window.dispatchEvent(new Event('online'));
-  assert.equal(reads, 3);
+  assert.equal(reads, 1);
+  cloud('owner',['profiles']);assert.equal(reads,1);
+  cloud('owner',['preparation_plans']);assert.equal(reads,2);
   stop();
   cloud('owner'); window.dispatchEvent(new Event('focus')); window.dispatchEvent(new Event('online'));
-  assert.equal(reads, 3);
+  assert.equal(reads, 2);
 });
 
 test('fictional agent edits become visible on refresh without new application IDs or real storage', async () => {
@@ -66,7 +68,7 @@ test('fictional agent edits become visible on refresh without new application ID
   const task = row.plan.tasks.find(task => !task.completed);
   task.completed = true;
   await service.savePreparation('demo-interview', row.version, row.plan);
-  window.dispatchEvent(new Event('focus')); await pending;
+  const event=new Event('workspace:cloud-ready');event.detail={userId:'demo',changedTables:['preparation_plans','preparation_planner_settings']};document.dispatchEvent(event);await pending;
   assert.equal(snapshot.settings.dailyMinutes, 30);
   assert.equal(snapshot.plans.find(row => row.application_id === 'demo-interview').plan.tasks.find(t => t.id === task.id).completed, true);
   assert.deepEqual(Object.keys(snapshot.applications), originalIds);

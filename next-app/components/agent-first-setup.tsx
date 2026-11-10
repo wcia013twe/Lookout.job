@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import Link from "next/link";
+import {subscribePreparationRefresh} from "../lib/action-board.mjs";
 import { onboardingWork, onboardingTaskKey } from "../lib/onboarding-work.mjs";
 import { createBackend } from "../../backend/client.mjs";
 import { useWorkspace } from "../lib/workspace";
@@ -22,7 +23,26 @@ export default function AgentFirstSetup({ initialIntent = "", connectionHeader, 
  const api=useMemo(()=>w.demo?w.services:w.client&&w.user?createBackend(w.client,w.user.id):null,[w.demo,w.services,w.client,w.user?.id]);
  const [session,setSession]=useState<Session|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(""),[intent,setIntent]=useState(initialIntent),[mode,setMode]=useState("quiet"),[channel,setChannel]=useState(""),[timezone,setTimezone]=useState(""),[time,setTime]=useState("09:00");
  const generation=useRef(0);
- useEffect(()=>{const current=++generation.current;setSession(null);setError("");setBusy(false);if(!api)return;let alive=true;const read=async()=>{try{const data=await api.onboardingAction("onboarding.get_state");if(alive&&current===generation.current)setSession(data);}catch(e){if(alive)setError(e instanceof Error?e.message:"Onboarding unavailable. Retry shortly.");}};void read();const timer=setInterval(read,10000);return()=>{alive=false;clearInterval(timer);};},[api]);
+ useEffect(()=>{
+  const current=++generation.current;setSession(null);setError("");setBusy(false);if(!api)return;
+  let alive=true,timer:ReturnType<typeof setTimeout>|undefined,running=false,pending=false;
+  const read=async()=>{
+   if(running){pending=true;return;}running=true;
+   try{
+    const data=await api.onboardingAction("onboarding.get_state");
+    if(alive&&current===generation.current){
+     setSession(data);clearTimeout(timer);
+     const deadlines=(data.tasks||[]).filter((task:any)=>['claimed','running'].includes(task.state)&&task.lease_until).map((task:any)=>Date.parse(task.lease_until)).filter(Number.isFinite);
+     if(deadlines.length)timer=setTimeout(()=>void read(),Math.min(2147483647,Math.max(1000,Math.min(...deadlines)-Date.now()+1000)));
+    }
+   }catch(e){if(alive)setError(e instanceof Error?e.message:"Onboarding unavailable. Retry shortly.");}
+   finally{running=false;if(pending&&alive){pending=false;void read();}}
+  };
+  void read();
+  const stop=!w.demo&&w.user?subscribePreparationRefresh(document,window,w.user.id,()=>void read(),['onboarding_sessions','agent_tasks']):()=>{};
+  return()=>{alive=false;clearTimeout(timer);stop();};
+ },[api]);
+
  async function act(operation:string,payload:Record<string,unknown>={}) {
   if(!api||busy||w.locked)return;const current=generation.current;setBusy(true);setError("");
   try {await api.onboardingAction(operation,payload);const data=await api.onboardingAction("onboarding.get_state");if(current===generation.current)setSession(data);}catch(e){if(current===generation.current)setError(e instanceof Error?e.message:"Action failed. Reload before retrying.");}finally{if(current===generation.current)setBusy(false);}

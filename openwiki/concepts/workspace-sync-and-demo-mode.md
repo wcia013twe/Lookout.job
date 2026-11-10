@@ -177,19 +177,55 @@ not enroll or disable MFA; an account with existing MFA still follows Auth polic
 Local checks do not establish email delivery or live hosted login.
 
 
-### Lightweight Discover refresh (focused source update)
+### Snapshot and row deltas (focused source update)
 
-The browser reads saved batches and their items with paginated bulk queries rather
-than reloading each batch separately. Posting evidence is deduplicated across all
-batches and fetched in chunks of 50 unique job IDs, with 200-row pagination so a
-job with many observations cannot hide another job. The latest observation wins.
-An in-memory cache is scoped to the Supabase client and current owner, retains
-results (including missing evidence) until workspace notifications, reconnect,
-account changes, tab focus/visibility, online recovery or explicit refresh invalidate
-it. Concurrent reads share work; failed reads are evicted. No timer or expiry
-policy is used. Evidence is informational and grants no submission authority.
-Notification bursts use a 100 ms refresh debounce. Existing account-generation,
-RLS, write/version checks and detached demo boundaries remain authoritative.
-No new MCP operation or database schema is introduced; existing scoped agent
-reads retain their server validation. Local checks do not establish hosted rollout
-or measured CPU/disk improvement.
+The account cloud controller uses authenticated `sync_workspace(after_version)`.
+The initial call returns one snapshot of the nine core workspace tables plus
+saved batches, batch items and latest posting evidence. Discover is projected
+from those cached rows, with no per-job or per-batch network fetch. Reset checks
+and Auth verification remain separate safety reads. Optional pages load their
+own projections when mounted; this does not combine every product RPC into one.
+
+Subsequent notifications, reconnect, focus, online recovery and explicit refresh
+send the last successfully applied cursor. The response contains only current
+upserts and deletion keys for changed records, plus table-name invalidations for
+auxiliary readers. An unchanged cursor returns empty changes without scanning
+record tables. The browser merges by stable record key and advances its cursor
+only alongside accepted rows. Failed, interrupted or stale-account reads do not
+advance it. Replayed changes are idempotent; deletes have durable tombstones.
+Explicit profile conflict recovery may request a fresh snapshot.
+
+`private.workspace_delta_keys` stores one latest change pointer per owned record,
+not record bodies or workflow progress. Source-table triggers update these keys
+and the existing owner workspace version in the same transaction. The owner
+version row serializes writers; the STABLE reader observes one statement snapshot
+for cursor, keys and data. UUID and composite-key filters retain typed index
+lookups. Shared employer edits invalidate only referencing owned projections;
+posting observations/listing links invalidate their affected job evidence.
+
+Auxiliary table signals drive the Action Board, planner, imported tracker,
+company workspaces, outreach and onboarding readers. Their unrelated focus
+reloads and 10–15 second private-data polling are removed. The planner's clock
+still ticks locally; onboarding uses a one-shot read at an active task's lease
+expiry. Failed company/outreach writes retain focused online/focus retry paths.
+Circle company intelligence remains a separate shared feed with its existing
+refresh policy; it is not part of the private account snapshot/delta contract.
+There is no claim that every mounted auxiliary reader fetches individual row
+deltas: affected auxiliary projections reload only on their relevant signals.
+
+Auth derives the owner, private sync keys are inaccessible to browser roles, and
+server ownership/scope/write/version/consent validation remains unchanged.
+This is an internal browser read transport for existing workspace capabilities,
+not a new user action or general database tool. Existing scoped MCP writers
+produce the same domain changes and delta pointers; real SQL coverage exercises
+`agent_dispatch` → browser delta alongside Auth isolation. Existing MCP readers
+retain their existing scopes and authoritative domain projections.
+
+Verification: `node --test tests/workspace-sync.test.mjs` exercises a 250-answer
+snapshot, unchanged checks, one agent activity update, deletion, repeated writes
+with missed notifications, replay, rollback, account isolation and shared job
+projections. The fixture's snapshot is 73,974 JSON bytes; an unchanged reply is 56
+bytes and one agent update is 385 bytes, with zero unchanged answers resent.
+These are deterministic local PGlite/browser-contract measurements, not hosted
+CPU/IO measurements. The migration and frontend must be released together before
+claiming hosted activation; a frontend-only deployment cannot enable this path.

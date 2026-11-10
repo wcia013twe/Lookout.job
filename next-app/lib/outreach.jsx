@@ -1,4 +1,5 @@
 "use client";
+import {subscribePreparationRefresh} from './action-board.mjs';
 import {validatePersonContext} from '../../lib/network-people.mjs';
 import {callApi,apiFailure,apiErrorText} from '../../lib/api-failure.mjs';
 import {isCompanyRecord} from '../../lib/network-model.mjs';
@@ -71,15 +72,15 @@ export function useOutreach() {
    }
    await flush(); if(!isCurrent(s))return;
    if(!s.peopleImported) {store.set('network.people',[]);s.peopleImported=true;}
-   await refresh(s); if(isCurrent(s))setReady(true);
-  } catch(failure) { if(isCurrent(s)){setReady(false);setError(apiErrorText('outreach.sync',failure));setStatus('Local edits are preserved. Account sync has not completed.');} }
+   await refresh(s); if(isCurrent(s)){s.failed=false;setReady(true);}
+  } catch(failure) { if(isCurrent(s)){s.failed=true;setReady(false);setError(apiErrorText('outreach.sync',failure));setStatus('Local edits are preserved. Account sync has not completed.');} }
    finally {s.syncing=false;}
   }
   s.sync=sync;sync();
-  const timer=setInterval(sync,15000);
-  window.addEventListener('online',sync);
-  window.addEventListener('focus',sync);
-  return()=>{clearInterval(timer);clearTimeout(s.timer);window.removeEventListener('online',sync);window.removeEventListener('focus',sync);if(isCurrent(s))session.current=null;};
+  const stop=subscribePreparationRefresh(document,window,owner,sync,['outreach_contacts','outreach_requests']);
+  const retry=()=>{if(s.pending.size||s.failed)void sync();};
+  window.addEventListener('online',retry);window.addEventListener('focus',retry);
+  return()=>{stop();clearTimeout(s.timer);window.removeEventListener('online',retry);window.removeEventListener('focus',retry);if(isCurrent(s))session.current=null;};
  },[user?.id,client,store,demo]);
  async function request(companies) {
   if(demo){const next=companies.map((company,i)=>{const example=outreachDemoMessages[i%outreachDemoMessages.length];return {...example,id:crypto.randomUUID(),company:company.trim(),contact:example.name,message:example.message.replaceAll(example.company,company.trim()),title:i%2?'Infrastructure Engineer':'Backend Engineer',status:'Not asked',source:'Demo'};});setContacts([...latest.current,...next]);setStatus('Demo outreach prepared. No backend request was sent.');return;}

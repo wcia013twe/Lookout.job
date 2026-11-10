@@ -13,8 +13,26 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
  const ctx={document,window:{addEventListener:(type,fn)=>windowEvents.set(type,fn)},setTimeout:timeout,clearTimeout:id=>timers.delete(id),CustomEvent:function(type,options){this.type=type;this.detail=options?.detail;},localStorage:{getItem:key=>cache.get(key)??null,setItem:(key,value)=>cache.set(key,value),removeItem:key=>cache.delete(key),get length(){return cache.size;},key:index=>[...cache.keys()][index]}};
  vm.runInNewContext(fs.readFileSync('lib/store.js','utf8'),ctx);const store=ctx.window.JB.store;store.switchAccount(one);
  const db=existingDb||{profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],action_inbox:[],job_batches:[],search_observations:[]};
- let notify,status,removed=0;
+ let notify,status,removed=0,remoteVersion=0,remoteRows=null;
+ const snapshots=new Map();
+ const syncCalls=[],tableReads=[];
  const client={channel(){const c={on(event,filter,fn){notify=fn;return c;},subscribe(fn){status=fn;return c;}};return c;},removeChannel(){removed++;},async rpc(name,args){
+  if(name==='sync_workspace'){
+   syncCalls.push(args.after_version);
+   if(readGate){const pending=readGate;readGate=null;await pending.promise;}
+   if(failRead){failRead=false;return {error:Error('Offline')};}
+   const {WORKSPACE_TABLES,workspaceRowKey}=await import('../lib/workspace-sync.mjs');
+   const rows=Object.fromEntries(WORKSPACE_TABLES.map(table=>[table,table==='posting_evidence'?(db.search_observations||[]).filter(row=>row.user_id===owner).map(row=>({...row,job_id:row.search_listings.job_id})):clone((db[table]||[]).filter(row=>row.user_id===owner))]));
+   if(JSON.stringify(rows)!==JSON.stringify(remoteRows)){remoteVersion++;snapshots.set(remoteVersion,clone(rows));remoteRows=clone(rows);}
+   const base=snapshots.get(args.after_version),changes={};
+   for(const table of WORKSPACE_TABLES)if(JSON.stringify(rows[table])!==JSON.stringify(base?.[table]||[])){
+    const before=new Map((base?.[table]||[]).map(row=>[workspaceRowKey(table,row),row]));
+    const next=new Map(rows[table].map(row=>[workspaceRowKey(table,row),row]));
+    changes[table]={upserts:rows[table].filter(row=>JSON.stringify(before.get(workspaceRowKey(table,row)))!==JSON.stringify(row)),deleted:[...before.keys()].filter(key=>!next.has(key))};
+   }
+   const snapshot=args.after_version===null||args.after_version>remoteVersion;
+   return {data:snapshot?{mode:'snapshot',version:remoteVersion,rows,signals:['*']}:{mode:'delta',version:remoteVersion,changes,signals:Object.keys(changes)}};
+  }
   if(name==='workspace_reset_state')return {data:db.resetState||{}};
   if(name==='save_profile_changes'||name==='review_profile_facts'){
    writes++;if(gate){const pending=gate;gate=null;await pending.promise;}if(fail){fail=false;return {error:Error('Offline')};}
@@ -34,6 +52,7 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
   const row={user_id:owner,search,tier_lists:args.lists_next,active_tier_list_id:args.active_next,theme:args.theme_next};
   db.preferences=[clone(row)];return {data:row};
  },auth:{getUser:async()=>({data:{user:{id:owner}}})},from(table){
+  tableReads.push(table);
   let operation='select',fields=null,filters=[],start=0,end=Infinity,single=false;
   const query={select(){return query;},eq(key,value){filters.push([key,value]);return query;},in(){return query;},order(){return query;},range(a,b){start=a;end=b;return query;},limit(n){end=n-1;return query;},single(){single=true;return query;},upsert(value){operation='upsert';fields=value;return query;},insert(value){operation='insert';fields=value;return query;},delete(){operation='delete';return query;},then(resolve,reject){return (async()=>{
    if(operation==='upsert'){writes++;if(gate){const pending=gate;gate=null;await pending.promise;}if(fail){fail=false;return {error:Error('Offline')};}db[table]=[clone(fields)];return {data:clone(fields)};}
@@ -49,7 +68,7 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
  const {connectCloud}=await import('../lib/cloud.mjs');connectCloud(client,reactUI?ui:null);
  async function flush(){const pending=[...timers.values()];timers.clear();pending.forEach(fn=>fn());for(let i=0;i<100;i++)await Promise.resolve();}
  await flush();
- return {store,db,ui,flush,cache,notify:()=>notify?.(),status:value=>status?.(value),get timers(){return [...timers.values()].filter(fn=>fn.toString().includes("autoSync")).length;},get timerSources(){return [...timers.values()].map(fn=>fn.toString());},get removed(){return removed;},event:type=>windowEvents.get(type)?.(),blockRead(){readGate=deferred();return readGate;},failRead(){failRead=true;},get writes(){return writes;},block(){gate=deferred();return gate;},fail(){fail=true;},switch(id){owner=id;store.switchAccount(id);}};
+ return {store,db,ui,flush,cache,syncCalls,tableReads,notify:()=>notify?.(),status:value=>status?.(value),get timers(){return [...timers.values()].filter(fn=>fn.toString().includes("autoSync")).length;},get timerSources(){return [...timers.values()].map(fn=>fn.toString());},get removed(){return removed;},event:type=>windowEvents.get(type)?.(),blockRead(){readGate=deferred();return readGate;},failRead(){failRead=true;},get writes(){return writes;},block(){gate=deferred();return gate;},fail(){fail=true;},switch(id){owner=id;store.switchAccount(id);}};
 }
 const globals = ['JB', 'document', 'window', 'location', 'CustomEvent', 'setTimeout', 'clearTimeout'];
 let savedGlobals;
@@ -287,4 +306,16 @@ test('workspace notifications invalidate cached posting evidence without a timer
  await env.event('focus');assert.equal(seen.at(-1).roles[0].description,'First evidence');
  env.db.search_observations[0].description='Updated evidence';env.notify();await env.flush();
  assert.equal(seen.at(-1).roles[0].description,'Updated evidence');
+});
+
+test('load once then delta reads never reload tables or Discover for an unrelated profile edit',async()=>{
+ const env=await environment(null,true),batches=[];JB.setBatch=value=>batches.push(value);
+ assert.deepEqual(env.syncCalls,[null]);assert.deepEqual(env.tableReads,[]);
+ const initialCursor=env.syncCalls.length;
+ await env.event('focus');assert.equal(env.syncCalls.length,initialCursor+1);assert.notEqual(env.syncCalls.at(-1),null);
+ assert.equal(batches.length,0,'unchanged cursor must not rebuild Discover');
+ env.db.profiles=[{user_id:one,facts:{name:'Changed only profile'}}];env.notify();await env.flush();
+ assert.equal(env.store.get('workflow.profile.name'),'Changed only profile');assert.equal(batches.length,0);
+ assert.deepEqual(env.tableReads,[],'neither snapshot nor deltas may fall back to per-table reads');
+ assert.equal(env.timers,0,'no idle data polling');
 });

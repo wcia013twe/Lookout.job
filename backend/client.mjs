@@ -188,6 +188,13 @@ function createBackend(client, expectedUserId = null) {
       if(await owner()!==id)throw Error("Account changed");
       return data;
     },
+    async readWorkspaceSync(afterVersion=null) {
+      if(afterVersion!==null&&(!Number.isSafeInteger(afterVersion)||afterVersion<0))throw Error('Invalid workspace cursor');
+      const id=await owner();
+      const data=await result(client.rpc('sync_workspace',{after_version:afterVersion}));
+      if(await owner()!==id)throw Error('Account changed');
+      return data;
+    },
     async loadWorkspace() {
       const userId = await owner();
       const tables = [

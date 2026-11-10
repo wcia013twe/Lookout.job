@@ -1,4 +1,5 @@
 "use client";
+import {subscribePreparationRefresh} from './action-board.mjs';
 import {callApi,apiErrorText} from '../../lib/api-failure.mjs';
 import {useEffect,useRef,useState} from 'react';
 import {useSlice,useWorkspace} from './workspace';
@@ -18,10 +19,12 @@ export function useNetworkCompanies(_outreach){
   s.sync=createCompanySync({owner,isCurrent:()=>current(s),get:()=>w.store.get('network.companies')||[],set:value=>w.store.set('network.companies',value),onStatus:setError,
    read:async()=>{let offset=0,all=[];for(;;){const data=await callApi('company_workspaces.list',()=>w.client.rpc('company_action',{operation:'company_workspaces.list',payload:{limit:1000,offset},expected_owner:owner}),data=>!!data&&Array.isArray(data.items));all.push(...data.items);if(data.items.length<1000)return all;offset+=1000;}},
    write:async row=>{return callApi('company_workspaces.save',()=>w.client.rpc('company_action',{operation:'company_workspaces.save',payload:{id:row.id,record:row.record,expectedRevision:row.revision},expected_owner:owner}));}});
-  const sync=async()=>{try{await s.sync.synchronize();}catch(e){if(current(s))setError(apiErrorText('company_workspaces.sync',e)+' Your local edits are preserved.');}finally{if(current(s))setReady(true);}};
+  const sync=async()=>{try{await s.sync.synchronize();s.failed=false;}catch(e){s.failed=true;if(current(s))setError(apiErrorText('company_workspaces.sync',e)+' Your local edits are preserved.');}finally{if(current(s))setReady(true);}};
   sync();
-  const timer=setInterval(sync,15000);window.addEventListener('online',sync);window.addEventListener('focus',sync);
-  return()=>{clearInterval(timer);window.removeEventListener('online',sync);window.removeEventListener('focus',sync);if(session.current===s)session.current=null;};
+  const stop=subscribePreparationRefresh(document,window,owner,sync,['company_workspaces']);
+  const retry=()=>{if(s.failed||(w.store.get('network.companies')||[]).some(row=>row.dirty))void sync();};
+  window.addEventListener('online',retry);window.addEventListener('focus',retry);
+  return()=>{stop();window.removeEventListener('online',retry);window.removeEventListener('focus',retry);if(session.current===s)session.current=null;};
  },[owner,w.store,w.client,w.demo]);
  async function save(row){
   validateCompany(row.record);

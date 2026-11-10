@@ -1596,3 +1596,19 @@ employment types remain unknown. Source coverage includes publication-to-queue,
 rollback/replay, upgrade preservation and detached demo facts. Production activation
 requires the normal merged-main migration and gateway/MCP deployment; a local test
 alone does not establish live Muse adoption of the refreshed schema.
+
+
+### Incremental private workspace synchronization
+
+The source account controller now loads core records and Discover in one sync
+snapshot, then applies owned row upserts/tombstones from an indexed change cursor.
+Relevant table signals replace private-page idle polling and unrelated refreshes.
+Real SQL tests exercise an agent write through the existing scoped dispatch,
+zero-row unchanged replies, deletion, replay, rollback, missed notifications,
+Auth isolation and shared employer projections. Full suite: 1,348 passed, five
+skipped; frontend typecheck/static build and catalog validation pass. Fictional
+planner notifications and detached demo/account-switch protections remain covered.
+This source change requires `20261110152808_workspace_incremental_sync.sql` and
+the matching frontend release. It has not been deployed or measured against
+hosted CPU/IO. Auxiliary views still use their owned projection readers when
+relevant data changes; the separate shared Circle feed is outside this contract.
