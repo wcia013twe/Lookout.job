@@ -462,3 +462,9 @@
   failed two assertions; corrected fixture and transcript are preserved. The
   interrupted-pair draft audit retains both harness failures and missing native
   terminal confirmation. Canonical installation still waits for final execution.
+
+- Added docs/job03-job04-EVAL-results.md as an explicitly incomplete execution
+  checkpoint generated from the four accepted finalizers: quality, active time,
+  scripted initiations, additional interaction demands and recorded token usage.
+  Interrupted/rejected and still-running evidence is kept separate. Real human
+  effort, invoiced dollars and general comparative advantage remain unmeasured.
