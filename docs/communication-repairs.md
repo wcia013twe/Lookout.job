@@ -107,3 +107,7 @@ verification. Historical PILOT-05 roots and grades are unchanged.
 ## COM02 prospective containment halt
 
 COM02 propagates unconfirmed container termination and cleanup failure to the pair coordinator. Such runs have no confirmed participant end or sealed terminal capture; grading/export and the remaining condition are skipped. Session-boundary cleanup failure also prevents the next session. Existing frozen pilots are unchanged. Mocked regressions cover turn-level failure, final cleanup failure and pair halt; no live preflight, participant experiment or Docker recovery was performed.
+
+## COM01 containment parity
+
+COM01 now reuses the shared bounded container/client stop helper and COM02 cleanup/host-failure propagation. Unconfirmed termination stops the pair, skips terminal sealing and grading/export, and does not assign a confirmed participant end. Frozen prior pilots and readiness roots remain unchanged; a new freeze/preflight is required to run this prospective source. Mocked timeout, cleanup, runner and pair-halt regressions passed without Docker or participant inference.

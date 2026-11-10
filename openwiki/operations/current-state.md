@@ -1385,3 +1385,7 @@ No new participant experiment or product-performance conclusion is implied.
 ### COM01/COM02 revised live readiness
 
 Current-source COM1-stream-v9 and COM2-stream-v8 passed fresh no-inference setup on the recovered local stack. COM01 receipts are `com1-v9-readiness-final01-preflight`; COM02 receipts are `com2-v8-readiness-final02-preflight` under private experiment-control. COM02's native writer/readback and restoration passed on a freshly provisioned owner. Its old fixed-ID owner was rejected by the reset guard and preserved; prospective owner-scoped fixtures require a fresh account. Nine focused checks and catalog validation passed. No participant experiment or new study was launched; historical PILOT-05 remains unchanged.
+
+### COM01 prospective containment parity
+
+COM01 now has the same shared bounded stop and host-failure pair halt behavior as COM02. Seven focused Node checks, including mocked process/run/pair regressions, passed. No live preflight or participant was run for this source revision; previous readiness receipts still bind their original checkout. Fresh freeze/preflight remains required before revised execution.
