@@ -74,10 +74,10 @@ begin
  if (select version from public.preparation_plans where application_id=app)<=version_before then raise exception 'Round reschedule did not fence stale practice';end if;
  if result->>'round_id'<>round1::text then raise exception 'Reschedule lost stable identity';end if;
  if not exists(select 1 from public.preparation_plans p,jsonb_array_elements(p.plan->'tasks') t where p.application_id=app and t->>'id'=task_id) then raise exception 'Reschedule discarded prior tasks';end if;
- -- Proposals require human confirmation and preserve original evidence.
+ -- Proposals stay on the application; human confirmation preserves original evidence.
  result:=to_jsonb(private.record_application_milestone_owned(u,app,jsonb_build_object('eventKey','proposal','kind','interview','label','Proposed round','phase','scheduled','proposedAt','2026-11-13T17:00:00Z','practiceCategory','ml','source',jsonb_build_object('kind','user_reported','note','Candidate reported a proposed time')),'user_reported'));
- select x into item from private.action_board_items(u) x where x->>'sourceId'=result->>'id';
- perform public.respond_action_board(jsonb_build_object('key',item->>'key','response','accept','eventKey',gen_random_uuid()));
+ if exists(select 1 from private.action_board_items(u) x where x->>'sourceId'=result->>'id') then raise exception 'Interview context leaked onto Action Board';end if;
+ perform public.record_application_milestone(app,jsonb_build_object('eventKey','human-confirm-proposal','kind','interview','label','Proposed round','phase','scheduled','occurredAt','2026-11-13T17:00:00Z','supersedesId',result->>'id','practiceCategory','ml','source',jsonb_build_object('kind','user','timestampConfirmed',true)));
  if not exists(select 1 from public.application_milestones where supersedes_id=(result->>'id')::uuid and confirmation='confirmed' and practice_category='ml') then raise exception 'Human confirmation did not create canonical correction';end if;
  if public.agent_dispatch(h,'human.request',jsonb_build_object('action','verify-answer','recordId',answer_id))->>'url' not like '%section=agent&answer=%' then raise exception 'Answer handoff not precise';end if;
  -- Human-only writer is not an agent operation, even with full scopes.
