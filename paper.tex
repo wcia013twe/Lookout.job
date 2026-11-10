@@ -24,7 +24,7 @@ for Personalized AI Agents}
 \maketitle
 
 \section*{Abstract}
-Personal agents must preserve user decisions and reconcile changing information across sessions. We present Lookout, a job-search workspace in which users and agents access shared domain records through a web interface and authenticated Model Context Protocol tools. The workspace separates preparation, authorization, execution, and confirmation, while an external host supplies reasoning and browser execution. We compare an agent using general-purpose tools and persistent files with the same agent using Lookout across eight job-search and communication workflows, with 53 graded trajectories. Lookout improves target recall in job selection from 85.0\% to 93.3\%, application-preparation quality from 95.6\% to 100\%, and networking-continuity quality from 82.5\% to 100\%. It scores lower on the other five workflows, including application tracking, where quality falls from 90.2\% to 39.8\%. Reported active execution times are 1.21--3.95 times the baseline. These descriptive results show that shared, validated state can support some workflows while introducing substantial execution overhead and additional opportunities for error. A dedicated workspace does not uniformly improve the reliability of an agent that already has persistent files.
+Personal agents must preserve user decisions and reconcile changing information across sessions. We present Lookout, a job-search workspace in which users and agents access shared domain records through a web interface and authenticated Model Context Protocol tools. The workspace separates preparation, authorization, execution, and confirmation, while an external host supplies reasoning and browser execution. We compare an agent using general-purpose tools and persistent files with the same agent using Lookout across eight job-search and communication workflows, with 80 graded trajectories. Lookout improves target recall in job selection from 85.0\% to 93.3\%, application-preparation quality from 95.6\% to 100\%, and networking-continuity quality from 82.5\% to 100\%. It scores lower on the other five workflows, including application tracking, where quality falls from 90.2\% to 39.8\%. These descriptive results show that shared, validated state can support some workflows while introducing substantial execution overhead and additional opportunities for error. Active execution time is 1.2--4.0 times, and token use 3.3--11.4 times, that of the baseline.
 
 \section{Introduction}
 
@@ -36,9 +36,16 @@ General-purpose agents can keep this state in conversation histories or files, b
 
 We study this through Lookout, a job-search workspace accessible via the Model Context Protocol (MCP). An external agent handles planning, reasoning, and browser execution, while Lookout stores candidate facts, opportunities, drafts, decisions, and outcomes and enforces ownership and revision constraints. Users view and correct the same records through a web interface, independently of any agent session.
 
-Our contributions are (i) a design for shared human--agent workflow state, (ii) an implementation with authenticated MCP tools and persistent records, and (iii) an eight-task evaluation of quality and execution time under staged information changes. The results identify both gains and regressions, making the cost of workspace-supported execution part of the research question rather than assuming that more structure improves performance.
+Our contributions are (i) a design for shared human--agent workflow state, (ii) an implementation with authenticated MCP tools and persistent records, and (iii) an eight-task evaluation of quality, execution time, token use, and tool calls under staged information changes. The results identify both gains and regressions, making the cost of workspace-supported execution part of the research question rather than assuming that more structure improves performance.
 
 \section{Related Work}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.95\textwidth]{lookout-architecture.pdf}
+    \caption{Lookout architecture. Users and personal agents access a common set of records through the web interface and the authenticated MCP interface, respectively. The figure shows logical boundaries only.}
+    \label{fig:architecture}
+\end{figure*}
 
 \subsection{Agent--Computer Interfaces and Persistent State}
 SWE-agent studies how the actions and observations exposed by an agent--computer interface affect software-engineering performance~\cite{sweagent}. Its interface ablations motivate treating tool design as an experimental variable rather than attributing performance solely to the underlying model. Lookout examines this issue in a different setting, where tool operations modify records that a user can also inspect and correct.
@@ -54,21 +61,18 @@ Kolab analyzes over 115 hours of interaction between 50 professionals and AI age
 \section{System Design}
 
 \subsection{Architecture and Workflow State}
-We consider workflows composed of dependent tasks, external observations, and user decisions distributed across agent sessions. At a continuation point, the agent must identify the current task state, determine which facts and permissions still apply, and select an admissible next action. A successful continuation preserves completed work and incorporates intervening updates without repeating an action whose external outcome is unresolved.
 
-Lookout separates personal-agent reasoning from domain-specific workflow management and keeps workflow state outside the agent's conversation. As shown in Figure~\ref{fig:architecture}, the architecture consists of an external agent host, an authenticated Model Context Protocol (MCP) interface, domain services, a shared persistence layer, and a web interface. The host retains responsibility for model execution, planning, scheduling, notifications, and browser capabilities; the workspace supplies domain records and validation. Agents access the workspace through MCP tools and users through the web interface, so either participant can update ongoing work without the other being active.
+Lookout separates agent reasoning from domain workflow management (Figure 1). An external host supplies model execution, planning, scheduling, notifications, and browser capabilities. Lookout supplies authenticated MCP tools, domain services, persistent records, and a web interface through which users inspect and correct the same state.
 
-The data model separates public opportunity information from private candidate decisions. Employer descriptions and canonical application URLs belong to the opportunity catalog, while fit assessments, selected resumes, drafts, and application progress remain in the candidate's workspace. Company records link contacts and applications, allowing research and relationship context to be retrieved alongside the work they inform. These associations give a continuation point a stable reference: the agent can identify the relevant application and its saved materials without inferring their identity from message wording. They also constrain the scope of an update. A correction to one application's answer or next action need not replace unrelated preparation, and a company-level observation can remain available across several applications.
+The data model separates public opportunity information from private candidate decisions. Employer descriptions and application URLs belong to the opportunity catalog; fit assessments, selected resumes, drafts, and progress belong to the candidate's workspace. Stable links among companies, contacts, and applications let agents recover relevant context across sessions and update affected work without replacing unrelated preparation.
 
 \subsection{Domain Operations and Context Retrieval}
-MCP operations expose JSON input schemas and return domain observations. Mutations are subject to connection scope, record ownership, and revision checks. For example, an agent retrieves an application, submits a draft revision against its current version, and reads back the saved result. The stored revision is then available for later decisions, and the server can reject a write based on obsolete state.
 
-The initial tool surface contains common operations, with supporting schemas retrieved through \texttt{discover\_tools} and versioned procedures supplied by \texttt{read\_guide}. Personal and developer context carry version identifiers that indicate content changed since the connection's previous read. A known version does not replace the content itself: after context loss, the agent must retrieve any missing instructions or facts. We therefore report token use and tool-call counts alongside task outcomes, rather than assuming a net saving or cost.
+MCP operations expose JSON schemas and return domain observations. Mutations enforce connection scope, record ownership, and revision checks. An agent retrieves a record, submits a change against its current revision, and verifies the saved result; obsolete writes are rejected.
 
-Personalization is divided between the agent and Lookout. The agent retains broader knowledge of the user accumulated through previous interactions. Lookout stores structured domain records (target positions, search constraints, selected resumes, and application history), and workflow procedures are maintained separately as guides. A fact correction or procedure update therefore becomes available through retrieval without modifying the model or reconstructing the conversation history, and Lookout does not need to own the agent's private memory.
+Common operations are exposed initially, while additional schemas and versioned procedures are retrieved through tool discovery and guides. Context versions indicate changes but do not replace the underlying content after context loss. Lookout stores domain preferences, resumes, and application history, while broader personal memory remains with the external agent.
 
-Procedural guidance and server validation serve different roles. Guides describe how to retrieve context, prepare work, and verify a saved outcome; domain services determine whether a requested operation is permitted against the current records. An instruction in the agent's context cannot grant a missing scope or substitute for a human approval. Conversely, an accepted write establishes that the operation satisfied the enforced constraints, but does not establish that the content is accurate or useful. Selecting a suitable contact, interpreting an ambiguous preference, and grounding a draft in evidence remain reasoning tasks for the agent. This boundary makes structural validity and semantic correctness separately observable: a rejected operation requires reconciliation, while an accepted but inappropriate update remains an agent error that evaluation must detect.
-
+Guides describe procedures; server validation enforces permitted operations. Neither guarantees semantic correctness: an accepted write can still contain an inappropriate draft or leave related records inconsistent. Evaluation therefore measures saved outcomes separately from successful tool execution.
 \subsection{Workflow State and Outcome Semantics}
 Opportunities and applications are persistent workflows with explicit states, not isolated tool executions. Application state distinguishes preparation, authorization, execution, and confirmation, since an agent's intent to submit differs from a confirmed submission, and an interrupted operation does not necessarily indicate failure. Human approval is associated with a specific draft revision. Automatic authorization additionally requires explicit account-wide consent and satisfaction of the submission policy. These conditions are checked at the server boundary against the current draft, resume, and verified answers.
 
@@ -78,148 +82,205 @@ Revision checks also protect user edits. Every record carries a revision number,
 
 \section{Human--Agent Coordination Workflows}
 
-The communication scenarios examine how an agent and user coordinate work as information arrives over time. We first describe COM01 and COM02: networking under changing career preferences and communication during a recruiting process. Each spans seven sessions and contains several dependent activities. COM03 extends the evaluation to connection discovery, and COM04 to introduction promises and follow-up. The controlled notification streams supply messages, user updates, and calendar notices; they do not assume a live inbox integration. Across these activities, the agent prepares and maintains work while the user supplies personal judgments, missing facts, and reports of actions taken outside the workspace.
+Lookout supports workflows in which user decisions and external updates arrive across sessions. The communication scenarios test changing preferences, missing availability, rescheduling, user-reported sends, and terminal outcomes. COM01 and COM02 each span seven sessions; COM03 examines contact discovery, and COM04 examines introduction commitments and follow-up. Messages and calendar notices come from controlled notification streams rather than a live inbox.
 
-\begin{table*}[t]
-\centering\small
-\begin{tabularx}{\textwidth}{@{}l X X X@{}}
-\toprule
-Workflow & Change introduced & Required behavior & Failure it exposes \\
-\midrule
-Conversation preparation & New contact history and preferences & Prepare using current evidence; keep drafts separate from sent messages & Treating a draft as sent; implying a referral commitment \\
-Preference changes & Exploratory interest, later confirmed direction & Hold uncertainty, then update preferences only on confirmation & Acting on a tentative remark; losing the reasoning behind the change \\
-Availability and scheduling & Recruiter request, user answer, reschedule & Ask for missing windows; resolve duplicate notices to one event & Guessing availability; duplicate replies or tasks \\
-User-reported actions & User sends a draft and reports it later & Record the report against the right conversation; leave other drafts unchanged & Marking unrelated drafts as sent \\
-Recruiting updates & Screen reported complete; later invitation; start-date request & Treat user report and employer evidence separately; obtain the user's actual answer & Assuming advancement; substituting a graduation date for availability \\
-Superseded information & Rejection, duplicate message, stale reminder & Retire obsolete tasks; keep correspondence as history & Reopening a closed process; replying to stale items \\
-Resumption and reconciliation & Changes made while the agent is inactive & Retrieve current records and resume only affected work; report consistently with durable records & Repeating completed work; reports that contradict the records \\
-\bottomrule
-\end{tabularx}
-\caption{Coordination workflows in the communication scenarios. Each pairs a change in information with the behavior it requires and the failure a stale or conflated state would produce.}
-\label{tab:workflows}
-\end{table*}
-
-\paragraph{Conversation preparation and response drafting.}
-The agent uses the candidate's background, preferences, and contact history to prepare discussion topics and responses that the user can inspect and revise. Preparation must preserve relationship boundaries: an informational conversation does not establish a referral commitment, and a draft does not establish that a message was sent. Saved contact records connect preparation to subsequent replies and follow-up.
-
-\paragraph{Exploratory and confirmed preference changes.}
-A user may express interest in platform engineering without deciding to make it the primary search target. The agent retains that uncertainty while continuing existing conversations. After the user confirms a direction, it updates the relevant preferences and subsequent preparation. Correct continuation distinguishes an exploratory reaction from an instruction to change ongoing work, while preserving the decision's history.
-
-\paragraph{Availability requests and scheduling.}
-When interview availability is missing, the agent asks for suitable windows and prepares a reply preserving the supplied dates, times, and timezone. A later confirmation establishes the appointment. Calendar notices referring to that appointment should resolve to one current event, and a confirmed reschedule should replace the earlier time without generating a duplicate reply or task.
-
-\paragraph{Drafts and user-reported actions.}
-The user may send a prepared message independently and later report it. The agent records the report against the correct conversation and retains what the user says was sent. Reporting that an availability reply was sent does not imply that a later start-date reply was delivered. Other drafts must remain actionable rather than being marked complete.
-
-\paragraph{Recruiting updates and missing personal facts.}
-The agent reconciles recruiter messages with the application's current status. A user report that a screen was completed records that event without assuming advancement to another round. A subsequent employer invitation supplies separate evidence of advancement. Requests for additional information may introduce another dependency on the user. If a recruiter asks for the earliest possible start date, the agent preserves the request and its deadline, obtains the user's answer, and prepares the appropriate response. Graduation dates or other background facts cannot substitute for the user's actual availability.
-
-\paragraph{Superseded information and closure.}
-Later events can invalidate previously appropriate work. A rejection that cancels an interview also makes an outstanding scheduling or information request obsolete. The agent updates the current status, retires affected next actions, and retains the earlier correspondence as history. Duplicate messages and stale calendar reminders should not reopen the process or generate another response. The relevant distinction is between historical information that remains useful for understanding the process and an obligation that still requires action.
-
-\paragraph{Resumption and final reconciliation.}
-User answers and record changes can occur while the agent is inactive. On continuation, the agent retrieves current records and resumes the affected work rather than repeating completed preparation. At the end of the trajectory, it reconciles contact or application status, saved drafts, completed actions, pending obligations, and unresolved questions. Its report must agree with durable records and identify failed saves or missing information. These workflows therefore require both local correctness at each checkpoint and continuity across the complete sequence of sessions.
+Correct coordination requires preserving distinctions between tentative and confirmed preferences, drafts and sent messages, and user reports and employer evidence. A confirmed change should update affected preparation without altering unrelated work. A cancellation should retire obsolete drafts and reminders while preserving correspondence as history. On resumption, the agent must retrieve current records, continue unfinished work, and ensure that its final report agrees with saved state.
 
 \section{Implementation}
 
-\subsection{Technology Stack}
-The web interface uses Next.js, React, and Tailwind. Supabase provides authentication, PostgreSQL records, and private object storage, and backend operations run as Edge Functions and Node.js services. Agents connect through authenticated MCP endpoints. Langfuse records execution traces and evaluation summaries~\cite{langfuse}, while grading evidence remains local. None of these services supplies the agent's reasoning or scheduling, which remain with the external host. An optional Terraform configuration provisions a GCP deployment of the API and workers; it is not used in the reported evaluation.
+Lookout uses Next.js, React, and Tailwind for the web interface; Supabase for authentication, PostgreSQL records, and private storage; and Edge Functions and Node.js for backend services. Agents connect through authenticated MCP endpoints. Langfuse records execution traces and evaluation summaries [4], while grading evidence remains local.
 
-\subsection{Execution and Recovery}
-User answers, preference edits, and backend results create events in a connection-specific change feed. A lightweight watcher in the external host polls a count-only endpoint every ten seconds, with jitter. Pending events wake an authenticated agent, which reads the feed, retrieves the affected records and relevant guides, and resumes authorized work. Polling itself requires no model call and exposes no private record content.
+A connection-specific change feed records user edits and backend updates. An optional external watcher polls a count-only endpoint every ten seconds with jitter, waking the agent when events are pending. The agent retrieves affected records, resumes authorized work, verifies outcomes, and acknowledges handled events. Event IDs and record revisions support duplicate detection and recovery. Interrupted external actions require outcome reconciliation before retry. The reported evaluation used prescribed continuation requests rather than this watcher.
 
-\begin{figure*}[t]
-    \centering
-    \includegraphics[width=0.95\textwidth]{lookout-architecture.pdf}
-    \caption{Lookout architecture. Users and personal agents access a common set of records through the web interface and the authenticated MCP interface, respectively. The figure shows logical boundaries only.}
-    \label{fig:architecture}
-\end{figure*}
-
-The agent verifies saved outcomes before acknowledging handled events. Unhandled events remain pending for retry. Because events may be delivered more than once, the agent checks event IDs and current record versions before acting. If execution stops after an external action but before acknowledgement, the agent reconciles the outcome before attempting that action again.
-
-AI Apply uses the same mechanism. Lookout queues a request for a specific agent connection and announces it through the change feed. The agent claims the request and uses its host’s browser capabilities to continue preparation. Claim and outcome updates check the current job and application versions.
-
-\subsection{Implementation Verification}
-The recorded implementation-validation run contained 1,323 automated cases spanning unit, contract, and database tests, covering domain operations, MCP scope, context versions, deduplication, ownership, and outcome transitions. Database scenarios replay migrations in disposable PGlite instances with Auth and Storage test doubles. All 1,318 enabled cases passed, with five cases skipped for an interface that is currently disabled. These checks establish behavior under the tested inputs, not the agent's ability to select and compose operations correctly. The benchmark therefore assesses semantic outcomes separately from implementation correctness.
+Implementation validation covered domain operations, scopes, ownership, context versions, deduplication, and outcome transitions. All 1,323 enabled unit, contract, and database cases passed; five cases for a disabled interface were skipped. Database tests replayed migrations in disposable PGlite instances with Auth and Storage test doubles. These checks verify implementation behavior under tested inputs, while the benchmark evaluates whether agents compose operations correctly.
 \section{Evaluation}
 
 We examine whether a dedicated workspace improves an agent's ability to maintain correct decisions and saved state as a workflow changes. Table~\ref{tab:cases} defines eight tasks and compares their measured outcomes. Following the task-specific evaluation approach of SWE-bench and MLE-bench~\cite{swebench,mlebench}, grading uses explicit required outcomes and captured artifacts rather than the apparent completeness of the final response. The comparison covers job selection, application preparation and tracking, interview preparation, and four communication workflows.
 
+\subsection{Task Families}
+
+Eight tasks cover two families. JOB01--JOB04 test job selection, application preparation, application tracking, and interview preparation. COM01--COM04 test networking continuity, recruiting communication, contact discovery, and introduction follow-up. Table 2 specifies each task's required outcomes.
+
+Both families use fictional candidates and controlled event streams. Staged updates introduce revised preferences, missing facts, interruptions, duplicate notices, and terminal outcomes. Unrelated records provide preservation checks: success requires updating affected work without damaging other state. The tasks distinguish drafts from sent messages and user reports from employer confirmation, testing continuity across sessions rather than isolated task completion.
+
+\subsection{Experimental Setup}\label{sec:setup}
+\paragraph{Conditions.}
+Both conditions start the first session with the same candidate background and documents, task intent, and durable-output requirements. They differ in how information is kept and recovered. The \textbf{baseline} agent uses general-purpose tools and persistent files it maintains itself; in later sessions it starts from a fresh context and must search its own files and earlier outputs. The \textbf{Lookout} agent is the same agent with Lookout's MCP tools, domain records, and procedural guides, and it recovers state by retrieving current records. Neither condition receives a summary of earlier sessions or events before their release, so the baseline has every fact Lookout has at the start. Differences therefore reflect how well each condition carries information forward, not who had more evidence. The comparison measures the combined contribution of domain state, tools, and guidance beyond general-purpose memory and does not isolate them. Quality scores and active execution times are arithmetic means over five trials per task per condition. Token counts are medians, and tool-call counts are arithmetic means over the same five trials.
+
+\paragraph{Environment.}
+Runs use a subscription-backed \texttt{gpt-5.6-terra} host with medium reasoning in isolated containers. Fictional account owners are separated between attempts, and future events, reference answers, and the other condition's artifacts stay hidden. Fixtures, instructions, and rubrics are frozen per attempt, and pre-inference checks confirm required operations work. Both conditions receive the same prescribed continuation requests, so the experiment measures execution under matched initiation, not savings from autonomous scheduling.
+
+\paragraph{Runs.}
+Each of the eight tasks was run for five trials. In each trial, both conditions were launched concurrently from the same fixture and events, giving 40 matched pairs and 80 graded trajectories with equal denominators. Pilots and synthetic verification traces are excluded. All eight tasks have complete grading coverage: five baseline and five Lookout trajectories per task.
+
+\subsection{Grading}
+After each run, an independent reviewer assesses the captured outputs, action traces, checkpoint snapshots, and saved records against the frozen case rubric and cites its evidence.  Deterministic validators check each review's structure and its binding to the attempt before a grade is accepted. A completed process or successful tool call does not count as success: saved content must meet the task requirement, and the final report must match the persisted state.
+
+% Results table
 \begin{table*}[t]
 \centering\footnotesize
 \setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.15}
+\renewcommand{\arraystretch}{1.25}
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.065\textwidth}>{\raggedright\arraybackslash}p{0.15\textwidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{0.18\textwidth}>{\raggedright\arraybackslash}p{0.18\textwidth}@{}}
 \toprule
 Task & Workflow tested & Completion criteria & Baseline agent & Agent with Lookout \\
 \midrule
-JOB01 & Job selection under changing preferences & Return all ten reference targets at each search turn; ground analyses in candidate and role evidence; retain revised career and writing preferences. & Quality: 85.0\%\newline Exec. time: 459 s\newline Cost: 0.902M tokens & Quality: 93.3\%\newline Exec. time: 911 s\newline Cost: 5.685M tokens \\
-JOB02 & Application preparation and human answers & Save grounded drafts; request missing facts; apply answers to the correct fields; preserve human edits and manual blockers; stop before submission. & Quality: 95.6\%\newline Exec. time: 161 s\newline Cost: 0.577M tokens & Quality: 100\%\newline Exec. time: 453 s\newline Cost: 2.808M tokens \\
-JOB03 & Application tracking and interrupted work & Reconcile five applications; distinguish reported submission from receipt evidence; resume saved preparation; deliver the due reminder once; cancel terminal work and preserve unrelated state. & Quality: 90.2\%\newline Exec. time: 321 s\newline Cost: 0.818M tokens & Quality: 39.8\%\newline Exec. time: 1,269 s\newline Cost: 7.901M tokens \\
-JOB04 & Interview preparation across pipeline stages & Save grounded preparation for confirmed rounds; incorporate the debrief; reconcile logistics and cancellation; preserve unrelated work. & Quality: 2.00/2\newline Exec. time: 445 s\newline Cost: 0.744M tokens & Quality: 1.76/2\newline Exec. time: 1,281 s\newline Cost: 8.472M tokens \\
-COM01 & Networking continuity and changing intent & Retain tentative and confirmed preferences; prepare appropriate unsent replies and follow-through; handle duplicates and reconcile saved state. All eight outcome groups must pass for full success. & Quality: 82.5\%\newline Exec. time: 407 s\newline Cost: 0.728M tokens & Quality: 100\%\newline Exec. time: 613 s\newline Cost: 2.387M tokens \\
-COM02 & Recruiting communication and stale state & Resolve missing facts and rescheduling; save accurate unsent replies and interview state; close obsolete reminders and reconcile cancellation. All thirteen outcome groups must pass for full success. & Quality: 100\%\newline Exec. time: 577 s\newline Cost: 1.127M tokens & Quality: 89.2\%\newline Exec. time: 696 s\newline Cost: 4.159M tokens \\
-COM03 & Connection discovery and relationship boundaries & Select source-supported contacts; revise choices as evidence changes; respect referral and contact limits; retain accurate drafts and next steps; reconcile duplicates and final state. & Quality: 100\%\newline Exec. time: 462 s\newline Cost: 0.972M tokens & Quality: 75.0\%\newline Exec. time: 1,453 s\newline Cost: 10.087M tokens \\
-COM04 & Introduction promises and follow-up & Track the introduction promise; wait until due; prepare follow-up and availability replies; distinguish drafts from reported sends; close stale reminders and reconcile final state. & Quality: 97.6\%\newline Exec. time: 506 s\newline Cost: 0.898M tokens & Quality: 82.1\%\newline Exec. time: 1,176 s\newline Cost: 7.022M tokens \\
+JOB01 & Job selection under changing preferences & Return all ten reference targets at each search turn; ground analyses in candidate and role evidence; retain revised career and writing preferences. & Quality: 85.0\%\newline Exec. time: 459 s\newline Cost: 0.902M tokens\newline Tool calls: 26.0 & Quality: 93.3\%\newline Exec. time: 911 s\newline Cost: 5.685M tokens\newline Tool calls: 117.0 \\
+\addlinespace[8pt]
+JOB02 & Application preparation and human answers & Save grounded drafts; request missing facts; apply answers to the correct fields; preserve human edits and manual blockers; stop before submission. & Quality: 95.6\%\newline Exec. time: 161 s\newline Cost: 0.577M tokens\newline Tool calls: 31.4 & Quality: 100\%\newline Exec. time: 453 s\newline Cost: 2.808M tokens\newline Tool calls: 88.6 \\
+\addlinespace[8pt]
+JOB03 & Application tracking and interrupted work & Reconcile five applications; distinguish reported submission from receipt evidence; resume saved preparation; deliver the due reminder once; cancel terminal work and preserve unrelated state. & Quality: 90.2\%\newline Exec. time: 321 s\newline Cost: 0.818M tokens\newline Tool calls: 44.7 & Quality: 39.8\%\newline Exec. time: 1,269 s\newline Cost: 7.901M tokens\newline Tool calls: 252.3 \\
+\addlinespace[8pt]
+JOB04 & Interview preparation across pipeline stages & Save grounded preparation for confirmed rounds; incorporate the debrief; reconcile logistics and cancellation; preserve unrelated work. & Quality: 2.00/2\newline Exec. time: 445 s\newline Cost: 0.744M tokens\newline Tool calls: 31.0 & Quality: 1.76/2\newline Exec. time: 1,281 s\newline Cost: 8.472M tokens\newline Tool calls: 247.5 \\
+\addlinespace[8pt]
+COM01 & Networking continuity and changing intent & Retain tentative and confirmed preferences; prepare appropriate unsent replies and follow-through; handle duplicates and reconcile saved state. All eight outcome groups must pass for full success. & Quality: 82.5\%\newline Exec. time: 407 s\newline Cost: 0.728M tokens\newline Tool calls: 34.4 & Quality: 100\%\newline Exec. time: 613 s\newline Cost: 2.387M tokens\newline Tool calls: 109.2 \\
+\addlinespace[8pt]
+COM02 & Recruiting communication and stale state & Resolve missing facts and rescheduling; save accurate unsent replies and interview state; close obsolete reminders and reconcile cancellation. All thirteen outcome groups must pass for full success. & Quality: 100\%\newline Exec. time: 577 s\newline Cost: 1.127M tokens\newline Tool calls: 38.3 & Quality: 89.2\%\newline Exec. time: 696 s\newline Cost: 4.159M tokens\newline Tool calls: 147.5 \\
+\addlinespace[8pt]
+COM03 & Connection discovery and relationship boundaries & Select source-supported contacts; revise choices as evidence changes; respect referral and contact limits; retain accurate drafts and next steps; reconcile duplicates and final state. & Quality: 100\%\newline Exec. time: 462 s\newline Cost: 0.972M tokens\newline Tool calls: 58.4 & Quality: 75.0\%\newline Exec. time: 1,453 s\newline Cost: 10.087M tokens\newline Tool calls: 264.8 \\
+\addlinespace[8pt]
+COM04 & Introduction promises and follow-up & Track the introduction promise; wait until due; prepare follow-up and availability replies; distinguish drafts from reported sends; close stale reminders and reconcile final state. & Quality: 97.6\%\newline Exec. time: 506 s\newline Cost: 0.898M tokens\newline Tool calls: 37.6 & Quality: 82.1\%\newline Exec. time: 1,176 s\newline Cost: 7.022M tokens\newline Tool calls: 221.5 \\
 \bottomrule
 \end{tabularx}
-\caption{Completion criteria and three measured dimensions across eight tasks: quality, execution time, and token cost. JOB01 quality is target recall; JOB04 uses a 0--2 rubric; other tasks use percentage quality under their own rubrics. Execution time reproduces the reported active-time summary. Cost is median total input plus output tokens per graded trajectory, with M denoting one million tokens. Cached input is already included in input and is not added again. Quality scores are not full-trajectory success rates; scores are not averaged across tasks.}
+\caption{Completion criteria and four measured dimensions across eight tasks: quality, execution time, token cost, and tool calls. }
 \label{tab:cases}
 \end{table*}
 
-\subsection{Experiment Setup}
-The baseline agent uses general-purpose tools and persistent files that it maintains itself. The Lookout condition gives the same agent Lookout's MCP tools, domain records, and procedural guides. Both conditions receive equivalent candidate evidence, released events, task intent, and durable-output requirements. Baseline files and Lookout records persist across fresh model sessions. The comparison therefore assesses the combined contribution of domain state, tools, and guidance beyond general-purpose external memory; it does not isolate these components.
+\subsection{Metrics and Aggregation}
+\paragraph{Unit and grouping.}
+The unit is a complete trajectory through one workflow, and checkpoints within it are connected observations, not independent samples. For COM01 and COM02, checks are partitioned into eight and thirteen predefined outcome groups. A group passes only if every check in it passes, so several symptoms of one stale record count as one failure. Checkpoints show where continuity broke, trajectory success shows whether all required outcomes were met, and a later correction does not establish success at an earlier checkpoint.
 
-The implemented COM and JOB03/JOB04 hosts use subscription-backed \texttt{gpt-5.6-terra} with medium reasoning in isolated containers. Fictional account owners are separated between attempts. Future events, reference answers, and the other condition's artifacts remain hidden. Fixtures, instructions, and rubrics are frozen for each attempt, and pre-inference checks test required operations. Both conditions receive prescribed continuation requests, so the experiment measures workflow execution under matched initiation rather than savings from autonomous scheduling. Grading follows participant termination and uses captured outputs, action traces, checkpoint snapshots, and saved files or records.
+\paragraph{Scores.}
+Each task keeps the scale of its own rubric: JOB01 reports recall against predetermined target lists (high recall alone does not establish analysis quality), JOB04 reports stage ratings of 0 (unmet), 1 (partial), or 2 (fully supported) with no pass threshold, and the remaining tasks report percentage quality. We do not convert these into a common success rate, and full-trajectory success cannot be recovered from an aggregate score. Quality scores and active execution times are arithmetic means over five trials per task per condition. Token counts are medians, and tool-call counts are arithmetic means over the same five trials.
 
-The measured results contain 53 graded trajectories: 27 baseline and 26 Lookout. JOB02, COM01, and COM02 each have five graded runs per condition; JOB03 has three; JOB04 has one. JOB01 has two baseline and three Lookout grades, while COM03 and COM04 each have three baseline and two Lookout grades. We retain these unequal denominators rather than presenting the comparison as 27 complete graded pairs. Historical diagnostic pilots and synthetic verification traces are separate from the measured results.
-
-An independent post-run reviewer assesses semantic outcomes against the frozen case rubric, citing the captured evidence. Deterministic validators check the review structure and its binding to the attempt before a grade is accepted. A completed process or successful tool call is insufficient: saved content must satisfy the task requirement and the final report must agree with the persisted state. Missing or invalid reviews do not receive an imputed failure score. This distinction matters in COM03 and COM04, where one Lookout review per task remains outside the graded denominator.
-
-\subsection{Completion and Aggregation}
-The experimental unit is a complete trajectory through one workflow. COM01 and COM02 each span seven sessions, covering multiple communication actions and state transitions within two storylines. Their checkpoints are connected observations, not independent samples. Checks are partitioned into eight and thirteen predefined outcome groups, respectively. A group passes only when every constituent check passes, preventing several symptoms of one stale record from becoming several independent failures. Checkpoint results identify where continuity broke; trajectory success establishes whether all required outcomes were achieved. A later correction does not establish success at an earlier checkpoint.
-
-Execution completion is distinct from task success: a process can terminate normally while leaving required work incorrect. JOB01 measures recall against predetermined target lists; high recall alone does not establish the quality of the accompanying analysis. JOB04 uses stage-specific ratings of 0 (unmet), 1 (partial), and 2 (fully supported), without a predefined overall binary pass threshold. The remaining quality values summarize their case-specific rubrics. We preserve these scales rather than converting them into a common success percentage. Full-trajectory success requires the applicable completion conditions and cannot be reconstructed from an aggregate quality score alone.
-
-Time covers active participant execution, including native reads, discovery, writes, verification, and failed operations within its recorded scope. It excludes simulated waiting and is distinct from user response time, wall-clock workflow duration, and time to successful completion. Table~\ref{tab:cases} reproduces the campaign's reported timing summaries. Token cost is the median input-plus-output count over the corresponding graded trajectories with complete usage capture. Cached input is a subset of input, and reasoning output is not added a second time. Quality, execution time, and token cost remain separate dimensions. Tool calls and clarification demands are diagnostic; prescribed prompts are not treated as avoidable human effort.
+\paragraph{Time and other measures.}
+Time is active agent execution, including reads, writes, verification, and failed operations. It excludes simulated waiting and is distinct from user response time and wall-clock duration. Tokens, tool calls, and clarification demands are diagnostic and not part of any quality score. Prescribed prompts are not counted as avoidable human effort, and token counts are not converted into billed costs.
 
 \section{Results}
 
-\subsection{Quality Depends on the Workflow}
-Lookout scores higher on three tasks and lower on five. In JOB01, target recall increases from 85.0\% to 93.3\%, a gain of 8.3 percentage points. JOB02 quality increases from 95.6\% to 100\%, and COM01 increases from 82.5\% to 100\%. The COM01 result is consistent with a benefit for retaining evolving networking preferences and saved follow-through, but the aggregate does not identify which workspace component produced the gain. JOB01 also has unequal graded sample sizes, so its recall difference is not a paired estimate over an identical set of reviewed trials.
+We report results along four dimensions: reliability (RQ1 and RQ2), execution time, user interaction and resource use, and failure modes. All comparisons are per task, over five matched trials per condition, and are descriptive (Section~\ref{sec:setup}).
 
-The largest regression occurs in JOB03: quality decreases by 50.4 percentage points, from 90.2\% to 39.8\%. This task requires coordinating several applications, preserving their distinct states, and reconciling reminders and interrupted preparation. The result shows that a backend capable of storing these distinctions does not ensure that the agent maintains them correctly. JOB04 also favors the baseline, with ratings of 2.00 versus 1.76 out of 2. With one graded run per condition, this is an observation about the recorded attempts rather than evidence of stable interview-preparation performance.
+\subsection{Reliability}
+Table~\ref{tab:cases} gives each task's score under its own rubric, and Table~\ref{tab:deltas} gives the difference between conditions. Scores are not comparable across tasks, because the rubrics use different scales.
 
-The other communication tasks favor the baseline. COM02 quality is 100\% versus 89.2\%; COM03 is 100\% versus 75.0\%; COM04 is 97.6\% versus 82.1\%. These tasks require more than retaining a preference: the agent must reconcile current application status, assess external evidence or relationship boundaries, and retire obsolete obligations. Their results limit the interpretation of COM01. A gain on one continuity storyline does not establish that structured state improves communication workflows generally. Conversely, the regressions do not show that the underlying storage or ownership checks failed; the semantic outcome includes the agent's selection and use of those operations.
+\begin{table}[t]
+\centering\small
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Task & Metric & Lookout $-$ baseline & Direction \\
+\midrule
+JOB01 & Recall (pts) & $+8.3$ & Lookout \\
+JOB02 & Quality (pts) & $+4.4$ & Lookout \\
+JOB03 & Quality (pts) & $-50.4$ & Baseline \\
+JOB04 & Rating (0--2) & $-0.24$ & Baseline \\
+COM01 & Quality (pts) & $+17.5$ & Lookout \\
+COM02 & Quality (pts) & $-10.8$ & Baseline \\
+COM03 & Quality (pts) & $-25.0$ & Baseline \\
+COM04 & Quality (pts) & $-15.5$ & Baseline \\
+\bottomrule
+\end{tabular}
+\caption{Per-task score differences. Positive values favor Lookout. Units follow each task's rubric and are not comparable across rows.}
+\label{tab:deltas}
+\end{table}
 
-\subsection{Execution Overhead}
-Reported active execution time is higher with Lookout on every task. The smallest ratio is COM02, at 696 versus 577 seconds (1.21 times baseline); the largest is JOB03, at 1,269 versus 321 seconds (3.95 times). The three tasks with higher Lookout quality also take longer: JOB01 uses 911 versus 459 seconds, JOB02 453 versus 161 seconds, and COM01 613 versus 407 seconds. These are quality--time trade-offs, not efficiency gains. No task in the reported comparison combines higher quality with lower execution time.
+\paragraph{The baseline is strong (RQ1).}
+An agent with only general-purpose tools and persistent files reached high scores on most tasks: 100\% on COM02 and COM03, 97.6\% on COM04, 95.6\% on JOB02, 90.2\% on JOB03, and the maximum rating on JOB04. Searching its own files and earlier outputs was enough to carry most workflows across sessions. The baseline's weakest results were COM01 (82.5\%) and JOB01 (85.0\% recall), the two tasks centered on preferences that change over time.
 
-Native startup, schema and guide discovery, state retrieval, validation failures, and readback all add work within participant execution. The measured totals do not isolate their individual contributions or the subsequent model processing of returned context. It would therefore be incorrect to attribute the full difference to database latency, audit requirements, or any one tool. Shared-host load further limits timing interpretation. The consistent direction of the observed overhead nevertheless makes retrieval and verification costs material to the design, even where quality improves.
+\paragraph{Where the workspace helped (RQ2).}
+Lookout scored higher on JOB01, JOB02, and COM01. The largest gain was on COM01 (100\% versus 82.5\%), which tests holding a tentative preference, updating when it is confirmed, and handling duplicate messages. JOB02 (100\% versus 95.6\%) tests applying user answers to the correct fields and preserving human edits, and JOB01 improved recall from 85.0\% to 93.3\%. These are the tasks where the baseline had visible room to improve, and the gains are consistent with the mechanisms Lookout adds: current records and revision-checked writes. These aggregate gains do not establish which baseline failure types were eliminated.
 
-Token cost is also higher with Lookout on every task. Median usage ranges from 2.387M tokens in COM01 to 10.087M in COM03, compared with 0.577M--1.127M for the baseline across tasks. These totals include cached input, so they measure context processed rather than uncached computation alone. They show additional model usage alongside the observed execution-time overhead.
+\paragraph{Where it did not.}
+On the other five tasks the baseline scored higher. The largest gap was JOB03 (90.2\% versus 39.8\%), followed by COM03 (100\% versus 75.0\%), COM04 (97.6\% versus 82.1\%), COM02 (100\% versus 89.2\%), and JOB04 (2.00 versus 1.76 on the 0--2 scale). These results do not support the claim that the workspace improves reliability in general. The tasks where Lookout lost are not a single type: they include tracking with interrupted work, contact selection, follow-up commitments, rescheduling, and interview preparation. The qualitative failure analysis below examines saved-state inconsistencies; it does not isolate the causal contribution of tool errors, procedural guidance, or execution budgets.
+
+\subsection{Execution Time and Resource Use}
+Lookout used more time, tokens, and tool calls than the baseline on all eight tasks. Table~\ref{tab:overhead} gives the Lookout-to-baseline ratios; absolute values are in Table~\ref{tab:cases}.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Task & Time & Tokens & Tool calls \\
+\midrule
+JOB01 & 2.0$\times$ & 6.3$\times$ & 4.5$\times$ \\
+JOB02 & 2.8$\times$ & 4.9$\times$ & 2.8$\times$ \\
+JOB03 & 4.0$\times$ & 9.7$\times$ & 5.6$\times$ \\
+JOB04 & 2.9$\times$ & 11.4$\times$ & 8.0$\times$ \\
+COM01 & 1.5$\times$ & 3.3$\times$ & 3.2$\times$ \\
+COM02 & 1.2$\times$ & 3.7$\times$ & 3.8$\times$ \\
+COM03 & 3.1$\times$ & 10.4$\times$ & 4.5$\times$ \\
+COM04 & 2.3$\times$ & 7.8$\times$ & 5.9$\times$ \\
+\bottomrule
+\end{tabular}
+\caption{Lookout-to-baseline ratios of active execution time, median total tokens, and mean tool calls.}
+\label{tab:overhead}
+\end{table}
+
+Overhead ranged from 1.2--4.0$\times$ in time, 3.3--11.4$\times$ in tokens, and 2.8--8.0$\times$ in tool calls. The three tasks where Lookout scored higher cost 1.5--2.8$\times$ the time, 3.3--6.3$\times$ the tokens, and 2.8--4.5$\times$ the tool calls, so extra cost bought better results on those tasks. On the other five, Lookout was both costlier and less accurate. The largest token overhead (JOB03, JOB04, COM03, at 9.7$\times$ or more) accompanied the two largest quality deficits (JOB03 and COM03) but also JOB04, where the deficit was small, so overhead alone does not predict failure. Resource use is reported in aggregate; retrieval, read-back, and verification costs are not separately quantified. Tokens are medians and tool calls are means over five graded trajectories per task per condition (5/5 in each condition). All comparisons use equal run counts; ratios are approximate because the reported values are rounded. Timing was measured on a concurrently run host, so contention affects both conditions in a pair, but absolute values should not be compared across deployments.
+
+
+
+\subsection{User Interaction and Resource Use}
+The reported results do not include a quantitative comparison of necessary questions, avoidable clarification, restatements, or duplicate demands. We therefore make no claim that either condition reduces user interaction effort. Token and tool-call measurements characterize agent resource use rather than human effort.
+
+\subsection{Failure Modes}
+\label{sec:failures}
+To explain the quality differences, we reviewed the reviewers' evidence for Lookout trajectories that missed rubric criteria and assigned each failure a type. The analysis is qualitative, based on review summaries and final snapshots, and gives no per-type counts.
+
+\paragraph{Reconciliation, not recall.}
+The strongest recurring Lookout failure was incomplete reconciliation among new information, saved state, pending work, and the final response. The agent usually recorded new information correctly but did not carry it through to every record it affected. This took four forms:
+\begin{itemize}
+    \item \textbf{Incomplete propagation of user corrections.} A new fact was saved without updating the state it should change. In JOB03, the start-date blocker remained after the user supplied the answer. This is incomplete propagation, not complete forgetting.
+    \item \textbf{Unreconciled interruption.} In JOB03, the missing answer was saved, but interrupted preparation remained unresolved in the reviewed final snapshots.
+    \item \textbf{Stale-state action and missed obsolete work.} Saved instructions still recommended sending a withdrawn reply or described a cancelled interview as scheduled (COM02). Reminders, drafts, and instructions stayed current after a rejection, cancellation, or introduction resolution (JOB03, COM02, COM04).
+    \item \textbf{Evidence and reporting inconsistency.} Submission provenance stayed missing or outdated (JOB03), and final responses sometimes claimed closure that the saved records contradicted (JOB03, COM02, COM04). The agent's account of its work and the durable state therefore disagreed.
+\end{itemize}
+COM03 failures were of a different kind: contact discovery and final usefulness missed rubric criteria. Duplicate and history handling also cost points in JOB03, but the available summaries do not show repeated external actions, so we do not treat repetition as a core failure.
+
+\paragraph{Task dependence.}
+These failures were not uniform. Lookout was strongest on tasks centered on retaining and applying preferences (JOB01 and COM01), where a new fact belongs in one place. Failures clustered in tasks where one event must change several records at once, such as an answer that should clear a blocker, resume preparation, and update provenance, or a cancellation that should close a reminder, a draft, and an interview state. This matches Table~\ref{tab:cases}, where the largest Lookout deficits are in JOB03, COM03, and COM04.
+
+\paragraph{Interpretation and limits.}
+These failures are consistent with how Lookout stores state. Revision checks stop a write from overwriting a newer record, but they do not ensure that related records change together, so keeping drafts, blockers, reminders, and status consistent remains the agent's job, and the number of places to keep consistent grows with the workflow. This is a hypothesis we have not tested, for example by adding an explicit consistency check at workflow close. The review summaries do not establish whether each failing transition passed validation or whether available guidance explicitly prompted reconciliation. We also did not classify baseline failures the same way, so we cannot say which failure types the workspace reduced or introduced, and RQ1 is only partly answered. A symmetric failure taxonomy with per-condition counts remains future work.
+
+\subsection{Worked Example: Remembering an Answer Without Resolving the Task}
+
+JOB03 illustrates why retaining information is insufficient for correct continuation. An application preparation was interrupted by a missing start-date answer. After the user supplied that answer, the expected continuation involved several related outcomes: preserve the answer, resolve the corresponding blocker, resume affected preparation, and leave the application in a state consistent with the remaining work. The final response also needed to describe that saved state accurately.
+
+The qualitative review found that the answer was saved, but the start-date blocker remained and interrupted preparation was unresolved in the reviewed final snapshots. The agent therefore retained the information needed to continue without completing the transition that information enabled. Describing this as a memory failure alone would obscure the distinction between recovering a fact and applying its consequences.
+
+This example separates three levels of correctness. First, \emph{fact correctness} concerns whether the user's answer was preserved accurately. Second, \emph{record correctness} concerns whether each affected record represents its current state. Third, \emph{workflow correctness} concerns whether those records jointly describe coherent progress. A saved answer can satisfy the first level while an obsolete blocker violates the second and unresolved preparation violates the third. Successful persistence is consequently weaker evidence than successful continuation.
+
+The distinction also clarifies the limits of revision checks. Rejecting an obsolete write can prevent the agent from overwriting a newer user correction. It does not, by itself, establish that every consequence of an accepted update has been applied. A blocker and an answer may each be stored successfully while remaining inconsistent with one another. The reported evidence does not establish whether a particular validation rule was absent or whether the agent omitted an available operation; that requires inspection of the corresponding action trace.
+
+A related pattern appears in COM02, where saved instructions could still describe a cancelled interview as scheduled or recommend a withdrawn reply. Cancellation changes the interpretation of earlier records: correspondence remains useful history, but associated preparation and reminders may no longer be actionable. Correct recovery therefore requires identifying which obligations an event supersedes, rather than merely appending the event to persistent memory.
+
+These examples motivate a testable explanation for part of the workspace's overhead. More explicit records may improve inspectability while increasing the number of relationships the agent must reconcile. If so, additional retrieval and read-back operations could consume resources without ensuring a coherent final transition. This interpretation remains provisional: the current analysis has no per-type failure counts, and COM03's contact-selection failures are not explained by the same mechanism.
+
+A focused follow-up would compare the current interface with an interface that exposes a workflow-level reconciliation operation. Both conditions would receive identical facts, records, and procedural guidance. Evaluation would measure unresolved blockers, obsolete obligations, disagreement between final reports and saved state, preservation of unrelated work, and execution overhead. Improvement would support moving some reconciliation responsibility into domain operations. A null result would leave the proposed mechanism unresolved and motivate further analysis of planning and evidence interpretation.
+
+\subsection{Summary of Findings}
+\textbf{RQ1.} An agent with general-purpose tools and persistent files scored highly on most tasks, with its lowest scores on the two tasks built around changing preferences (COM01 and JOB01). \textbf{RQ2.} The dedicated workspace scored higher on three tasks and lower on five, while using 1.2--4.0$\times$ the time and 3.3--11.4$\times$ the tokens. Its failures were mainly incomplete reconciliation of new information into related records, and its gains appeared on tasks where a new fact belongs in one place. We therefore find no general reliability advantage for the workspace in this study. These are descriptive findings for these workflows and one model configuration, not estimates of a general effect.
 
 \section{Discussion}
 
-\subsection{Shared State Requires Correct Interpretation}
-Both conditions can preserve information across sessions. Lookout additionally provides typed operations, domain relationships, guides, and enforced transitions. The agent must still discover the appropriate operation, retrieve relevant state, interpret its semantics, and verify the update. Each step can preserve a useful distinction or introduce another error. Persistent state therefore supports reasoning without ensuring its correctness.
+\subsection{Workspace Value and Design Implications}
 
-In JOB03, one update affects several applications differently while unrelated records must remain unchanged. Correct local writes do not establish that the complete transition was reconciled. Similarly, a saved draft, a user-reported send, and an employer confirmation can all be structurally valid records with different implications. Tool-call acceptance alone would miss errors in those implications. Backend validation and semantic review remain complementary.
+The evaluation does not establish a general reliability advantage for a dedicated workspace. The baseline scored higher on five of eight tasks and used less time and fewer tokens throughout. Lookout's gains on preference retention and application preparation show potential benefits, but they do not establish which component---structured records, tools, or procedural guidance---produced those gains.
 
-\subsection{Implications for Interface Design}
-The agent needs an actionable view of the relevant record, unresolved obligations, status evidence, and intervening user corrections. Repeated broad reads can increase context and tool use without making the critical change apparent. A compact, version-aware view of affected records is a plausible design to test, provided it retains provenance and unresolved outcomes. The present experiments do not establish that this change would improve quality or reduce time.
+The qualitative failure analysis suggests that persistent state creates a reconciliation burden. Saving a user answer does not necessarily clear its blocker, resume preparation, or update related instructions. Revision checks protect individual records from stale writes, but do not ensure consistency across a workflow. A candidate improvement is to validate complete transitions, such as cancellation or preparation completion, rather than relying on repeated record-level checks. This remains an untested design hypothesis.
 
-Ownership, revision, and policy checks should remain strict, while rejection feedback should support recovery. Future evaluations should distinguish unavailable capabilities, malformed requests, stale revisions, and semantically wrong but accepted updates. This would make failures more actionable without relaxing validation or removing verification from the execution budget.
+Shared records also make agent work inspectable. Drafts, approvals, status provenance, and pending decisions can help users verify delegated actions. However, an interface can conceal errors if it presents inconsistent records as complete. Our scripted-user evaluation does not measure error detection, verification effort, trust, or satisfaction, so the workspace's human-facing value remains unmeasured.
 
 \subsection{Scope and Threats to Validity}
-The sample contains eight fixed storylines with one to five graded runs per condition. Repetitions assess variation within those storylines; they do not add independent tasks. COM01 and COM02 cover multiple actions within two seven-session narratives; COM03 and COM04 add discovery and commitment workflows. Checkpoints are not independent samples, and no population-level significance claim is made. Unequal grading coverage can affect comparisons if excluded attempts differ systematically from reviewed ones. Missing Lookout judgments in COM03 and COM04 are neither successes nor failures.
 
-COM03/COM04 include disclosed amendments to deadline enforcement and review procedures. The original COM03 Lookout timeout is retained, and invalid first-pair reviews were not replaced with favorable grades. Shared-host load, unblinded condition labels, and differences in tool granularity limit causal attribution. Lookout also bundles storage, guides, and interface design, so the comparison cannot identify the independent effect of any one component. The baseline's strong scores on several tasks show that persistent files are a substantive comparator, but do not establish that a workspace is unnecessary for every user or host.
+The study tests eight fixed workflows with a small number of trials, one model configuration, and scripted users. Repetitions characterize variation within a storyline rather than independent tasks; checkpoints are likewise dependent. Results are descriptive and do not establish population-level effects.
 
-The sources, forms, and notification streams are controlled fixtures. They support reproducible evidence release and preservation checks, but do not establish live employer integration, open-web recall, or submission reliability. Scripted user answers do not measure human cognitive effort, satisfaction, or willingness to delegate. The study also does not measure hiring outcomes. Longer execution time is a system cost; its value to a user would depend on benefits that require a separate deployment or user study. These limits bound the findings to the tested agent configurations, workflows, and captured artifacts.
+Fresh contexts and staged updates approximate cross-session continuity, but not the duration, scale, or uncertainty of a real job search. The study does not test whether persistent files degrade as months of records accumulate, whether autonomous scheduling reduces user effort, or whether either condition improves interviews or offers.
+
+Lookout bundles storage, tools, and guidance, preventing component-level attribution. Shared-host contention and differences in tool granularity also complicate resource comparisons. Failure analysis uses Lookout review summaries and final snapshots without equivalent baseline classification or per-type counts, so proposed mechanisms remain hypotheses.
 
 \section{Conclusion}
-Lookout implements a shared workspace in which users and personal agents maintain recruiting state through authenticated, validated operations. Across eight tasks, it improves quality on job selection, application preparation, and networking continuity, while scoring lower on five other workflows and taking longer throughout. The evidence supports a conditional role for domain workspaces rather than a general reliability advantage over persistent files. Future work should reduce the cost of retrieving and reconciling current state and test whether those changes preserve semantic correctness. Progress should be demonstrated through complete workflow outcomes, with checkpoint diagnostics and execution costs reported alongside them.
+We asked whether personal agents need a dedicated workspace to manage long-running job-search work reliably. These eight controlled workflows did not establish a general reliability advantage for the workspace. An agent with general-purpose tools and persistent files was often as reliable as, and cheaper than, the same agent with Lookout. The workspace helped where a changing preference had to be retained and hurt where one event had to be reconciled across several records, and it cost more time and tokens throughout. The study does not reflect the scale, duration, or stakes of real career progress, and it does not evaluate whether users can verify an agent's work, which is the workspace's main purpose. Future work should test long horizons with larger accumulated state, move reconciliation into the interface without adding overhead, and evaluate human verification directly, with complete workflow outcomes reported alongside checkpoint diagnostics and cost.
 
 \begin{thebibliography}{99}
 \bibitem{swebench} C. E. Jimenez et al., ``SWE-bench: Can Language Models Resolve Real-World GitHub Issues?'' ICLR, 2024. \url{https://arxiv.org/abs/2310.06770}.
