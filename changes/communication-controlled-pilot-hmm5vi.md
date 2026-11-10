@@ -246,3 +246,44 @@
   A future source-only containment pass should propagate unconfirmed cleanup and
   rebind/reverify prospective freezes before any later experiment. No completion
   or product-performance claim follows from these preflight results.
+
+
+## Participant cleanup propagation and goal closeout
+
+- Reused shared Session.close for every JOB boundary. Exceptions/unconfirmed
+  removal retain cleanup receipts and the original host-control failure marker.
+  Session transitions return a failure before constructing the next Session;
+  terminal confirmation returns it before any native/file capture. Host shutdown
+  records each outstanding cleanup. No participant rescue/retry was added.
+- JOB03/JOB04 coordinators propagate terminal cleanup failure into condition status
+  and pair-halted evidence, stop before the peer and forbid grading handoff. Tests
+  cover failure after all turns complete as well as partial/transition paths.
+- Fresh source-bound08 roots passed20 JOB03 and17 JOB04 actual no-inference gates.
+  Gate/runtime digests, eight/seven SQL/Edge/Node date stages and both Session
+  removals per case were checked; all exact owned backend services are stopped.
+  Four older02 empty networks were released only after exact-ID/label/stopped
+  checks, with release receipts and all evidence/containers/volumes retained.
+- Focused checks pass:44 Node,27 JOB Python,eight shared runtime,six shared transport
+  and catalog158; diff checks pass. Shared runtime is unchanged in this pass.
+  Full suite was previously run with one Action Board SQL failure reproduced on
+  unchanged local main; that unrelated limitation is retained, not hidden.
+- Requirement audit: (1) actual historical traces establish model-endpoint DNS
+  failure and wall overruns, plus a legacy host-reader containment defect; absent
+  monotonic evidence prevents participant-only attribution. (2) native scopes,
+  discovery/startup, canonical context, continuity boundaries, reminders/previews,
+  timing/usage and all native clocks were audited and prospectively checked.
+  Actual native operations remain product costs; scripted prompts remain distinct
+  from unobserved human effort. (3) confirmed harness fixes are prospective;
+  historical freezes/timeouts/partials remain intact. (4) focused checks and fresh
+  actual no-inference gates pass; no participant experiment was launched.
+  (5) independent grader results and approved grading-only Terra6.1 runtime are
+  retained separately; all134 evidence hashes and reviewer assignments revalidate.
+  (6) documentation is current for this repair and verified changes are locally
+  committed/landed; no push/publication or unrelated edits are included.
+- Honest limits remain: JOB03 historical strict quality fails in both conditions;
+  JOB04 Lookout is partial with four unreached checkpoints. These confounded pilots
+  support no product winner. Native fixture Auth/Storage is a SQL bootstrap with
+  exact local PDFs, not real hosted Auth/Storage verification. Actual human effort,
+  unpriced cost, shared-host load and historical timeout causality remain limited.
+  Later participant experiments need separate authorization and a current freeze;
+  this repair/audit does not invent a replacement experiment series.

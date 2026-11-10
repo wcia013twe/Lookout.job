@@ -37,11 +37,20 @@ def native_initialize(root):
  if reply.get('error'):raise ValueError('Native bootstrap unavailable')
  return reply['result']
 
-def preflight_cleanup(session,root,condition,out):
- cleanup=session.close();write(out/(condition+'-cleanup.json'),cleanup)
+def session_cleanup(session,root,condition,phase,receipt):
+ # Shared Session.close owns bounded container/client teardown. Preserve its
+ # outcome across every JOB boundary; local client exit is not container death.
+ try:cleanup=session.close()
+ except Exception as error:cleanup={'containerRemoved':False,'errorType':type(error).__name__}
+ write(receipt,cleanup)
  if cleanup.get('containerRemoved') is not True:
-  write(root/'host-control-failure.json',{'condition':condition,'phase':'no_inference_preflight','cleanup':cleanup,'participantExecuted':False})
-  raise RuntimeError('No-inference container cleanup unconfirmed; launch blocked')
+  marker=root/'host-control-failure.json'
+  if not marker.exists():write(marker,{'condition':condition,'phase':phase,'cleanup':cleanup,'participantExecuted':False,'participantRetry':False})
+ return cleanup
+
+def preflight_cleanup(session,root,condition,out):
+ cleanup=session_cleanup(session,root,condition,'no_inference_preflight',out/(condition+'-cleanup.json'))
+ if cleanup.get('containerRemoved') is not True:raise RuntimeError('No-inference container cleanup unconfirmed; launch blocked')
  return cleanup
 
 def fixture_reference_contract(case,scenario):
@@ -137,6 +146,13 @@ class Host:
    for name,h in descriptor['sourceFiles'].items():
     if digest(REPO/name)!=h:raise ValueError('Native backend source changed')
   if runtime.command(['docker','image','inspect',runtime.IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()!=f['imageId']:raise ValueError('Pinned image changed')
+ def release_session(self,c,phase):
+  existing=self.sessions.pop(c,None)
+  if existing is None:return {'containerRemoved':True,'sessionAlreadyAbsent':True}
+  receipts=self.root/'receipts';receipts.mkdir(exist_ok=True)
+  return session_cleanup(existing[1],self.root,c,phase,receipts/('session-cleanup-'+c+'-'+str(time.time_ns())+'.json'))
+ def cleanup_failure(self,cleanup):
+  return {'status':'execution_failed','hostControlFailed':True,'participantExecuted':False,'synthetic':False,'executionSeconds':None,'timing':{'valid':False,'invalidReasons':['container_cleanup_unconfirmed']},'termination':cleanup}
  def service(self,c):return Services(self.root/'host-runs'/c/'services.sqlite',read(self.root/'host-initial.json'))
  def snapshot(self,c):
   return {'native':account(self.root,'snapshot') if c=='lookout' else None,'files':collect_files(self.root/'host-runs'/c/'output'),'services':self.service(c).snapshot() if self.case=='JOB03' else None}
@@ -163,7 +179,9 @@ class Host:
    if self.case=='JOB03':self.service(c).seed(read(self.root/'suite/fixture.json')['jobs'])
    write(run/'sources.json',{'releasedStageIds':[],'events':[]})
    return {'status':'ready','initial':self.snapshot(c)}
-  if op in ['baseline.final_files','native.readonly_confirmation'] and c in self.sessions:self.sessions.pop(c)[1].close()
+  if op in ['baseline.final_files','native.readonly_confirmation']:
+   cleanup=self.release_session(c,'terminal_confirmation')
+   if cleanup.get('containerRemoved') is not True:return self.cleanup_failure(cleanup)
   if op in ['snapshot','baseline.final_files']:return self.snapshot(c)
   if op=='native.readonly_confirmation':
    calls=[{'name':'read_personal_context','value':native(self.root,'read_personal_context',read_only=True)},{'name':'list_artifacts','value':native(self.root,'list_artifacts',read_only=True)}]
@@ -181,7 +199,9 @@ class Host:
   # Only released evidence enters /inputs; no scenario, grader, host config or future data.
   if self.case=='JOB04':write(inputs/'role-sources.json',packet['sources'])
   session_id=packet['session'];existing=self.sessions.get(c);resume=existing is not None and existing[0]==session_id
-  if existing and not resume:existing[1].close();del self.sessions[c]
+  if existing and not resume:
+   cleanup=self.release_session(c,'session_transition')
+   if cleanup.get('containerRemoved') is not True:return self.cleanup_failure(cleanup)
   setup_started=time.monotonic()
   if not resume:self.sessions[c]=(session_id,runtime.Session(sd,inputs,out,c,session_id))
   setup_seconds=time.monotonic()-setup_started
@@ -293,7 +313,7 @@ class Host:
   if not reference['aligned']:gates[-1]['status']='blocked'
   return {'participantExecuted':False,'ready':alignment['aligned'] and reference['aligned'],'gates':gates,'model':'gpt-5.6-terra','reasoning':'medium','imageId':read(root/'host-freeze.json')['imageId'],'limitations':['No inference/model availability verified until participant launch.','Fictional local services do not establish real employer access or product scheduling.']}
  def close(self):
-  for _,session in self.sessions.values():session.close()
+  for c in list(self.sessions):self.release_session(c,'host_shutdown')
   fcntl.flock(self.lock,fcntl.LOCK_UN);self.lock.close()
   if self.backend_lock:fcntl.flock(self.backend_lock,fcntl.LOCK_UN);self.backend_lock.close()
 

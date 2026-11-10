@@ -104,3 +104,11 @@ test('unconfirmed container termination halts pair before other condition or gra
  const r=read(path.join(root,'runs/baseline/run.json'));assert.equal(r.checkpoints[0].executionSeconds,null);assert.equal(r.checkpoints[0].executionWallSeconds,11);assert.equal(r.hostControlFailed,true);
  assert.equal(read(path.join(root,'runs/baseline/stage-1/after.json')).reason,'container_stop_unconfirmed');
 });
+
+test('terminal cleanup failure halts JOB04 after a completed condition before peer and grading',()=>{
+ const {root,command}=setup();
+ fs.writeFileSync(command[1],`import fs from 'node:fs';import{createHash}from'node:crypto';const q=JSON.parse(fs.readFileSync(0,'utf8'));let r={requestHash:createHash('sha256').update(JSON.stringify(q)).digest('hex'),receiptId:'fixture',ownerId:q.ownerId,capturedAt:'2026-11-09T15:00:00Z'};if(q.operation==='participant.turn')Object.assign(r,{participantExecuted:true,synthetic:false,status:'completed',session:q.session,resume:q.resume,executionSeconds:1,isolation:{futureEvidenceVisible:false,graderVisible:false,credentialsVisible:false},trace:[{}],toolTrace:[],files:{},interactions:[]});else if(q.operation==='baseline.final_files')Object.assign(r,{status:'execution_failed',hostControlFailed:true,participantExecuted:false});else r.status='confirmed';console.log(JSON.stringify(r));`);
+ const receipt=path.join(root,'receipts/fixture.json');assert.equal(preflight(root,command,receipt,service).ready,true);
+ const halted=run(root,command,receipt,'terminal-cleanup');assert.equal(halted.gradingBlocked,true);assert.equal(fs.existsSync(path.join(root,'runs/lookout')),false);assert.equal(fs.existsSync(path.join(root,'grading/handoff.json')),false);
+ const r=read(path.join(root,'runs/baseline/run.json'));assert.equal(r.checkpoints.length,spec.stages.length);assert.ok(r.checkpoints.every(c=>c.status==='completed'));assert.equal(r.hostControlFailed,true);assert.equal(r.status,'harness_failed');assert.equal(read(path.join(root,'runs/baseline/terminal-confirmation.json')).hostControlFailed,true);
+});

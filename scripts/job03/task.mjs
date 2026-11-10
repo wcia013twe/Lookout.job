@@ -122,12 +122,14 @@ export function run(root,command,preflightFile,pairId){
   r.endedAt=new Date().toISOString();r.cost=costForRun(root,dir,r);write(path.join(dir,'cost.json'),r.cost);write(path.join(dir,'run.json'),r);
   if(r.hostControlFailed){const halted={status:'host_control_failed',condition,unattemptedConditions:conditions.slice(conditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
   // These read-only terminal receipts are outside measured execution and never affect the other condition.
-  try{write(path.join(dir,'terminal-confirmation.json'),capture(root,command,condition,{id:'terminal'},condition==='lookout'?'native.readonly_confirmation':'baseline.final_files'));}catch(e){write(path.join(dir,'terminal-confirmation.json'),{status:'failed',error:e.message});}
+  try{const confirmation=capture(root,command,condition,{id:'terminal'},condition==='lookout'?'native.readonly_confirmation':'baseline.final_files');write(path.join(dir,'terminal-confirmation.json'),confirmation);if(confirmation.hostControlFailed){r.hostControlFailed=true;r.status='harness_failed';}}catch(e){write(path.join(dir,'terminal-confirmation.json'),{status:'failed',error:e.message});}
+  if(r.hostControlFailed){fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r,null,2)+'\n',{mode:0o600});const halted={status:'host_control_failed',condition,unattemptedConditions:conditions.slice(conditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
   const files={};const walk=p=>{for(const e of fs.readdirSync(p,{withFileTypes:true})){const q=path.join(p,e.name);if(e.isDirectory())walk(q);else files[path.relative(dir,q)]=hash(fs.readFileSync(q,'utf8'));}};walk(dir);write(path.join(dir,'evidence-hashes.json'),files);
  }
  return handoff(root);
 }
 export function handoff(root){
+ check(!fs.existsSync(path.join(root,'pair-halted.json')),'Unconfirmed containment blocks grading handoff');
  const f=frozen(root),spec=read(path.join(root,'suite/scenario.json'));const runs=conditions.map(c=>{const dir=path.join(root,'runs',c),run=read(path.join(dir,'run.json'));check(run.condition===c&&run.version===spec.version&&['completed','timed_out','execution_failed','harness_failed'].includes(run.status),'Terminal pair required');return {condition:c,runHash:hash(run),manifest:read(path.join(dir,'evidence-hashes.json'))};});check(read(path.join(root,'runs/baseline/run.json')).pairId===read(path.join(root,'runs/lookout/run.json')).pairId,'Matching pair required');
  const h={version:spec.version,freezeHash:hash(f),scenarioHash:hash(spec),runs,dispatch:'Launch an independent fresh grader with fork_turns:none after both attempts. Exclude implementers, coordinators, operators and participants. No credentials. Shell does not launch agents.'};fs.mkdirSync(path.join(root,'grading'));write(path.join(root,'grading/handoff.json'),h);return h;
 }

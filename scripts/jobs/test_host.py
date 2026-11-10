@@ -50,6 +50,32 @@ class ServicesTest(unittest.TestCase):
    (root/'host-control-failure.json').unlink();session.close.return_value={'containerRemoved':True}
    self.assertTrue(host.preflight_cleanup(session,root,'lookout',out)['containerRemoved']);self.assertFalse((root/'host-control-failure.json').exists())
 
+ def test_terminal_cleanup_failure_skips_native_or_file_confirmation(self):
+  from unittest.mock import MagicMock,patch
+  import host
+  for condition,operation in [('baseline','baseline.final_files'),('lookout','native.readonly_confirmation')]:
+   with tempfile.TemporaryDirectory() as tmp:
+    h=host.Host.__new__(host.Host);h.root=Path(tmp);h.case='JOB04';h.owner='fictional';h.cfg={};h.verify=MagicMock();h.snapshot=MagicMock()
+    session=MagicMock();session.close.return_value={'containerRemoved':False};h.sessions={condition:('s1',session)}
+    with patch.object(host,'account') as account:
+     result=h.dispatch({'benchmarkTaskId':'JOB04','ownerId':'fictional','condition':condition,'operation':operation})
+    self.assertTrue(result['hostControlFailed']);self.assertFalse(result['participantExecuted']);h.snapshot.assert_not_called();account.assert_not_called()
+    self.assertNotIn(condition,h.sessions);self.assertEqual(json.loads((h.root/'host-control-failure.json').read_text())['phase'],'terminal_confirmation')
+    with self.assertRaises(ValueError):h.dispatch({'benchmarkTaskId':'JOB04','ownerId':'fictional','condition':condition,'operation':'condition.setup'})
+
+ def test_transition_cleanup_failure_never_constructs_next_session(self):
+  from unittest.mock import MagicMock,patch
+  import host
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);h=host.Host.__new__(host.Host);h.root=root;h.case='JOB04';h.owner='fictional';h.cfg={};h.verify=MagicMock();h.stage=0
+   session=MagicMock();session.close.return_value={'containerRemoved':False};h.sessions={'baseline':('s1',session)}
+   (root/'suite').mkdir();(root/'suite/scenario.json').write_text('{}');(root/'background').mkdir();(root/'background/resume.pdf').write_bytes(b'fixture')
+   run=root/'host-runs/baseline';(run/'output').mkdir(parents=True);(run/'live-inputs').mkdir();(run/'sources.json').write_text('{"releasedStageIds":[],"events":[]}')
+   req={'benchmarkTaskId':'JOB04','ownerId':'fictional','condition':'baseline','operation':'participant.turn','packet':{'stage':'next','session':'s2','events':[],'sources':{}},'budgetSeconds':1}
+   with patch.object(host,'account',return_value={'capturedAt':'2026-11-09T14:00:00Z'}),patch.object(host,'clock_alignment',return_value={'aligned':True}),patch.object(host.runtime,'Session') as constructor:
+    result=h.dispatch(req)
+   constructor.assert_not_called();self.assertTrue(result['hostControlFailed']);self.assertIsNone(result['executionSeconds']);self.assertEqual(json.loads((root/'host-control-failure.json').read_text())['phase'],'session_transition')
+
  def test_native_reply_is_not_reformatted_or_pruned(self):
   source={'instructions':['Keep native behavior.'],'tools':[{'name':'read_guide','inputSchema':{}},{'name':'forbidden','inputSchema':{}}]}
   result=clean(source,{'read_guide'});self.assertEqual(result['instructions'],source['instructions']);self.assertEqual(result,source);self.assertEqual(clean('{"name":"Résumé"}',{'read_guide'}),'{"name":"Résumé"}')

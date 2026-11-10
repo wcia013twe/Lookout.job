@@ -155,12 +155,14 @@ export function run(root,command,preflightFile,pairId){
   const cost=spawnSync('python3',['-B','-c',"import sys,json;sys.path.insert(0,sys.argv[1]);import cost;print(json.dumps(cost.summarize(sys.argv[2],sys.argv[3])))",path.join(repo,'scripts/n01'),dir,path.join(root,'suite/cost-policy.json')],{encoding:'utf8',timeout:15000});
   if(cost.status!==0){r.status='harness_failed';r.cost=null;r.costError='Cost summarization failed; participant evidence retained';}else{r.cost=JSON.parse(cost.stdout);costValues(r.cost);write(path.join(dir,'cost.json'),r.cost);}saveProgress();
   if(r.hostControlFailed){const halted={status:'host_control_failed',condition,unattemptedConditions:conditions.slice(conditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
-  try{write(path.join(dir,'terminal-confirmation.json'),capture(root,command,condition,condition==='lookout'?'native.readonly_confirmation':'baseline.final_files'));}catch(e){write(path.join(dir,'terminal-confirmation.json'),{status:'failed',error:e.message});}
+  try{const confirmation=capture(root,command,condition,condition==='lookout'?'native.readonly_confirmation':'baseline.final_files');write(path.join(dir,'terminal-confirmation.json'),confirmation);if(confirmation.hostControlFailed){r.hostControlFailed=true;r.status='harness_failed';}}catch(e){write(path.join(dir,'terminal-confirmation.json'),{status:'failed',error:e.message});}
+  if(r.hostControlFailed){fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r,null,2)+'\n',{mode:0o600});const halted={status:'host_control_failed',condition,unattemptedConditions:conditions.slice(conditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
   write(path.join(dir,'evidence-hashes.json'),manifest(dir));
  }
  return handoff(root);
 }
 export function handoff(root){
+ check(!fs.existsSync(path.join(root,'pair-halted.json')),'Unconfirmed containment blocks grading handoff');
  const f=frozen(root),spec=read(path.join(root,'suite/scenario.json')),runs=conditions.map(condition=>{const dir=path.join(root,'runs',condition),r=read(path.join(dir,'run.json'));check(r.condition===condition&&r.version===spec.version&&terminal.includes(r.status),'Terminal condition attempts required');const files=read(path.join(dir,'evidence-hashes.json'));verifiedManifest(dir,files);return {condition,pairId:r.pairId,manifest:files,runHash:hash(r)};});
  check(runs[0].pairId===runs[1].pairId,'Matching pair required');
  const h={version:spec.version,freezeHash:hash(f),runs,dispatch:'Coordinator must spawn a fresh final grader with fork_turns:none. Exclude implementers/coordinators/operators/participants. Shell never launches the grader.',evidence:['suite/scenario.json','suite/reference.json','suite/evidence.json','suite/grader-instructions.md','candidate/profile.md','candidate/resume.pdf','runs/baseline','runs/lookout'],neverShare:['configuration.json','credentials','adapter runtime files']};

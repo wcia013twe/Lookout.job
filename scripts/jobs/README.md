@@ -216,10 +216,31 @@ full context are verified. Session cleanup and owned backend stopped state were
 checked; historical failures and all database volumes remain preserved.
 
 These receipts do not authorize participant experiments or establish quality,
-effort, time or cost outcomes. The next source audit must propagate Session.close
-failures through participant session transitions and terminal confirmation, where
-cleanup receipts are still discarded. Any changed runtime requires a fresh freeze
-and actual verification before later execution. Retained unused fixture networks
+effort, time or cost outcomes. The subsequent cleanup-propagation repair below
+supersedes the participant-boundary limitation identified in this recovery pass.
+Any changed runtime requires a fresh freeze and actual verification before later
+execution. Retained unused fixture networks
 can exhaust Docker address pools: release only root-labeled, empty networks after
 verifying all exact owned containers stopped, and save release evidence; preserve
 historical files/containers/volumes and unrelated sessions.
+
+
+## Cleanup propagation closeout (2026-11-09)
+
+Every JOB boundary now retains the shared Session.close result: preflight,
+participant session transition, terminal confirmation and host shutdown. Exceptions
+or unconfirmed container removal persist individual receipts and the first
+host-control failure marker. A transition cannot start another session, and
+terminal confirmation cannot read state, launch the peer condition or hand off to
+grading after unconfirmed cleanup. Both coordinators retain the failed terminal
+receipt and update condition status before halting. No participant is rescued or
+retried; local process exit still does not prove remote container termination.
+
+Fresh source-bound no-inference roots under job-native-clock-v3-preflights-08
+passed JOB03 20/20 and JOB04 17/17 gates. All gate/runtime hashes, native date
+readbacks, container cleanup and owned backend stopped states were independently
+checked. Failure-path host dispatch and scripted coordinator tests cover both
+conditions' terminal boundaries and a session transition without inference.
+Historical freezes, independent grades and partial attempts remain intact.
+Future participant execution requires separate authorization; this closeout adds
+no experiment series or quality/performance result.

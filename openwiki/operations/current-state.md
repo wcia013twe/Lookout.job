@@ -1367,3 +1367,18 @@ or performance. See the shared JOB host and feature note for exact limits.
 Coordinated Docker recovery is complete. PILOT08's exact container is independently confirmed exited (255), with a separate shutdown receipt; its original failed evidence remains unchanged. A fresh fictional owner and `com3-native-v7-readiness` freeze at source `53fbef83` passed actual no-inference preflight: both subscription containers, native startup/discovery/wrapper isolation, complete rolled-back reset, contact, exact seed, audit and timeline write/readback probes. Frozen source integrity was rechecked. Six Node COM03/transport checks (including sixteen Python COM03 checks) and eight shared-runtime tests pass. No active career-session containers remained when the Docker verification slot was released to JOB03/04.
 
 No new participant pair or product change was authorized in this bounded pass. COM03 still needs a prospective paired trial and independent review; COM04/PILOT06 stays cleared. The subsequently landed shared bridge teardown repair (`4cf6e44b`, implementation `ec91e19c`) does not rewrite this freeze or establish the cause of Docker's outage. Future execution preparation must pull and re-freeze that helper; the completed `53fbef83` preflight remains historical readiness evidence.
+
+
+### JOB03/JOB04 cleanup propagation and repair closeout
+
+JOB now retains shared Session.close outcomes across session transitions, terminal
+confirmation and host shutdown, as well as preflight. Unconfirmed removal or
+cleanup exceptions preserve receipts and halt further participants/native terminal
+capture/grading. Host-dispatch and scripted coordinator failure tests pass.
+Fresh final-source root job-native-clock-v3-preflights-08 passed JOB03 20/20 and
+JOB04 17/17 actual no-inference gates. Gate/runtime hashes, all scripted three-clock
+readbacks and owned service shutdown were verified. All 134 historical evidence
+files and independent-review assignments remain intact. No inference was run.
+This closes the previously listed propagation gap; historical timing/transport
+confounds, unpriced costs and diagnostic-only grading limits remain documented.
+No new participant experiment or product-performance conclusion is implied.

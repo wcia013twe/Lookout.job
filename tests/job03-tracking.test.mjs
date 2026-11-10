@@ -69,6 +69,8 @@ test('partial checkpoint coverage cannot become strict pass or report complete t
 function lateFailureAdapter(t,mode){
  const dir=workspace(t),script=path.join(dir,'late.mjs'),state=path.join(dir,'counter.json');
  fs.writeFileSync(script,`import fs from 'node:fs';import crypto from 'node:crypto';const q=JSON.parse(fs.readFileSync(0,'utf8')),mode=${JSON.stringify(mode)},state=${JSON.stringify(state)};let n=fs.existsSync(state)?JSON.parse(fs.readFileSync(state)):0;const r={requestHash:crypto.createHash('sha256').update(JSON.stringify(q)).digest('hex'),ownerId:q.ownerId,receiptId:'injected',capturedAt:'2026-11-16T14:00:00Z',actual:true,synthetic:false,benchmarkTaskId:'JOB03',dedicated:true,capabilities:${JSON.stringify(['native.write_readback','native.restore','native.readonly_confirmation','baseline.files','participant.sessions','actor.controlled','browser.equal','application.interruption','reminder.schedule','reminder.read','reminder.cancel','reminder.delivery','reminder.test_clock'])},reminderServiceId:'injected',baselineReminderServiceId:'injected',lookoutReminderServiceId:'injected'};
+ if(q.operation==='participant.turn'&&mode==='terminal-uncontained')Object.assign(r,{status:'completed',interactions:[],executionSeconds:1});
+ if(q.operation==='baseline.final_files'&&mode==='terminal-uncontained')Object.assign(r,{status:'execution_failed',hostControlFailed:true,participantExecuted:false});
  if(q.operation==='participant.turn'&&mode==='uncontained')Object.assign(r,{status:'execution_failed',hostControlFailed:true,timing:{valid:false,wallSeconds:11},executionSeconds:null});
  if(q.operation==='native.probe')Object.assign(r,{writerReadback:true,readOnlyConfirmed:true,restored:true,unrelatedPreserved:true,allowedTransitions:true,interruptionRetained:true,resumedWithoutDuplicate:true,unsubmitted:true});
  if(q.operation==='reminder.schedule')Object.assign(r,{reminderId:q.key.endsWith('-cancel')?'cancel':'due',state:'scheduled',dueAt:q.dueAt,timeZone:q.timeZone,duplicate:true});
@@ -124,4 +126,11 @@ test('unconfirmed JOB03 container stop preserves unknown timing and halts pair',
  const halted=run(root,command,receipt,'uncontained-fixture');assert.equal(halted.gradingBlocked,true);assert.deepEqual(halted.unattemptedConditions,['lookout']);assert.equal(fs.existsSync(path.join(root,'runs/lookout')),false);assert.equal(fs.existsSync(path.join(root,'grading/handoff.json')),false);
  const r=read(path.join(root,'runs/baseline/run.json'));assert.equal(r.checkpoints[0].executionSeconds,null);assert.equal(r.checkpoints[0].executionWallSeconds,11);assert.equal(r.hostControlFailed,true);
  assert.equal(read(path.join(root,'runs/baseline/initial/after.json')).reason,'container_stop_unconfirmed');
+});
+
+test('terminal cleanup failure halts JOB03 before peer and grading',async t=>{
+ const root=setup(t),command=lateFailureAdapter(t,'terminal-uncontained'),receipt=path.join(root,'preflight.json');assert.equal(preflight(root,command,receipt).ready,true);
+ const halted=run(root,command,receipt,'terminal-cleanup');assert.equal(halted.gradingBlocked,true);assert.equal(fs.existsSync(path.join(root,'runs/lookout')),false);assert.equal(fs.existsSync(path.join(root,'grading/handoff.json')),false);
+ assert.equal(read(path.join(root,'runs/baseline/run.json')).hostControlFailed,true);assert.equal(read(path.join(root,'runs/baseline/terminal-confirmation.json')).hostControlFailed,true);
+ const {handoff}=await import('../scripts/job03/task.mjs');assert.throws(()=>handoff(root),/containment/);
 });
