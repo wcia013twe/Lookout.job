@@ -34,10 +34,14 @@ would solve only the Auth endpoint boundary, not database or Lookout permissions
 
 This is a conditional implementation design, not a proven supported integration:
 
-1. Use Supabase authorization code with PKCE S256 and a dedicated static public
-   client, with the exact callback copied from the host's MCP management UI.
-   Do not assume dynamic registration or invent a callback. Keep the provider's
-   code exchange, refresh rotation and revocation implementation.
+1. Use Supabase authorization code with PKCE S256 and public-client token
+   authentication (`none`). Prefer CIMD only if provider support is established;
+   obtain the exact client metadata URL and callback from the host management UI.
+   Otherwise use one approved predefined public client. The host also supports
+   DCR, but provider support is not established. Never guess identifiers, invent
+   callbacks or assume dynamic registration. Preserve the OAuth resource parameter
+   and matching token audience throughout authorization, exchange and refresh.
+   Keep the provider's code exchange, refresh rotation and revocation implementation.
 2. A human-only consent page loads provider authorization details, displays the
    host/client, and binds approval to one owned existing Lookout connection and
    its current scopes/expiry. It must not accept an owner or connection from the
@@ -103,8 +107,9 @@ After review and offline isolation tests, request action-time approval naming:
   consent-mapping changes, and the resource URL `https://34-148-155-27.sslip.io/mcp`.
 - Enable the currently disabled OAuth server and set its reviewed consent path,
   without changing ordinary sign-in behavior.
-- One static public PKCE client, its exact verified host callback URI and permitted
-  redirect list; no shared secret is expected for a public client.
+- The verified CIMD metadata URL if supported, or one predefined public PKCE
+  client otherwise; its exact verified host callback URI and permitted redirect
+  list. No shared secret is expected for a public client.
 - One named owned Lookout connection, its displayed scopes and maximum lifetime,
   and the host's persistent access/refresh grant. No broader permissions implied.
 
