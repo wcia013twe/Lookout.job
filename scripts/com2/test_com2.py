@@ -28,6 +28,46 @@ def fixture(run,condition='lookout',status='completed'):
  for key,x in review['adherence'].items():x.update(outcomeVerified=True,reason='Synthetic fixture only',evidence=[f"stage-{SPEC['adherence'][key]['stage']}/after-state.json"])
  return review
 class Tests(unittest.TestCase):
+ def test_run_does_not_seal_unconfirmed_participant(self):
+  from unittest.mock import patch,Mock
+  from contextlib import ExitStack
+  import capture
+  for turn_failed,removed in [(True,True),(False,False)]:
+   with self.subTest(turn_failed=turn_failed,removed=removed),tempfile.TemporaryDirectory() as td,ExitStack() as stack:
+    root=Path(td);suite=root/'suite';suite.mkdir();(root/'background').mkdir();(root/'background/resume.pdf').write_bytes(b'fictional')
+    save(suite/'scenario.json',SPEC);(suite/'contract.md').write_text('fictional');save(root/'grader.private.json',{'userId':'fictional'})
+    stage={'_index':1,'_session':'one','seconds':10,'id':'one','kind':'onboarding','minute':0}
+    session=Mock();session.turn.return_value={'hostControlFailed':turn_failed,'status':'artifact_failed' if turn_failed else 'completed'};session.close.return_value={'containerRemoved':removed}
+    for key,val in {'R':root,'S':suite,'RUNS':root/'runs','CONFIG':{'version':SPEC['version']},'TASK':'COM2'}.items():stack.enter_context(patch.object(runner,key,val))
+    for key,val in {'ensure_awake':{},'verify':('hash','image'),'packets':[stage],'released_sources':{},'command':None,'validate_initial':None,'Session':session}.items():stack.enter_context(patch.object(runner,key,return_value=val))
+    snapshots=stack.enter_context(patch.object(runner,'snapshot'));terminal=stack.enter_context(patch.object(capture,'capture'));stack.enter_context(patch.object(runner.cost,'persist',return_value={}))
+    run=runner.run('baseline',1,'fictional',True);meta=json.loads((run/'run.json').read_text())
+    self.assertTrue(meta['hostControlFailed']);self.assertFalse(meta['participantTerminationConfirmed']);self.assertNotIn('participantEndedAt',meta)
+    self.assertFalse(meta['finalStateCaptured']);terminal.assert_not_called()
+    self.assertNotIn('final-state.json',[call.args[0].name for call in snapshots.call_args_list])
+
+ def test_pair_halts_without_grading_after_unconfirmed_termination(self):
+  import runpy,sys
+  from unittest.mock import patch
+  from contextlib import nullcontext
+  from types import SimpleNamespace
+  from unittest.mock import Mock
+  with tempfile.TemporaryDirectory() as td:
+   root=Path(td);runs=root/'runs';runs.mkdir()
+   def write(path,value):path.write_text(json.dumps(value))
+   def failed_run(*args):
+    run=runs/'fictional-baseline';run.mkdir();write(run/'run.json',{'hostControlFailed':True,'status':'artifact_failed'});return run
+   fake_runner=SimpleNamespace(RUNS=runs,S=root,configure=Mock(),run=Mock(side_effect=failed_run),write=write)
+   write(root/'scenario.json',SPEC)
+   fake_grade=SimpleNamespace(grade=Mock());fake_summary=SimpleNamespace(build=Mock())
+   args=['orchestrate.py','--task-dir',str(root),'--pair-id','FICTIONAL','--repeat','1','--pilot','--langfuse-env',str(root/'absent.env'),'--receipt-dir',str(root/'receipts')]
+   with patch('design.serial_pair',return_value=nullcontext()),patch.dict(sys.modules,{'runner':fake_runner,'grade':fake_grade,'summary':fake_summary}),patch.object(sys,'argv',args),self.assertRaises(SystemExit) as stopped:
+    runpy.run_path(str(ROOT/'scripts/com2/orchestrate.py'),run_name='__main__')
+   self.assertEqual(stopped.exception.code,1);fake_runner.run.assert_called_once_with('baseline',1,'FICTIONAL',True)
+   fake_grade.grade.assert_not_called();fake_summary.build.assert_not_called()
+   self.assertTrue(json.loads((root/'pair-halted.json').read_text())['remainingConditionNotStarted'])
+   self.assertFalse(json.loads((runs/'fictional-baseline/grading-invalid.json').read_text())['scored'])
+
  def setUp(self):self.t=tempfile.TemporaryDirectory();self.run=Path(self.t.name)/'fictional';self.review=fixture(self.run)
  def tearDown(self):self.t.cleanup()
  def test_terminal_capture_reads_application_timeline_without_writes(self):

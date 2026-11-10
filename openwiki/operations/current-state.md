@@ -1332,3 +1332,7 @@ COM01/COM02 prospective runner guards now match COM1-stream-v9 and COM2-stream-v
 configuration regression checks exercise current and stale versions without Docker
 or inference. This corrects setup compatibility only; live preflight and the revised
 four-pair study remain unverified and unexecuted.
+
+### COM02 prospective containment propagation
+
+COM02 now propagates host-control and container-removal failures through run finalization and pair orchestration. Unconfirmed participants are not assigned an end timestamp, terminal snapshot, grade or export; the remaining condition is halted. Focused mocked checks pass; live containment recovery is not verified or attempted. Historical frozen trials are unchanged.

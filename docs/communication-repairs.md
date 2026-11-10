@@ -103,3 +103,7 @@ groups. Reached failures require cited user impact. New pairs run serially and
 alternate condition order by repeat; the four-pair plan is prospective, not executed.
 Sam's message state is explicit. Future exporters reuse shared paginated score
 verification. Historical PILOT-05 roots and grades are unchanged.
+
+## COM02 prospective containment halt
+
+COM02 propagates unconfirmed container termination and cleanup failure to the pair coordinator. Such runs have no confirmed participant end or sealed terminal capture; grading/export and the remaining condition are skipped. Session-boundary cleanup failure also prevents the next session. Existing frozen pilots are unchanged. Mocked regressions cover turn-level failure, final cleanup failure and pair halt; no live preflight, participant experiment or Docker recovery was performed.

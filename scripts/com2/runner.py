@@ -176,15 +176,20 @@ def run(condition,repeat,pair_id,pilot=False):
    write(sd/'input-hashes.json',file_hashes(inputs));snapshot(sd/'before-state.json')
    resume=stage['_session']==previous_session
    if not resume:
-    if session:session.close()
+    if session:
+     cleanup=session.close()
+     if not cleanup['containerRemoved']:meta['hostControlFailed']=True;raise RuntimeError('Container cleanup unconfirmed; halt pair')
     session=Session(sd,inputs,out,condition,stage['_session'])
    previous_session=stage['_session']
    meta['status']='running';write(run/'run.json',meta)
    record={'stage':i,'eventId':stage['id'],'kind':stage['kind'],'releasedMinute':stage['minute'],'triggerMinute':stage['minute'],'assignedInitiation':stage['kind']=='external','assignedOnboarding':stage['kind']=='onboarding','necessaryUserUpdate':stage['kind']=='user_update'}
    write(sd/'delivery.json',record)
    sm=session.turn(sd,stage,resume=resume);meta['stages'].append(sm)
+   if sm.get('hostControlFailed'):meta['hostControlFailed']=True;meta['status']='artifact_failed'
    write(run/'run.json',meta)
    hashes=file_hashes(out);shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',hashes)
+   if sm.get('hostControlFailed'):
+    meta['hostControlFailed']=True;meta['status']='artifact_failed';break
    snapshot(sd/'after-state.json')
    write(run/'run.json',meta)
    print(json.dumps({'run':str(run),'stage':i,'status':sm['status']}),flush=True)
@@ -194,16 +199,23 @@ def run(condition,repeat,pair_id,pilot=False):
  except Exception as e:
   meta.update(status='artifact_failed' if meta['stages'] else 'setup_failed',errorType=type(e).__name__,error=str(e)[:400]);raise
  finally:
-  if session:session.close()
-  meta['participantEndedAt']=time.time();write(run/'run.json',meta)
-  try:snapshot(run/'final-state.json');meta['finalStateCaptured']=True
-  except Exception:meta['finalStateCaptured']=False
-  meta['durationSeconds']=meta['participantEndedAt']-meta['startedAt'];write(run/'run.json',meta)
-  try:
-   import capture
-   capture.capture(run,R)
-  except Exception as error:
-   meta['verificationLimitation']=type(error).__name__+': '+str(error)[:200];write(run/'run.json',meta)
+  if session:
+   cleanup=session.close();meta['cleanup']=cleanup
+   if not cleanup['containerRemoved']:meta['hostControlFailed']=True;meta['status']='artifact_failed'
+  if meta.get('hostControlFailed'):
+   meta['participantTerminationConfirmed']=False;meta['finalStateCaptured']=False
+   meta['verificationLimitation']='Participant termination unconfirmed; terminal capture skipped'
+  else:
+   meta['participantEndedAt']=time.time();meta['participantTerminationConfirmed']=True
+   try:snapshot(run/'final-state.json');meta['finalStateCaptured']=True
+   except Exception:meta['finalStateCaptured']=False
+   write(run/'run.json',meta)
+   try:
+    import capture
+    capture.capture(run,R)
+   except Exception as error:
+    meta['verificationLimitation']=type(error).__name__+': '+str(error)[:200]
+  meta['durationSeconds']=time.time()-meta['startedAt'];write(run/'run.json',meta)
   meta['cost']=cost.persist(run,R/'cost-policy.json');write(run/'run.json',meta)
   for p in run.rglob('*'):
    if p.is_file() and not p.is_symlink():p.chmod(0o600)
