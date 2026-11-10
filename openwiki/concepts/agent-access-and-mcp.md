@@ -223,3 +223,10 @@ OAuth user tokens must not replace scoped agent credentials: OIDC scopes do not
 restrict database permissions. This is a source-only design, with no OAuth routes,
 clients, hooks, grants or subscription activated. The current runtime provider is
 `osyrlausutnqzlegxmnd`; older-project discovery is not evidence for its configuration.
+
+Offline preparation now includes an unconfigured SQL hook/immutable consent binding
+and a `jose` token verifier under `backend/oauth-preparation/`, with eighteen actual
+SQL/signature test scenarios. Neither is a runtime route or deployable migration.
+The documented provider resource-binding gap and older production account-isolation
+behavior prevent direct-token activation; the decision document describes a bounded
+`oidc-provider` alternative that keeps human tokens inside Lookout.

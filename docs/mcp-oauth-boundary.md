@@ -48,7 +48,7 @@ This is a conditional implementation design, not a proven supported integration:
    agent as authority. Denial, wrong owner, stale consent and revoked connections
    fail closed. No operation authorizes submissions or changes existing scopes.
 3. Before issuing any host token, a reviewed server-side token hook must issue an
-   MCP-only audience and a dedicated database role with no accessible privileges.
+   MCP-only audience and a reserved nonexistent database role that PostgREST cannot assume.
    Bind the claims to server-owned consent and client/session identity. Apply
    identical isolation to authorization-code issuance and every refresh; reject
    missing/stale bindings rather than fall back to a human token. Do not derive
@@ -81,8 +81,9 @@ Before implementing the candidate, establish from supported provider contracts
 how the authorization ID, OAuth grant and session can be bound atomically to the
 approved connection before the token hook executes, including refresh. A guessed
 claim/session join could bind another grant or accidentally issue a human token.
-This remains unresolved, so this preparation deliberately adds no partially wired
-authentication code or migrations to automatic deployment paths.
+The offline prototype below avoids ambiguous pending authorization state with a
+terminal per-user/client binding. Resource validation and provider account isolation
+remain unresolved, so no authentication route or automatic migration is activated.
 
 Required test cases for that implementation:
 
@@ -125,3 +126,76 @@ References: [provider setup](https://supabase.com/docs/guides/auth/oauth-server/
 [OAuth flows](https://supabase.com/docs/guides/auth/oauth-server/oauth-flows),
 [custom token hook](https://supabase.com/docs/guides/auth/auth-hooks/custom-access-token-hook),
 and [ChatGPT authentication](https://developers.openai.com/plugins/build/auth).
+
+## Executable offline boundary (follow-up)
+
+`backend/oauth-preparation/boundary.sql` is intentionally outside migrations. It
+implements a PostgreSQL token hook and authoritative resolver against modeled
+provider session/consent tables and the real migrated Lookout connection schema.
+One immutable `(user_id, client_id)` binding pins connection, approved scopes,
+consent ID/time, resource and expiry. Revocation is terminal; deletion, switching
+connections and extending lifetime are rejected. Refresh uses the same checks.
+There is no consent writer, execution grant, live hook configuration or RPC route.
+
+The prototype uses a deliberately **nonexistent** `lookout_mcp_no_database` role,
+not a new granted role: PostgreSQL cannot switch to it. If a role with that name
+appears, issuance and resolution fail closed. This avoids PUBLIC-privilege leakage
+through a new role, but does not establish isolation of Auth, Storage or Realtime.
+Human session claims remain unchanged. OAuth profile metadata is stripped, expiry
+is capped, and the audience is exactly the bound resource.
+
+`backend/oauth-preparation/boundary.mjs` verifies ES256 tokens with the maintained
+`jose` library and re-resolves authoritative state on every use. It rejects human
+tokens, mixed audiences, wrong clients, invalid sessions and stale connections.
+It returns identity only, never a credential/hash. It is not imported by the Node
+runtime, so legacy agent-token and human-only paths remain unchanged.
+
+`tests/mcp-oauth-boundary.test.mjs` runs the actual SQL with the fully migrated
+Lookout schema in PGlite, modeled Supabase session/consent rows, and ephemeral ES256
+keys. Eighteen scenarios cover issuance/refresh, real signatures/JWKS, wrong claims,
+terminal revocation, immutable bindings, owner/scope/expiry mismatches and denied
+SQL access. These tests are not a real provider integration test, a resource
+parameter test or a proof of account API isolation. They do not prove concurrent
+revocation is serialized with a later tool write; the eventual dispatcher must
+perform authorization and the operation in one transaction.
+
+## Concrete provider limitation found in source
+
+Inspection of official Supabase Auth commit
+`1357a5b90faa0e575e25030dc690bb228fdce721` found:
+
+- `internal/tokens/service.go` calls the custom hook during initial issuance and
+  refresh, carries the OAuth client ID, and permits custom audience/role claims.
+- `internal/hooks/v0hooks/v0hooks.go` supplies identity, claims and authentication
+  method to that hook, but no authorization/resource identifier.
+- `internal/api/oauthserver/authorize.go` omits `resource` from authorization
+  details. `handlers.go` checks a supplied resource during code exchange against
+  the authorization, but refresh does not pass its resource to the token service.
+  The hook can pin an audience by client binding, but cannot itself prove the
+  requested resource matched on both flows. Dedicated-client pinning is narrower
+  than the required end-to-end resource-parameter validation.
+
+Thus the tested hook is useful boundary preparation, not a complete direct-provider
+solution. A provider-supported resource validation path and real account isolation
+are still needed. Parent public health checks identify production Auth as v2.197.0,
+whose release predates account-isolation fix #2898; role/audience do not repair old
+Auth account APIs. No direct host JWT issuance is safe to activate on that evidence.
+
+## Bounded library alternative
+
+The smallest alternative worth implementing is the maintained OpenID-certified
+[`oidc-provider`](https://github.com/panva/node-oidc-provider), with Supabase used
+only to authenticate the human inside Lookout. Its existing PKCE, resource
+indicators, opaque tokens, refresh and revocation machinery would own the protocol.
+Use one explicitly configured public client with an exact host callback and one
+resource; leave DCR and experimental CIMD disabled unless separately required and
+verified. Human Supabase tokens never become host access/refresh tokens.
+
+Required adapter work is a durable private provider store, a human consent
+interaction binding the grant to an existing connection, and one internal scoped
+dispatch boundary shared by opaque legacy tokens and provider grants. Grant/connection
+revocation must be checked atomically for tool writes and for event delivery.
+This removes the dependency on exposing provider JWTs, but introduces signing/cookie
+keys and persistent grant storage. It has not been implemented or installed here;
+those live credentials/configuration and the host grant require action-time approval.
+Do not substitute an in-memory production store or implement OAuth manually.
