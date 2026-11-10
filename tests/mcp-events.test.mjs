@@ -54,6 +54,10 @@ test('MCP event lifecycle uses real migrated authorization, durable outbox and f
   assert.equal((await db.query('select done from private.mcp_event_deliveries where id=$1',[leased[0].id])).rows[0].done,false);
   await rpc('',{action:'finish',args:{...leased[0],status:413}});
   assert.equal((await db.query('select done from private.mcp_event_deliveries where id=$1',[leased[0].id])).rows[0].done,true);
+  await add(owner,'muse-feed:exhausted');
+  await db.exec("update private.mcp_event_deliveries set attempts=6,lease_until=now()-interval '1 second' where not done");
+  assert.deepEqual((await rpc('',{action:'claim',args:{}})).data,[]);
+  assert.equal((await db.query('select count(*) n from private.mcp_event_deliveries where not done')).rows[0].n,0);
   await add(owner,'muse-feed:gone');status=410;await events.deliver();
   assert.equal((await db.query('select count(*) n from private.mcp_event_subscriptions')).rows[0].n,0);
   status=200;await events.handle(token,'events/subscribe',params);

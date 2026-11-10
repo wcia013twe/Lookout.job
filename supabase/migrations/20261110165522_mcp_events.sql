@@ -63,8 +63,9 @@ begin
   delete from private.mcp_event_subscriptions s using private.agent_connections c where c.id=s.connection_id
    and (s.expires_at<=now() or c.revoked_at is not null or c.expires_at<=now() or not (array['workspace:read','activity:write']::text[]<@c.scopes));
   update private.mcp_event_subscriptions set old_secret=null,rotate_until=null where rotate_until<=now();
+  update private.mcp_event_deliveries set done=true where not done and attempts>=6 and (lease_until is null or lease_until<=now());
   with candidates as (
-   select d.id from private.mcp_event_deliveries d where not done and due_at<=now() and (lease_until is null or lease_until<=now()) order by due_at limit 20 for update skip locked
+   select d.id from private.mcp_event_deliveries d where not done and attempts<6 and due_at<=now() and (lease_until is null or lease_until<=now()) order by due_at limit 20 for update skip locked
   ), leased as (
    update private.mcp_event_deliveries d set lease=gen_random_uuid(),lease_until=now()+interval '5 minutes',attempts=attempts+1 from candidates x where d.id=x.id returning d.id,d.lease
   ) select coalesce(jsonb_agg(to_jsonb(leased)),'[]') into output from leased;
