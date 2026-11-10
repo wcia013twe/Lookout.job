@@ -28,6 +28,25 @@ def fixture(run,condition='lookout',status='completed'):
  for key,x in review['adherence'].items():x.update(outcomeVerified=True,reason='Synthetic fixture only',evidence=[f"stage-{SPEC['adherence'][key]['stage']}/after-state.json"])
  return review
 class Tests(unittest.TestCase):
+ def test_healthy_completion_ignores_reference_limit_but_preserves_errors(self):
+  import sys
+  from unittest.mock import patch,Mock
+  real_popen=subprocess.Popen
+  for exit_code,expected in [(0,'completed'),(1,'execution_failed')]:
+   with self.subTest(exit_code=exit_code),tempfile.TemporaryDirectory() as td:
+    sd=Path(td)/'stage-1';sd.mkdir()
+    session=runner.Session.__new__(runner.Session);session.name='fictional-container';session.condition='baseline';session.bridge=None;session.thread_id=None;session.auth={'tokens':{}}
+    clock=Mock(startWall=time.time());clock.finish.return_value={'wallSeconds':100,'monotonicSeconds':100,'valid':True,'invalidReasons':[]}
+    def local_process(*args,**kwargs):
+     return real_popen([sys.executable,'-c',f'import time;time.sleep(.03);raise SystemExit({exit_code})'],**kwargs)
+    with patch.object(runner.subprocess,'Popen',side_effect=local_process),patch.object(runner,'StageClock',return_value=clock),patch.object(runner.threading,'Timer') as timer,patch.object(runner,'inputs_prompt',return_value='fictional task'),patch.object(runner.cost,'capture',return_value={'error':'unavailable'}):
+     result=session.turn(sd,{'_index':1,'_session':'test','seconds':.01,'allowHealthyCompletion':True})
+    timer.assert_not_called();self.assertEqual(result['status'],expected)
+    self.assertIsNone(result['hardDeadlineSeconds']);self.assertIsNone(result['budgetSeconds'])
+    self.assertEqual(result['referenceSeconds'],.01);self.assertEqual(result['executionSeconds'],100)
+    self.assertTrue(result['timing']['wallBudgetExceeded']);self.assertFalse(result['environmentTimingConfounded'])
+
+
  def test_run_does_not_seal_unconfirmed_participant(self):
   from unittest.mock import patch,Mock
   from contextlib import ExitStack
@@ -57,7 +76,7 @@ class Tests(unittest.TestCase):
    def write(path,value):path.write_text(json.dumps(value))
    def failed_run(*args):
     run=runs/'fictional-baseline';run.mkdir();write(run/'run.json',{'hostControlFailed':True,'status':'artifact_failed'});return run
-   fake_runner=SimpleNamespace(RUNS=runs,S=root,configure=Mock(),run=Mock(side_effect=failed_run),write=write)
+   fake_runner=SimpleNamespace(CONFIG={},RUNS=runs,S=root,configure=Mock(),run=Mock(side_effect=failed_run),write=write)
    write(root/'scenario.json',SPEC)
    fake_grade=SimpleNamespace(grade=Mock());fake_summary=SimpleNamespace(build=Mock())
    args=['orchestrate.py','--task-dir',str(root),'--pair-id','FICTIONAL','--repeat','1','--pilot','--langfuse-env',str(root/'absent.env'),'--receipt-dir',str(root/'receipts')]
