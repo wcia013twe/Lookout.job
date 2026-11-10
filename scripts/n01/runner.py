@@ -76,6 +76,7 @@ class Session:
    if self.bridge:self.bridge.close();self.bridge=None
   return result
  def turn(self,stage_dir,stage,resume=False):
+  enforce_deadline=not stage.get('allowHealthyCompletion',False)
   cmd=['docker','exec','-i',self.name,'codex','--no-daemon','--ask-for-approval','never','exec']
   if resume:
    if not self.thread_id:raise RuntimeError('Stage 1 supplied no session ID; cannot resume')
@@ -89,7 +90,7 @@ class Session:
   (stage_dir/'lookout-trace.jsonl').touch(exist_ok=True)
   prompt=(inputs_prompt(stage,self.condition))
   (stage_dir/'prompt.txt').write_text(prompt)
-  meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
+  meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'] if enforce_deadline else None,'referenceSeconds':stage['seconds'],'budgetPolicy':'hard_deadline' if enforce_deadline else 'reference_only','hardDeadlineSeconds':stage['seconds'] if enforce_deadline else None,'command':cmd};write(stage_dir/'stage-run.json',meta)
   usage_before=cost.capture(self.name,self.thread_id if resume else None)
   clock=StageClock();meta['startedAt']=clock.startWall
   expired=threading.Event();usage=None;events=0;usage_complete=False;termination={};stop_lock=threading.Lock()
@@ -100,7 +101,8 @@ class Session:
      if proc.poll() is None:
       expired.set();termination.update(stop_container_client(proc,self.name))
       write(stage_dir/'termination.json',termination)
-   timer=threading.Timer(stage['seconds'],stop);timer.start()
+   timer=threading.Timer(stage['seconds'],stop) if enforce_deadline else None
+   if timer:timer.start()
    try:
     proc.stdin.write(prompt);proc.stdin.close()
     with (stage_dir/'trace.jsonl').open('w') as trace:
@@ -122,21 +124,22 @@ class Session:
       trace.write(json.dumps({'sequence':events,'capturedAt':time.time(),'event':json.loads(raw)})+'\n');trace.flush()
     code=proc.wait()
    finally:
-    timer.cancel();timer.join(timeout=20)
+    if timer:timer.cancel();timer.join(timeout=20)
     if proc.poll() is None:stop()
     timing=clock.finish()
     if termination and not termination.get('containerStopped'):
      timing['valid']=False;timing['invalidReasons'].append('container_stop_unconfirmed')
   active_seconds=timing['wallSeconds']
   timing['wallBudgetExceeded']=timing['wallSeconds']>stage['seconds']+5
+  meta['referenceBudgetExceeded']=timing['monotonicSeconds']>stage['seconds']
   meta['timing']=timing
   if termination:meta['termination']=termination;meta['hostControlFailed']=not termination.get('containerStopped')
   meta['executionSeconds']=timing['monotonicSeconds'] if timing['valid'] else None
-  meta['environmentTimingConfounded']=not timing['valid'] or timing['monotonicSeconds']>stage['seconds']+5
+  meta['environmentTimingConfounded']=not timing['valid'] or (enforce_deadline and timing['monotonicSeconds']>stage['seconds']+5)
   meta.update(status='artifact_failed' if meta.get('hostControlFailed') else 'timed_out' if expired.is_set() else 'execution_finished',durationSeconds=active_seconds);write(stage_dir/'stage-run.json',meta)
   usage_after={'error':'container_stop_unconfirmed'} if meta.get('hostControlFailed') else cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
   meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
-  meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or timing['monotonicSeconds']>stage['seconds']+3 else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
+  meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or (enforce_deadline and timing['monotonicSeconds']>stage['seconds']+3) else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
   write(stage_dir/'stage-run.json',meta);return meta
 
 def run(condition,repeat,pair_id,pilot=False):
@@ -146,7 +149,7 @@ def run(condition,repeat,pair_id,pilot=False):
  existing=[json.loads(x.read_text()) for x in RUNS.glob('*/run.json')]
  if any(x.get('taskId')==TASK and x.get('pairId')==pair_id and x.get('condition')==condition for x in existing):raise RuntimeError('This pair/condition already has an attempt; use a new pair ID for a separately reported attempt')
  run=RUNS/f'{TASK}-{condition}-r{repeat}-{uuid.uuid4().hex[:8]}';run.mkdir(mode=0o700);out=run/'output';out.mkdir();inputs=run/'live-inputs';inputs.mkdir()
- meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[],'hostAwakeGuard':awake};write(run/'run.json',meta)
+ meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':None if CONFIG.get('allowHealthyCompletion') else sum(x['seconds'] for x in packets()),'referenceSeconds':sum(x['seconds'] for x in packets()),'budgetPolicy':'reference_only' if CONFIG.get('allowHealthyCompletion') else 'hard_deadline','startedAt':time.time(),'stages':[],'hostAwakeGuard':awake};write(run/'run.json',meta)
  session=None
  try:
   snapshot(run/'before-reset.json');command(['node',str(R/'reset.mjs')]+[v.replace('{task}',TASK) for v in CONFIG.get('resetArgs',[])]);snapshot(run/'initial-state.json');validate_initial(run/'initial-state.json')
@@ -255,12 +258,14 @@ def packets():
  for i,stage in enumerate(spec['stages'],1):
   stage=dict(stage,_index=i,_session=stage['session'])
   if not isinstance(stage.get('seconds'),int) or not 1<=stage['seconds']<=600:raise RuntimeError('Invalid fixed stage budget')
+  if CONFIG.get('allowHealthyCompletion'):stage['allowHealthyCompletion']=True
   result.append(stage)
  return result
 
 if __name__=='__main__':
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--task-dir',type=Path,required=True);p.add_argument('--task');p.add_argument('--condition',choices=['baseline','lookout','pair'],required=True);p.add_argument('--repeat',type=int,default=1);p.add_argument('--pair-id',required=True);p.add_argument('--pilot',action='store_true');a=p.parse_args()
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--task-dir',type=Path,required=True);p.add_argument('--task');p.add_argument('--condition',choices=['baseline','lookout','pair'],required=True);p.add_argument('--repeat',type=int,default=1);p.add_argument('--pair-id',required=True);p.add_argument('--pilot',action='store_true');p.add_argument('--allow-healthy-completion',action='store_true');a=p.parse_args()
  configure(a.task_dir,a.task)
+ CONFIG['allowHealthyCompletion']=a.allow_healthy_completion
  if a.repeat<1 or not a.pair_id.strip():p.error('Positive repeat and nonempty pair ID required')
  conditions=(['baseline','lookout'] if a.repeat%2 else ['lookout','baseline']) if a.condition=='pair' else [a.condition]
  failed=False

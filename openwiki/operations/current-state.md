@@ -1446,3 +1446,7 @@ model/evidence/timing-integrity and containment checks remain enforced. Individu
 setup/cleanup operation limits remain bounded. Participant deadline-policy changes
 are handled in their owning chats with amendment provenance; old terminated runs
 remain preserved and are not silently resumed or replaced.
+
+### Communication healthy-completion policy amendment
+
+COM01/COM02 shared runners and orchestrators support explicit `--allow-healthy-completion` (stage adapter flag `allowHealthyCompletion=True`). Original seconds remain reference metadata, with no task timer or overrun-based status/timing rejection. Actual elapsed/usage and real process, clock and containment errors remain enforced; operation timeouts remain bounded. This source amendment does not change already-running Python frames or historical frozen evidence. Live macOS timer cancellation was denied before execution; no healthy participant was restarted. No product, prompt or rubric change.
