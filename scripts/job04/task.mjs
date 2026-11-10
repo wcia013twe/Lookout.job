@@ -7,7 +7,7 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {parseArgs} from 'node:util';
 import {costValues} from '../n01/cost-export.mjs';
-import {verifyHostGates} from '../jobs/preflight.mjs';
+import {verifyHostGates,executionOrder} from '../jobs/preflight.mjs';
 export const hash=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 export const read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
 export const write=(p,x)=>fs.writeFileSync(p,JSON.stringify(x,null,2)+'\n',{flag:'wx',mode:0o600});
@@ -122,8 +122,9 @@ export function run(root,command,preflightFile,pairId){
  if(['jobs-host-v1','jobs-host-v2','jobs-host-v3'].includes(cfg.hostVersion))verifyHostGates(root,pre.host);
  check(/^[A-Za-z0-9_-]+$/.test(pairId),'Safe pair ID required');
  const runs=path.join(root,'runs');check(!fs.existsSync(runs),'One attempt only; no reset or silent retry');fs.mkdirSync(runs,{mode:0o700});
- for(const condition of conditions){
-  const dir=path.join(runs,condition);fs.mkdirSync(dir,{mode:0o700});const saveProgress=()=>fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r,null,2)+'\n',{mode:0o600});const r={version:spec.version,episodeId:pairId+'-'+condition,pairId,condition,model:spec.model,reasoning:spec.reasoning,pilot:true,synthetic:false,status:'running',checkpoints:[],startedAt:new Date().toISOString()};saveProgress();
+ const executionConditions=executionOrder(cfg);
+ for(const condition of executionConditions){
+  const dir=path.join(runs,condition);fs.mkdirSync(dir,{mode:0o700});const saveProgress=()=>fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r,null,2)+'\n',{mode:0o600});const r={version:spec.version,episodeId:pairId+'-'+condition,pairId,condition,repeat:cfg.repeat??1,conditionOrder:executionConditions,model:spec.model,reasoning:spec.reasoning,pilot:true,synthetic:false,status:'running',checkpoints:[],startedAt:new Date().toISOString()};saveProgress();
   try{
    write(path.join(dir,'setup.json'),capture(root,command,condition,'condition.setup',{initial:evidence.applications}));
    for(const [i,stage]of spec.stages.entries()){
@@ -154,9 +155,9 @@ export function run(root,command,preflightFile,pairId){
   // Same cost accounting convention as other COM/JOB cases. This helper performs no inference.
   const cost=spawnSync('python3',['-B','-c',"import sys,json;sys.path.insert(0,sys.argv[1]);import cost;print(json.dumps(cost.summarize(sys.argv[2],sys.argv[3])))",path.join(repo,'scripts/n01'),dir,path.join(root,'suite/cost-policy.json')],{encoding:'utf8',timeout:15000});
   if(cost.status!==0){r.status='harness_failed';r.cost=null;r.costError='Cost summarization failed; participant evidence retained';}else{r.cost=JSON.parse(cost.stdout);costValues(r.cost);write(path.join(dir,'cost.json'),r.cost);}saveProgress();
-  if(r.hostControlFailed){const halted={status:'host_control_failed',condition,unattemptedConditions:conditions.slice(conditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
+  if(r.hostControlFailed){const halted={status:'host_control_failed',condition,unattemptedConditions:executionConditions.slice(executionConditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
   try{const confirmation=capture(root,command,condition,condition==='lookout'?'native.readonly_confirmation':'baseline.final_files');write(path.join(dir,'terminal-confirmation.json'),confirmation);if(confirmation.hostControlFailed){r.hostControlFailed=true;r.status='harness_failed';}}catch(e){write(path.join(dir,'terminal-confirmation.json'),{status:'failed',error:e.message});}
-  if(r.hostControlFailed){fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r,null,2)+'\n',{mode:0o600});const halted={status:'host_control_failed',condition,unattemptedConditions:conditions.slice(conditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
+  if(r.hostControlFailed){fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r,null,2)+'\n',{mode:0o600});const halted={status:'host_control_failed',condition,unattemptedConditions:executionConditions.slice(executionConditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
   write(path.join(dir,'evidence-hashes.json'),manifest(dir));
  }
  return handoff(root);
