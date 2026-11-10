@@ -1399,3 +1399,13 @@ JOB02 selected-profile draft calls reproduce a pre-writer P0002 rejection. Histo
 clearance/grades remain intact, but native-workflow attribution requires this setup
 caveat. See docs/job-controlled-pilot-results.md; prospective shared-clone/lifecycle
 repair remains with the owning chat. No product or participant run was changed.
+
+### JOB participant deadline policy amendment (2026-11-09)
+
+JOB01 and JOB02 adapters opt into healthy completion in the shared session executor.
+Historical scenario seconds remain a measured reference; they no longer install a
+participant kill timer, invalidate timing, or classify completed work as timed out.
+Both conditions use the same policy. Actual process failures and host timing faults
+remain recorded; network, state capture, and containment cleanup operations retain
+bounded timeouts. Previously frozen sources and terminated attempts stay unchanged.
+The separate coordinator owns the corresponding independent-grader policy.
