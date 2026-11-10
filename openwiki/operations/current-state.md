@@ -1389,3 +1389,11 @@ Current-source COM1-stream-v9 and COM2-stream-v8 passed fresh no-inference setup
 ### COM01 prospective containment parity
 
 COM01 now has the same shared bounded stop and host-failure pair halt behavior as COM02. Seven focused Node checks, including mocked process/run/pair regressions, passed. No live preflight or participant was run for this source revision; previous readiness receipts still bind their original checkout. Fresh freeze/preflight remains required before revised execution.
+
+
+Supplemental JOB01/JOB02 investigation found that legacy preferences were cloned
+without canonical search profile documents. JOB01 frozen reads expose the mismatch;
+JOB02 selected-profile draft calls reproduce a pre-writer P0002 rejection. Historical
+clearance/grades remain intact, but native-workflow attribution requires this setup
+caveat. See docs/job-controlled-pilot-results.md; prospective shared-clone/lifecycle
+repair remains with the owning chat. No product or participant run was changed.

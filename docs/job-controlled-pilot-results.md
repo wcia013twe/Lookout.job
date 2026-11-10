@@ -1,7 +1,9 @@
 # JOB01/JOB02 controlled pilot results
 
-Both controlled comparisons cleared the harness audit. Clearance establishes usable
-comparison evidence; it does not certify Lookout functionality or a general winner.
+Both controlled comparisons historically cleared their declared harness audits. A
+supplemental investigation below identifies a missing setup prerequisite that those
+audits missed; native-workflow comparisons need that qualification. Clearance does
+not certify Lookout functionality or a general winner.
 Both used the pinned subscription-backed Terra medium executor, matched task intent,
 frozen evidence, fresh sessions and independent post-pair grading. No participant
 coaching, in-run repair, silent retry, model substitution or application submission occurred.
@@ -71,3 +73,36 @@ terminal confirmation and grading are excluded from participant execution metric
 
 See [JOB01 design](job01-job-search.md), [JOB02 design](job02-application-plan.md)
 and [shared harness boundaries](../scripts/evals/README.md).
+
+
+## Supplemental canonical-profile investigation
+
+The retained JOB01 native search-context responses contain no profiles initially,
+although its cloned personal preferences contain the active `general` profile.
+The clone scripts copy legacy preferences but do not clone canonical
+`search_documents`; matching personal-context settings therefore does not prove
+that native search/application context is equivalent.
+
+All six failed JOB02 draft requests selected `searchProfileId: general`. A read-only
+check of its retained fictional owner found no canonical search documents, while
+legacy preferences still contain `general`. The successful sacrificial lifecycle
+probe omitted `searchProfileId`, so it did not exercise the failing prerequisite.
+The unchanged prefill implementation rejects a selected profile absent from
+canonical search context with P0002, before calling the draft writer. Offline replay
+of the captured request reproduces that path; a fictional regression demonstrates
+that supplying the canonical profile reaches the writer. This supports a concrete
+fixture explanation for the native failures, rather than a demonstrated product
+persistence defect. No historical owner, grade, clearance receipt or run was changed.
+The live read is supplemental evidence, not a historical snapshot of an uncaptured
+table; frozen clone source and JOB01 search reads provide the historical support.
+
+JOB01 also retrieved personal context successfully and nevertheless called supplied
+authorization, relocation, compensation and culture preferences unknown. Its career
+update was saved late and its corrected output style did not survive continuation.
+These remain observed context-application/continuity misses; the missing canonical
+profile is a setup confound, and a single participant pair cannot isolate causality.
+
+Before another comparison, prospectively clone/verify canonical profile documents
+through a shared fixture helper and run the exact selected-profile lifecycle path.
+Preserve original results, qualify their attribution, and avoid a participant rerun
+until the prerequisite is verified. This investigation changes no product behavior.

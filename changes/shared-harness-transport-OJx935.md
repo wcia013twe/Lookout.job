@@ -73,3 +73,15 @@
 - Validation: seven focused Node checks (including real local worker regressions),
   catalog validation (158 roles), and diff checks passed. No participant run, product
   behavior or frozen evidence changes.
+
+
+## JOB01/JOB02 quality-gap investigation
+
+- Located a missed canonical-profile fixture prerequisite; selected-profile draft
+  calls can fail before the writer despite valid owned job/resume IDs. Existing
+  setup probes omitted that field. Recorded source/evidence limits in the existing
+  pilot report and handed prospective shared-clone repair to its owning chat.
+- Added a fictional missing/present canonical-profile regression; no product,
+  participant, historical account or frozen-result mutation.
+- Validation: 12 application-preference checks, catalog validation (158 roles),
+  and diff checks passed.
