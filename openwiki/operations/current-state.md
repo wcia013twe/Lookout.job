@@ -1442,3 +1442,10 @@ COM03/COM04 prospective evaluation reporting now carries the shared allowlisted 
 ### Healthy communication task completion amendment
 
 The user explicitly removes hard participant deadlines for healthy COM03/COM04 work. The opt-in `LOOKOUT_PARTICIPANT_DEADLINES=disabled-by-user` bypasses the task Timer and elapsed-budget classification, records policy/source hashes, and keeps bounded individual operation/containment guards. Former scenario seconds remain reference metadata. Original frozen sources and previously interrupted attempts are preserved; no automatic replacement. Seventeen COM03 and 28 COM04 Python checks passed; live amended execution remains prospective. Shared independent grader policy is owned separately.
+
+Shared subscription grading now treats `--seconds` as reference duration only,
+with no total task deadline for healthy work. Receipts record reference overruns;
+model/evidence/timing-integrity and containment checks remain enforced. Individual
+setup/cleanup operation limits remain bounded. Participant deadline-policy changes
+are handled in their owning chats with amendment provenance; old terminated runs
+remain preserved and are not silently resumed or replaced.
