@@ -1,6 +1,6 @@
-# COM03/COM04 EVAL-01–03 contract
+# COM03/COM04 EVAL-01–05 contract and results
 
-This prospective series contains three planned pairs per case. EVAL-01 is baseline then Lookout; EVAL-02 is Lookout then baseline; EVAL-03 is baseline then Lookout. Historical PILOT runs remain separate. Quality misses, latency and effort are outcomes, not grounds for replacing a run. Both participant and independent grader use subscription-backed `gpt-5.6-terra`, medium reasoning. No paid inference or silent substitution is allowed.
+This series originally contained three planned pairs per case and was extended prospectively through EVAL-05. EVAL-01 is baseline then Lookout; EVAL-02 is Lookout then baseline; EVAL-03 is baseline then Lookout. Historical PILOT runs remain separate. Quality misses, latency and effort are outcomes, not grounds for replacing a run. Both participant and independent grader use subscription-backed `gpt-5.6-terra`, medium reasoning. No paid inference or silent substitution is allowed.
 
 COM03 uses stream v7 / grade v4; COM04 uses stream v6 / grade v4. Task intent, evidence, native startup, scope boundaries and rubric are frozen. The original stage seconds are retained as reference metadata after the explicit healthy-completion amendment below. A separate owner and root for each condition preserve native audit history without reset deletion. Input parity may reverse only the explicit account ownership/resume ID map and deterministic application/job ownership IDs. All other background bytes, scenario content, fixture facts and released event content must agree. Never normalize away substantive differences. Each pair uses one receipt directory for registration and detailed export; common exports use its `common` subdirectory.
 
@@ -8,13 +8,57 @@ After both participants terminate, invoke the existing isolated subscription gra
 
 The current chat runs the existing commands directly with distinct owners, roots, containers and output directories. The user removed cross-chat serialization before these evaluations began; independent cases/chats run concurrently. No additional scheduling framework is used. A bounded investigation/repair pass lasts at most ten minutes. Any authorized environment/harness repair must preserve prior freezes and partial evidence, document timing and state effects, and label affected results diagnostic/confounded/invalid as appropriate. Never send participants hints or feedback, change task prompts or rubrics, or silently repeat side effects. Explicit user changes to task deadlines require an amendment receipt and preserved original policy.
 
-After each pair, save validated grades and common summaries, then export detailed and common structural results and perform paginated readback. Attach the shared allowlisted provenance before the first final export; keep final artifacts immutable. Transport failure permits bounded delivery retry from those artifacts, never rerunning participants or semantic grading. Unknown dollar cost, provenance or coverage remains unknown. Count real native reads, discovery, writes, verification and audit costs; report startup/discovery components separately without adding them twice. Equal prescribed prompts do not measure proactive effort reduction. Three pairs support descriptive comparisons with uncertainty, not population-level causal claims.
+After each pair, save validated grades and common summaries, then export detailed and common structural results and perform paginated readback. Attach the shared allowlisted provenance before the first final export; keep final artifacts immutable. Transport failure permits bounded delivery retry from those artifacts, never rerunning participants or semantic grading. Unknown dollar cost, provenance or coverage remains unknown. Count real native reads, discovery, writes, verification and audit costs; report startup/discovery components separately without adding them twice. Equal prescribed prompts do not measure proactive effort reduction. Five pairs per case, with the recorded protocol phases, support descriptive comparisons with uncertainty, not population-level causal claims.
 
-## EVAL-04/05 extension in progress
+## EVAL-04/05 extension results
 
-The user authorized two additional pairs per case after EVAL-01–03 finished: EVAL-04 runs Lookout then baseline; EVAL-05 runs baseline then Lookout. They use eight new dedicated owners and frozen roots, execution source `aaa74e78`, the established v2 independent-review procedure, subscription `gpt-5.6-terra` medium, and no hard participant/grader task deadlines. Scenario, task evidence, rubric and prescribed prompts are unchanged. Eight actual no-inference preflights and four input-parity checks passed before inference. Historical outcomes below remain unchanged; extension outcomes are pending.
+The user authorized two additional pairs per case after EVAL-01–03 finished: EVAL-04 runs Lookout then baseline; EVAL-05 runs baseline then Lookout. Eight new owners and frozen roots use execution source `aaa74e78`, the established v2 independent-review procedure, subscription `gpt-5.6-terra` medium, and no hard participant/grader task deadlines. Scenario, evidence, rubric and prescribed prompts are unchanged. Eight actual no-inference preflights and four input-parity checks passed before inference. Historical outcomes remain unchanged.
 
-A shared Docker no-space failure was resolved centrally before these owners were provisioned or any extension participant started. No extension attempt was interrupted or replaced. The pinned runtime image was preserved. Independent pairs may overlap on distinct owners; shared-host load remains uncontrolled.
+A shared Docker no-space failure was resolved centrally before these owners were provisioned or any extension participant started. No extension attempt was interrupted or replaced. The pinned runtime image was preserved. Independent pairs overlapped on distinct owners; shared-host load remains uncontrolled.
+
+All eight participants completed normally and all eight independent reviews validated. COM03 EVAL-04 tied at full task success; baseline scored higher in the other three extension pairs. Across EVAL-01–05 there are ten pairs: eight have valid reviews for both conditions, with seven higher baseline quality scores and one tie. Both EVAL-01 Lookout qualities remain unknown. There is no population-level causal claim.
+
+`B / L` means baseline / Lookout. Fractions count rubric checks; the full task result additionally requires the scenario completion/final-state checks.
+
+| Case / pair and order | Quality B / L | Full task B / L | Active seconds B / L | Wall seconds B / L | Active ratio L:B |
+| --- | --- | --- | --- | --- | --- |
+| COM03 / EVAL-04 (L→B) | 8/8 / 8/8 | pass / pass | 402.5 / 1581.2 | 411.4 / 1590.1 | 3.93× |
+| COM03 / EVAL-05 (B→L) | 8/8 / 7/8 | pass / fail | 438.9 / 1174.2 | 448.3 / 1183.4 | 2.68× |
+| COM04 / EVAL-04 (L→B) | 14/14 / 11/14 | pass / fail | 585.9 / 1177.4 | 598.0 / 1188.4 | 2.01× |
+| COM04 / EVAL-05 (B→L) | 14/14 / 13/14 | pass / fail | 449.7 / 1107.6 | 461.0 / 1120.2 | 2.46× |
+
+Input includes cached input; uncached input is the difference. Dollar cost remains unknown, not zero. These are model usage observations, not dollar ratios.
+
+| Case / pair | Input tokens B / L | Uncached input B / L | Output tokens B / L |
+| --- | --- | --- | --- |
+| COM03 / EVAL-04 | 869,077 / 10,563,484 | 119,509 / 513,692 | 13,150 / 55,291 |
+| COM03 / EVAL-05 | 973,992 / 8,648,288 | 125,096 / 483,936 | 14,682 / 40,278 |
+| COM04 / EVAL-04 | 979,306 / 6,544,625 | 124,266 / 456,689 | 20,589 / 41,023 |
+| COM04 / EVAL-05 | 1,006,853 / 6,441,765 | 128,261 / 465,445 | 14,316 / 36,439 |
+
+Startup, discovery and native audit remain measured product costs within the recorded totals. RPC duration excludes model processing of the returned context; do not add these component seconds again. Native audit is a subset of task calls.
+
+| Case / pair / condition | Session startup seconds | MCP startup seconds / bytes | Discovery seconds / bytes | Native audit calls | Failed tool calls |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| COM03 / EVAL-04 / B | 2.605 | 0.0008 / 15,240 | 0.0000 / 0 | 0 | 0 |
+| COM03 / EVAL-04 / L | 2.249 | 0.3508 / 153,270 | 0.9695 / 654,393 | 84 | 10 |
+| COM03 / EVAL-05 / B | 2.597 | 0.0008 / 15,240 | 0.0000 / 0 | 0 | 1 |
+| COM03 / EVAL-05 / L | 2.490 | 0.3577 / 153,270 | 1.6775 / 720,540 | 56 | 11 |
+| COM04 / EVAL-04 / B | 4.595 | 0.0011 / 10,668 | 0.0000 / 0 | 0 | 0 |
+| COM04 / EVAL-04 / L | 2.932 | 0.5165 / 155,808 | 1.0405 / 589,748 | 98 | 12 |
+| COM04 / EVAL-05 / B | 3.978 | 0.0015 / 10,668 | 0.0000 / 0 | 0 | 0 |
+| COM04 / EVAL-05 / L | 3.973 | 0.4539 / 155,808 | 0.6564 / 514,254 | 69 | 11 |
+
+Both conditions received ten prescribed COM03 turns or twelve COM04 turns, with zero scheduled wakes. All extension reviews found zero additional unanswered demands. COM04 EVAL-05 captured two Lookout question turns versus one baseline question turn; other extension question counts matched. Observable steps include native audit and other tool work and do not measure human cognitive effort or proactive user-effort reduction.
+
+| Case / pair | Captured questions B / L | Additional unanswered demands B / L | Observable steps B / L |
+| --- | --- | --- | --- |
+| COM03 / EVAL-04 | 0 / 0 | 0 / 0 | 65 / 271 |
+| COM03 / EVAL-05 | 0 / 0 | 0 / 0 | 71 / 240 |
+| COM04 / EVAL-04 | 1 / 1 | 0 / 0 | 53 / 247 |
+| COM04 / EVAL-05 | 1 / 2 | 0 / 0 | 51 / 201 |
+
+Extension controls verify eight distinct owners, 88 completed participant stages with the requested model/effort and disabled task deadlines, 44 exact native initialization bodies apart from the declared local-tool suffix, 132 byte-identical released input-file comparisons, valid monotonic clocks, unchanged source/root freezes, and the fixed condition order. All eight graders observed the requested model and retained exact evidence/instruction bindings. All sixteen detailed/common trajectory exports passed paginated readback; ingestion delay required verification-only retries. No participants or semantic graders were rerun. All owned extension containers are gone; unrelated resources were untouched.
 
 ## Recorded amendments and comparison limits
 
@@ -22,13 +66,13 @@ A shared Docker no-space failure was resolved centrally before these owners were
 - Participant amendment implementation `00385fe0` and shared grader `d7af027c` are retained together at execution source `aaa74e78`; original source `a8a29475` and every original root freeze remain unchanged. Per-owner execution-amendment receipts bind the original freeze to exact new source bytes. Run/stage receipts record `deadlineEnforced: false` and runner hashes. COM03 EVAL-02 stage 9 completed 11.4 seconds beyond its former reference.
 - Initial Lookout review objects in both EVAL-01 cases failed frozen deterministic validation: missing applicable native-outcome booleans in COM03 and missing mandatory terminal-receipt references in COM04. Their quality remains unknown. No semantic regrading or model replacement occurred. Prospective review instructions for EVAL-02/03 make those existing bindings explicit and require the grader to invoke the frozen validator before finishing. Original instructions/reviews and all grader-freeze revisions remain private and immutable. This is a disclosed grading-procedure amendment, not a rubric change.
 - Task requests and released evidence match after explicit ownership-ID remapping. Delivered prompts are not literally identical: the declared storage adapter routes baseline to persistent files and Lookout to native records. Common save/readback/preservation obligations match. Native startup and on-demand discovery are retained within declared case scopes; no claim of unrestricted product-tool parity is made.
-- Shared-host load is uncontrolled and recorded as a timing limitation. Equal prescribed prompts do not measure reduced proactive user effort. Three planned pairs, two amendment phases, unblinded condition labels and missing EVAL-01 Lookout grades prevent a population-level causal claim. Unknown grades and dollar costs stay unknown; historical pilots are not pooled with these evaluations.
+- Shared-host load is uncontrolled and recorded as a timing limitation. Equal prescribed prompts do not measure reduced proactive user effort. Five planned pairs per case, two original amendment phases, unblinded condition labels and missing EVAL-01 Lookout grades prevent a population-level causal claim. Unknown grades and dollar costs stay unknown; historical pilots are not pooled with these evaluations.
 
-## Results
+## EVAL-01–03 results
 
-All six planned pairs and twelve participant attempts finished. Eleven participants completed normally; COM03 EVAL-01 Lookout was terminated by the original final-stage deadline. All twelve independent grader invocations used observed `gpt-5.6-terra` with configured medium reasoning; ten review objects validated and two EVAL-01 Lookout reviews remain invalid/unknown. There were no participant replacements, semantic regrading attempts, paid API inference calls or model substitutions.
+All six originally planned pairs and twelve participant attempts finished. Eleven participants completed normally; COM03 EVAL-01 Lookout was terminated by the original final-stage deadline. All twelve independent grader invocations used observed `gpt-5.6-terra` with configured medium reasoning; ten review objects validated and two EVAL-01 Lookout reviews remain invalid/unknown. There were no participant replacements, semantic regrading attempts, paid API inference calls or model substitutions.
 
-In all four pairs with valid quality reviews for both conditions, baseline scored higher. Lookout used 3.02–3.24 times the active execution time in COM03 and 2.11–2.38 times in COM04. These are observations under uncontrolled host load, not isolated product latency or a population-level causal claim. Native persistence was not uniformly unsuccessful: COM03 EVAL-02 passed all independent prefinal and terminal state checks despite two other quality misses.
+In all four EVAL-01–03 pairs with valid quality reviews for both conditions, baseline scored higher. Lookout used 3.02–3.24 times the active execution time in COM03 and 2.11–2.38 times in COM04. These are observations under uncontrolled host load, not isolated product latency or a population-level causal claim. Native persistence was not uniformly unsuccessful: COM03 EVAL-02 passed all independent prefinal and terminal state checks despite two other quality misses.
 
 `B / L` means baseline / Lookout. Quality fractions count rubric checks; full task success also requires the scenario's completion and final-state conditions. Unknown is not a zero or a failure verdict.
 
@@ -101,12 +145,14 @@ Both conditions received the same prescribed task intent and evidence: ten turns
 
 1. **Expose kind-specific audit schemas and useful field errors.** In EVAL-02, COM03 had two rejected audit batches and COM04 seven. Offline execution of the current pure validator reproduced one `contextRefs` envelope failure and eight assertion-envelope failures. Captured assertions omitted required scenario IDs and sometimes other required fields. The [audit tool contract](../supabase/functions/agent-gateway/agent-audit.mjs) presents broad event/data objects and generally optional envelope fields while the assertion validator requires a more specific shape. Keep strict validation, audit obligations and their measured costs; improve discoverable schemas and static field-level error feedback. The generic `Invalid tool arguments` response does not explain the repair. This is a concrete contract/feedback weakness, not proof that audit alone caused the quality or time difference.
 2. **Make record field schemas and enums discoverable.** COM03 EVAL-02 company writes using priorities `High` and `Active application` were rejected; [the domain model](../lib/network-model.mjs) accepts a fixed priority list. The generic record object leaves callers to infer supported field values. Publish typed record guidance/schema and field-level validation details without relaxing ownership, revisions or validation. Other errors remain participant errors: the failed application reads used a role label instead of the supplied application UUID; setup IDs were valid.
-3. **Investigate external-evidence intake and final reconciliation.** COM03 EVAL-02 missed source discovery and final usefulness; EVAL-03 missed continuity/final usefulness and failed all independent final-state checks. COM04 EVAL-02 missed resolution, saved state and report accuracy; EVAL-03 missed promise tracking and report accuracy. A compact native current-state readback and stronger source/commitment reconciliation procedure are plausible product/guide improvements. These are observed participant outcomes with Lookout, not demonstrated deterministic backend defects. COM03 EVAL-02's correct final saved state is counterevidence to a blanket storage-capability failure.
-4. **Investigate repeated context/discovery work while retaining quality.** In valid pairs, Lookout input was 9.77–11.18 times baseline for COM03 and 7.02–7.85 times for COM04, mostly cached. Uncached input was also higher. Evaluate compact tool/guide responses and version-aware reuse prospectively. Do not strip startup, audit, reads, writes or verification from the benchmark to improve the numbers, infer dollar ratios from input ratios, or attribute the full execution difference to measured RPC latency.
+3. **Investigate external-evidence intake and final reconciliation.** COM03 EVAL-02 missed source discovery and final usefulness; EVAL-03 missed continuity/final usefulness and failed all independent final-state checks. COM04 EVAL-02 missed resolution, saved state and report accuracy; EVAL-03 missed promise tracking and report accuracy. A compact native current-state readback and stronger source/commitment reconciliation procedure are plausible product/guide improvements. These are observed participant outcomes with Lookout, not demonstrated deterministic backend defects. COM03 EVAL-02's correct final saved state is counterevidence to a blanket storage-capability failure. The extension strengthens that limit: COM03 EVAL-04 passed every quality and final-state check. COM03 EVAL-05 passed discovery, continuity and most saved-state checks but missed final usefulness and terminal report fidelity. COM04 EVAL-04 repeated resolution/saved-state/report-accuracy misses, while EVAL-05 passed those checks and missed promise tracking. Investigate reliable commitment representation and state-to-report reconciliation; do not label all native persistence defective.
+4. **Investigate repeated context/discovery work while retaining quality.** Across the eight valid paired reviews in EVAL-02–05, Lookout input was 8.88–12.15 times baseline for COM03 and 6.40–7.85 times for COM04, mostly cached. Uncached input was also higher. Evaluate compact tool/guide responses and version-aware reuse prospectively. Do not strip startup, audit, reads, writes or verification from the benchmark to improve the numbers, infer dollar ratios from input ratios, or attribute the full execution difference to measured RPC latency.
 
 No Lookout product change was made, and no poor result triggered participant coaching, prompt/rubric edits or a replacement trial. Harness repairs and review-procedure amendments are recorded separately above.
 
 ## Evidence, delivery and verification
+
+The full EVAL-01–05 series has twenty participant attempts (nineteen normal completions and one preserved original-deadline timeout), twenty independent grader invocations, eighteen validated reviews and two invalid/unknown reviews. All forty detailed/common trajectory exports pass readback. The EVAL-04/05 extension is preserved separately at `com34-eval04-05-v1`, with its own prospective plan, source/helper hashes, controls, completion receipt and immutable grade digests.
 
 Private evidence remains under the established experiment-control base at `com34-eval01-03-v1/{COM03,COM04}/EVAL-0N/{baseline,lookout}`. Each pair's `langfuse` directory contains registration and detailed export receipts; `langfuse/common` contains common receipts. All 24 detailed/common trajectory exports have verified expected observations, scores and experiment IDs through the existing paginated score-readback contracts. Ingestion/readback failures were retried only from immutable artifacts. No participant or semantic grader was rerun for delivery.
 
