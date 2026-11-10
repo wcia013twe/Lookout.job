@@ -1,0 +1,88 @@
+{
+  "fictional": true,
+  "applications": [
+    {
+      "id": "44444444-4444-4444-8444-444444444401",
+      "company": "Linden (fictional)",
+      "title": "Platform Engineer",
+      "stage": "submitted",
+      "source": "employer_acknowledgement"
+    },
+    {
+      "id": "44444444-4444-4444-8444-444444444402",
+      "company": "Harbor (fictional)",
+      "title": "Backend Engineer",
+      "stage": "awaiting_user_answer",
+      "blocker": "Availability date needs clarification",
+      "nextAction": "Ask for availability; no deadline"
+    }
+  ],
+  "sources": [
+    {
+      "id": "linden-role",
+      "title": "Linden Platform Engineer \u2014 fictional role",
+      "url": "https://jobs.example.test/linden/platform",
+      "observedAt": "2026-11-09",
+      "body": "Own backend platform services, distributed systems reliability and database migration safety. Explain operational tradeoffs and incident ownership."
+    },
+    {
+      "id": "linden-process",
+      "title": "Linden interview process \u2014 fictional employer evidence",
+      "url": "https://jobs.example.test/linden/process",
+      "observedAt": "2026-11-09",
+      "body": "Recruiter screens discuss background and motivation. Actual technical rounds and dates are confirmed separately by invitation. No questions are guaranteed."
+    }
+  ],
+  "events": [
+    {
+      "id": "ack-a",
+      "kind": "email",
+      "applicationId": "44444444-4444-4444-8444-444444444401",
+      "subject": "Application received: Linden Platform Engineer",
+      "messageId": "ack-a",
+      "body": "We received your application to Linden Platform Engineer. No interview is scheduled."
+    },
+    {
+      "id": "screen-a",
+      "kind": "email",
+      "applicationId": "44444444-4444-4444-8444-444444444401",
+      "subject": "Confirmed recruiter screen",
+      "messageId": "screen-a",
+      "body": "Your 30-minute recruiter screen with Alex Rivera is confirmed for November 12, 2026 at 10:00 America/New_York. Discuss your background, systems ownership and interest in the platform team.",
+      "roundId": "linden-screen",
+      "occurredAt": "2026-11-12T10:00:00-05:00"
+    },
+    {
+      "id": "debrief-a",
+      "kind": "user_reported",
+      "applicationId": "44444444-4444-4444-8444-444444444401",
+      "body": "I finished the recruiter screen. They focused on systems ownership. I struggled to explain my database migration tradeoffs. The recruiter said the next round would cover distributed systems, but nothing is scheduled yet."
+    },
+    {
+      "id": "technical-a",
+      "kind": "email",
+      "applicationId": "44444444-4444-4444-8444-444444444401",
+      "subject": "Confirmed distributed systems round",
+      "messageId": "technical-a",
+      "body": "Your 60-minute technical round with Jordan Lee is confirmed for November 17, 2026 at 14:00 America/New_York. We will discuss distributed systems, service reliability and database migration tradeoffs.",
+      "roundId": "linden-technical",
+      "occurredAt": "2026-11-17T14:00:00-05:00"
+    },
+    {
+      "id": "logistics-a",
+      "kind": "email",
+      "applicationId": "44444444-4444-4444-8444-444444444401",
+      "subject": "Meeting link updated; interview time unchanged",
+      "messageId": "logistics-a",
+      "body": "Use https://meet.example.test/linden-technical-updated for your November 17 technical round. Time, interviewer and format are unchanged."
+    },
+    {
+      "id": "rejection-a",
+      "kind": "email",
+      "applicationId": "44444444-4444-4444-8444-444444444401",
+      "subject": "Application update",
+      "messageId": "rejection-a",
+      "body": "We will not proceed with your application. Your November 17 technical interview is cancelled."
+    }
+  ]
+}

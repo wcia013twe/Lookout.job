@@ -21,6 +21,13 @@
   unrelated unpublished Action Board work and its active role-card rewrite are
   deliberately excluded.
 
+- Production PR #81 passed hosted CI at a71ba7f7 and merged as 3322dea0.
+  Local-main integration preserves the independently landed compact-card changes,
+  keeping their UI-test selectors and this pass's five-bullet/unrated assertions.
+  Integrated local checks: 1,123 passed, 5 skipped, zero failed; typecheck,
+  data validation, and production build passed. No local integration changes
+  were pushed as part of the scoped production release.
+
 ## Restore bounded analysis cautions
 
 - Restore rounded, shaded fit and caution sections after the five-bullet renderer

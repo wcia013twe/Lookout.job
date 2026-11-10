@@ -1,0 +1,246 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6a52af448576ec69c014cff4",
+  "capturedAt": "2026-11-09T17:50:41.673381+00:00",
+  "responseSha256": "bb070fb31264c27a23479932d8555a62bd73fdf356ceeb60074607aee84aef7e",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6a52af448576ec69c014cff4",
+    "jobTitle": "Associate Software Developer — Recent Graduates",
+    "jobLocation": "Arlington, VA",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 10:13:12",
+    "employmentType": "Full-time",
+    "jobSummary": "Spatial Front, Inc. is a rapidly growing technology company supporting important federal missions, and they are seeking bright, curious, and highly motivated recent graduates to join their technology team. The role involves receiving structured technical training and hands-on development experience while working on large-scale, mission-critical enterprise systems.",
+    "coreResponsibilities": [
+      "Participate in structured technical training and hands-on development assignments",
+      "Learn PeopleSoft, PeopleTools, PeopleCode, Application Engine, SQL, and related enterprise technologies",
+      "Develop, test, troubleshoot, and maintain software applications and system components",
+      "Assist with application enhancements, interfaces, reports, data conversions, and integrations",
+      "Write clean, reliable, and well-documented code",
+      "Investigate software defects and help identify root causes and solutions",
+      "Work closely with senior developers, technical leads, analysts, testers, and other team members",
+      "Participate in Agile planning, daily stand-ups, demonstrations, and retrospective meetings",
+      "Create and maintain technical documentation",
+      "Continuously learn new tools, technologies, and development practices",
+      "Perform other duties as assigned"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Bachelor's degree in computer science, software engineering, information technology, information systems, engineering, mathematics, data science, or a related technical field",
+      "Recent graduate or early-career candidate with a strong interest in software development",
+      "Basic programming experience gained through coursework, internships, research, personal projects, hackathons, or employment",
+      "Understanding of fundamental programming concepts, databases, algorithms, or software-development principles",
+      "Strong analytical and problem-solving abilities",
+      "Intellectual curiosity and the ability to learn new technologies quickly",
+      "Strong attention to detail and commitment to producing high-quality work",
+      "Ability to communicate clearly and work collaboratively within a team",
+      "Dependable, self-motivated, and receptive to coaching and feedback",
+      "Ability to work full-time onsite in Arlington, Virginia",
+      "U.S. citizenship is required",
+      "Preference will be given to local candidates and candidates who are willing to relocate to the Arlington, Virginia area",
+      "Experience or coursework in one or more of the following areas is a plus: PeopleSoft, PeopleTools, PeopleCode, or other enterprise application platforms",
+      "Java, JavaScript, TypeScript, Python, C++, C#, or another programming language",
+      "SQL, relational databases, data modeling, or data analysis",
+      "Artificial intelligence, generative AI, or machine learning",
+      "AWS or another cloud-computing platform",
+      "Web applications, APIs, microservices, or system integrations",
+      "Git, Azure DevOps, or other source-code and work-management tools",
+      "Automated testing, DevOps, or continuous integration and deployment",
+      "Agile, Scrum, or SAFe development environments",
+      "Professional software-development experience is not required. We are especially interested in candidates who demonstrate initiative through technical projects, independent learning, internships, research, or other accomplishments"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Bachelor's degree in computer science, software engineering, information technology, information systems, engineering, mathematics, data science, or a related technical field",
+        "Recent graduate or early-career candidate with a strong interest in software development",
+        "Basic programming experience gained through coursework, internships, research, personal projects, hackathons, or employment",
+        "Understanding of fundamental programming concepts, databases, algorithms, or software-development principles",
+        "Strong analytical and problem-solving abilities",
+        "Intellectual curiosity and the ability to learn new technologies quickly",
+        "Strong attention to detail and commitment to producing high-quality work",
+        "Ability to communicate clearly and work collaboratively within a team",
+        "Dependable, self-motivated, and receptive to coaching and feedback",
+        "Ability to work full-time onsite in Arlington, Virginia",
+        "U.S. citizenship is required",
+        "Preference will be given to local candidates and candidates who are willing to relocate to the Arlington, Virginia area"
+      ],
+      "preferredHave": [
+        "Experience or coursework in one or more of the following areas is a plus: PeopleSoft, PeopleTools, PeopleCode, or other enterprise application platforms",
+        "Java, JavaScript, TypeScript, Python, C++, C#, or another programming language",
+        "SQL, relational databases, data modeling, or data analysis",
+        "Artificial intelligence, generative AI, or machine learning",
+        "AWS or another cloud-computing platform",
+        "Web applications, APIs, microservices, or system integrations",
+        "Git, Azure DevOps, or other source-code and work-management tools",
+        "Automated testing, DevOps, or continuous integration and deployment",
+        "Agile, Scrum, or SAFe development environments",
+        "Professional software-development experience is not required. We are especially interested in candidates who demonstrate initiative through technical projects, independent learning, internships, research, or other accomplishments"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Bachelor's degree"
+          },
+          {
+            "skill": "Basic programming experience"
+          },
+          {
+            "skill": "Understanding programming concepts"
+          },
+          {
+            "skill": "Databases knowledge"
+          },
+          {
+            "skill": "Algorithms knowledge"
+          },
+          {
+            "skill": "Software-development principles"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Analytical abilities"
+          },
+          {
+            "skill": "Problem-solving"
+          },
+          {
+            "skill": "Intellectual curiosity"
+          },
+          {
+            "skill": "Attention to detail"
+          },
+          {
+            "skill": "Team collaboration"
+          },
+          {
+            "skill": "Dependable"
+          },
+          {
+            "skill": "Self-motivated"
+          },
+          {
+            "skill": "Receptive to feedback"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "PeopleSoft"
+          },
+          {
+            "skill": "PeopleTools"
+          },
+          {
+            "skill": "PeopleCode"
+          },
+          {
+            "skill": "Java"
+          },
+          {
+            "skill": "JavaScript"
+          },
+          {
+            "skill": "TypeScript"
+          },
+          {
+            "skill": "Python"
+          },
+          {
+            "skill": "C++"
+          },
+          {
+            "skill": "C#"
+          },
+          {
+            "skill": "SQL"
+          },
+          {
+            "skill": "relational databases"
+          },
+          {
+            "skill": "data modeling"
+          },
+          {
+            "skill": "data analysis"
+          },
+          {
+            "skill": "artificial intelligence"
+          },
+          {
+            "skill": "generative AI"
+          },
+          {
+            "skill": "machine learning"
+          },
+          {
+            "skill": "AWS"
+          },
+          {
+            "skill": "cloud computing"
+          },
+          {
+            "skill": "web applications"
+          },
+          {
+            "skill": "APIs"
+          },
+          {
+            "skill": "microservices"
+          },
+          {
+            "skill": "system integrations"
+          },
+          {
+            "skill": "Git"
+          },
+          {
+            "skill": "Azure DevOps"
+          },
+          {
+            "skill": "automated testing"
+          },
+          {
+            "skill": "DevOps"
+          },
+          {
+            "skill": "continuous integration"
+          },
+          {
+            "skill": "continuous deployment"
+          },
+          {
+            "skill": "Agile"
+          },
+          {
+            "skill": "Scrum"
+          },
+          {
+            "skill": "SAFe"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "initiative"
+          },
+          {
+            "skill": "independent learning"
+          }
+        ]
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": true,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "Spatial Front, Inc. is a rapidly growing technology company supporting important federal missions, and they are seeking bright, curious, and highly motivated recent graduates to join their technology team. The role involves receiving structured technical training and hands-on development experience while working on large-scale, mission-critical enterprise systems.\nResponsibilities\nParticipate in structured technical training and hands-on development assignments\nLearn PeopleSoft, PeopleTools, PeopleCode, Application Engine, SQL, and related enterprise technologies\nDevelop, test, troubleshoot, and maintain software applications and system components\nAssist with application enhancements, interfaces, reports, data conversions, and integrations\nWrite clean, reliable, and well-documented code\nInvestigate software defects and help identify root causes and solutions\nWork closely with senior developers, technical leads, analysts, testers, and other team members\nParticipate in Agile planning, daily stand-ups, demonstrations, and retrospective meetings\nCreate and maintain technical documentation\nContinuously learn new tools, technologies, and development practices\nPerform other duties as assigned\nSkills\nBachelor's degree in computer science, software engineering, information technology, information systems, engineering, mathematics, data science, or a related technical field\nRecent graduate or early-career candidate with a strong interest in software development\nBasic programming experience gained through coursework, internships, research, personal projects, hackathons, or employment\nUnderstanding of fundamental programming concepts, databases, algorithms, or software-development principles\nStrong analytical and problem-solving abilities\nIntellectual curiosity and the ability to learn new technologies quickly\nStrong attention to detail and commitment to producing high-quality work\nAbility to communicate clearly and work collaboratively within a team\nDependable, self-motivated, and receptive to coaching and feedback\nAbility to work full-time onsite in Arlington, Virginia\nU.S. citizenship is required\nPreference will be given to local candidates and candidates who are willing to relocate to the Arlington, Virginia area\nExperience or coursework in one or more of the following areas is a plus: PeopleSoft, PeopleTools, PeopleCode, or other enterprise application platforms\nJava, JavaScript, TypeScript, Python, C++, C#, or another programming language\nSQL, relational databases, data modeling, or data analysis\nArtificial intelligence, generative AI, or machine learning\nAWS or another cloud-computing platform\nWeb applications, APIs, microservices, or system integrations\nGit, Azure DevOps, or other source-code and work-management tools\nAutomated testing, DevOps, or continuous integration and deployment\nAgile, Scrum, or SAFe development environments\nProfessional software-development experience is not required. We are especially interested in candidates who demonstrate initiative through technical projects, independent learning, internships, research, or other accomplishments\nBenefits\nComprehensive employee-benefits package, including: Medical insurance\nComprehensive employee-benefits package, including: Dental insurance\nComprehensive employee-benefits package, including: Life insurance\nTuition reimbursement\nProfessional training and development\nMonthly parking for employees working onsite\nInternal Agile and Scaled Agile training\nOpportunities to pursue technical and professional certifications\nStructured onboarding, technical training, and ongoing mentoring\nInternal technical workshops and brown-bag learning sessions\nAccess to experienced professionals across multiple technical disciplines\nInternal mobility and long-term career-growth opportunities\nMonthly parking for employees working onsite\nInternal mobility and long-term career-growth opportunities\nAdditional employee benefits and programs\n401K\nCompany Overview\nSFI effectively delivers the right Information Technology solutions and Business Support services using thoughtful analysis, strategic planning and precise execution. It was founded in 2008, and is headquartered in Bethesda, Maryland, USA, with a workforce of 501-1000 employees. Its website is http://www.spatialfront.com/pages/index.html.",
+  "sourceDatePosted": "2026-11-09 10:13:12"
+}

@@ -1,0 +1,62 @@
+# Retire preparation blockers after recorded progress and acknowledge Muse pickup
+
+- Shared application transitions now clear unchanged preparation blockers when a status-only write records Submitted, Interview, Offer, Rejected or Withdrawn. The migration reconciles legacy tracked rows. Draft/revision, existing submitted time/receipt, approvals, attempts and historical job results remain intact. Claimed/started/uncertain attempts and uncertain Muse host outcomes retain their blocker and recovery/retry protections. A dedicated activity event distinguishes cleanup from draft editing.
+- Website `set_application_stage` and MCP `record_application_progress` share this transition and keep their owner/version/scope checks, idempotency and reported-progress provenance. No verified submission evidence is created. Regression tests cover actual MCP dispatch, authenticated website writes, legacy upgrade, uncertainty and detached demo submission after a fictional preparation failure.
+- Developer152/application-workspace38/notifications6 now require a brief host-conversation task list after successful AI Apply claim and running-job read-back. Group claimed requests into one message, identify still-queued roles accurately, avoid duplicate delivery, then continue quietly. Existing host permissions, explicit quiet-time restrictions, final review and work-event acknowledgement boundaries remain. Feed guide versions match.
+- Validation: final integrated `npm test` passed (1,162 passed/five skipped); final guide/MCP/quiet-mode checks passed (44/44) after the task-list wording refinement. Data validation (158 roles), frontend typecheck, production build (57 routes/431 offline assets), API Docker image build and git diff --check passed. Blocker coverage includes website/MCP writes, permissions/stale versions/replay, upgrade reconciliation, runner uncertainty, host uncertainty without an attempt, and detached demo reset/history.
+- Integration: preserved local main's compact draft-save/recovery improvements from 4b098f62; the combined application guide is38 and developer contract152. Incoming main also fixed the pre-existing artifact-calendar test isolation failure; the final integrated suite has no failures.
+- Local activation verified after landing: migration20261108235459 applied alone (zero legacy rows needed reconciliation); rollback-only fictional human set_application_stage and agent applications.progress writes cleared blockers while preserving drafts/revisions and creating no approval/attempt/receipt. API image lookout-node:application-pickup-152 is healthy; local Edge runtime refreshed without restarting the worker. Connected MCP reads developer152/application-workspace38/notifications6 and the task-list pickup instruction. Whatnot read-back remains Submitted, blocker null, revision6, with original submitted timestamp/history unchanged.
+- Limits: actual external Muse message delivery and hosted publication/deployment remain unverified. Nothing was pushed or published; no employer application was opened or submitted by this feature pass.
+
+## Follow-up: useful access handoffs and consent handling
+
+- Replaced fieldless access blockers' generic answer-review form with explicit sign-in, secure password entry, host access and employer-verification completion actions. Show the current saved résumé, retain original diagnostics, and keep irrelevant résumé editing/inference review out of these tasks. Actual unanswered fields and uncertain-submission recovery keep their gates. Completion reports a human update through the existing owner/version-checked writer, resumes preparation with questionsReviewed=false and grants no submission approval, host permission or employer receipt. MCP readers retain the same scoped owning record.
+- Developer154/application-workspace40 keeps supported Workday/account flows with Muse; a real password-entry restriction asks only for secure entry and then resumes the existing application. Expected employer authentication redirects belong in authorized preparation scope; actual host denials cannot be bypassed. Routine required privacy/application-processing consent follows explicit user/saved profile instruction; optional marketing is declined unless separately authorized.
+- Fictional demo access cases, authenticated database response/agent-read boundary regressions and detached desktop/mobile checks cover saved resume display, task completion, no fake answer review, retained diagnostics, real unanswered-field gates and no backend/employer calls. Final validation and local activation results recorded below when complete.
+
+- Follow-up validation: full suite1,166 passed/five skipped; focused disclosure/database/response checks8/8 and consent/secure-entry guide checks15/15 passed. Final production build, typecheck, data validation (158 roles), git diff --check and the mechanical design detector (no findings) passed. Two bounded desktop/mobile visual rounds confirmed useful task controls, selected resume display, no empty answer review or unrelated inference panel, explicit keyboard completion and retained real-answer gates; screenshots are in /private/tmp/lookout-application-access-ui.
+- Runtime limit at source landing: the local Docker API and daemon socket became unresponsive; connected profile reads timed out. Recovery is in progress. Updated Muse guide activation and durable storage of the user's required-consent/decline-marketing preference are not yet verified. Existing real application blockers have not been falsely cleared or reported as resolved.
+
+## Follow-up: visible AI Apply activity
+
+- Discover's AI Apply control shows Queued, then Working with a reduced-motion-aware spinner only after a recorded pickup. Applications and the Action Board show the same active flags; board activity is separate from human action counts. No Needs input flag is added. Historical/terminal jobs and later application progress never spin. Reuse existing scoped queue/claim/report tools and realtime refresh; no parallel status store.
+- Final validation recorded below.
+
+- Consent preference saved through the owned versioned profile writer and verified on read-back (General profile46). Audit run read-back includes the saved preference and terminal event. This creates no human approval or submission receipt.
+
+- Final integrated validation: npm test passed (1,167 passed/five skipped), frontend typecheck, data validation (158 roles), production build and diff checks passed. Desktop/mobile detached demo verifies Queued → Working → saved outcome, duplicate-request disablement, reduced-motion spinner, separate board activity and terminal cleanup without backend/employer access. Screenshots: /private/tmp/lookout-working-ui.
+
+- Local activation complete: API image lookout-node:application-access-154 is healthy; local MCP read-back returns developer154/application-workspace40. The missing temporary compose definition was recovered from the running API configuration, preserving environment, ports, existing volume/network and worker. General profile46 consent preference is verified. Actual employer sign-in, host password capability and Muse message delivery remain unverified; nothing pushed or published.
+
+### Simplified employer sign-in handoff
+
+Fieldless sign-in blockers now show a short explanation, Open application linking
+to the existing saved employer URL, and I signed in — resume Muse. Resume metadata,
+diagnostic prose and answer-review controls stay out of this handoff. Missing or
+unsafe URLs fall back to application details. Original diagnostics remain saved;
+host-permission, secure-entry, real questions and uncertain-submission controls
+retain their specific behavior. The existing owner/version-checked human response
+and MCP read boundary are unchanged; signing in creates no submission approval.
+Detached fictional demo coverage verifies the link and explicit completion.
+
+- Sign-in follow-up validation: full npm test passed (1,168 passed/five skipped), focused disclosure/link validation6/6, frontend typecheck, production build, data validation158 and diff checks passed. One desktop/mobile visual round verified the saved employer link, no resume/answer-review controls, explicit keyboard completion and unchanged other access/answer gates; fictional demo made no backend/employer calls. No real sign-in or host session was exercised.
+
+### Temporary Workday and company-site manual handoff
+
+Developer155/application-workspace41 supersedes the earlier Workday sign-in/resume
+procedure: return these applications to the user with the saved employer job link.
+Muse stops before account setup, credentials, previewing remaining questions,
+filling or submission. Native Greenhouse, Ashby and Lever flows retain existing
+preparation; redirects into Workday/company forms hand back. Save and verify a
+manual blocker on the existing unfinished application, preserve all prior work and
+uncertain/submitted outcomes, report a currently claimed request blocked and never
+reopen terminal history. Human responses do not authorize automatic retries.
+Fieldless company/Workday blocker cards show Open application without a resume-Muse
+button; the user can record the actual outcome in Applications. Existing versioned
+prepare_draft/report and human progress writers provide MCP parity. No new store,
+approval or employer receipt is created. Local runtime activation is verified
+separately from source/tests and actual Muse host adoption.
+
+- Temporary manual policy validation: full suite1,170 passed/five skipped; focused guide/MCP/disclosure checks47/47, typecheck, build, data158 and diff checks passed. Fictional desktop/mobile handoff shows the employer link without resume/answer review; no backend/employer calls. Saved General profile47 preference and complete audit log verified on read-back. Actual host adoption remains separate from the local guide activation.
+
+- Local activation verified: healthy API image lookout-node:manual-applications-155, Edge refreshed with worker preserved, MCP read-back developer155/application-workspace41 includes the temporary manual handoff and no-automatic-resume rule. Final desktop/mobile confirmation shows only the employer link, no decision/resume controls. Nothing pushed or hosted; no employer form opened or submitted.

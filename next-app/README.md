@@ -509,3 +509,16 @@ The desktop layout and existing review dialogs stay unchanged. Existing rows gai
 Use `?demo=1&demoApi=action-board` for isolated connected-flow coverage and `node scripts/check-connected-action-board-ui.mjs` against the local port-3107 preview. The script accepts `LOOKOUT_UI_URL` and `LOOKOUT_UI_ARTIFACTS`, checks desktop framing/mobile gestures and rejects demo backend access. Backend migration/functions require their own release; older endpoints retain the existing handoff view with a refresh error instead of false decisions.
 
 Network relationship views offer All people, Continue conversations and Prospects over saved interactions. Update relationship maintains context, thread link, optional dated note and next action/follow-up without changing drafts or interaction history. Last logged interaction previews are based on saved history, not synced inbox state.
+
+Person outreach uses a compact Reviewed / Mark ready / Dismiss footer; Copy message remains primary and Copy subject is a quiet text action. Exact-version review and manual-send boundaries are unchanged.
+
+
+Action Board tracker decisions and AI Apply use one existing change-feed pipeline.
+Tracker ✓ approves work for Muse; it does not mark the task done. The normal
+board's With Muse rows reflect current decision receipts and outcomes, while
+completion updates the owning tracker record. Reject stops work; Reopen for
+review requires human action and never restores approval. Uncertainty requires
+verification before reopening. Existing MCP read_muse_changes points to exact
+board/job records; record_tracker_action_progress records scoped agent pickup
+and outcome. The website has no agent impersonation control outside explicitly
+fictional demo simulation. Backend release and host wake verification are separate.

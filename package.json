@@ -36,10 +36,18 @@
     "intelligence:compare-hybrid": "node --env-file-if-exists=.env.local scripts/compare-bloomberg-hybrid.mjs",
     "intelligence:evaluate-muse": "node --env-file-if-exists=.env.local scripts/evaluate-muse-intelligence.mjs",
     "intelligence:compare-library": "node --env-file-if-exists=.env.local scripts/compare-bloomberg-library.mjs",
-    "deploy:backend": "node scripts/deploy-supabase.mjs"
+    "deploy:backend": "node scripts/deploy-supabase.mjs",
+    "tracing:export-codex": "node --env-file-if-exists=.env.local scripts/export-codex-langfuse.mjs",
+    "evals:langfuse": "node --env-file-if-exists=.env.local scripts/evals/langfuse.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "0.24.1",
+    "@langfuse/otel": "6.1.1",
+    "@langfuse/tracing": "6.1.1",
+    "@opentelemetry/api": "1.9.0",
+    "@opentelemetry/exporter-trace-otlp-http": "0.223.0",
+    "@opentelemetry/sdk-node": "0.223.0",
+    "@opentelemetry/sdk-trace-base": "2.12.1",
     "@supabase/supabase-js": "2.117.3",
     "js-yaml": "5.3.0",
     "pg": "8.16.3",

@@ -1,3 +1,4 @@
+import {traceWork} from './tracing.ts';
 import {screenSearchDiscoveries} from '../../lib/search-screening.mjs';
 import {deduplicateDiscoveryRows} from '../../lib/search-dedup.mjs';
 import {executeCareerTask} from '../../runner/career-tools.mjs';
@@ -57,7 +58,8 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
  const staging=new SearchStaging(stagingRoot,job.id,run.id);
  await pruneSearchStaging(stagingRoot);
  const history:Payload[]=[];
- for(let offset=0;;){const page=await dispatch('search.history.read',{offset,limit:100});history.push(...page.listings);if(page.nextOffset===null)break;if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('Invalid search history page');offset=page.nextOffset;}
+ const refreshHistory=async()=>{history.length=0;for(let offset=0;;){const page=await dispatch('search.history.read',{offset,limit:100});history.push(...page.listings);if(page.nextOffset===null)break;if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('Invalid search history page');offset=page.nextOffset;}};
+ await refreshHistory();
  const persisted:Payload[]=[];
  for(let offset=0;;){const page=await dispatch('search.discoveries.read',{runId:run.id,offset,limit:100,purpose:'screening'});persisted.push(...page.listings);if(page.nextOffset===null)break;if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('Invalid discovery page');offset=page.nextOffset;}
  const sources=orderedSearchSources(run.sources||[],run.id),snapshots=new Map<string,Payload>(),seen:Payload[]=[];
@@ -101,6 +103,8 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
  },10,onFailure);
  const latestContext=await dispatch('search.context',{profileId});
  if(latestContext.personalVersion!==context.personalVersion||latestContext.documents.find((d:Payload)=>d.kind==='profile'&&d.id===profileId)?.version!==profile.version)throw Error('Job settings changed during source collection');
+ // Catch applications/imports recorded while provider collection was running.
+ await refreshHistory();
  // Compare unchanged content only after fresh verification. Existing tracked
  // applications are excluded before verification and are never updated here.
  const pool=[...snapshots.values()].flatMap(snapshot=>snapshot.accepted);
@@ -163,12 +167,12 @@ export async function workOnce(rpc:Rpc,{execute,applicationExecutor,signal,heart
     catch(error){controller.abort(error);throw error;}
   };
   const runTask:import('./ats.ts').Execute=async(task,input)=>{
-    controller.signal.throwIfAborted();return (execute||executeCareerTask)(task,input,{signal:controller.signal});
+    controller.signal.throwIfAborted();return traceWork('execute-career-task',{task},()=>(execute||executeCareerTask)(task,input,{signal:controller.signal}),{type:'tool'});
   };
   try{
     if(!['search_ats','application_submit'].includes(claim.job.kind))throw Error('Unsupported backend job');
     if(claim.job.kind==='search_ats')renew();
-    const outcome=claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute:runTask,stagingRoot,signal:controller.signal,onFailure:error=>controller.abort(error),request:(url,init={})=>fetch(url,{...init,signal:AbortSignal.any([controller.signal,...(init.signal?[init.signal]:[])])})});
+    const outcome=await traceWork('execute-backend-job',{kind:claim.job.kind},async()=>claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute:runTask,stagingRoot,signal:controller.signal,onFailure:error=>controller.abort(error),request:(url,init={})=>fetch(url,{...init,signal:AbortSignal.any([controller.signal,...(init.signal?[init.signal]:[])])})}),{sessionId:'job-'+claim.job.id,summarize:outcome=>({status:outcome.status,saved:outcome.result?.saved??null})});
     await stop();controller.signal.throwIfAborted();await call('finish',{...fence,...outcome});
     if(claim.job.kind==='search_ats'&&outcome.result?.pipelineVersion===2&&!outcome.result?.retainedLeads)await new SearchStaging(stagingRoot||process.env.LOOKOUT_SEARCH_STAGING_DIR||path.join(tmpdir(),'lookout-search-staging'),claim.job.id,outcome.result.runId).clear();
   }catch(error){

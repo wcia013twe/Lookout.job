@@ -1,0 +1,53 @@
+{
+  "onboarding": "I am exploring developer-platform engineering through informational conversations. Ivo is an existing professional acquaintance at Harbor Tools; he has not promised a referral. I have not met Mina. Preserve my unrelated Sam relationship and do not contact Lena. Nothing may be sent from this workspace.",
+  "contacts": [
+    {
+      "id": "ivo",
+      "record": {
+        "contact": "Ivo Patel",
+        "status": "Contacted",
+        "notes": "Informational networking only; no referral request.",
+        "company": "Harbor Tools",
+        "title": "Developer Platform Engineer",
+        "contactType": "Engineer",
+        "relationship": "2026-11-10: Existing networking contact; no introduction or referral promised yet.",
+        "message": "",
+        "followUp": "",
+        "followUpDate": "",
+        "sourceUrl": "https://notes.local/networking/ivo"
+      }
+    },
+    {
+      "id": "sam",
+      "record": {
+        "contact": "Sam Reed",
+        "status": "Contacted",
+        "notes": "Unrelated relationship; leave unchanged.",
+        "company": "Vale Retail",
+        "title": "Backend Engineer",
+        "contactType": "Engineer",
+        "relationship": "2026-11-10: Existing networking contact; no introduction or referral promised yet.",
+        "message": "Thanks for explaining the backend team.",
+        "followUp": "",
+        "followUpDate": "",
+        "sourceUrl": "https://notes.local/networking/sam"
+      }
+    },
+    {
+      "id": "lena",
+      "record": {
+        "contact": "Lena Fox",
+        "status": "Do not contact",
+        "notes": "Do not contact Lena again.",
+        "company": "Vale Retail",
+        "title": "Recruiter",
+        "contactType": "Recruiter",
+        "relationship": "2026-11-10: Existing networking contact; no introduction or referral promised yet.",
+        "message": "",
+        "followUp": "",
+        "followUpDate": "",
+        "sourceUrl": "https://notes.local/networking/lena"
+      }
+    }
+  ]
+}

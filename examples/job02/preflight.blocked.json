@@ -1,0 +1,28 @@
+{
+  "taskId": "JOB02",
+  "ready": false,
+  "participantInferenceExecuted": false,
+  "actualVerified": [
+    "new local candidate account clone and resume hash",
+    "both pinned participant containers login",
+    "both actual MCP to browser field operations",
+    "Lookout required native schemas"
+  ],
+  "syntheticVerified": [
+    "three fictional target paths for both browser adapters",
+    "conditional fingerprint conflict",
+    "resume byte hash and final fields/screenshots",
+    "POST/GET mutation denied",
+    "readiness/field-grade negative tests"
+  ],
+  "blocked": [
+    "exact live targets and safe upload/autosave evidence",
+    "reviewed candidate-specific field reference and actor",
+    "actual authenticated-human answer ingress and exact event",
+    "complete native three-path rehearsal and submission bypass coverage",
+    "all injected failures with bound receipts",
+    "independent grader handoff rehearsal",
+    "telemetry mapping receipt"
+  ],
+  "note": "Status example, not a passing launch receipt. Actual private receipts are outside git."
+}

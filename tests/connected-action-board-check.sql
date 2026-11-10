@@ -6,12 +6,13 @@ begin
  insert into public.profiles(user_id,facts,verified_at) values(u,'{"name":"Fictional Person","email":"fixture@example.com"}',now());
  insert into public.resumes(user_id,name,object_path,content_hash) values(u,'Fixture',u||'/r.pdf',repeat('a',64)) returning id into r;
  insert into public.jobs(id,canonical_url,employer) values('board-fixture','https://job-boards.greenhouse.io/fixture/jobs/999','{"company":"Fixture","title":"Backend Engineer"}');
- insert into public.applications(user_id,job_id,draft) values(u,'board-fixture',jsonb_build_object('resumeId',r,'questions','[]'::jsonb,'questionsReviewed',true,'url','https://job-boards.greenhouse.io/fixture/jobs/999')) returning id into app;
+ insert into public.applications(user_id,job_id,draft) values(u,'board-fixture',jsonb_build_object('resumeId',r,'questions','[{"question":"Why this team?","answer":"Fictional draft","answerSource":"ai_generated","questionSource":"employer_form"}]'::jsonb,'inferences','[{"field":"Team scope","reason":"Needs verification"}]'::jsonb,'questionsReviewed',true,'url','https://job-boards.greenhouse.io/fixture/jobs/999')) returning id into app;
  update public.applications set status='Awaiting approval' where id=app;
  insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Fixture',h,array['workspace:read','drafts:write','activity:write','approvals:read','resumes:read'],now()+interval '1 hour'),(v,'Other',ro,array['workspace:read'],now()+interval '1 hour');
  perform set_config('test.uid',u::text,true);
  select x into item from private.action_board_items(u) x where x->>'kind'='review_application';
  first_key:=item->>'key';
+ if item->'questions'->0->>'answerSource'<>'ai_generated' or item->'inferences'->0->>'field'<>'Team scope' or item->'resume'->>'name'<>'Fixture' then raise exception 'Draft disclosure projection lost source data';end if;
  if first_key is null then raise exception 'No deterministic draft decision';end if;
  if public.read_action_board() is distinct from public.agent_dispatch(h,'actions.board.read','{}') then raise exception 'Website/MCP snapshot mismatch';end if;
  if jsonb_array_length(public.agent_dispatch(ro,'actions.board.read','{}')->'items')<>0 then raise exception 'Foreign board leaked';end if;
@@ -73,11 +74,19 @@ begin
  if (select version from public.preparation_plans where application_id=app)<=version_before then raise exception 'Round reschedule did not fence stale practice';end if;
  if result->>'round_id'<>round1::text then raise exception 'Reschedule lost stable identity';end if;
  if not exists(select 1 from public.preparation_plans p,jsonb_array_elements(p.plan->'tasks') t where p.application_id=app and t->>'id'=task_id) then raise exception 'Reschedule discarded prior tasks';end if;
- -- Proposals require human confirmation and preserve original evidence.
+ -- Interview proposals belong to the application timeline, not the Action Board.
+ -- Confirm through the authenticated milestone writer while retaining the source.
  result:=to_jsonb(private.record_application_milestone_owned(u,app,jsonb_build_object('eventKey','proposal','kind','interview','label','Proposed round','phase','scheduled','proposedAt','2026-11-13T17:00:00Z','practiceCategory','ml','source',jsonb_build_object('kind','user_reported','note','Candidate reported a proposed time')),'user_reported'));
- select x into item from private.action_board_items(u) x where x->>'sourceId'=result->>'id';
- perform public.respond_action_board(jsonb_build_object('key',item->>'key','response','accept','eventKey',gen_random_uuid()));
- if not exists(select 1 from public.application_milestones where supersedes_id=(result->>'id')::uuid and confirmation='confirmed' and practice_category='ml') then raise exception 'Human confirmation did not create canonical correction';end if;
+ if result->>'confirmation' is distinct from 'needs_confirmation' then raise exception 'Proposal confirmed without human input';end if;
+ if exists(select 1 from private.action_board_items(u) x where x->>'sourceId'=result->>'id') then raise exception 'Interview proposal entered decision queue';end if;
+ if public.read_action_board() is distinct from public.agent_dispatch(h,'actions.board.read','{}') then raise exception 'Website/MCP filtered snapshot mismatch';end if;
+ if exists(select 1 from jsonb_array_elements(public.read_action_board()->'items') x where x->>'sourceId'=result->>'id') then raise exception 'Interview proposal leaked through board snapshot';end if;
+ execute 'set local role authenticated';
+ begin perform public.respond_action_board(jsonb_build_object('key','interview:'||(result->>'id'),'response','accept','eventKey',gen_random_uuid()));raise exception 'Retired interview card accepted';exception when serialization_failure then null;end;
+ replacement:=(public.record_application_milestone(app,jsonb_build_object('eventKey','human-confirmed-proposal','kind','interview','label','Proposed round','phase','scheduled','occurredAt','2026-11-13T17:00:00Z','supersedesId',result->>'id','practiceCategory','ml','timeZone','UTC','source',jsonb_build_object('kind','user','timestampConfirmed',true,'note','Confirmed in application timeline')))).id;
+ execute 'reset role';
+ if not exists(select 1 from public.application_milestones where id=replacement and supersedes_id=(result->>'id')::uuid and round_id=(result->>'round_id')::uuid and confirmation='confirmed' and practice_category='ml' and occurred_at='2026-11-13T17:00:00Z'::timestamptz and source->>'kind'='user') then raise exception 'Human confirmation did not create canonical correction';end if;
+ if not exists(select 1 from public.application_milestones where id=(result->>'id')::uuid and confirmation='needs_confirmation' and occurred_at is null and proposed_at='2026-11-13T17:00:00Z'::timestamptz and source=result->'source') then raise exception 'Human correction overwrote original proposal';end if;
  if public.agent_dispatch(h,'human.request',jsonb_build_object('action','verify-answer','recordId',answer_id))->>'url' not like '%section=agent&answer=%' then raise exception 'Answer handoff not precise';end if;
  -- Human-only writer is not an agent operation, even with full scopes.
  begin perform public.agent_dispatch(h,'actions.board.respond',request);raise exception 'Agent decision path exposed';exception when invalid_parameter_value then null;end;
@@ -174,7 +183,7 @@ begin
  insert into public.imported_jobs(user_id,identity_key,record,source_rows) values(u,'inline-import','{"company":"Fictional Import","title":"Engineer","location":"Remote","url":null,"status":"APPLIED","employmentType":"FT","appliedDate":"2026-11-07","statusDate":"2026-11-07","archived":false,"archivedDate":null,"notes":"Fictional","needsAction":true,"nextAction":"Choose an interview time"}','[]') returning id into imp;
  select x into item from private.action_board_items(u) x where x->>'sourceId'=imp::text;
  req:=jsonb_build_object('key',item->>'key','response','accept','eventKey',gen_random_uuid());receipt:=public.respond_action_board(req);
- if public.respond_action_board(req)<>receipt or exists(select 1 from public.imported_jobs where id=imp and record->'needsAction'='true'::jsonb) then raise exception 'Task completion failed';end if;
+ if public.respond_action_board(req)<>receipt or not exists(select 1 from public.imported_jobs where id=imp and record->'needsAction'='true'::jsonb) then raise exception 'Approval incorrectly completed tracker task';end if;
  execute 'set local role authenticated';
  begin perform private.respond_action_board_before_inline_cards('{}');raise exception 'Legacy decision bypass exposed';exception when insufficient_privilege then null;end;
  execute 'reset role';

@@ -39,3 +39,9 @@ supabase/.temp/
 /agent-package/*.config.json
 /agent-package/*.state.json
 /agent-package/*.lock
+
+# LaTeX compiler output.
+.latex-build/
+
+# Local Langfuse ingestion receipts (never benchmark evidence)
+.langfuse-exports/

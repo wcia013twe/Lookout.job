@@ -1,0 +1,137 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6a3d8ab68bfad862bc99d9d6",
+  "capturedAt": "2026-11-09T17:50:38.989407+00:00",
+  "responseSha256": "303f532832aeb8fa934bfe3b690b31ae93722d5c077fb072b891bd3afcbd998c",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6a3d8ab68bfad862bc99d9d6",
+    "jobTitle": "2027 Early Career Software Engineer",
+    "jobLocation": "Atlanta, GA",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 13:47:53",
+    "employmentType": "Full-time",
+    "salaryDesc": "$112K/yr - $149K/yr",
+    "jobSummary": "Anduril Industries is a defense technology company focused on transforming U.S. and allied military capabilities with advanced technology. The Early Career Software Engineer will support deployed software solutions, improve products and mission capabilities, collaborate on complex functionality, and analyze metrics to monitor and debug systems.",
+    "coreResponsibilities": [
+      "Support the software solutions that are deployed to customers and key stakeholders",
+      "Write code to improve products and scale the mission capability to more customers",
+      "Collaborate across multiple teams to plan, build, and test complex functionality",
+      "Create and analyze metrics that are leveraged for debugging and monitoring",
+      "Triage issues, root cause failures, and coordinate next-steps",
+      "Work on real, meaningful projects and learn from experienced professionals along the way"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Must be pursuing or have recently completed a bachelor's or master's degree in Computer Science, Computer/Software Engineering, Mathematics, Physics, or a related field",
+      "Must be a U.S. Person due to required access to U.S. export-controlled information or facilities; U.S. clearance eligibility may be required depending on program",
+      "Able to start full time in 2027",
+      "Familiarity with algorithms, data structures, storage systems, cloud infrastructure, front-end frameworks, and other technical tools",
+      "Proficiency in a variety of programming languages such as C++, Go, Rust, Java, and Python",
+      "A desire to work on software and applications that have real-world impact",
+      "Have a bias for action. If you see a problem, you want to solve and fix it",
+      "Be naturally curious about the technologies and tools you use",
+      "Low-ego, high ownership, and mission oriented"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Must be pursuing or have recently completed a bachelor's or master's degree in Computer Science, Computer/Software Engineering, Mathematics, Physics, or a related field",
+        "Must be a U.S. Person due to required access to U.S. export-controlled information or facilities; U.S. clearance eligibility may be required depending on program",
+        "Able to start full time in 2027"
+      ],
+      "preferredHave": [
+        "Familiarity with algorithms, data structures, storage systems, cloud infrastructure, front-end frameworks, and other technical tools",
+        "Proficiency in a variety of programming languages such as C++, Go, Rust, Java, and Python",
+        "A desire to work on software and applications that have real-world impact",
+        "Have a bias for action. If you see a problem, you want to solve and fix it",
+        "Be naturally curious about the technologies and tools you use",
+        "Low-ego, high ownership, and mission oriented"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Bachelor's degree"
+          },
+          {
+            "skill": "Master's degree"
+          },
+          {
+            "skill": "Computer Science"
+          },
+          {
+            "skill": "Mathematics"
+          },
+          {
+            "skill": "Physics"
+          }
+        ],
+        "softSkill": []
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Algorithms"
+          },
+          {
+            "skill": "Data Structures"
+          },
+          {
+            "skill": "Storage Systems"
+          },
+          {
+            "skill": "Cloud Infrastructure"
+          },
+          {
+            "skill": "Front-End Frameworks"
+          },
+          {
+            "skill": "C++"
+          },
+          {
+            "skill": "Go"
+          },
+          {
+            "skill": "Rust"
+          },
+          {
+            "skill": "Java"
+          },
+          {
+            "skill": "Python"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Desire to impact"
+          },
+          {
+            "skill": "Bias for action"
+          },
+          {
+            "skill": "Curiosity"
+          },
+          {
+            "skill": "Low ego"
+          },
+          {
+            "skill": "High ownership"
+          },
+          {
+            "skill": "Mission oriented"
+          }
+        ]
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "Anduril Industries is a defense technology company focused on transforming U.S. and allied military capabilities with advanced technology. The Early Career Software Engineer will support deployed software solutions, improve products and mission capabilities, collaborate on complex functionality, and analyze metrics to monitor and debug systems.\nResponsibilities\nSupport the software solutions that are deployed to customers and key stakeholders\nWrite code to improve products and scale the mission capability to more customers\nCollaborate across multiple teams to plan, build, and test complex functionality\nCreate and analyze metrics that are leveraged for debugging and monitoring\nTriage issues, root cause failures, and coordinate next-steps\nWork on real, meaningful projects and learn from experienced professionals along the way\nSkills\nMust be pursuing or have recently completed a bachelor's or master's degree in Computer Science, Computer/Software Engineering, Mathematics, Physics, or a related field\nMust be a U.S. Person due to required access to U.S. export-controlled information or facilities; U.S. clearance eligibility may be required depending on program\nAble to start full time in 2027\nFamiliarity with algorithms, data structures, storage systems, cloud infrastructure, front-end frameworks, and other technical tools\nProficiency in a variety of programming languages such as C++, Go, Rust, Java, and Python\nA desire to work on software and applications that have real-world impact\nHave a bias for action. If you see a problem, you want to solve and fix it\nBe naturally curious about the technologies and tools you use\nLow-ego, high ownership, and mission oriented\nBenefits\nHighly competitive equity grants are included in the majority of full time offers and are considered part of Anduril's total compensation package.\nTop-tier benefits for full-time employees, including a comprehensive, competitive benefits package available at little to no cost to employees.\nCompany Overview\nAnduril Industries is a defense technology company that specializes in developing advanced autonomous systems to enhance national security. It was founded in 2017, and is headquartered in Costa Mesa, California, USA, with a workforce of 1001-5000 employees. Its website is https://www.anduril.com.",
+  "sourceDatePosted": "2026-11-09 13:47:53"
+}

@@ -1,7 +1,9 @@
 "use client";
 import {useActionBoard,type BoardItem} from '../lib/use-action-board';
 import ActionDecisionCard from './action-decision-card';
-import {decisionTitle,decisionFeedback} from '../../lib/action-board.mjs';
+import TrackerWorkList,{type TrackerWork} from './tracker-work-list';
+import ActionAttention from './action-attention';
+import {decisionTitle,decisionFeedback,orderBoardItems,needsUnblocking,isCalendarContextAction,isVisibleBoardItem} from '../../lib/action-board.mjs';
 import SurfacePanel from "./surface-panel";
 import Link from "next/link";
 import { useWorkspace } from "../lib/workspace";
@@ -11,7 +13,6 @@ import { useEffect, useState } from "react";
 import DraftReview from "./draft-review";
 import NeedsYouRow, { ActionButton, TaskIcon } from "./needs-you-row";
 import PreparationReminders from "./preparation-reminders";
-import NetworkFollowUps from "./network-follow-ups";
 import type { Application } from "./workflow-types";
 export default function NeedsYou() {
   const w = useWorkspace();
@@ -19,6 +20,8 @@ export default function NeedsYou() {
   const [feedback,setFeedback]=useState('');
   const [reviewDecision,setReviewDecision]=useState<BoardItem|null>(null);
   async function respond(item:BoardItem,response:string,policy?:string,input?:Record<string,unknown>){try{await board.respond(item,response,policy,input);setFeedback(decisionFeedback(item,response));return true;}catch{return false;}}
+  async function respondWork(item:TrackerWork,response:string,input?:Record<string,unknown>){try{await board.respond({key:item.key},response,undefined,input);setFeedback(decisionFeedback({kind:'imported_action'},response));}catch{}}
+  async function demoProgress(item:TrackerWork,stage:string){try{await w.services.recordTrackerActionProgress({key:item.key,expectedVersion:item.version,stage,...(stage==='completed'?{note:'Fictional outcome saved by Muse. No external action occurred.'}:{}),eventKey:crypto.randomUUID()});await board.refresh();}catch{setFeedback('Demo progress could not save. Reload actions and try again.');}}
   const [review, setReview] = useState<string | null>(null);
   const setup =
     !w.state.workflow.profile.verified || !w.state.workflow.resumes.length;
@@ -32,10 +35,13 @@ export default function NeedsYou() {
   },[inbox,now]);
   useEffect(()=>{if(!board.snapshot)return;let saved=0;try{saved=Number(sessionStorage.getItem('lookout:board-scroll'));sessionStorage.removeItem('lookout:board-scroll');}catch{}if(saved>0)requestAnimationFrame(()=>window.scrollTo(0,saved));},[!!board.snapshot]);
   const applications=Object.values(w.state.workflow.applications as Record<string,Application>);
-  const actions=pendingActions(inbox,Date.now()).map(item=>({item,application:applications.find(app=>app.backendId===item.application_id)}));
-  const decisionHistory=board.snapshot?.history.filter(item=>!['review_application','resolve_blocker','check_submission'].includes(item.source_kind||'review_application')||!inbox.some(row=>row.application_id===item.source_id&&row.resolved_at))||[];
+  const actions=pendingActions(inbox,Date.now()).filter(isVisibleBoardItem).map(item=>({item,application:applications.find(app=>app.backendId===item.application_id)}));
+  const items=orderBoardItems((board.snapshot?.items||[]).filter(isVisibleBoardItem));
+  const trackerWork=(board.snapshot?.trackerWork||[]).filter(item=>isVisibleBoardItem({kind:'imported_action',action:item.action}));
+  const unblockCount=items.filter(needsUnblocking).length;
+  const decisionHistory=board.snapshot?.history.filter(item=>item.source_kind!=='confirm_interview'&&!(item.source_kind==='imported_action'&&isCalendarContextAction(item.source_summary?.action||''))&&(!['review_application','resolve_blocker','check_submission'].includes(item.source_kind||'review_application')||!inbox.some(row=>row.application_id===item.source_id&&row.resolved_at)))||[];
   const history=inbox.filter(item=>item.resolved_at).sort((a,b)=>String(b.resolved_at).localeCompare(String(a.resolved_at)));
-  const handoffCount = (board.snapshot?.items.length ?? actions.length) + (setup ? 1 : 0);
+  const handoffCount = (board.snapshot ? items.length : actions.length) + (setup ? 1 : 0);
   return (
     <>
       <Heading title="Action Board" />
@@ -46,9 +52,10 @@ export default function NeedsYou() {
             <span className="action-widget-count rounded-md px-2 py-1 text-xs font-semibold tabular-nums">{handoffCount}</span>
           </div>
           {(board.error||feedback)&&<p role="status" className="mt-3 text-sm">{board.error||feedback}</p>}{board.error&&<button type="button" onClick={()=>void board.refresh()} className="handoff-action">Reload actions</button>}
+          {!board.error&&unblockCount>0&&<p className="mt-3"><ActionAttention count={unblockCount}/></p>}
           {setup&&<p className="my-4 text-sm text-board-muted">Add and verify your profile and résumé to finish application approvals. <Link href="/profile/" className="underline underline-offset-4">Set up profile</Link></p>}
           {handoffCount ? <ul className="mt-4 space-y-4">
-            {board.snapshot?.items.map(item=><ActionDecisionCard key={`${w.user?.id||'demo'}:${item.key}`} item={item} busy={board.busy||w.locked||!!board.error} onRespond={respond}/>)}
+            {items.map(item=><ActionDecisionCard key={`${w.user?.id||'demo'}:${item.key}`} item={item} busy={board.busy||w.locked||!!board.error} onRespond={respond} onSaveMessage={board.saveMessage}/>)}
             {!board.snapshot&&actions.map(({item,application}) => {
               if(!application)return <NeedsYouRow key={item.id} title="Application action" context="Saved application" reason={item.reason} control={<Link href="/applications/" className="handoff-action">Open Applications</Link>}/>;
               const uncertain = item.kind === "check_submission";
@@ -59,10 +66,11 @@ export default function NeedsYou() {
               const dateLabel = date ? `${tracked.appliedDate ? "Applied" : "Opened"} ${new Date(date).toLocaleDateString(undefined, { month: "short", day: "numeric", ...(date.length === 10 ? { timeZone: "UTC" } : {}) })}` : "Date not recorded";
               return <NeedsYouRow key={item.id} title={title} context={`${application.company} · ${application.title}`} reason={reason} role={{company:application.company,roleTitle:application.title,roleType:application.employmentType === "FT" ? "Full-time" : application.employmentType || "Type not recorded",date:dateLabel,status:tracked.status || "New",workflow:application.status}} control={<ActionButton label={uncertain ? `Verify submission for ${application.company}` : `${title} for ${application.company}`} onClick={() => setReview(application.id)} disabled={w.locked}>{uncertain ? "Check submission" : item.kind === "resolve_blocker" ? "Resolve blocker" : "Review application"}</ActionButton>} />;
             })}
-          </ul> : <div className="py-12 text-center"><svg aria-hidden="true" className="mx-auto text-board-success" width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M7 16.5 13 22l12-13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><rect x="3" y="3" width="26" height="26" rx="8" stroke="currentColor" strokeWidth="1.5"/></svg><h3 className="mt-4 font-bold">Human handoffs are clear</h3><p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-board-muted">Muse can keep working without a decision from you right now.</p></div>}
+          </ul> : <div className="py-12 text-center"><svg aria-hidden="true" className="mx-auto text-board-success" width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M7 16.5 13 22l12-13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><rect x="3" y="3" width="26" height="26" rx="8" stroke="currentColor" strokeWidth="1.5"/></svg><h3 className="mt-4 font-bold">No actions to show</h3><p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-board-muted">View application progress and saved drafts in Applications.</p></div>}
+          <TrackerWorkList items={trackerWork} busy={board.busy||w.locked||!!board.error} onRespond={respondWork} onDemoProgress={w.demo?demoProgress:undefined}/>
           {!!(history.length+decisionHistory.length) && <details className="mt-5 border-t border-board-line pt-3"><summary className="min-h-11 cursor-pointer py-2 font-semibold">Action history · {history.length+decisionHistory.length}</summary><ul className="divide-y divide-board-line">{history.map(item=><li className="py-3 text-sm" key={item.id}><p>{applications.find(app=>app.backendId===item.application_id)?.company || "Application"} · {item.reason}</p><p className="mt-1 text-xs text-board-muted">{item.resolution === "work_stopped" ? "Agent work stopped" : item.resolution === "superseded" ? "Replaced by updated action" : item.resolution === "user_reported_submitted" ? "You reported submission · retry blocked" : "Resolved"} · revision {item.revision} · {new Date(item.resolved_at!).toLocaleString()}</p><Link className="handoff-action" href={`/applications/?application=${item.application_id}`}>View application</Link></li>)}{decisionHistory.map(item=><li className="py-3 text-sm" key={item.decision_key}><p>{decisionTitle({kind:item.source_kind})} · {decisionFeedback({kind:item.source_kind},item.response)}</p><p className="mt-1 text-xs text-board-muted">{new Date(item.responded_at).toLocaleString()}</p>{item.source_kind==='review_application'&&<Link className="handoff-action" href={`/applications/?application=${item.source_id}`}>View application</Link>}</li>)}</ul></details>}
         </SurfacePanel>
-        <div><PreparationReminders /><NetworkFollowUps /></div>
+        <aside aria-label="Weekly preparation calendar"><PreparationReminders /></aside>
       </div>
       {review && <DraftReview key={review} id={review} initialRoundId={reviewDecision?.kind==='confirm_interview'?reviewDecision.sourceId:undefined} initialTab={reviewDecision?.kind==='confirm_interview'?'Interview':'Documents'} boardDecision={reviewDecision?.kind==='review_application'?reviewDecision:undefined} onBoardReviewed={async()=>{if(reviewDecision&&!await respond(reviewDecision,'review'))throw Error('Review could not save');}} onClose={() => {setReview(null);setReviewDecision(null);void board.refresh();}} />}
     </>

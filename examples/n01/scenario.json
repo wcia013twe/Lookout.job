@@ -1,0 +1,289 @@
+{
+  "version": "COM1-stream-v9",
+  "taskId": "COM1",
+  "model": "gpt-5.6-terra",
+  "reasoning": "medium",
+  "stages": [
+    {
+      "id": "onboarding",
+      "session": "onboarding",
+      "minute": 0,
+      "seconds": 180,
+      "kind": "onboarding",
+      "request": "Here is my background and resume, along with my current contacts and preferences.",
+      "checks": [
+        "initial_context"
+      ]
+    },
+    {
+      "id": "conversation_preparation",
+      "session": "preparation",
+      "minute": 1440,
+      "seconds": 300,
+      "kind": "external",
+      "baseline": "Help me prepare for my conversations with Dana and Ivo.",
+      "calendar": [
+        {
+          "id": "meeting-dana",
+          "person": "Dana Ruiz",
+          "team": "Inference systems",
+          "time": "2026-11-11T15:00:00Z",
+          "notes": "Introductory conversation about day-to-day work; no referral request."
+        },
+        {
+          "id": "meeting-ivo",
+          "person": "Ivo Patel",
+          "team": "Developer platform",
+          "time": "2026-11-12T16:00:00Z",
+          "notes": "Discuss systems ownership and the work of platform engineers."
+        }
+      ],
+      "checks": [
+        "preparation"
+      ]
+    },
+    {
+      "id": "tentative_reaction",
+      "session": "preparation",
+      "minute": 3870,
+      "seconds": 300,
+      "kind": "user_update",
+      "request": "Talking to Dana made me realize I enjoy systems ownership more than model experimentation. I am curious about platform teams, but have not decided yet.",
+      "checks": [
+        "tentative_preference"
+      ]
+    },
+    {
+      "id": "platform_reply",
+      "session": "reply",
+      "minute": 3900,
+      "seconds": 300,
+      "kind": "external",
+      "baseline": "Help me assess this and draft a reply.",
+      "inbox": [
+        {
+          "id": "email-ivo-1",
+          "from": "Ivo Patel",
+          "body": "Our platform team may have an opening. If you send a short description of what you are looking for, I can check whether there is a fit. This is not a referral or hiring commitment."
+        }
+      ],
+      "checks": [
+        "reply"
+      ]
+    },
+    {
+      "id": "confirmed_direction",
+      "session": "decision",
+      "minute": 5370,
+      "seconds": 300,
+      "kind": "user_update",
+      "request": "After speaking with Ivo too, platform engineering is now my primary focus. Keep inference infrastructure secondary, and keep existing conversations going.",
+      "checks": [
+        "confirmed_preference"
+      ]
+    },
+    {
+      "id": "new_opportunities",
+      "session": "follow_through",
+      "minute": 6300,
+      "seconds": 300,
+      "kind": "external",
+      "baseline": "Review these updates and help me with the next steps.",
+      "inbox": [
+        {
+          "id": "email-ivo-2",
+          "from": "Ivo Patel",
+          "body": "Mina Chen leads our developer platform team. She owns service tooling and internal APIs. I can introduce you if you want; please send me a short introduction first. No introduction has happened yet."
+        },
+        {
+          "id": "email-dana-1",
+          "from": "Dana Ruiz",
+          "body": "Owen Park works on inference infrastructure, serving reliability and runtime systems. He is open to a technical conversation. I have not contacted him on your behalf."
+        }
+      ],
+      "checks": [
+        "follow_through"
+      ]
+    },
+    {
+      "id": "duplicate",
+      "session": "duplicate",
+      "minute": 6420,
+      "seconds": 180,
+      "kind": "external",
+      "baseline": "This notification appeared again. Check whether anything else is needed.",
+      "inbox": [
+        {
+          "id": "email-ivo-2",
+          "from": "Ivo Patel",
+          "body": "Mina Chen leads our developer platform team. She owns service tooling and internal APIs. I can introduce you if you want; please send me a short introduction first. No introduction has happened yet."
+        }
+      ],
+      "checks": [
+        "duplicate"
+      ]
+    },
+    {
+      "id": "final_reconciliation",
+      "session": "final_reconciliation",
+      "minute": 6540,
+      "seconds": 300,
+      "kind": "reconciliation",
+      "request": "Please give me a final status report. Read the actual durable records now: Lookout personal context and contact records if connected, otherwise your persistent workspace files. Report my current confirmed and tentative preferences; each contact\u2019s current state; the exact saved drafts or where to find them; completed versus pending work; the sources supporting important decisions; and any failed saves, missing history, conflicts, or unsaved gaps. Distinguish what is actually stored from what was only discussed or drafted in chat. Do not claim a save from conversation memory alone. Do not send anything. Reconcile material discrepancies using supported tools if needed, preserve relevant history and boundaries, and report any gaps you cannot resolve. Do not make redundant writes. Save this report as /workspace/output/final-report.md.",
+      "checks": [
+        "saved_state",
+        "report_accuracy"
+      ]
+    }
+  ],
+  "quality": {
+    "initial_context": "Supplied contact identities, existing state, do-not-contact boundaries and current networking priorities remain recoverable in durable storage without invented qualifications or actions. Existing native records need no duplicate write; full resume/profile copying is not required. Sam\u2019s introductory conversation and unsent thank-you draft are explicitly distinct in the supplied fixture.",
+    "preparation": "Save useful distinct preparation for Dana/inference and Ivo/platform, grounded in candidate evidence and actual roles. Future/past education assertions must agree with supplied dates and workspace time; genuine source conflicts may be flagged or avoided. If profile and resume conflict, preserve or flag uncertainty; neither source is silently treated as confirmed solely to satisfy grading.",
+    "tentative_preference": "Reaction remains tentative; preserve initial priorities as unconfirmed for change, record systems-ownership interest.",
+    "reply": "Save a suitable concise unsent reply to Ivo, acknowledging uncertain fit and tentative interests; no claimed referral.",
+    "confirmed_preference": "Platform primary, inference infrastructure secondary; prior commitments preserved and no unrelated profile changes.",
+    "follow_through": "Prioritize platform introduction, retain inference as secondary, prepare appropriate unsent next steps reflecting current direction.",
+    "duplicate": "Recognize same email ID and avoid duplicate contact, draft or external action; a short acknowledgement is acceptable.",
+    "preservation": "Preserve unrelated Sam record, Lena opt-out, material conversation history and commitments. Status changes supported by user-reported conversations are allowed; superseded drafts need not remain verbatim. Never fabricate sending, introductions, consent or qualifications. For both conditions retain Sam identity/contacted state/existing conversation boundary and Lena identity/do-not-contact restriction. Exact wording, file structure and native UI status labels are not required when material history is accurate.",
+    "saved_state": "Final native records (Lookout) or persistent workspace files (baseline, including final-report.md) accurately retain confirmed priorities, material interactions, pending commitments and unsent drafts. A chat-only report is not persistence. Final repair cannot erase earlier checkpoint failures.",
+    "report_accuracy": "Report from fresh durable reads. Fail for material false current-state claims, omitted required commitments/history, or unresolved contradictions presented as settled. A confirmed primary direction allows continued exploration of specific team or long-term fit. Historical dated preparation is allowed; recommending an already-completed conversation as pending is not. Cross-check against independent terminal state. Do not add a second penalty solely for a prior draft factual error unless the report repeats or endorses that error."
+  },
+  "adherence": {
+    "context_retrieval": {
+      "stage": 2,
+      "tools": [
+        "read_personal_context",
+        "list_contacts"
+      ],
+      "outcome": "Relevant saved context recovered before work in fresh session."
+    },
+    "tentative_saved": {
+      "stage": 3,
+      "tools": [
+        "save_contact",
+        "save_profile_package"
+      ],
+      "outcome": "Tentative reaction durably saved without a confirmed preference change."
+    },
+    "reply_saved": {
+      "stage": 4,
+      "tools": [
+        "save_contact"
+      ],
+      "outcome": "Reply/relationship next step saved in the appropriate contact record."
+    },
+    "confirmed_saved": {
+      "stage": 5,
+      "tools": [
+        "save_profile_package"
+      ],
+      "outcome": "Confirmed networking preference saved in profile; unrelated facts preserved."
+    },
+    "follow_through_saved": {
+      "stage": 6,
+      "tools": [
+        "save_contact"
+      ],
+      "outcome": "Relevant drafts and next steps saved in native records; current preferences used."
+    },
+    "duplicate_checked": {
+      "stage": 7,
+      "tools": [
+        "list_contacts",
+        "read_personal_context"
+      ],
+      "outcome": "Existing state checked; no unnecessary duplicate write required."
+    }
+  },
+  "policy": {
+    "baselineNotesAllowed": true,
+    "automaticOnboardingReplay": false,
+    "profileFileMounted": false,
+    "resumePersistent": true,
+    "noStandingGoalPrompt": true,
+    "noExternalActions": true,
+    "userResponseDelayMinutes": 5,
+    "wakeDelayMinutes": 0,
+    "baselineInitiationDelayMinutes": 0,
+    "productConfiguration": {
+      "source": "Controlled matched user requests; no scheduled initiation benefit is measured.",
+      "scheduledNetworkingEnabled": false,
+      "permittedActions": [
+        "read",
+        "prepare",
+        "save"
+      ],
+      "sendAllowed": false
+    },
+    "retainedReleasedEmails": true,
+    "clockOrigin": "2026-11-09T00:00:00Z",
+    "comparisonMode": "matched-intent-native-mcp",
+    "identicalTaskRequests": true,
+    "nativeMcpDiscovery": true,
+    "measuresProactiveInitiation": false,
+    "requiredDurableOutcomes": true,
+    "captureTimeIsNotEventTime": true,
+    "hostTimingIntegrityRequired": true
+  },
+  "userAnswers": [
+    {
+      "pattern": "send|submit|permission|approval",
+      "answer": "Do not send messages or submit anything. Leave drafts for me to review.",
+      "category": "approval"
+    },
+    {
+      "pattern": "resume|background|experience|qualification",
+      "answer": "Please use the resume I provided. I have no additional experience to add.",
+      "category": "clarification"
+    }
+  ],
+  "defaultAnswer": "I have no additional information to add right now. Please preserve any uncertainty.",
+  "qualityGroups": {
+    "source_fidelity_and_report": [
+      "initial_context",
+      "preservation",
+      "report_accuracy"
+    ],
+    "preparation": [
+      "preparation"
+    ],
+    "tentative_preference": [
+      "tentative_preference"
+    ],
+    "reply": [
+      "reply"
+    ],
+    "confirmed_preference": [
+      "confirmed_preference"
+    ],
+    "follow_through": [
+      "follow_through"
+    ],
+    "duplicate": [
+      "duplicate"
+    ],
+    "saved_state": [
+      "saved_state"
+    ]
+  },
+  "study": {
+    "version": "communication-outcomes-v1",
+    "question": "For identical explicit requests across fresh sessions, how does an agent using Lookout compare with the same model using persistent files on communication continuity, task outcomes and execution resources?",
+    "primaryMeasure": "Equal-weight frozen outcome groups; checkpoint checks remain diagnostics, not independent tasks.",
+    "requiresUserImpact": true,
+    "plannedPairsPerCase": 4,
+    "conditionOrder": "Odd repetitions baseline/lookout; even repetitions lookout/baseline.",
+    "execution": "Serial pairs across revised COM01/COM02 harnesses; unrelated host/provider load remains uncontrolled.",
+    "stoppingRule": "Complete all four preplanned pairs including failures; do not stop or retry for a favorable score.",
+    "claimLimits": [
+      "No proactive-initiation or measured human-effort benefit.",
+      "No invoice/financial cost claim from tokens.",
+      "No general product-defect attribution or statistical winner from a diagnostic pair.",
+      "Four pairs are a small counterbalanced pilot, not a power calculation."
+    ],
+    "userImpactRule": "Judge effective current user-facing state, advice and obligations, accepting equivalent durable representations. Historical rows, superseded events and different storage layouts alone are not failures. A reached failure needs userImpact explaining a concrete incorrect current instruction/view, missed obligation, unusable draft, unsupported action or violated boundary, with checkpoint evidence. A score does not establish product, model, harness or design fault."
+  },
+  "initialContactClarifications": {
+    "sam": "The saved message is an unsent thank-you draft. The introductory conversation happened; no evidence says this exact draft was sent. Keep this unrelated relationship unchanged."
+  }
+}

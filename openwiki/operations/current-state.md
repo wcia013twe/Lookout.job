@@ -654,6 +654,15 @@ A fictional 32+14 overlap fixture proves 42 unique roles, not a 14-role cap;
 fictional UI fixtures cover an older unapplied role and the applied-history toggle.
 Local build/test evidence and hosted release remain separate.
 
+### Orchestrator audit rule (contract 136 source update)
+
+Application guide24 requires the coordinating Agent to reconcile every assigned
+job, inspect saved analysis/drafts for omissions and mistakes, repair supported
+gaps and read back corrections before calling work ready. Unresolved information
+stays explicit; submission summaries are audited against saved outcomes. No new
+tools, UI, schema or runtime are added. Gateway release/client refresh and real
+host compliance remain separate from source validation.
+
 ### Rejection-only Discover protection
 
 Discover explicitly excludes rejected outcomes even when there is no recorded
@@ -663,6 +672,91 @@ applied-history toggle does not reveal rejected roles. A fictional rejection-onl
 fixture covers the detached demo. The direct worker's existing tracked-job
 exclusion is tested with Submitted and Rejected records, preserving each full
 application row. No new writer, migration, tool or permission is added.
+
+### Embedded communication reference
+
+Action Board message reviews now embed a compact communication summary alongside
+the existing application attachment pattern. It shows the saved recipient, company,
+destination and subject when available; its link opens the owned Network message
+and retains the board return path. Application summaries are also clickable across
+the widget, with a separate accessible external-posting target and no extra
+details text link. The complete draft and exact-message review
+remain inline. Acceptance still only marks the draft ready for the human to send.
+This is presentation over the existing board read/response boundary (including
+read_action_board MCP); it introduces no writer, sending capability or schema.
+Detached fixtures cover a subject/email and missing optional metadata. Hosted
+release and real-account browser verification remain separate.
+
+The board's Edit message control saves subject/body through the existing
+owner/revision-checked save_outreach_contact writer, preserving all other contact
+fields and status. Cancel keeps the saved draft. Unsaved editing disables
+decisions; changed drafts receive a new exact-review identity. Agents use the
+existing save_contact/contacts.save boundary. No message is sent. Detached
+interaction and adapter checks cover save/cancel, fresh review and stale writes.
+
+
+Action Board input indicators derive from the existing owned pending decisions:
+blockers, missing answers, uncertain submissions and drafts with unanswered
+required fields. A reusable passive dot appears on affected cards and navigation,
+with an accessible input count; successful owning-record resolution removes it.
+Filled application drafts lead the list using a stable partition; chronology
+within each group, review gates and backend priority/supersession remain intact.
+This adds no notification delivery service or new MCP mutation. Existing
+`read_action_board` and owning writers supply the same pending items to agents.
+
+### Single-portal persistence repair
+
+The existing `submit_portal_search` tool and leased worker remain the execution
+path. Shared observation validation and SQL now accept location text up to 2000
+characters: one valid 572-character Cisco location previously rejected an entire
+final save batch. This preserves the complete location rather than truncating it.
+
+The owned, paged worker history now includes applied/rejected imported tracker
+records as well as native applications, and is refreshed after collection before
+final deduplication. Imports are identity hints only; search never rewrites their
+records or excludes every role at a company. Lease, owner, settings and bounded
+transaction checks remain in place. Fictional SQL-leased tests cover multi-location
+saves, imported applied/rejected exclusions and an import arriving mid-collection.
+
+A live local Jobright-only run retained 845 source rows, but its 581 selected
+public detail pages exposed no employer application link; it saved zero listings.
+That is unresolved coverage, not evidence of an empty job market. Exact employer
+link research remains the existing agent handoff; no login bypass, guessed links,
+LLM worker or alternate write path was introduced. Local Docker persistence proof
+is recorded separately from hosted deployment in the feature change note.
+
+The ordinary detached demo now includes the connected Action Board examples
+without a hidden scenario parameter: filled drafts first, a missing answer,
+CAPTCHA verification, and an uncertain submission. All resolve in memory through
+fictional services and return on Reset demo data. Explicit named test scenarios
+keep their existing fixtures. No account writes or external employer forms open.
+
+The repeat test also exposed a SmartRecruiters URL-alias gap: its native identity
+was not reconstructed from storage, which retained only Greenhouse/Lever triples.
+The existing adapter now restores all five verified provider triples (including
+Ashby, Workday and SmartRecruiters) before delegating to copied Career Ops dedup.
+An unchanged short/slugged URL pair is covered by both child-process and SQL-leased
+regressions; distinct native posting IDs remain separate.
+
+Discover now uses a dedicated compact DiscoveredRoleWidget with company identity,
+role title, facts, fit summary, expandable match details and existing queue/preview
+actions. The decorative rarity banner is removed. Application references retain
+the shared Circles progress preview; discovery never implies an application
+stage. This is presentation only; existing service and MCP writers are unchanged.
+
+Action review now groups application preparation/submission under Submission,
+and questions, CAPTCHA/login blockers and uncertainty under Need your input.
+Both use the compact role widget and display the selected draft résumé/version,
+employer-question sources, AI/inference labels and explicit unknown sources.
+Draft inferences are part of the same owned draft/projection, not a parallel
+post. Read parity and receipt authority remain unchanged; hosted projection
+and guide25/contract137 availability requires the normal backend release.
+
+The shared miniwidget's compact board variant now matches the application
+attachment's icon, role/company hierarchy, spacing, contrasting neutral surface
+and border. It renders a saved fitLabel when present, otherwise an existing
+saved priority. Scores never synthesize a label. Exact owned role identity links
+a board application to its saved discovery label; missing labels are omitted.
 
 ### Bounded Discover analysis
 
@@ -675,3 +769,707 @@ separately from source and component tests.
 The disclosure heading is Job Description. Explicitly marked Structured paraphrase
 content is presented as a saved summary rather than an employer quotation; saved
 content and the existing source URL are preserved.
+
+### Unified Action Board and AI Apply change feed
+
+Production paths now emit action_decision (human decisions/native approvals)
+and application_requested (AI Apply job insertion) into the existing pointer-only
+change feed and count-only watcher. Per-connection acknowledgement is delivery
+consumption, never completion. Tracker approvals stay pending until the claimed
+agent reports an outcome through record_tracker_action_progress. Owner/version/
+connection fences, durable rejection, explicit human reopening and late-outcome
+preservation use the existing decision ledger and owning tracker records. The
+normal Action Board displays this pipeline inline. Demo fixtures exercise the
+same requests and lifecycle in detached memory. Historical Done/Dismissed receipts
+are not retroactive permissions. Contract138/guide26 and the migration require
+normal backend release; a real Muse wake remains host/environment verification.
+
+Local activation of revision 35310de9 on 2026-11-08 applied the missing watcher, schedule refresh,
+disclosure and pipeline migrations and refreshed the API/Edge runtime. Existing
+account records were preserved; the worker was retained. A disposable local
+account verified authenticated human approval, MCP pickup/completion and feed
+acknowledgement with count 0 → 1 → 0. AI Apply event insertion was verified in a
+rolled-back transaction before worker visibility. This establishes local runtime
+behavior only; hosted deployment and the actual Muse host wake remain unverified.
+
+### Muse-owned AI Apply routing (source update)
+
+AI Apply now emits the existing application_requested feed pointer and waits for
+its bound agent. The agent-only claim_application_request / report_application_request
+tools use the existing job journal, current job/application versions, active
+connection scopes and human stop checks. Single pickup has no timed takeover.
+Muse reuses the saved draft with its host browser and optional host subagents;
+no backend browser session transfers. Outcome reports distinguish prepared,
+completed, blocked and uncertain, never create approval/submission evidence,
+and retain the existing application projection and finished-job feed.
+
+Deterministic worker pickup is disabled in SQL and its runtime hookup plus
+Node/local deterministic browser-tool registrations are commented out. Source
+implementations remain. Search workers and separate approval/receipt authorities
+are preserved. Existing started deterministic attempts can still persist a true
+finish. Host computer use cannot bypass required approval, authorization, stops
+or uncertainty checks; unavailable capability must become a saved blocker.
+
+See [the current routing contract](../../docs/discover-application-jobs.md).
+This is source-level behavior: migration, gateway/MCP and Node activation plus
+real watcher/browser-host verification are separate. The detached demo traces
+fictional pickup/outcome in memory and never opens or submits an employer form.
+
+Local Muse request activation (2026-11-08): migration 20261108050816 and
+API image lookout-node:muse-requests-c7d8534a are active in the local stack.
+Connected MCP discovery exposes both claim_application_request and
+report_application_request. A disposable account verified authenticated queueing,
+MCP pickup and a saved blocked outcome; no employer action or real account
+decision occurred. Actual Muse wake/browser work and hosted release remain
+unverified.
+
+### One-minute Muse event watcher (local activation)
+
+Agent package 0.2.0 uses 60-second default polling/wake cooldown and bounded error backoff against the existing event count. Context versions remain freshness checks. The optional receiver adapter now accepts Action Board refresh arguments; authenticated handling still requires verified durable outcomes before acknowledgement. Local Node MCP read-back confirmed developer140 and agent-package/change-resumption v2, and localhost serves the checksummed 0.2.0 package. This does not activate a host watcher: Dots Local watch was disabled and WGU remained queued v1 at verification. Edge/hosted release, actual host wake and employer work remain separate.
+
+Local dev transport verification (2026-11-08): Node image lookout-node:muse-public-transport-140 serves shared `/agent-gateway/pending-count` and checksummed `/agent-package/manifest.json` plus archive 0.2.0 through the MCP tunnel origin. Live public checks confirmed archive internal version/hash, active-watch count 1, missing-ID 400, unknown-ID zero and denial of unrelated paths. Hosted site publication remains separate. The enabled watch belongs to Muse Local, while WGU is queued for Dots Local (watch disabled); no request was rebound, claimed or acknowledged to hide that mismatch.
+
+Quiet application guidance locally activated (2026-11-08): connected MCP read-back confirmed developer141/application-workspace28/notifications5 after Node image activation and local Edge refresh. The guides require quiet browser work, Lookout-first recovery and a verified owning Need your input card for real blockers. Host secure-store/mailbox use is conditional on actual authorized capability; secrets never belong in Lookout or ordinary messages. Existing human approval and secure-entry boundaries remain. Fictional MCP-to-board integration covers the agent secure-entry handoff; real host compliance/credential capability and hosted release remain unverified.
+
+General batch/resume guidance locally activated (2026-11-08): MCP read-back confirmed developer142/application-workspace29/change-resumption3. The rules are Lookout-first facts, parallel independent work, serialized shared accounts/records, and retaining/resuming the same browser application where supported. Employer draft persistence and host session retention require evidence; no host isolation, real account state or actual browser compliance is established by guide activation.
+
+Grouped-input clarification locally activated (2026-11-08): connected MCP read-back confirmed developer143/application-workspace30, explicitly requiring all unanswered employer fields in one existing application/Need your input card, verified before notification, then the same application’s Submission review after resolution. This is a guide clarification over existing scoped writers/projections, not a new card implementation or evidence of host compliance. No real answers/cards/approvals were changed by this pass.
+
+### Discover question inspection disclosure
+
+Source now keeps Application answers visible for unchecked Discover jobs and distinguishes missing/partial form inspection from an explicitly completed inspection. An empty draft cannot produce the no-input reassurance. Fictional demo roles cover unchecked and partial questions. Developer146/application-workspace33 requires incrementally saved employer questions and a read-back-verified grouped Need your input handoff before notification. This uses existing draft/board boundaries; guide deployment, external host compliance and real WGU record repair are not established by this source change.
+Focused card and submission-label repair locally activated (2026-11-08): card UI keeps résumé and unresolved/proposed/unsourced questions while full saved answers remain in the application widget and versioned payloads. Applications suppresses superseded preparation warnings after applied/later progress while retaining genuine uncertainty. Existing Discover default filtering already excludes recorded applied roles, with explicit history browsing preserved. Desktop/mobile detached checks and full suite passed; Node/Edge MCP read-back confirmed developer145/application-workspace32. WGU was read back as Submitted with its historical partial/blocked job unchanged; this pass did not modify real application data or establish real-account browser refresh.
+
+### Explicit AI Apply routing (2026-11-08)
+
+Future requests use an owned, versioned application-agent preference, separate from the display agent name. My Agent → Use for AI Apply and scoped MCP read_application_agent/select_application_agent use the same validators and database ownership/version checks. New connections do not replace the saved choice; unavailable selections fail without fallback. Existing queued/running jobs keep their connection and claim authority. Without a saved choice, browser queueing requires exactly one eligible connection; MCP retains the authenticated caller as its explicit destination. Changing the preference grants no scopes, approval or submission receipt. Migration 20261108081625; local activation and hosted release must be verified separately.
+
+Local routing activation: the migration and Node image lookout-node:application-agent-147 are active. Scoped MCP write/read-back saved Muse Local as the default, and the live queue resolver confirmed Dots callers target it without queueing a test application. Full suite (1145 passed/five skipped), focused final reset/demo checks, production build and detached desktop/mobile selector checks passed. Existing WGU state, Dots permissions and watch configuration were not changed. Hosted release and real-account browser interaction remain unverified.
+
+## Ten-second watcher follow-up
+
+Package 0.2.1 defaults and minimums are 10 seconds for count polling and wake cooldown (up to 10% polling jitter). Explicit existing configs retain their values and must set both fields to 10. Error backoff stays exponential, capped at five minutes plus jitter; serialized worker/durable acknowledgement rules are unchanged. Guides agent-package 3/change-resumption 4 and developer 148 describe the new contract. Runtime installation/activation must be verified separately from package publication.
+Discover cards use the original tier-colored company header and glass body,
+compact compensation/location facts and four match scores. Fit/recommendation
+summaries stay out of the cards; full analysis remains in the job drawer. The
+separate embedded role widget is unchanged. Demo cards share this presentation.
+
+Local publication verified: the Muse dev tunnel serves manifest/archive 0.2.1 with matching SHA-256 and 10/10 defaults. Refreshed MCP reads developer148 and agent-package guide3/package0.2.1. The existing watch handle/config was not changed; Muse must upgrade its installed package, set both explicit intervals to10 and restart its existing host service. Remote running cadence remains unverified.
+
+## Saved human response in decision notifications
+
+Action-decision events now include savedResponse, the exact validated durable card request (including input.note and input.answers). An after-ledger trigger enriches the existing event atomically, including the inline writer's final request update. Existing events are enriched without clearing acknowledgements or replaying historical consent. The authenticated scoped feed exposes the body only for action_decision; count-only polling remains body-free. No new writer or approval authority. Guides require reconciling current source versions and persisting/read-verifying answers before acknowledgement. Fictional demo matches the feed contract.
+
+Local recovery verified: developer149 is live. A single idempotent Whatnot recovery event carries the original saved ranking (NYC, SF, Seattle, LA, Phoenix) in savedResponse.input.note; the Muse connection’s authenticated changes.read returned that complete body. The original acknowledgement was retained. No application revision, answer, approval or submission was changed by this notification repair; actual Muse handling is not yet verified.
+
+## Blocker answers resume preparation
+
+Human resolve_blocker acceptance now saves answers/notes and clears the blocker with questionsReviewed=false, returning the application to Draft instead of automatically producing Awaiting approval. Muse owns the subsequent preparation/readiness declaration; final human submission approval remains separate. The saved response event and historical decision are preserved. Existing exact-review approvals and other card actions retain their validators. Fictional demo and database regression cover the no-question note case and structured-answer blocker case.
+
+Verified locally:1153 full-suite tests passed/five skipped; focused blocker/response/guide tests, production frontend build, Docker build and data validation passed. Migration20261108233438 applied alone. Whatnot was version-fenced from revision3/Awaiting approval to revision4/Draft by changing only its readiness flag; no résumé, questions, saved ranking, decision history, approval or submission was fabricated. Scoped read_action_board confirms no Whatnot card remains. Hosted release and external Muse preparation remain unverified.
+
+
+### Superseded preparation blocker cleanup
+
+Migration 20261108235459 makes recorded tracking stages retire stale preparation
+blockers in the shared application transition and reconciles existing tracked rows.
+Website set_application_stage and MCP record_application_progress keep their
+existing ownership/version checks and reported-progress provenance. No active or
+uncertain submission attempt is cleared, and no draft, approval, submission receipt
+or historical job outcome is manufactured or rewritten. The detached demo covers
+reported submission after a fictional blocked preparation. Source verification and
+local database activation are recorded separately in the feature change note;
+hosted release is not implied.
+
+
+AI Apply pickup guidance (developer152/application-workspace38/notifications6)
+requires a brief host-conversation receipt only after verified claim, grouped for
+requests claimed together, followed by quiet preparation. It never reports queued
+roles as running, grants submission approval or acknowledges unhandled work.
+Existing host messaging permission, quiet-time restrictions and real delivery
+receipts remain required. Guide availability and actual Muse notification delivery
+are separate verification boundaries.
+
+
+## Compact draft handoff and reread recovery (source update)
+
+`prepare_draft` defaults to its compact response and accepts
+`responseMode: "full"` for the persisted application. Muse may use that returned
+saved revision and answer set instead of immediately rereading the draft.
+The owning Action Board card still requires `read_action_board` verification
+before a grouped-input notification. Claim/report, progress/evidence writes and
+event acknowledgement remain separate scoped operations with their existing
+validation and readback requirements.
+
+Recovery guidance starts from current owned application and request records,
+including terminal request history, rather than repeating the previous chat's
+steps. Missing/stale guides reload; stale writes reconcile against current
+revisions. Saved outcomes can recover lost acknowledgements without repeating
+employer work. Uncertain submission remains a stop, and final human approval is
+not implied by answered questions or refreshed context.
+
+This is source-level behavior. The detached demo exercises rereading a saved
+uncertain request after service recreation and rejecting a second pickup;
+reset remains isolated. Gateway activation, actual Muse guide refresh, host
+session retention and real employer behavior require separate verification.
+
+
+Local activation verified after landing a911b9e4: migration20261108235459 applied
+alone (no remaining legacy rows needed cleanup). Rollback-only fictional human
+and agent progress reports cleared stale blockers without changing drafts/revisions
+or creating submission evidence. API image lookout-node:application-pickup-152 is
+healthy and local Edge was refreshed; the worker was preserved. Connected MCP reads
+developer152/application-workspace38/notifications6 and the task-list pickup rule.
+Whatnot remains Submitted with blocker null and its existing history unchanged.
+Final integrated suite:1,162 passed/five skipped; final guide checks44/44, production
+build, typecheck, Docker build and data validation passed. Actual Muse message
+sending, host refresh/compliance and hosted release remain unverified.
+
+
+### Access-task cards and routine-consent guidance (follow-up source)
+
+Fieldless sign-in, secure-entry, host-permission and employer-verification cards
+show the selected resume and a specific human completion action through the
+existing versioned human response boundary. They do not ask users to review unseen
+answers, edit unrelated resume selections or review draft inferences. Real answer
+fields and submission-uncertainty controls remain separate. User completion is a
+reported update, not proof that host access changed or an application submitted.
+Developer154/application-workspace40 keeps supported Workday sign-in/preparation
+with Muse and narrows any necessary password handoff to secure entry. Required
+privacy/application-processing consent needs explicit user/saved-profile authority;
+optional marketing is declined unless authorized. Source, detached visual checks,
+local activation and real host execution are separate verification boundaries.
+
+### AI Apply activity and local access-guidance activation
+
+Discover shows Queued until the owned job is claimed, then Working with a spinner.
+Applications and the Action Board show the same active states, separate from human
+action counts. No Needs input activity flag is added. Terminal jobs, later recorded
+application progress and unrecorded browser activity cannot produce Working.
+Desktop/mobile detached transitions and reduced motion are verified. Local API/MCP
+read-back returns developer154/application-workspace40; the explicit required-consent
+accept/optional-marketing decline preference is saved and read back in General
+profile46. Real employer sign-in, password-host support and external Muse messages
+remain unverified; no hosted release is implied.
+
+Fieldless employer sign-in blockers now show only a brief access explanation, the
+saved employer application link and the existing explicit sign-in completion
+action. Resume details and diagnostic prose are omitted from this card. Other
+access tasks and actual unanswered questions retain their separate controls.
+Missing/unsafe links fall back to saved application details. The owned human
+response writer and agent read boundary are unchanged.
+
+### Temporary Workday and company-site manual handoff
+
+Developer155/application-workspace41 supersedes the earlier Workday sign-in/resume
+procedure: return these applications to the user with the saved employer job link.
+Muse stops before account setup, credentials, previewing remaining questions,
+filling or submission. Native Greenhouse, Ashby and Lever flows retain existing
+preparation; redirects into Workday/company forms hand back. Save and verify a
+manual blocker on the existing unfinished application, preserve all prior work and
+uncertain/submitted outcomes, report a currently claimed request blocked and never
+reopen terminal history. Human responses do not authorize automatic retries.
+Fieldless company/Workday blocker cards show Open application without a resume-Muse
+button; the user can record the actual outcome in Applications. Existing versioned
+prepare_draft/report and human progress writers provide MCP parity. No new store,
+approval or employer receipt is created. Local runtime activation is verified
+separately from source/tests and actual Muse host adoption.
+
+Local API/MCP activation read-back confirms developer155/application-workspace41
+and its Workday/company-site manual-handoff rule. General profile47 stores the
+explicit user preference. Actual external Muse host refresh remains unverified.
+
+### Optional Langfuse tracing (source integration)
+
+The Node API tool dispatcher, human resume parser and worker execution have optional server-only tracing. A separate versioned importer reads terminal runtime-v4 Codex logs without changing frozen benchmarks. Structural capture is the default; exact model-call boundaries and hidden reasoning are unavailable. See [setup and verification limits](../../docs/langfuse-tracing.md). Source type/syntax checks passed; live ingestion and a rebuilt backend are not yet verified. No historical runs were uploaded. Hosted Edge and the intelligence service are outside this pass; detached UI demo remains isolated.
+
+### N01 prospective notification-stream evaluation
+
+The separate [N01 stream harness](../../docs/n01-notification-redesign.md) delivers first-message onboarding, staged user reactions and simulated calendar/inbox wakes across fresh sessions. It records local evidence and separates prescribed initiation, observed interaction demands, quality and native-tool adherence. Independent semantic review is required; missing review cannot produce a quality pass. A dedicated Langfuse mapping registers one trajectory per item, stage child spans and root scores. Frozen prior campaigns are unchanged; synthetic telemetry verification does not establish participant performance or a real host schedule. No production/UI/MCP contract was changed.
+
+N01 stream v2 hardens grading after audit: scenario/grader-bound independent review, checkpoint evidence validation, complete telemetry requirements, distinct unreached adherence coverage, deduplicated interaction references and explicit simulated-waiting labels. Resumed sessions route native trace/actor state to the active stage. Earlier stream freezes remain historical; see the N01 guide for execution and grading limits.
+### Reusable frozen job-board source
+
+The [frozen job-board infrastructure](../../docs/frozen-job-board.md) captures a
+commit-bound Jobright new-grad table separately from the production catalog and
+private accounts. The initial snapshot contains 794 listings and 30 captured
+Jobright descriptions; 30 further detail attempts retained explicit failures.
+Employer availability and application URLs are not verified by this capture.
+Hash verification and stage-subset exports preserve evidence and prevent accidental
+future-batch packaging. The public archive is not a participant sandbox; N02 uses
+private staged packets. Static-only public publication is separate from Lookout
+frontend/backend deployment. No candidate data, scoring labels or product actions
+are included. This focused update does not refresh the generated wiki as a whole.
+
+
+### Communication benchmark naming
+
+COM1 (formerly N01) uses prospective COM1-stream-v3 storage orientation: native Lookout retrieval/save guidance versus baseline persistent-file guidance. Historical results remain N01; legacy scripts/n01 paths remain supported. COM2 is application communication and COM3 is planned connection discovery. Adherence is diagnostic; pilot quality rubric calibration remains outstanding.
+### JOB01 bounded job selection and analysis
+
+The [JOB01 infrastructure](../../docs/job01-job-search.md) uses frozen source packets
+and prospective JOB01-search-v1. At each grading turn, ten predetermined target IDs
+must appear in the returned saved-job list; additional appropriate jobs are allowed.
+Exact recall and missing/extra IDs are separate from semantic analysis quality.
+Intermediate checkpoints assess preferences/continuity. Both conditions reuse N01
+candidate context; Lookout receives scheduled email evidence, baseline the same
+email uploaded with a user request. Time, effort and quality remain separate from
+native-tool adherence. Langfuse plumbing has synthetic verification; no participant
+run or real wake is implied. Private candidate-grounded targets require independent
+review before the paired pilot. Historical N02 scenarios/datasets remain retained.
+
+### Reusable Langfuse evaluation contract
+
+A common [eval-v1 result contract and dashboard setup](../../docs/langfuse-evals.md) supports future scenarios without modifying the N01/N02 exporters. Setup creates score definitions and comparison tables; final-result export registers whole-trajectory experiment items using local dataset correlation IDs. Scenario/grader versions separate comparisons; pilots and synthetic traffic are excluded from the measured dashboard. Detailed traces and private evidence stay in their existing stores. Configuration setup does not execute participants or upload historical grades.
+
+### COM2 communication evaluation (local infrastructure)
+
+[COM2 application communication continuity](../../docs/com2-application-communication.md) adds
+an isolated 13-turn, seven-session fictional stream for scheduling, user-reported completion,
+source-backed advancement, requests, rejection and stale notifications. It excludes preparation
+materials and external sends. The standalone runner/grader checks evidence completeness and
+native outcomes separately, and emits detailed structural traces plus the shared eval summary.
+A dedicated COM2 account and actual tool preflight remain required before execution. Synthetic
+checks establish contracts only; no COM2 participant, database reset or live export is claimed.
+
+### Langfuse selected case/run view
+
+The common dashboard is now Eval Case & Run, filtered by eval-case and eval-run
+native Tags selectors. Future common exports supply these tags. Seven panels show
+one selected attempt per condition; campaign/version labels retain disambiguation.
+Saved remote configuration was read back; populated rendering awaits compatible
+measured exports. Historical traces were not backfilled. See docs/langfuse-evals.md.
+### JOB01 pilot-host preparation
+
+The [JOB01 host](../../docs/job01-job-search.md#ready-to-run-paired-pilot-host)
+reuses N01's candidate and pinned executor with a newly verified local test account,
+staged email versus user-upload delivery, and an internal-network inference gateway.
+A no-inference preflight passed for both conditions. Ten-target inclusion at each
+grading turn is separate from analysis quality; reviewed extraction binds to actual
+saved-state evidence. Earlier setup failures are retained. No participant pilot or
+real model outcome is claimed. Product state, original accounts and public catalog
+maintenance remain outside this evaluation setup.
+
+### JOB01 complete-shortlist clarification
+
+Prospective JOB01-search-v2 returns a complete updated shortlist at the later
+grading turn and removes interested-role tracking. Initial style follows onboarding;
+corrected style applies only after feedback. Fixed per-turn storage orientation
+explicitly directs Lookout tool use and permits baseline notes. Stage-specific
+quality includes unsuitable extras, separately from exact target recall. Effort
+counts unique interaction turns with overlapping category breakdowns. Pilot
+telemetry is labeled pilot, not measured. Existing private freezes and prior
+datasets remain unchanged; new preparation/preflight is required before execution.
+
+
+### COM4 introduction-continuity evaluation
+
+Prospective COM4 has a 12-turn/7-session notification stream, dedicated fictional local owner, supported contact-field writer verification, independent read-only terminal capture and saved-state/report grading. Semantic commitment state is evaluated separately from the direction-derived UI waiting label. See [COM4](../../docs/com4-introduction-continuity.md). Readiness checks do not imply participant execution or a measured advantage.
+### JOB01 independent final-grader handoff
+
+Prospective JOB01-search-v3 freezes reviewer instructions, automatically emits a
+post-pair handoff and separate read-only native-confirmation receipt, and requires
+a fresh agent assignment/attestation before final review. Coordinators launch the
+grader with no inherited context; shell tooling does not spawn an agent. Both
+conditions use frozen artifact citations and rubric bindings. Partial attempts stay
+reportable; prior freezes remain unchanged. Native confirmation success means
+reads succeeded, not that semantic matching or participant quality passed.
+
+### COM3 connection discovery benchmark
+
+COM3 adds a six-session, ten-turn post-application networking case with a release-gated 30-document corpus, retained emails, independent durable-state grading and an isolated local owner. Source: scripts/com3 and docs/com3-connection-discovery.md. Native writer/readback smoke and restoration pass; no participant performance is asserted.
+### Prospective COM1 terminal-state evaluation
+
+COM1-stream-v4 adds a final participant reconciliation and independent saved-state/report-accuracy checks. Terminal evidence is captured under the account lock and bound to owner, episode, scenario and snapshot/file hashes; historical review does not query a reused live account. Optional scoped reads supplement the frozen snapshot. See [COM1 evaluation](../../docs/n01-notification-redesign.md). Focused fixtures verify contracts; no v4 participant run or live scoped-capture verification is claimed.
+
+### Communication repair protocol
+
+[COM1–4 repair mapping](../../docs/communication-repairs.md) documents the local missing-person-card migration that caused valid advertised fields to fail, shared rolled-back writer checks before inference, classified call metrics and prospective versions. COM1 now retains released emails and uses independent read-only terminal verification, observable onboarding and semantic preservation grading. General outreach guidance covers stable message IDs, reuse of saved drafts and bounded recovery. Old pilot scores/freezes remain historical; repaired participant performance and hosted release are unverified.
+
+### Prospective evaluation cost accounting
+
+COM and JOB's shared session runtime records structural cumulative-token deltas
+across resumed sessions, with complete/partial/unknown coverage. Frozen policies
+supply exact sourced rates; defaults leave dollar estimates unavailable. Whole-run
+reports feed scenario/common Langfuse scores and explicit offline cost-per-success
+aggregation including failed attempts. See docs/eval-cost-accounting.md. Syntax and
+catalog checks only: no participant run, historical backfill, metered external
+billing or live ingestion is established. Existing freezes must not be rewritten.
+
+### JOB02 batch application preparation infrastructure
+
+The [JOB02 plan](../../docs/job02-application-plan.md) covers a fixed three-target
+batch: Workday manual handoff, personal-input answer card and supported Greenhouse
+preparation. Implementation verification includes a fictional browser rehearsal
+and actual no-inference container/tool/browser probes; setup failures are retained.
+Exact live target safety and authenticated human-response ingress remain separate
+readiness gates. No participant or real employer form execution is claimed.
+
+### JOB03 portfolio tracking and reminder evaluation
+
+[JOB03](../../docs/job03-application-tracking.md) has five fictional applications
+across eight sessions: mixed decisions, B's controlled preparation interruption
+and later resume, rejection, duplicate notifications and dated reminder behavior.
+Frozen expected states, independent final review and cost coverage remain separate
+from native adherence. Actual native owner/adapter/shared reminder service are
+unconfigured; retained preflight is blocked. No participant or real schedule is
+verified; unit tests do not establish reminder delivery.
+
+### JOB04 pipeline-aware preparation evaluation
+
+[JOB04](../../docs/job04-interview-preparation.md) implements seven checkpoints
+across six sessions for pipeline facts, generation/non-generation, user debriefs,
+round-specific adaptation, duplicate/logistics reuse and closure. Fresh independent
+review compares grounded specificity, not usefulness or interview outcomes. Time,
+unique effort, quality and common cost accounting are separate; unknown cost stays
+unknown. Fourteen scripted tests and an actual blocked no-inference preparation
+receipt exist. A dedicated native owner and real isolated runtime adapter with
+save/read/revise/restore receipts are still required; no participant run is ready
+or claimed. This is benchmark infrastructure, not an interview-prep product change.
+
+### JOB benchmark review repairs (prospective)
+
+JOB01-search-v4 persists reached-turn metrics before output/state capture.
+JOB02-batch-v2 fences live forms against frozen/reviewed conditional fingerprints
+and stops incomparable pairs on drift. JOB03-tracking-v2 / JOB03-grade-v2 bind
+actual adapter/interpreter/dependency bytes and permit explicitly unverifiable
+partial review after failed after-state capture, retaining time/effort/cost.
+Historical pilot/receipt folders are unchanged. Focused regressions and fictional
+browser rehearsal verify these repairs; actual JOB02 live targets/human ingress,
+JOB03 native/reminder service and JOB04 actual host gates remain unresolved.
+
+### Matched-intent communication pilot harness
+
+COM01 v6 and COM02 v5 use identical task requests and scoped native MCP startup/discovery rather than eager schema injection. Structural startup/discovery overhead is measured separately. This isolates tool/storage effects; proactive user-effort savings are not measured. See [repair protocol](../../docs/communication-repairs.md). Focused checks verify contracts; fresh native preflight and participant runs remain separate evidence.
+
+### JOB03/JOB04 matched-intent pilot host
+
+[Shared JOB host](../../scripts/jobs/README.md) wires JOB03 tracking/grade v3 and
+JOB04 preparation/grade v2 to COM's pinned Terra medium subscription Session,
+credential-free MCP client and structural usage/latency diagnostics. Dedicated
+fictional local owners clone full candidate context and resume, hold separate
+locks and use separate read-only terminal credentials. Both conditions receive
+identical task requests/evidence; native tool startup and file/native storage
+orientation differ intentionally. Proactive effort savings are unmeasured.
+
+JOB03's shared durable local test-clock reminder and interrupted-preview services
+do not establish product scheduling or employer integration. No-inference gates
+exercise native artifact/milestone writes and readback/restoration, guidance
+versions, both containers, default discovery and wrapper scope. Actual preflights
+passed and paired pilots were launched; quality remains pending independent final
+review. Earlier blocked roots and an interpreter-symlink preflight failure remain
+historical. Focused source/tests and pilot execution are separate evidence. This
+manual update does not refresh generated coverage beyond this specific boundary.
+
+
+### JOB03/JOB04 terminal audit and prospective clock gate
+
+The [shared JOB host](../../scripts/jobs/README.md) now fails closed on native
+backend/simulated-stage clock mismatch and checks DNS/TLS without inference in
+both containers. Prospective JOB03 v4/JOB04 v3 retain monotonic elapsed time,
+wall drift and overrun diagnostics. The compressed fixtures currently remain
+blocked: no shared backend clock was changed and no new participant pair ran.
+Historical JOB04 has model-endpoint DNS errors and a wall-budget overrun;
+precise timeout attribution is unresolved because old monotonic timing is absent.
+Raw host calls and failed-turn time remain reportable without inventing usage.
+Fresh independent semantic review is finalized (JOB04 Lookout partial); neither
+completion nor source tests establish a measured comparative result. Historical
+freezes/outcomes remain unchanged. Focused tests and actual blocked no-inference
+probes verify these boundaries, not a production or hosted capability. This is a
+focused manual update, not a refresh of generated wiki coverage.
+### JOB01 matched-intent repair
+
+Prospective JOB01-search-v5 / JOB01-review-v2 gives both participants identical
+prescribed task requests and released evidence; proactive effort savings are outside
+this comparison. Native startup and on-demand discovery are retained within task
+permissions, including audit/change-feed capabilities. Container startup, native MCP
+startup/discovery response time/bytes, total execution, effort, cost and semantic
+quality remain distinct. Returned recall and durable saving are separate checks.
+Historical runs/freezes remain unchanged. Focused fixture checks establish harness
+contracts only; fresh-account preflight and paired pilot evidence are still required.
+
+### COM03/COM04 matched-intent comparison
+
+Prospective COM3-stream-v3 / COM3-grade-v3 and COM4-stream-v4 / COM4-grade-v3 use identical prescribed task requests and evidence in both conditions, retaining native scoped startup/default tools/on-demand discovery. Generic scheduled wakes and proactive effort credit are excluded. Wrapped tool and failure telemetry records cumulative response latency/bytes within execution; wall time and prescribed/observed effort remain separate. Actual no-inference preflights passed in new private roots; historical freezes remain unchanged. Focused fixtures and catalog checks passed. Participant results and product recommendations require post-pair semantic review; readiness alone implies no performance outcome. See the case docs for limits. This focused update does not regenerate the wiki.
+
+### Communication clearing preflight
+
+COM01 v7/COM02 v6 add equal durable-output obligations, corrected chronology, negative-save evidence validation, exact-fixture dispatch probes and existing native application rediscovery. COM02 setup performs a locked native write/readback/restoration smoke; it is not read-only. Focused checks and live preflight pass; pilot evidence and independent grading remain required. See [repair protocol](../../docs/communication-repairs.md).
+
+### Communication host timing and capture integrity
+
+Prospective COM01 v8/COM02 v7 use shared run-scoped idle-sleep prevention, wall/monotonic and heartbeat interruption detection, null invalid execution timing, and durable participant output capture before database snapshots. Read-only transient snapshot retries carry redacted receipts; agent turns are never retried. Existing interrupted pilots are unchanged. Focused regression checks cover these contracts; fresh live paired runs remain required. See [repair protocol](../../docs/communication-repairs.md).
+
+### JOB01 controlled pilot closure
+
+The JOB01 controlled v5 pair has a read-only clearance at `/Volumes/External SSD/Lookout/tmp/job01-controlled-v5-20261109-1/receipts/clearance.json`, with private final review under that root's `grading/`. It verifies immutable runtime/evidence, matched inputs, fresh independent grading/native confirmation and Langfuse read-backs. Baseline hit its final-stage timeout; Lookout completed process stages; both had quality gaps. Returned target membership and durable saving are separate checks. Dollar costs are unknown, with baseline usage coverage three of four stages. This is controlled-harness clearance, not a general effectiveness claim.
+
+### COM03/COM04 completed controlled pilots
+
+[PILOT03/PILOT04 results](../../docs/communication-com03-com04-pilots.md) record completed paired execution and independent post-pair grading. Baseline/Lookout passed 5/8 versus 3/8 COM03 checks and 13/14 versus 12/14 COM04 checks; both COM04 final saved-state/report checks passed. Overlapping COM03 failures, one pair per case and unblinded review limit interpretation. Lookout took more active time and reported input tokens; dollar cost remains unknown. Product schema, commitment/constraint reconciliation and discovery-volume improvements are flagged only. A supplemental paginated Langfuse readback verifier fixes the observed first-page verification limit without altering frozen exporters. Frozen task-intent/evidence parity and integrity were checked. Baseline optional file retention versus explicit Lookout save/verify remains a harness confound: these diagnostic pairs do not certify measured-comparison readiness. Equal durable-output obligations require a prospective freeze; existing grades remain unchanged. These results supersede the earlier pending-result notes, not historical freezes; no hosted release is implied.
+
+### COM03/COM04 native-startup continuation
+
+Prospective COM03 v4/grade v4 and COM04 v5/grade v4 align durable-output obligations, restore native audit/change-feed capabilities and preserve native startup prose. Fresh fictional owners, native contract fingerprints, shared awake/timing/capture guards and complete paginated score readback remove identified harness confounds. Audit/container overhead remains counted and separately visible. Durable quality requires checkpoint evidence for failures as well as passes. No Lookout product change is included; a case clearing is independent of which condition scores higher. Final prospective runs remain required; old pilot evidence is unchanged.
+
+### COM03 fresh-owner reset probe
+
+PILOT05 failed before inference on a global fixture application-ID collision. COM03 v5 remaps fixture IDs/references per owner and probes the complete reset in a rolled-back transaction before participants start. Focused checks and actual preflight pass; PILOT07 remains prospective. The failed setup evidence and live PILOT06 COM04 sources are preserved.
+
+### JOB isolated-clock substrate preparation
+
+The [shared JOB host reference](../../scripts/jobs/README.md#isolated-clock-substrate-not-yet-connected-to-the-pilot-host)
+documents a new network-disabled PostgreSQL fixture replaying exact migrations,
+with process-local ticking clock offsets and a harness-only JavaScript loader.
+Actual no-inference source SQL shelf/date and preparation save/read probes align
+JavaScript and database dates while native waits progress. A fixed-clock sleep
+failure is retained. The native HTTP/MCP host and full context are not connected;
+current JOB launch gates remain blocked. This focused preparation changes no
+product schema, shared clock, real account or historical pilot outcome.
+### Shared benchmark transport
+
+[Shared harness boundaries](../../scripts/evals/README.md) separate testing goals,
+experimental-design limits, setup mismatches, harness defects and Lookout defects.
+Execution clearance alone does not establish design validity or causal attribution. COM01–04 and JOB01–04 share
+one HTTP-to-stdio transport, preserving case arguments and JOB02's EOF shutdown.
+Prospective freezes include the shared executable. Local synthetic HTTP/worker
+and freeze tests establish this boundary; no participant rerun or hosted release
+is implied. Existing frozen checkouts remain unchanged.
+
+### JOB01 wrapped-discovery telemetry correction
+
+JOB01 now measures wrapped native calls by their actual inner tool and binds score
+timestamps to execution. The retained v5 pilot's eight affected guide/context reads
+were reclassified from frozen traces; corrected score read-back passed. Original
+runtime, participant evidence and semantic grades remain unchanged. Total execution,
+effort and cost are unchanged. Controlled fixture checks cover direct and wrapped
+discovery without duplicate call counts; this is a diagnostics correction, not a
+new participant run or product-effectiveness claim.
+
+Future JOB01 freezes also bind the shared executor timing/capture source, checked against the actual imported helper implementations. Historical freezes remain unchanged; this closes a prospective source-integrity gap without claiming a changed participant outcome.
+
+
+### JOB03/JOB04 native HTTP clock integration (prospective, launch blocked)
+
+The [shared JOB host](../../scripts/jobs/README.md#native-http-clock-integration-and-retained-launch-blocks)
+now connects an isolated ticking SQL/JavaScript backend to unchanged native HTTP
+services, with source/image/package bindings and ownership guards. Host v3 clones
+complete canonical candidate settings; both participants receive exact local PDF
+bytes, while remote Auth/Storage services remain unverified. Native startup,
+Unicode/JSON responses and all granted on-demand tools pass through. Audit calls
+and every actual native operation inside a turn remain product costs.
+
+Earlier full no-inference roots passed 17/15 then-current gates; later native
+surface/audit changes still require fresh actual gates after Docker timed out
+before provisioning. JOB03's reference-contract gate additionally blocks the
+withdrawn-application blocker mismatch; partial-form native mapping needs audit.
+No new participant was launched. Historical freezes and grading remain intact.
+Focused checks pass; the full suite has one Action Board SQL failure reproduced
+on unchanged local main. This records harness progress, not comparative quality
+or final launch clearance; see the feature change note for verification limits.
+### Prospective COM01/COM02 outcome study
+
+COM01 v9/grade v8 and COM02 v8/grade v7 separate eight/thirteen primary outcomes
+from diagnostic checkpoint counts, require evidence-grounded user impact for
+reached failures, and clarify Sam's unsent draft. Existing orchestrators share a
+serial pair lock and alternate order across the four-pair prospective pilot plan.
+Read-only COM02 terminal evidence adds the native timeline; future export checks
+reuse shared pagination. See the [study contract](../../docs/com-final-state-grading.md#prospective-com01com02-outcome-study).
+Synthetic checks do not establish participant performance or design effectiveness;
+no new pair, account mutation, human-effort benefit or product change is claimed.
+Historical PILOT-05 evidence and grades remain unchanged.
+
+### JOB01/JOB02 controlled comparison closeout
+
+[Controlled pilot results](../../docs/job-controlled-pilot-results.md) distinguish
+harness clearance from product and outcome success. JOB01 baseline/Lookout returned
+9/10 versus 7/10 final targets, with quality gaps in both and a retained baseline
+timeout. JOB02 both met controlled saved-work outcomes with one observed question
+turn each; Lookout took more active time and tokens, and its six native persistence
+adherence checks failed despite current owned IDs. Exact native error cause remains
+uncertain. Frozen sources/evidence, independent final review, native confirmation
+and complete Langfuse read-backs are retained. Earlier invalid JOB02 pairs remain
+separate; no live employer readiness, proactive-effort benefit or general winner is
+claimed. Dollar costs remain unknown. This focused update does not regenerate the wiki.
+
+Supplemental JOB setup audit found legacy preferences were cloned without canonical search documents. Future JOB01/JOB02 accounts share canonical-profile migration and native readback; JOB02 lifecycle includes the selected profile explicitly. Historical evidence is preserved, and prior product-attribution claims require the supplemental setup caveat. This is prospective harness setup, not a product fix or a rerun.
+
+### COM03 native timeline restriction
+
+PILOT07 completed but retained an isolation confound: native application timeline tools were hidden while change-feed events referenced them. COM03 v6 restores the existing scoped reader/writer and adds rolled-back timeline readback/provenance verification to the full reset probe. No product behavior or approval authority changes. COM04/PILOT06 clears its controlled comparison; quality remains 14/14 baseline versus 13/14 Lookout, with a late promise checkpoint. See [communication results](../../docs/communication-cleared-pilots.md). COM03 requires a new prospective pair; completed stages alone do not establish clearance.
+
+### COM03 host-control failure
+
+PILOT08 remains uncleared after Docker stopped responding during baseline checkpoint 8; the timeout's Docker kill also timed out. Partial evidence and a failed-clearance receipt are preserved. Prospective COM03 v7 bounds local reader teardown, retains termination/timing evidence and halts the pair without grading when container death is unconfirmed. Eight shared runtime tests and five Node checks pass; live recovery/preflight remains unverified pending ownership authorization for the failed run/shared Docker. COM04/PILOT06 remains cleared. This is harness failure handling, not a Lookout product change.
+
+
+### JOB03 prospective fixture and shared identifier reconciliation
+
+JOB03 v6 clears active preparation blockers after withdrawal while preserving
+initial/historical evidence. The reference-contract guard now passes the corrected
+prospective scenario without rewriting frozen reviews. Shared fictional preview
+and reminder services normalize application keys and native UUIDs to one state
+for both conditions, reject unknown identifiers, and preserve exactly one injected
+failure, saved fields and single/cancelled delivery behavior. The partial form is
+this shared service, not a seeded native employer form. Actual standalone service
+proof passed, with no inference. Latest complete native/container gates remain
+unverified because the shared Docker engine still times out; no new pair is cleared.
+
+
+The JOB-used COM2 Session also now reuses shared bounded container/client teardown.
+Unconfirmed remote termination persists timing/termination evidence and halts JOB
+before the other condition or final grading. Local client exit is not remote
+termination proof; active time/usage remain unknown where capture is incomplete.
+Scripted process/coordinator checks pass; live Docker recovery and complete native
+preflight remain outstanding. No historical participant was resumed or retried.
+
+
+The isolated Node API is now included in the ticking clock dependency and observer
+gate alongside SQL and Edge. Local HTTP preload and fail-closed three-clock
+observer tests pass; latest full native/container wiring remains unverified until
+the shared Docker engine responds. Earlier two-clock gates do not clear it.
+
+
+COM01/COM02 prospective runner guards now match COM1-stream-v9 and COM2-stream-v8;
+configuration regression checks exercise current and stale versions without Docker
+or inference. This corrects setup compatibility only; live preflight and the revised
+four-pair study remain unverified and unexecuted.
+
+### COM02 prospective containment propagation
+
+COM02 now propagates host-control and container-removal failures through run finalization and pair orchestration. Unconfirmed participants are not assigned an end timestamp, terminal snapshot, grade or export; the remaining condition is halted. Focused mocked checks pass; live containment recovery is not verified or attempted. Historical frozen trials are unchanged.
+
+
+Shared benchmark bridge teardown now stops its worker before joining in-flight
+HTTP handlers, preventing a reproduced partial-response cleanup deadlock. This
+prospective harness fix preserves graceful EOF shutdown and historical freezes;
+it does not establish the cause of the shared Docker outage.
+
+JOB no-inference readiness now requires confirmed test-container removal and
+retains cleanup failures as host-control markers. Endpoint inspection is bounded.
+Recovery owner reports the engine healthy; JOB has integrated53fbef83 and passed
+source checks while awaiting serialized Docker use after COM03. No latest native
+preflight or participant experiment has yet run in this recovery pass.
+
+
+### JOB03/JOB04 serialized recovery preflights
+
+After 4cf6e44b, actual fresh JOB03/JOB04 no-inference roots passed 20/17 gates,
+including native permissions/discovery, full context and SQL/Edge/Node API dates
+at all 8/7 stages. Fixture setup now waits for Edge readiness beyond Node health.
+Retained startup failures and address-pool exhaustion remain separate; exactly
+four empty root-owned failed-fixture networks were released with stopped-container
+checks and retained receipts/volumes. Both new roots' runtime/gate hashes and owned
+service shutdowns were verified. No inference or participant experiment ran.
+Participant-path Session.close receipt propagation still needs a source-only
+containment audit before later execution; these gates do not prove product quality
+or performance. See the shared JOB host and feature note for exact limits.
+### COM03 recovery verification (no inference)
+
+Coordinated Docker recovery is complete. PILOT08's exact container is independently confirmed exited (255), with a separate shutdown receipt; its original failed evidence remains unchanged. A fresh fictional owner and `com3-native-v7-readiness` freeze at source `53fbef83` passed actual no-inference preflight: both subscription containers, native startup/discovery/wrapper isolation, complete rolled-back reset, contact, exact seed, audit and timeline write/readback probes. Frozen source integrity was rechecked. Six Node COM03/transport checks (including sixteen Python COM03 checks) and eight shared-runtime tests pass. No active career-session containers remained when the Docker verification slot was released to JOB03/04.
+
+No new participant pair or product change was authorized in this bounded pass. COM03 still needs a prospective paired trial and independent review; COM04/PILOT06 stays cleared. The subsequently landed shared bridge teardown repair (`4cf6e44b`, implementation `ec91e19c`) does not rewrite this freeze or establish the cause of Docker's outage. Future execution preparation must pull and re-freeze that helper; the completed `53fbef83` preflight remains historical readiness evidence.
+
+
+### JOB03/JOB04 cleanup propagation and repair closeout
+
+JOB now retains shared Session.close outcomes across session transitions, terminal
+confirmation and host shutdown, as well as preflight. Unconfirmed removal or
+cleanup exceptions preserve receipts and halt further participants/native terminal
+capture/grading. Host-dispatch and scripted coordinator failure tests pass.
+Fresh final-source root job-native-clock-v3-preflights-08 passed JOB03 20/20 and
+JOB04 17/17 actual no-inference gates. Gate/runtime hashes, all scripted three-clock
+readbacks and owned service shutdown were verified. All 134 historical evidence
+files and independent-review assignments remain intact. No inference was run.
+This closes the previously listed propagation gap; historical timing/transport
+confounds, unpriced costs and diagnostic-only grading limits remain documented.
+No new participant experiment or product-performance conclusion is implied.
+### COM01/COM02 revised live readiness
+
+Current-source COM1-stream-v9 and COM2-stream-v8 passed fresh no-inference setup on the recovered local stack. COM01 receipts are `com1-v9-readiness-final01-preflight`; COM02 receipts are `com2-v8-readiness-final02-preflight` under private experiment-control. COM02's native writer/readback and restoration passed on a freshly provisioned owner. Its old fixed-ID owner was rejected by the reset guard and preserved; prospective owner-scoped fixtures require a fresh account. Nine focused checks and catalog validation passed. No participant experiment or new study was launched; historical PILOT-05 remains unchanged.
+
+### COM01 prospective containment parity
+
+COM01 now has the same shared bounded stop and host-failure pair halt behavior as COM02. Seven focused Node checks, including mocked process/run/pair regressions, passed. No live preflight or participant was run for this source revision; previous readiness receipts still bind their original checkout. Fresh freeze/preflight remains required before revised execution.
+
+
+Supplemental JOB01/JOB02 investigation found that legacy preferences were cloned
+without canonical search profile documents. JOB01 frozen reads expose the mismatch;
+JOB02 selected-profile draft calls reproduce a pre-writer P0002 rejection. Historical
+clearance/grades remain intact, but native-workflow attribution requires this setup
+caveat. See docs/job-controlled-pilot-results.md; prospective shared-clone/lifecycle
+repair remains with the owning chat. No product or participant run was changed.
+
+### JOB participant deadline policy amendment (2026-11-09)
+
+JOB01 and JOB02 adapters opt into healthy completion in the shared session executor.
+Historical scenario seconds remain a measured reference; they no longer install a
+participant kill timer, invalidate timing, or classify completed work as timed out.
+Both conditions use the same policy. Actual process failures and host timing faults
+remain recorded; network, state capture, and containment cleanup operations retain
+bounded timeouts. Previously frozen sources and terminated attempts stay unchanged.
+The separate coordinator owns the corresponding independent-grader policy.
+### Frozen repeated communication evaluations
+
+The user has selected EVAL-01 through EVAL-03 for each communication case, with alternating condition order. Both participant and independent grader must be subscription-backed `gpt-5.6-terra` with medium reasoning; no model substitution. Existing historical pilots/diagnostics remain separate. Use separate dedicated per-condition owners/roots so native audit history is preserved when Lookout runs first. Task facts and rubric stay fixed; input parity permits only explicit ownership-ID remapping. Quality misses remain outcomes, not triggers for replacement runs. Execution/containment or validity failures retain their evidence and are disclosed.
+
+Before this series, COM04 adopts the already-tested shared bounded host-stop behavior (COM4-stream-v6/grade-v4); COM03 remains v7/grade-v4. Ten focused checks and eight runtime tests pass. No product, task-prompt or rubric tuning is included. New frozen roots, live readiness and the three evaluations remain pending the serialized host queue; an existing active pilot is never relabeled as EVAL. The current chat orchestrates existing commands directly and reuses the shared read-only Terra grader executor.
+### Shared subscription independent grader executor
+
+`scripts/evals/subscription_grader.py` provides one read-only independent grading invocation using the existing pinned subscription runtime, exact gpt-5.6-terra/medium settings, separate output JSON, shared bounded stop/timing and observed-model validation. Case owners directly invoke it and apply their frozen deterministic grader afterward. Four mocked boundary checks pass; live inference/model access is not established by those checks. No scheduler, product writer, model substitution or participant orchestration is added.
+
+### JOB03/JOB04 planned EVAL-01–03 freeze
+
+Latest authorization supersedes four repeats with three paired evaluations per
+case in AB/BA/AB order. Both participant and grader must be subscription
+ gpt-5.6-terra medium. Scenarios/rubrics stay unchanged. New owner setup reuses the
+shared canonical-profile serializer/readback helper; personal-settings equality
+alone is not full native context parity. Counterbalanced setup preserves native
+state when baseline runs second. Source checks pass; actual new canonical gates
+await the shared-host slot after JOB01/02. No new EVAL participant has run and
+historical pilots remain separate. Existing shared serial_pair and the shared
+read-only grader executor are reused; no new orchestrator service is introduced.
+
+### Structural independent grader export provenance
+
+The common exporter and COM01/02 detailed exporters accept one optional strict allowlisted provenance object for participant/grader settings, receipt/freeze/evidence hashes, condition order and failure/repair/confound status. No private raw content is permitted. Summary adapters carry the same object. Reporting-only source is versioned separately from frozen participant execution. Focused contract/privacy and existing COM01/02/cost checks passed; network read-back remains a per-evaluation delivery gate.
+
+
+### JOB03/JOB04 per-pair reporting connection
+
+[Reporting entrypoints](../../docs/job03-job04-reporting.md) connect finalized JOB
+reviews to the existing common Langfuse exporter and paginated verification, with
+exact-model provenance, immutable sanitized records and bounded delivery-only
+retries. Detailed JOB reviews remain local because no case detailed exporter
+exists. Undefined/partial quality stays null. The adapter replays deterministic
+validation before graded export and changes no frozen participant source. Local
+checks pass; actual EVAL publication/readback remains pending the first pair.
+JOB01/JOB02 prospective EVAL-01–03 preparation pins participant and independent grader to subscription gpt-5.6-terra medium, with the shared read-only grader executor and a fixed 600-second review budget. JOB01 detailed and JOB02 combined detailed/common exports reuse shared structural provenance and paginated score readback. Initial freezes and actual readiness remain separate; no EVAL participant execution is claimed here.
+
+COM03/COM04 prospective evaluation reporting now carries the shared allowlisted provenance via `scripts/evals/provenance.mjs` in detailed exports and common summaries. This is reporting-only; historical frozen participant sources and final records are preserved. Twelve focused case/provenance checks passed; new EVAL-01–03 execution remains queued.
+
+### Healthy communication task completion amendment
+
+The user explicitly removes hard participant deadlines for healthy COM03/COM04 work. The opt-in `LOOKOUT_PARTICIPANT_DEADLINES=disabled-by-user` bypasses the task Timer and elapsed-budget classification, records policy/source hashes, and keeps bounded individual operation/containment guards. Former scenario seconds remain reference metadata. Original frozen sources and previously interrupted attempts are preserved; no automatic replacement. Seventeen COM03 and 28 COM04 Python checks passed; live amended execution remains prospective. Shared independent grader policy is owned separately.
+
+Shared subscription grading now treats `--seconds` as reference duration only,
+with no total task deadline for healthy work. Receipts record reference overruns;
+model/evidence/timing-integrity and containment checks remain enforced. Individual
+setup/cleanup operation limits remain bounded. Participant deadline-policy changes
+are handled in their owning chats with amendment provenance; old terminated runs
+remain preserved and are not silently resumed or replaced.
+
+### Communication healthy-completion policy amendment
+
+COM01/COM02 shared runners and orchestrators support explicit `--allow-healthy-completion` (stage adapter flag `allowHealthyCompletion=True`). Original seconds remain reference metadata, with no task timer or overrun-based status/timing rejection. Actual elapsed/usage and real process, clock and containment errors remain enforced; operation timeouts remain bounded. This source amendment does not change already-running Python frames or historical frozen evidence. Live macOS timer cancellation was denied before execution; no healthy participant was restarted. No product, prompt or rubric change.
+
+### Explicit JOB01 initial-timeout recovery
+
+`scripts/job01/recover.py` supports an operator-authorized recovery of a first-stage
+timeout only. It keeps original freezes and both old participant artifacts, copies
+the unchanged baseline, and continues Lookout against retained owned state in a new
+isolated session. A sibling evidence root records amended executor hashes and the
+fresh-context confound. Original elapsed work, observed turns and incomplete usage
+remain in cumulative accounting. It checks artifact/state consistency before any
+participant inference, preserves failures, and requests independent grading after
+completion. It never resets the owner, changes the rubric or grants extra tools.

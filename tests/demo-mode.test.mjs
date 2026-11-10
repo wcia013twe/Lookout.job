@@ -38,3 +38,20 @@ test('demo shows a saved auto-apply preference blocked by account authorization 
  assert.equal(decide(store.get('workflow.searchPreferences')).mode,'auto-apply');
  assert.equal(decide(demoFixtures('2026-11-06').state.workflow.searchPreferences).code,'account_auto_apply_disabled');
 });
+
+
+test('demo recovery rereads a terminal uncertain request without claiming again or marking applied',async()=>{
+ const {createDemoServices}=await import('../next-app/lib/demo.mjs');
+ const initial=demoFixtures('2026-11-08').state,store=createMemoryStore(initial),api=createDemoServices(store);
+ const queued=await api.queueApplicationJob({posting:{id:'demo-recovery-role',url:'https://example.com/fictional-recovery',company:'Example Recovery (demo)',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:0,eventKey:'recovery-queue'});
+ await api.claimApplicationRequest({jobId:queued.job.id,expectedVersion:1,expectedRevision:0,eventKey:'recovery-claim'});
+ await api.reportApplicationRequest({jobId:queued.job.id,expectedVersion:2,expectedRevision:0,eventKey:'recovery-report',outcome:'uncertain',summary:'Fictional confirmation is unavailable; verify before any further employer action.'});
+ const resumed=createDemoServices(store),saved=(await resumed.backendJobs.read({jobId:queued.job.id})).jobs[0];
+ assert.equal(saved.status,'partial');assert.equal(saved.result.outcome,'uncertain');assert.equal(saved.result.verifiedSubmission,false);
+ await assert.rejects(resumed.claimApplicationRequest({jobId:saved.id,expectedVersion:saved.version,expectedRevision:0,eventKey:'recovery-must-not-reclaim'}),/cannot continue/);
+ assert.equal(store.get('workflow.applications.demo-recovery-role').status,'Queued');
+ const reread=(await resumed.backendJobs.read({jobId:saved.id})).jobs;
+ assert.equal(reread.length,1);assert.deepEqual(reread[0],saved);
+ assert.equal(initial.workflow.applications['demo-recovery-role'],undefined);
+ assert.equal(createMemoryStore(demoFixtures('2026-11-08').state).get('workflow.applications.demo-recovery-role'),undefined);
+});

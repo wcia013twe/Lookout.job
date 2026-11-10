@@ -43,7 +43,7 @@ test('default handoff excludes completed answers/full profile and keeps only unr
 
 test('answer-only update merges the stored full draft and returns a smaller remaining packet',async()=>{
  const h=harness();const r=await prepareDraftWithPrefill(h.call,{jobId:'job',expectedRevision:2,draft:{answerUpdates:[{fieldId:'why',answer:'I build reliable systems.'}]}},{loadJob:h.loadJob,loadApplication:h.loadApplication});
- assert.equal(r.error,null);assert.equal(r.data.handoff.questions.length,0);assert.equal(h.draft.questions.length,2);assert.equal(h.draft.questions[0].answer,'private@example.com');assert.equal(h.draft.questions[1].answer,'I build reliable systems.');assert.equal(h.draft.answerUpdates,undefined);assert.equal(h.draft.questionsReviewed,false);
+ assert.equal(r.error,null);assert.equal(r.data.handoff.questions.length,0);assert.equal(h.draft.questions.length,2);assert.equal(h.draft.questions[0].answer,'private@example.com');assert.equal(h.draft.questions[1].answer,'I build reliable systems.');assert.equal(h.draft.questions[1].answerSource,'ai_generated');assert.equal(h.draft.answerUpdates,undefined);assert.equal(h.draft.questionsReviewed,false);
 });
 
 test('patches reject unknown/duplicate controls, invalid choices, oversize answers and mixed replacement',()=>{
@@ -99,4 +99,27 @@ test('employment information questions round trip and fill only explicitly saved
  const unmatched=prefillApplicationQuestions({questions:[question('What is your ethnicity?','ethnicity',[{value:'asian',label:'Asian'}])],searchProfile:profile});
  assert.equal(unmatched.questions[0].answer,'');
  assert.equal(unmatched.escapes[0].reason,'option-mismatch');
+});
+
+
+test('legacy profile cloning alone cannot satisfy a selected-profile draft prerequisite',async()=>{
+ const user='fictional-owner',profile={id:'general',active:true,filters:{},instructions:''};
+ const context={personalVersion:1,settings:{profile:{user_id:user,facts:{}},answers:[],resumes:[],preferences:{search:{profiles:[profile]}}}};
+ const payload={jobId:'fictional-job',expectedRevision:-1,draft:{searchProfileId:'general',questions:[]}};
+ async function replay(documents){
+  const calls=[];
+  const result=await prepareDraftWithPrefill(async(op,p)=>{
+   calls.push(op);
+   if(op==='context.personal')return {data:context};
+   if(op==='search.context')return {data:{documents}};
+   if(op==='context.versions')return {data:{personalVersion:1}};
+   if(op==='drafts.prepare')return {data:{id:'fictional-application',job_id:payload.jobId,revision:0,status:'Draft',draft:p.draft}};
+   throw Error(op);
+  },payload,{loadJob:async()=>({id:payload.jobId,employer:{company:'Fictional employer'}}),loadApplication:async()=>null});
+  return {result,calls};
+ }
+ const missing=await replay([]);
+ assert.equal(missing.result.error.code,'P0002');assert.deepEqual(missing.calls,['context.personal','search.context']);
+ const complete=await replay([{kind:'profile',id:'general',version:1,projection:profile}]);
+ assert.equal(complete.result.error,null);assert.ok(complete.calls.includes('drafts.prepare'));
 });

@@ -1,0 +1,39 @@
+{
+  "version": "JOB02-actor-v3",
+  "fictional": true,
+  "facts": [
+    {
+      "id": "motivation",
+      "targetId": "personal",
+      "questionPattern": "why.*(apply|join|work)|motivat|interest.*(role|company)",
+      "answer": "I haven't used Northstar Tools before. I want to own reliable backend systems and learn how this team operates them.",
+      "reuse": "target_only",
+      "intents": [
+        "product_use"
+      ],
+      "productNames": [
+        "Northstar Tools"
+      ]
+    },
+    {
+      "id": "graduation",
+      "targetId": "*",
+      "questionPattern": "graduat|start date|availability",
+      "answer": "My profile and resume have conflicting graduation dates. I cannot resolve that discrepancy right now; leave timing uncertain.",
+      "reuse": "same_meaning",
+      "unknown": true
+    },
+    {
+      "id": "eligibility",
+      "targetId": "*",
+      "questionPattern": "citizen|clearance|export",
+      "answer": "Unknown. Do not infer citizenship, export-control status or clearance from work authorization.",
+      "reuse": "same_meaning",
+      "unknown": true
+    }
+  ],
+  "unknownResponse": "No additional fact is available. Keep the field unresolved and continue independent work.",
+  "note": "Controlled personal-intent response; no additional facts volunteered.",
+  "status": "reviewed",
+  "reviewer": "controlled-fixture-author"
+}

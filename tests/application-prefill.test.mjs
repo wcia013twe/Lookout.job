@@ -71,7 +71,24 @@ test('actual migrated SQL draft preparation preserves ownership, revision and ap
   const loaders={loadJob:async id=>(await db.query('select * from public.jobs where id=$1',[id])).rows[0],loadApplication:async id=>(await db.query('select * from public.applications where user_id=$1 and job_id=$2',[owner,id])).rows[0]};
   const payload={responseMode:'full',jobId:'prefill-fixture',expectedRevision:-1,draft:{questions:[q('Email','email'),q('Why this team?','why','textarea')],questionsReviewed:true}};
   const result=await prepareDraftWithPrefill(call,payload,loaders);assert.equal(result.error,null);assert.equal(result.data.draft.questions[0].answer,'fictional@example.com');assert.equal(result.data.draft.questionsReviewed,false);assert.equal(result.data.prefill.counts.remaining,1);assert.equal(result.data.draft.prefill,undefined);
+  const persisted=(await db.query('select * from public.applications where id=$1',[result.data.id])).rows[0];
+  assert.equal(result.data.revision,persisted.revision);assert.deepEqual(result.data.draft,persisted.draft);
+  // A full response represents the persisted revision; preserve a human answer on a later inspection.
+  const humanDraft={...persisted.draft,questions:persisted.draft.questions.map(question=>question.fieldId==='email'?{...question,answer:'manual@example.com'}:question)};
+  const manual=await call('drafts.prepare',{jobId:payload.jobId,expectedRevision:persisted.revision,draft:humanDraft});assert.equal(manual.error,null);
+  const refreshed=await prepareDraftWithPrefill(call,{...payload,expectedRevision:manual.data.revision},loaders);assert.equal(refreshed.error,null);
+  const savedAgain=(await db.query('select * from public.applications where id=$1',[result.data.id])).rows[0];
+  assert.equal(refreshed.data.revision,savedAgain.revision);assert.deepEqual(refreshed.data.draft,savedAgain.draft);assert.equal(refreshed.data.draft.questions[0].answer,'manual@example.com');
   assert.equal((await db.query('select count(*)::int n from public.approvals')).rows[0].n,0);
   assert.equal((await prepareDraftWithPrefill(call,payload,loaders)).error.code,'40001');
  }finally{await db.close();}
+});
+
+test('compact preparation omits the full saved draft and failed writes never return a verified handoff',async()=>{
+ const payload={jobId:'j',expectedRevision:0,draft:{questions:[q('Email','email')]}};
+ const h=service(),compact=await prepareDraftWithPrefill(h.call,payload,{loadJob:async()=>({employer:{}})});
+ assert.equal(Object.hasOwn(compact.data,'draft'),false);
+ const failure={error:{code:'40001',message:'Draft changed'}};
+ const failed=await prepareDraftWithPrefill((op,p)=>op==='drafts.prepare'?Promise.resolve(failure):h.call(op,p),{...payload,responseMode:'full'},{loadJob:async()=>({employer:{}})});
+ assert.deepEqual(failed,failure);assert.equal(failed.data,undefined);
 });

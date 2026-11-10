@@ -1,0 +1,51 @@
+{
+  "sourceSnapshot": "jobright-swe-2026-9763907b1b91",
+  "purpose": "Reusable bounded target selection, not a passing safety/readiness receipt",
+  "filled": false,
+  "uploaded": false,
+  "targets": [
+    {
+      "id": "manual",
+      "boardId": "jr-6ab56a72d85922de20ce0eba",
+      "company": "Adobe",
+      "title": "2027 University Graduate - Software Engineer",
+      "url": "https://adobe.wd5.myworkdayjobs.com/en-US/external_experienced/job/XMLNAME-2027-University-Graduate---Software-Engineer_R172083",
+      "liveStatus": "read_only_available",
+      "checkedAt": "2026-11-09",
+      "readyForPilot": false,
+      "blockers": [
+        "Frozen candidate timing conflicts must remain explicit"
+      ]
+    },
+    {
+      "id": "personal",
+      "boardId": "jr-6a9b91af1388387060598581",
+      "company": "Garner Health",
+      "title": "Associate Software Engineer",
+      "url": "https://job-boards.greenhouse.io/garnerhealth/jobs/6174210004",
+      "liveStatus": "read_only_available",
+      "checkedAt": "2026-11-09",
+      "readyForPilot": false,
+      "blockers": [
+        "React/custom combobox controls exceed current bounded adapter",
+        "Invisible reCAPTCHA and third-party frames prevent current complete-inspection assertion",
+        "Resume-upload and autosave pre-submit side effects unverified"
+      ]
+    },
+    {
+      "id": "clean",
+      "boardId": "jr-6a639f03979290281c703344",
+      "company": "Verkada",
+      "title": "Backend Engineer - Connectivity",
+      "url": "https://job-boards.greenhouse.io/verkada/jobs/5194598007",
+      "liveStatus": "read_only_available",
+      "checkedAt": "2026-11-09",
+      "readyForPilot": false,
+      "blockers": [
+        "React/custom combobox controls exceed current bounded adapter",
+        "Invisible reCAPTCHA and third-party frames prevent current complete-inspection assertion",
+        "Resume-upload and autosave pre-submit side effects unverified"
+      ]
+    }
+  ]
+}

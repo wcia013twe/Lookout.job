@@ -1,0 +1,77 @@
+"""Freeze COM4 private inputs without inference, account reset or domain writes."""
+import argparse,hashlib,json,os,shutil,subprocess
+from pathlib import Path
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
+from cost import validate_policy
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
+from native_contract import capture_native_contract
+
+def readable_facts(value,indent=0):
+ lines=[]
+ if isinstance(value,dict):
+  for key,item in value.items():
+   import re
+   label=re.sub(r'(?<!^)(?=[A-Z])',' ',key).replace('_',' ').capitalize()
+   if isinstance(item,(dict,list)):lines.append('  '*indent+label+':');lines.extend(readable_facts(item,indent+1))
+   else:lines.append('  '*indent+label+': '+str(item if item is not None else 'Not specified'))
+ elif isinstance(value,list):
+  for index,item in enumerate(value,1):
+   lines.append('  '*indent+str(index)+'.')
+   lines.extend(readable_facts(item,indent+1) if isinstance(item,(dict,list)) else ['  '*(indent+1)+str(item)])
+ return lines
+
+def prepare(source,background,destination,cost_policy=None):
+ source,background,destination=[Path(p).resolve() for p in [source,background,destination]]
+ if destination.exists():raise ValueError('Use a new destination; preserve prior versions')
+ account=json.loads((source/'account.private.json').read_text())
+ if account.get('status')!='verified' or account.get('apiUrl')!='http://127.0.0.1:54321' or account.get('mcpUrl')!='http://127.0.0.1:8080/mcp' or account.get('benchmarkTaskId')!='COM4' or not account.get('email','').endswith('@example.test'):raise ValueError('Verified dedicated local COM4 account receipt required; never relabel an account running another case')
+ clone=json.loads((source/'cloned-context.private.json').read_text())
+ for name in ['profile.md','resume.pdf']:
+  if not (background/name).is_file():raise ValueError('Complete background and resume required')
+ repo=Path(__file__).resolve().parents[2];spec=json.loads((repo/'examples/com4/scenario.json').read_text());fixture=json.loads((repo/'examples/com4/fixture.json').read_text())
+ # A source must provide the exact equivalent native profile facts, not a handwritten summary.
+ initial_source=json.loads((source/'suite/initial-state.json').read_text())
+ profile=initial_source['profileFacts']
+ if profile!=clone['settings']['profile']['facts']:raise ValueError('Native profile differs from clone')
+ resume_hash=hashlib.sha256((background/'resume.pdf').read_bytes()).hexdigest()
+ if not clone['settings']['resumes'] or any(x.get('content_hash')!=resume_hash for x in clone['settings']['resumes']):raise ValueError('Resume parity mismatch')
+ destination.mkdir(mode=0o700,parents=True)
+ for name in ['suite','background','runs']:(destination/name).mkdir()
+ for name in ['account.private.json','grader.private.json','cloned-context.private.json']:shutil.copyfile(source/name,destination/name)
+ (destination/'account.lock').symlink_to(source/'account.lock')
+ apps=[]
+ initial=dict(profileFacts=profile,contacts=fixture['contacts'],applications=apps)
+ (destination/'suite/initial-state.json').write_text(json.dumps(initial,indent=2)+'\n')
+ (destination/'suite/scenario.json').write_text(json.dumps(spec,indent=2)+'\n')
+ (destination/'suite/contract.md').write_text('Private recruiting workspace. Resume and currently released inbox/calendar evidence are in /inputs. Save work in /workspace/output or available connected records. Do not send messages, submit forms, or create interview preparation materials.\n')
+ contact_text='\n\n'.join(c['record']['contact']+'\n'+'\n'.join(k+': '+str(v) for k,v in c['record'].items() if k!='contact') for c in fixture['contacts'])
+ onboarding=(background/'profile.md').read_text()+'\n\n## My complete saved profile details\n'+'\n'.join(readable_facts(profile))+'\n\n## My complete saved preferences\n'+'\n'.join(readable_facts(clone['settings'].get('preferences',{})))+'\n\n'+fixture['onboarding']+'\n\n'+contact_text
+ (destination/'background/onboarding.md').write_text(onboarding)
+ shutil.copyfile(background/'resume.pdf',destination/'background/resume.pdf')
+ (destination/'context-parity.json').write_text(json.dumps({'verified':True,'profileFactsDigest':hashlib.sha256(json.dumps(profile,sort_keys=True).encode()).hexdigest(),'onboardingDigest':hashlib.sha256(onboarding.encode()).hexdigest(),'resumeDigest':resume_hash,'allNativeProfileFactsRendered':True,'allNativePreferencesRendered':True,'bothConditionsSameFirstMessage':True},indent=2)+'\n')
+ for name in ['reset.mjs','snapshot.mjs']:shutil.copyfile(repo/'scripts/com4'/name,destination/name)
+ config=dict(version=spec['version'],taskId='COM4',suiteByTask=False,resetArgs=[],publicFiles=[],productConfiguration=spec['policy']['productConfiguration'],databaseContainer='supabase_db_lookout-local',allowedTools=['check_context_versions','read_personal_context','read_developer_context','read_guide','discover_toolkit','discover_tools','call_discovered_tool','read_muse_changes','acknowledge_muse_changes','start_agent_audit_run','append_agent_audit_events','read_agent_audit_run','list_contacts','save_contact'])
+ config['requiredGuidance']={'developerVersion':json.loads((repo/'supabase/functions/agent-gateway/instructions.json').read_text())['developerVersion'],'outreachGuideVersion':json.loads((repo/'supabase/functions/agent-gateway/skills/cold-outreach.json').read_text())['version']}
+ (destination/'runtime-config.json').write_text(json.dumps(config,indent=2)+'\n')
+ pricing=Path(cost_policy) if cost_policy else repo/'examples/evals/cost-policy.json'
+ validate_policy(json.loads(pricing.read_text()))
+ shutil.copyfile(pricing,destination/'cost-policy.json')
+ (destination/'native-contract.json').write_text(json.dumps(capture_native_contract(destination),indent=2)+'\n')
+ files=[p for p in destination.rglob('*') if p.is_file() and not p.is_symlink()]
+ files+=list((repo/'scripts/com4').glob('*.py'))+list((repo/'scripts/com4').glob('*.mjs'))
+ files += [repo/'scripts/communication/verify-langfuse-pilot.mjs']
+ files += [repo/'scripts/n01/cost.py',repo/'scripts/n01/cost-export.mjs']
+ files+=list((repo/'scripts/communication').glob('*.py'))
+ files += [repo/'scripts/evals/workspace_transport.py']
+ files += [repo/'supabase/functions/agent-gateway/instructions.json', repo/'supabase/functions/agent-gateway/skills/cold-outreach.json', repo/'supabase/functions/agent-gateway/skills/agent-audit.json', repo/'supabase/migrations/20261103224016_network_person_cards.sql']
+ files+=list((repo/'scripts/evals').glob('*.mjs'))+[repo/'backend/runtime/trace-policy.mjs']
+ sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+ image=subprocess.run(['docker','image','inspect','lookout-benchmark:0.164.0','--format','{{.Id}}'],check=True,capture_output=True,text=True,timeout=30).stdout.strip()
+ lock=dict(version=spec['version'],files={os.path.relpath(p,destination):sha(p) for p in files},background={n:sha(destination/'background'/n) for n in ['onboarding.md','resume.pdf']},imageId=image)
+ (destination/'freeze.json').write_text(json.dumps(lock,indent=2)+'\n')
+ for p in destination.rglob('*'):
+  if p.is_file() and not p.is_symlink():p.chmod(0o600)
+ return destination
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--source',required=True);p.add_argument('--background',required=True);p.add_argument('--destination',required=True);p.add_argument('--cost-policy');a=p.parse_args();print(prepare(a.source,a.background,a.destination,a.cost_policy))

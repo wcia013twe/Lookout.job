@@ -1,14 +1,17 @@
+import {initializeTracing, traceWork} from './tracing.ts';
 import {setTimeout as delay} from 'node:timers/promises';
 import {createClient} from '@supabase/supabase-js';
 import {createResumeParser} from './resume-parser.ts';
 import {createApi} from './api.ts';
-import {createSubmissionService} from './submission.ts';
-import {SUBMISSION_TOOLS} from '../../supabase/functions/agent-gateway/submission-batches.mjs';
+// Temporarily disabled: Muse owns live application browser work.
+// import {createSubmissionService} from './submission.ts';
+// import {SUBMISSION_TOOLS} from '../../supabase/functions/agent-gateway/submission-batches.mjs';
 import {createDispatch} from './service.ts';
-import {createApplicationExecutor} from './application-worker.ts';
+// import {createApplicationExecutor} from './application-worker.ts';
 import {runWorker} from './worker.ts';
 import type {Rpc} from './types.ts';
 
+initializeTracing();
 const url=process.env.SUPABASE_URL;
 const key=process.env.SUPABASE_SERVICE_ROLE_KEY;
 if(!url||!key)throw Error('SUPABASE_URL and server-only SUPABASE_SERVICE_ROLE_KEY are required');
@@ -20,7 +23,9 @@ const mode=process.env.LOOKOUT_PROCESS||'api';
 if(mode==='worker'){
   if(process.env.LOOKOUT_EXECUTION_ENABLED==='true'){
     console.log('Lookout worker started; durable queue polling enabled.');
-    await runWorker(rpc,controller.signal,{applicationExecutor:process.env.LOOKOUT_SUBMISSION_ENABLED==='true'?createApplicationExecutor({download:async resume=>{const {data,error}=await client.storage.from('resumes').download(resume.object_path);if(error||!data||data.size>10*1024*1024)throw Error('Resume unavailable');return Buffer.from(await data.arrayBuffer());}}):undefined});
+    // AI Apply is picked up by Muse through the change feed, never by this worker.
+    // Restore createApplicationExecutor only with an explicit orchestration change.
+    await runWorker(rpc,controller.signal);
   }else{
     console.log('Lookout worker is idle; backend execution awaits service approval.');
     while(!controller.signal.aborted){try{await delay(30000,undefined,{signal:controller.signal});}catch{break;}}
@@ -32,9 +37,10 @@ if(mode==='worker'){
   const allowedOrigins=(process.env.LOOKOUT_ALLOWED_ORIGINS||'http://localhost:3000,http://127.0.0.1:3000').split(',').map(s=>s.trim()).filter(Boolean);
   const parser=createResumeParser({client});
   const dataDispatch=createDispatch({rpc,supabaseUrl:url,parseResume:parser.agent});
-  const enabled=process.env.LOOKOUT_SUBMISSION_ENABLED==='true';
-  const dispatch=enabled?createSubmissionService({dispatch:dataDispatch,projectUrl:url}):dataDispatch;
-  const server=createApi({dispatch,executionTools:enabled?SUBMISSION_TOOLS:[],parseHuman:parser.human,allowedHosts,allowedOrigins});
+  // Deterministic submission remains implemented in submission.ts; registration is paused.
+  // const dispatch=createSubmissionService({dispatch:dataDispatch,projectUrl:url});
+  // const executionTools=SUBMISSION_TOOLS;
+  const server=createApi({readCount:(watchId:string)=>rpc('agent_pending_count',{watch_id:watchId}),dispatch:dataDispatch,executionTools:[],parseHuman:(token,payload)=>traceWork('parse-resume',{channel:'human'},()=>parser.human(token,payload),{type:'tool',summarize:()=>({status:'completed',reviewRequired:true})}),allowedHosts,allowedOrigins});
   server.listen(port,'0.0.0.0',()=>console.log(`Lookout MCP API listening on port ${port}.`));
   controller.signal.addEventListener('abort',()=>{server.close();server.closeIdleConnections();setTimeout(()=>server.closeAllConnections(),25000).unref();},{once:true});
 }else throw Error('LOOKOUT_PROCESS must be api or worker');

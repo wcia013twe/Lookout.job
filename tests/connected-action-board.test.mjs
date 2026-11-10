@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {swipeResponse,safeBoardReturn,matchesBoardApplication} from '../lib/action-board.mjs';
+import {swipeResponse,safeBoardReturn,matchesBoardApplication,orderBoardItems,needsUnblocking,isFilledApplication} from '../lib/action-board.mjs';
 import {buildPreparationAgenda} from '../lib/preparation-planner.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 import {TOOLS} from '../supabase/functions/agent-mcp/protocol.mjs';
@@ -120,4 +120,24 @@ test('scheduled interview context alone is not an action; an explicit confirmati
  store.update('demo.boardImports',rows=>rows.map(row=>row.id===event.id?{...row,record:{...row.record,needsAction:true,nextAction:'Confirm interview time'}}:row));
  assert((await services.readActionBoard()).items.some(item=>item.sourceId===event.id));
  assert.deepEqual(store.get('demo.boardImports').find(row=>row.id===event.id).record.rounds,event.record.rounds);
+});
+
+
+test('filled drafts lead the board without changing source chronology or input eligibility',()=>{
+ const rows=[
+  {key:'blocker',kind:'resolve_blocker'},
+  {key:'incomplete',kind:'prepared_application',questions:[{answer:'Ask me'}]},
+  {key:'filled',kind:'review_application',reviewed:false,questions:[{answer:'Yes'}]},
+  {key:'event-task',kind:'imported_action'},
+  {key:'saved-draft',kind:'prepared_application',questions:[{answer:'',required:false},{answer:'',fieldType:'hidden'}]},
+  {key:'question',kind:'missing_answer'},
+  {key:'uncertain',kind:'check_submission'},
+ ];
+ assert.deepEqual(orderBoardItems(rows).map(i=>i.key),['filled','saved-draft','blocker','incomplete','event-task','question','uncertain']);
+ assert.equal(rows[0].key,'blocker');
+ assert.equal(rows[2].reviewed,false,'ordering never confers approval or review');
+ assert.deepEqual(rows.filter(needsUnblocking).map(i=>i.key),['blocker','incomplete','question','uncertain']);
+ assert.equal(isFilledApplication({kind:'prepared_application',questions:[{answer:'   '}]}),false);
+ assert.equal(isFilledApplication({kind:'resolve_blocker',questions:[{answer:'Yes'}]}),false);
+ assert.deepEqual(orderBoardItems([]),[]);
 });

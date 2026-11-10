@@ -1,0 +1,57 @@
+{
+  "application": {
+    "id": "b324d8fa-4e50-4fc6-876a-606b74391a40",
+    "jobId": "alder-as417",
+    "company": "Alder Systems",
+    "title": "Platform Engineer",
+    "role": "AS-417",
+    "url": "https://alder.example/jobs/AS-417",
+    "status": "Submitted",
+    "submittedAt": "2026-11-15T15:00:00Z",
+    "submissionSource": "user_reported",
+    "receipt": null,
+    "draft": {
+      "note": "User reports submitting AS-417 on November 15. No employer receipt available."
+    }
+  },
+  "sentinelApplication": {
+    "id": "b324d8fa-4e50-4fc6-876a-606b74391a41",
+    "jobId": "birch-bd22",
+    "company": "Birch Data",
+    "title": "Backend Engineer",
+    "role": "BD-22",
+    "url": "https://birch.example/jobs/BD-22",
+    "status": "Submitted",
+    "submittedAt": "2026-11-12T15:00:00Z",
+    "submissionSource": "user_reported",
+    "receipt": null,
+    "draft": {
+      "note": "Unrelated application. Preserve unchanged."
+    }
+  },
+  "contacts": [
+    {
+      "id": "leah",
+      "record": {
+        "contact": "Leah Park",
+        "company": "Alder Systems",
+        "email": "leah@alder.example",
+        "title": "Recruiter",
+        "relationship": "Recruiter for application AS-417. No interview scheduled yet.",
+        "status": "Contacted",
+        "message": ""
+      }
+    },
+    {
+      "id": "unrelated-jules",
+      "record": {
+        "contact": "Jules Kim",
+        "company": "Birch Data",
+        "relationship": "Unrelated professional contact. Keep existing draft and status.",
+        "status": "Not contacted",
+        "message": "Thank you for sharing the team overview."
+      }
+    }
+  ],
+  "onboarding": "I use America/New_York time. I reported applying to Alder Systems Platform Engineer AS-417 on November 15, 2026; I do not have an employer confirmation receipt. Leah Park is the recruiter. My availability for the screen and earliest start date have not been confirmed. Preserve my unrelated Birch Data application and Jules contact. Please leave messages as drafts; do not send, submit forms, or create interview preparation materials."
+}

@@ -39,3 +39,30 @@ test('fictional queue creates a visible queued application and never marks appli
  assert.equal(fixture.workflow.applications[posting.id],undefined);
  assert.equal(store.get('tracker.ids').includes(posting.id),false);
 });
+
+test('recorded submission leaves Discover, remains in Applications and supersedes an old blocked preparation label',async()=>{
+ const {fromCloud}=await import('../lib/cloud-model.mjs');
+ const {matchesDiscoveryStatus}=await import('../next-app/lib/discover-view.mjs');
+ const {applicationWorkLabel}=await import('../lib/application-request-state.mjs');
+ const job={id:'prior-job',status:'partial',result:{executor:'muse',outcome:'blocked',verifiedSubmission:false}};
+ const rows={profiles:[],preferences:[],resumes:[],answer_library:[],applications:[{id:'application-id',job_id:role.id,status:'Submitted',revision:0,draft:{url:role.applicationUrl},execution_job:job,jobs:{canonical_url:role.applicationUrl,employer:{company:role.company,title:role.title,employmentType:role.employmentType}}}]};
+ const applications=fromCloud(rows).applications,before=structuredClone(applications),app=applications[role.id];
+ assert.equal(matchesDiscoveryStatus(role,{applications}),false);
+ assert.equal(matchesDiscoveryStatus(role,{applications,includeApplied:true}),true,'Explicit applied-history browsing remains available');
+ assert.equal(trackedApplications({applications})[0].backendId,'application-id');
+ assert.equal(applicationWorkLabel(app),'');assert.deepEqual(applications,before,'Historical job outcome is retained');
+ assert.equal(applicationWorkLabel({...app,status:'Blocked'}),'Muse needs your input');
+ assert.equal(applicationWorkLabel({...app,status:'Queued'},{status:'Applied'}),'');
+ assert.equal(applicationWorkLabel({...app,executionJob:{...job,result:{executor:'muse',outcome:'uncertain'}}}),'Verify the submission outcome');
+});
+
+test('activity flags reflect journal pickup, never stale terminal results or later progress',async()=>{
+ const {applicationWorkFlag}=await import('../lib/application-request-state.mjs');
+ const app={status:'Draft',executionJob:{status:'queued'}};
+ assert.deepEqual(applicationWorkFlag(app),{label:'Queued',working:false});
+ assert.deepEqual(applicationWorkFlag({...app,executionJob:{status:'running'}}),{label:'Working',working:true});
+ for(const status of ['partial','failed','cancelled','completed'])assert.equal(applicationWorkFlag({...app,executionJob:{status,result:{executor:'muse',outcome:'working'}}}),null,status);
+ assert.equal(applicationWorkFlag({...app,status:'Submitted'}),null);
+ assert.equal(applicationWorkFlag(app,{status:'Applied'}),null);
+ assert.equal(applicationWorkFlag({...app,status:'Withdrawn'}),null);
+});

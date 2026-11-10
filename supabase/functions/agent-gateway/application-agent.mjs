@@ -1,0 +1,5 @@
+export {validateApplicationAgent} from '../../../lib/application-agent.mjs';
+export const APPLICATION_AGENT_TOOLS=[
+ {name:'read_application_agent',operation:'applications.agent.read',scope:'workspace:read',readOnly:true,description:'Read the owned preferred connection for future AI Apply requests, its routing version and current availability. Does not expose credentials or change existing requests.',inputSchema:{type:'object',properties:{},required:[],additionalProperties:false}},
+ {name:'select_application_agent',operation:'applications.agent.select',scope:'preferences:write',requiredScopes:['workspace:read'],description:'On the user’s request, select one existing owned active connection for future AI Apply requests. Read_application_agent first and supply its current version. Selection grants no permissions or submission approval, changes no existing job assignment and never silently falls back to a testing agent.',inputSchema:{type:'object',properties:{connectionId:{type:'string',format:'uuid'},expectedVersion:{type:'integer',minimum:0,maximum:999999999}},required:['connectionId','expectedVersion'],additionalProperties:false}},
+];

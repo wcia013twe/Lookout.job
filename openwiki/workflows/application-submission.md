@@ -337,13 +337,33 @@ Rejecting an application keeps its history and tracker state, resets draft revie
 
 Source checks include the connected-board database scenario, unique-versus-ambiguous legacy-plan upgrade, shared planner/demo tests and `scripts/check-connected-action-board-ui.mjs`. These establish local source behavior only. The migration and gateway/MCP must release together before advertising hosted parity.
 
-Round integration retains the connected Action Board stable round_id, confirmation, practice focus and timezone. Proposed or incorrect dates do not supply a next-action date. Native cancellation uses phase cancelled; Screen/Interview remains independent of practice focus. Guide versions are application-workspace 18 and interview-preparation 7; integrated developer contract 122.
+Round records retain their stable round_id, confirmation, practice focus and timezone. Proposed or incorrect dates do not supply a next-action date. Native cancellation uses phase cancelled; Screen/Interview remains independent of practice focus. Round confirmations are saved in the timeline but are not Action Board decisions. Guide versions are application-workspace 18 and interview-preparation 7; integrated developer contract 122.
+
+Scheduled interview round confirmations remain in the owned round timeline and
+Applications → Interview editor; they are not shown as Action Board tasks. Use
+the round editor to correct or confirm the event. The Action Board remains for
+explicit human decisions and actions requiring attention.
+
+Assessment tasks (OA, online/coding/technical assessments, provider-named
+HackerRank/HireVue/CodeSignal/Codility tasks and take-home
+assessments) remain on their application tracker and are excluded from Action
+Board decisions and tracker work. The Action Board is limited to Muse work that
+needs human approval or input. The weekly preparation calendar remains beside
+the action list and shows dated interview rounds, assessment next actions,
+preparation sessions and materials. Networking follow-ups and AI Apply status
+remain in their owning workspaces.
+
+An imported action that describes a scheduled screen/interview (for example,
+"Recruiter screen with …, Fri …, Google Meet") is also calendar context. Its
+saved application round and date remain unchanged and visible in Applications
+and the weekly preparation calendar; it does not appear as a Muse approval.
 
 ### Application coverage on the Action Board
 
-The owner-scoped board read also includes Draft applications with a saved résumé,
+The owner-scoped board read includes Draft applications with a saved résumé,
 cover letter or answered question, Approved applications still awaiting submission,
-and imported records with `needsAction: true` and a nonempty `nextAction`. These
+and imported records with `needsAction: true` and a nonempty `nextAction`, except
+assessment tasks (which remain on Applications). These
 are links to existing editors, not new approval or execution controls. Inbox
 blockers/review/uncertainty take precedence for the same native application;
 claimed, started, uncertain and confirmed attempts prevent ordinary submission suggestions.
@@ -398,3 +418,267 @@ prior assignment. Confirmed/uncertain work is never resubmitted. Existing websit
 review and scoped MCP preparation/submission paths are unchanged. This instruction
 update needs gateway release and client context refresh; host subagent behavior
 and live employer submission are not verified by source checks.
+
+### Orchestrator quality audit (application guide v24)
+
+The coordinating Agent audits every assigned job against saved analysis/drafts
+before the review handoff, checking role accounting, source facts, team scope,
+eligibility, disclosed pay, four fit dimensions, candidate evidence/material gap,
+resume and employer questions/answers. It fills supported omissions and corrects
+mistakes directly or delegates specific repairs, then reads back and rechecks them.
+Unknown facts remain explicit; human edits, holds, version locks and renewed
+approval requirements remain authoritative. Submission summaries likewise require
+per-item saved attempt/receipt evidence. This is a host instruction using existing
+scoped tools, not a new review service or proof of host compliance.
+
+
+### Action review source disclosures
+
+Submission cards cover prepared drafts and submission steps; Need your input
+cards cover questions, CAPTCHA/login blockers and uncertainty. Both reuse the
+compact discovered-role identity widget and show the saved draft résumé/version.
+The board reads questions and resume selection from the owned draft. Question
+metadata uses existing direct profile/saved-answer/preference references or
+answerSource=ai_generated/inferred with inferenceNote. questionSource distinguishes
+observed employer_form fields from hypothetical ai_generated questions; unknown
+legacy provenance remains unknown. Draft inferences [{field,reason}] and
+coverLetterSource are read by the same owner/version-scoped projection for web
+and MCP. These labels are disclosures, never human verification or consent.
+
+Agents save through prepare_draft and read back the current revision and board;
+there is no second board post. Browser refresh/focus/reconnect and existing
+workspace-refresh events synchronize the projection; no new push channel is
+claimed. Changed draft content requires current-version review. Legacy data is
+not backfilled with invented provenance. Gateway guide25/contract137 and the new
+read projection require their normal backend release for hosted availability.
+
+
+### Unified request, decision and outcome pipeline (contract 138 source update)
+
+AI Apply saves its existing queued application job and an application_requested
+change pointer atomically. Human board decisions and native application approvals
+emit action_decision pointers with exact decision keys and responses. Existing
+read_muse_changes/read_action_board/read_backend_jobs and per-connection feed
+acknowledgements serve the same pipeline. The count-only watcher includes both
+event types; reading/acknowledging never grants execution or completes a task.
+An installed host wake callback remains a separately verified runtime boundary.
+
+Tracker checkmarks now authorize Muse to handle the exact task; they no longer
+clear needsAction. The existing decision receipt stores pickup/outcome metadata
+and an immutable task summary for audit. Task text and completion remain on the
+owned imported record, with no separate editable update sheet. The board shows
+approved, started, blocked/uncertain, completed, stopped or superseded rows.
+record_tracker_action_progress requires workspace:read, tracking:write and
+activity:write, exact key/version, UUID idempotency and a single connection claim.
+Only that connection may report outcomes; completion clears only the unchanged
+approved task via the existing tracker writer. It never creates a submission
+receipt, grants exact-draft approval or sends outreach.
+
+Rejection survives source edits, cancels queued matching native jobs, and fences
+agent tracker writes and matching native queue/draft/execution paths. Human
+Reopen for review invalidates the old approval; blockers/uncertainty require
+a verification note and confirmation first. Already-started observed outcomes
+remain reportable after stop or source change without clearing a replacement
+task or lifting the stop. Legacy Done/Dismissed receipts are not reinterpreted
+as approvals. Website responses remain human-only; agents cannot forge them.
+
+Application-workspace guide26 explains event pickup, worker coordination, source
+refresh, exact approvals, progress reporting and durable acknowledgement. AI
+Apply events point to the existing queued job; agents must not start competing
+workers. Backend migration/gateway/MCP release and an authenticated host wake
+receipt are required before claiming this is active in a hosted account.
+
+
+### Muse-owned AI Apply routing (source update)
+
+AI Apply now waits for connection-bound Muse pickup and host computer use. The existing saved draft is reused; required approval, durable stops and uncertainty checks remain. Prepared/completed request outcomes never manufacture submission evidence. Deterministic browser registrations are temporarily paused. See [the routing contract](../../docs/discover-application-jobs.md) and [current implementation state](../operations/current-state.md) for activation and host-verification limits.
+
+Muse request intake accepts HTTPS posting URLs independently of deterministic adapter support; the old provider allowlist is commented out. This only queues agent work; deterministic submission platform support and approval/receipt authority are unchanged. Queue failures display the backend message, including plain-object RPC errors.
+
+### Quiet Muse preparation and secure account setup
+
+Application guide28/notifications5 (developer141) require quiet authorized host-browser work after AI Apply, Lookout-first recovery and no extra chat start for supported preparation. Workday alone is not a blocker. A host password manager may generate/store/autofill an employer credential under user permission; credentials and verification secrets never belong in Lookout, chat or logs. Already-authorized mailbox access can handle account verification through a supported secure flow. Missing secure host capabilities require human secure entry; final submission still follows the existing exact-version approval gate. These are agent instructions, not proof a host vault, mailbox or browser is connected.
+
+Blocked browser work must use the existing failure/draft writer to create the owning application blocker and verify its Need your input projection with read_action_board before acknowledgement. Backend request status alone does not create that human-input card. The card contains a concrete human next step and safe resume condition, never credentials or verification secrets. No new card store or approval authority is added.
+
+### Batch concurrency and Lookout-first recovery
+
+Application guide29/change-resumption3 (developer142) keep the standing rules general: check current Lookout facts before asking the user, parallelize independent work, and serialize shared accounts/sessions and records. One dispatcher may coordinate multiple workers; one application keeps one owner/writer. Existing version, claim, approval and uncertainty boundaries remain. Host concurrency capability is not established by these instructions.
+
+When waiting for input, the host may retain the existing application tab/session and resume the same application. Employer-side draft persistence must be verified before relying on reopening; neither Lookout nor the instructions guarantee browser-session retention.
+
+Application guide30/developer143 explicitly group all unanswered employer fields for one application in its existing draft.questions and one Need your input card. The agent saves and verifies the full group, keeps proposals unconfirmed and preserves existing answers, then continues the same application to Submission review after resolution. This clarifies existing scoped writers/projections; no new card store or UI behavior is introduced.
+
+### Discover preparation disclosure and saved questions
+Discover always displays Application answers, including when no draft exists. It labels absent inspection as unchecked and recorded questions/partial inspection as partial. Only explicit inspectionComplete permits the no-human-answers message, and pending agent/browser work suppresses that message. This is a disclosure, not approval or submission readiness.
+Application guide33 (developer146) requires incremental employer questions to be saved through prepare_draft, preserving earlier pages and human edits. Missing fields and supported proposals belong in the existing grouped Need your input card; read_application_record and read_action_board must verify them before notification. Chat-only bundles do not satisfy the handoff. Existing scoped writers/readers own browser/MCP parity; no new tool or database writer is added. Host compliance and gateway activation remain separate from source checks.
+Application card focus (guide31/developer144): retain the selected résumé and show unanswered/proposed answers; unknown provenance also remains reviewable. Hide direct sourced factual answers only in the card, retaining full application access through the widget. Validation and response payloads still use the complete ordered questions, preserving hidden answers and ownership/revision gates. Existing MCP readers/writers keep their complete projection.
+
+Recorded submission supersedes old preparation labels in Applications. The existing native application/progress writer owns the outcome; default Discover visibility derives from that saved state. The applied-history toggle still allows deliberate browsing. Old blocked-job records remain historical rather than being rewritten as successful submissions; uncertainty remains explicit. Guide32/developer145 require saving and reading back the actual application outcome.
+
+### Direct answers in the input card
+Application questions retain a question label above their answer control. The
+résumé selector is labeled Résumé used and an unsaved selection stays explicitly
+empty. Legacy blockers with no structured questions show their saved request
+above an answer textbox instead of requesting correction instructions. That
+answer uses the existing blocker note payload; no employer fields are invented.
+Save and resume Muse saves through the existing versioned response boundary
+without granting submission approval. Actual host resumption remains separately
+verified. The detached demo includes a fictional hub-ranking textbox.
+
+
+### Superseded preparation blockers on recorded progress
+
+The shared `private.version_application` transition clears an unchanged preparation
+blocker on status-only writes to Submitted, Interview, Offer, Rejected or Withdrawn
+when no claimed, started or uncertain submission attempt exists and the current
+Muse execution-job projection does not report an uncertain host outcome. Website
+`set_application_stage` and MCP `record_application_progress` (`applications.progress`)
+therefore use the same cleanup, ownership and version boundaries. Draft content,
+draft revision, existing submission timestamp/receipt and historical execution-job
+outcomes are preserved; cleanup gets a separate preparation_blocker_cleared activity.
+Reported progress still does not create employer confirmation or human approval.
+Tracked draft edits remain forbidden and unresolved submission attempts retain
+their evidence, blocker and existing recovery/retry protections.
+
+Migration `20261108235459_clear_superseded_application_blockers.sql` also reconciles
+legacy tracked blockers through that transition. Regression coverage exercises
+both the authenticated website writer and actual MCP tool dispatch, stale versions,
+ownership/scopes, replay, legacy reconciliation and uncertainty. The detached demo
+can report submission after its fictional preparation failure, preserving the old
+job result and resetting independently. Runtime activation is a separate check.
+
+
+### AI Apply pickup receipt
+
+Application-workspace 38 and notifications 6 request one short host-conversation
+acknowledgement after a successful claim and running-job read-back. A batch receipt
+names only actually claimed roles; remaining queued requests are described as
+queued. This direct response need not wait for the routine digest, but keeps host
+messaging permissions and explicit quiet-time restrictions. Existing message/delivery
+receipts prevent duplicate announcements; a failed send is not delivery. The agent
+then works quietly, retaining all existing review, blocker and submission gates.
+The receipt never consumes the work event before a verified outcome or blocker.
+Developer152 and the matching feed guide reference expose the new procedure;
+actual external host message delivery requires a real host receipt.
+
+
+### Compact draft saves and reread recovery
+
+`prepare_draft` keeps its compact response by default. When Muse needs to verify
+saved answers and the new draft revision, it requests `responseMode: "full"` and
+checks the returned persisted application against the intended changes. This
+can replace the immediate `read_application_record` for that draft save only.
+The response does not verify an Action Board card, claim a request, acknowledge
+an event, approve submission or establish an employer outcome. Before notifying
+the user of grouped questions, still read `read_action_board` and verify the
+owning Need your input card. Other writes retain their existing readback rules.
+
+After compaction, interruption, a timeout or a version conflict, reload the
+current guide when missing or stale, then reread the same application and
+`read_backend_jobs` for its request. Reconcile saved answers, current revisions,
+human holds, approval and attempt evidence before choosing the next action.
+A completed or partial request is historical evidence, not permission to claim
+again or create a replacement. Recover a lost response by inspecting durable
+state; reuse a retry key only for the identical supported retry. If the save
+succeeded but event acknowledgement failed, verify the saved outcome and
+acknowledge that event without repeating employer work. Uncertain submission
+outcomes remain stopped for verification; rereading never authorizes another
+submission. Browser/session recovery still depends on the host and employer.
+
+This change reduces redundant draft reads through existing scoped writers. It
+introduces no atomic save/report/acknowledgement transaction or new workflow
+store. Source tests and detached demos do not establish deployed or real-host
+behavior.
+
+### Conditional preparation on AI Apply
+
+Application guide39/developer153 tells Muse to reuse current saved preparation and call the existing prepare_draft only for missing/incomplete preparation, new employer questions, or relevant changed facts/materials. AI Apply itself remains a queue operation. Freshness is checked against current relevant sources; a context-version change alone does not justify rewriting all answers. The filler preserves nonempty answers, so changed facts require explicit reconciliation while preserving human decisions. An unchanged approved draft is reused. New live-form questions pass through the same filler before remaining personal decisions are grouped on the existing board card. This is agent guidance, not a new automatic queue hook or evidence of live host adoption.
+
+
+### Specific access handoffs and routine consent
+
+Fieldless sign-in, secure-password-entry, host-permission and employer-verification
+blockers use task-specific completion controls. They display the current saved
+resume and retain the original diagnostic behind Why Muse paused; unrelated
+resume editing, draft-inference review and answer-review checkboxes stay out of
+these access tasks. Other personal decisions and actual unanswered questions keep
+their existing answer fields and review gates. Text classification is presentation
+only and cannot grant host permission or resolve submission uncertainty.
+
+A person explicitly choosing a completion button sends the existing authenticated
+respond_action_board request with the complete saved answer array, a bounded
+completion note and confirmation. The existing owner/version validator stores
+that human update, clears the preparation blocker and leaves questionsReviewed
+false. No approval or employer receipt is created. MCP read_action_board exposes
+the same owned handoff; agents cannot invoke the human response writer. Muse must
+verify real employer/host access when resuming the same application session.
+
+Developer154/application-workspace40 requires ordinary Workday/account flows to
+remain with Muse when authorized secure host capabilities exist. A password-entry
+restriction produces only the necessary secure-entry handoff, never a request for
+passwords in Lookout/chat or a handback of the entire application. AI Apply
+preparation should include expected employer authentication redirects rather than
+being delegated as public-inspection-only work; actual host denials remain binding.
+Routine required privacy/application-processing consent may be accepted only under
+the user's explicit standing instruction or saved Application consent profile
+instructions. Optional marketing defaults to decline unless separately authorized.
+Sensitive authorizations, factual attestations and final submission retain their
+existing human boundaries. Save the user's chosen preparation preference through
+the existing versioned save_search_profile instruction field; this creates no
+formal consent receipt or submission approval.
+
+Detached fixtures and desktop/mobile checks cover sign-in, secure entry, host
+permissions and verification, saved resume display, explicit completion, original
+diagnostics, genuine unanswered-question gates, no account/backend calls and reset.
+Runtime guide activation, saved personal preferences and actual host behavior must
+be verified separately.
+
+### Submission cards temporarily hidden on the website
+
+The Action Board hides `review_application`, `prepared_application` and
+`submit_application` cards, including detached demo presentation, fallback inbox
+rows and displayed action counts. Input requests, blockers and uncertain outcomes
+remain visible. `SHOW_SUBMISSION_CARDS` in `lib/action-board.mjs` controls this
+presentation-only pause. Saved drafts, history, backend/MCP projections and existing
+submission approval requirements remain intact. AI Apply does not gain submission
+authority from this UI change; application details remain available in Applications.
+
+### Visible AI Apply activity
+
+Discover's AI Apply button shows Queued until a saved execution-job claim changes
+its status to running, then Working with a spinner. Applications rows and the
+Action Board's separate AI Apply list show the same active journal states. This
+list does not add to the human action count and has no Needs input flag. Terminal
+jobs and later recorded application progress do not display active flags, even
+when an old result says working. Reduced motion disables spinner animation.
+Existing scoped queue/claim/report writers and workspace refresh own these facts;
+the UI creates no new status store or permission. Browser activity without a saved
+running job cannot be inferred from this indicator.
+
+### Simplified employer sign-in handoff
+
+Fieldless sign-in blockers now show a short explanation, Open application linking
+to the existing saved employer URL, and I signed in — resume Muse. Resume metadata,
+diagnostic prose and answer-review controls stay out of this handoff. Missing or
+unsafe URLs fall back to application details. Original diagnostics remain saved;
+host-permission, secure-entry, real questions and uncertain-submission controls
+retain their specific behavior. The existing owner/version-checked human response
+and MCP read boundary are unchanged; signing in creates no submission approval.
+Detached fictional demo coverage verifies the link and explicit completion.
+
+### Temporary Workday and company-site manual handoff
+
+Developer155/application-workspace41 supersedes the earlier Workday sign-in/resume
+procedure: return these applications to the user with the saved employer job link.
+Muse stops before account setup, credentials, previewing remaining questions,
+filling or submission. Native Greenhouse, Ashby and Lever flows retain existing
+preparation; redirects into Workday/company forms hand back. Save and verify a
+manual blocker on the existing unfinished application, preserve all prior work and
+uncertain/submitted outcomes, report a currently claimed request blocked and never
+reopen terminal history. Human responses do not authorize automatic retries.
+Fieldless company/Workday blocker cards show Open application without a resume-Muse
+button; the user can record the actual outcome in Applications. Existing versioned
+prepare_draft/report and human progress writers provide MCP parity. No new store,
+approval or employer receipt is created. Local runtime activation is verified
+separately from source/tests and actual Muse host adoption.

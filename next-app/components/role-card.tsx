@@ -7,7 +7,7 @@ export type Role = {
   id: string; company: string; title: string; employmentType: string;
   location: string; category: string; priority: string; postedDate?: string | null;
   description?: string; matchPreview?: MatchPreview; matchAssessment?: MatchPreview;
-  materialGap?: string; rankingProfile?: any; searchProfileId?: string; evaluatedProfileVersion?: number;
+  fitLabel?: string; materialGap?: string; rankingProfile?: any; searchProfileId?: string; evaluatedProfileVersion?: number;
   postingObservation?: {checkedAt:string;liveness:string;postedAt:string|null;description:string};
   compensation?: string; workSetting?: string; sponsorship?: string;
   reviewPreview?: { question: string; answer: string; reason: string }[];
@@ -45,6 +45,7 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
   const rarity = rarityOf(role.company, role.employmentType, role.title, w.state.workflow, role.rankingProfile || role.searchProfileId) as keyof typeof TIER_HEX;
   return (
     <motion.article
+      data-discovered-role={role.id}
       whileHover={reduceMotion ? undefined : { y: -3 }}
       onPointerMove={moveSheen}
       onPointerLeave={restSheen}
@@ -71,22 +72,7 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
       <div className={styles.body}>
         <h3 className="break-words text-lg font-semibold leading-snug tracking-tight md:text-xl">{onPreview ? <button className="text-left" onClick={()=>onPreview(role)}>{role.title}</button> : role.title}</h3>
         <RoleJobFacts role={role} compact />
-        <p className="line-clamp-2 text-sm leading-relaxed text-board-muted md:line-clamp-3">
-          {role.whyItFits}
-        </p>
-        {onPreview && <RoleMatchPreview sample={w.demo ? role.matchPreview : role.matchAssessment} demo={w.demo} />}
-        {!onPreview && <details className="border-t border-board-line/60 pt-1 text-sm">
-          <summary className="flex min-h-11 items-center text-board-accent">
-            View analysis
-          </summary>
-          <p className="mt-3 leading-relaxed text-board-muted">
-            {role.whyItFits}
-          </p>
-          <p className="mt-3 text-xs text-board-muted">
-            {role.category} · Posted {role.postedDate || "Not listed"} ·{" "}
-            {role.sourceFreshness}
-          </p>
-        </details>}
+        <RoleMatchPreview sample={w.demo ? role.matchPreview : role.matchAssessment} demo={w.demo} />
         <ApplicationActions role={role} onPreview={onPreview}/>
       </div>
     </motion.article>

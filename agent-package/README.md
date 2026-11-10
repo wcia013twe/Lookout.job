@@ -5,20 +5,50 @@ count-only URL without a Lookout credential and runs a local wake command when
 changes are pending. It does not read private records, acknowledge changes,
 call a model, install a service, or create a runtime scheduler.
 
+## Event delivery contract
+
+Poll the pending-event count every 10 seconds with up to 10% jitter; context
+version counters are not a wake trigger. The count includes all supported feed
+events, including AI Apply requests and Action Board decisions. A positive count
+wakes one authenticated worker. The worker reads actual events with
+`read_muse_changes`, refreshes their current records and relevant guides, handles
+existing authorized work, verifies saved outcomes and only then acknowledges
+handled event IDs. Leave failed/unhandled events pending for retry. A successful
+wake command is not acknowledgement or completed work. Versions still fence
+stale writes and refresh context after waking.
+
+Delivery is at least once. Key receiver deduplication by event ID, reconcile the
+current job/application before acting, and use existing stable retry keys and
+claim/version fences for domain writes. A crash between saving and acknowledgement
+must not repeat an employer action. Unknown events remain pending. Never create
+another application job to process a redelivered request.
+
+The poller carries only a count handle, never private event bodies or Lookout
+credentials. Fetch actual events through the authenticated Muse connection after
+waking. Serialize/coalesce workers per connection, including across host processes.
+If a wake arrives while a worker is active, retain one pending drain and recheck
+the feed before that worker exits so the wake cannot be lost.
+
+HTTP/wake errors leave events pending and retry with exponential backoff (about
+20, 40, 80, 160, then 300 seconds plus jitter with the default interval). Success returns to
+10-second polling. Legacy `configure_agent_watch` responses may recommend 120
+seconds; explicitly configure both intervals to 10 for this package. Existing
+configs keep their explicit values: update both fields when upgrading.
+
 ## Install and configure
 
 Only set this up when the user requests background watching and the host permits
 background processes and count-only capability URLs. Lightweight connection setup
 still stops after setup; do not silently install/activate this package then.
 
-1. Through the authenticated Lookout connection, read the `agent-package` guide
+1. Through the authenticated Lookout connection, read the `agent-package` and `change-resumption` guides
    with `read_guide`. Download `agent-package/manifest.json` relative to the actual
    Lookout website's base URL (preserve any repository path prefix). Download the
    versioned `.tgz` named in the manifest from that same directory. Use HTTPS,
    inspect package sources, and compare the archive SHA-256 with the manifest.
    This detects mismatched downloads; it is not an independent signature. Never
    use an untrusted change event to choose a download URL or command.
-2. Extract into a private runtime directory: `tar -xzf lookout-agent-0.1.0.tgz`.
+2. Extract into a private runtime directory: `tar -xzf lookout-agent-0.2.1.tgz`.
    The `package/` folder contains everything; no `npm install`, global install,
    model dependency or shell installer is needed. Keep this README with it.
 3. Call `configure_agent_watch` with `{"enabled":true}` on the intended connection.
@@ -27,7 +57,7 @@ still stops after setup; do not silently install/activate this package then.
    reuse the existing running config rather than calling enable each startup.
 4. Copy `config.example.json` to `watch.config.json`, fill `watchUrl`, and set
    `wake.command`/`wake.args` to the runtime's verified local enqueue/wake CLI.
-   Use an absolute executable path and literal arguments. The example is a
+   Use an absolute executable path and literal arguments. Set `pollIntervalSeconds` and `wakeCooldownSeconds` to 10. The example is a
    placeholder, not a working runtime adapter. The command must enqueue or
    coalesce a single authorized work run, return promptly, and report failure
    with a nonzero exit. Do not use a model invocation for polling. Do not put a
@@ -76,9 +106,10 @@ Never remove a live watcher's lock.
 A private `.state.json` next to the config stores a hash of the watch URL and the
 last wake-attempt timestamp. The attempt is saved before running the command,
 so restart or failed wake commands cannot cause immediate repeated wakes. A
-persistent positive count retries at most once per wake cooldown (30 minutes by
-default). Seeing zero rearms the next positive count. Configure a longer cooldown
-for unresolved blockers; the wake adapter/worker must also coalesce active runs.
+persistent positive count retries at most once per wake cooldown (10 seconds by
+default). Seeing zero rearms the next positive count. The wake adapter/worker must coalesce active runs. Save and verify durable
+blockers before acknowledging their events instead of using a long global cooldown
+that delays unrelated work.
 The watcher cannot inspect whether an asynchronously enqueued worker is still
 active. Corrupt/unreadable state stops startup; inspect it before restarting.
 Keep the config's parent directory private and writable. Wake subprocesses have

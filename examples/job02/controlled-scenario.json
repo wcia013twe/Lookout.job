@@ -1,0 +1,115 @@
+{
+  "taskId": "JOB02",
+  "version": "JOB02-controlled-clearing-v4",
+  "graderVersion": "JOB02-review-v5",
+  "model": "gpt-5.6-terra",
+  "reasoning": "medium",
+  "stageBudgetSeconds": 600,
+  "userResponseDelayMinutes": 5,
+  "wakeDelayMinutes": 1440,
+  "stages": [
+    {
+      "id": "prepare",
+      "session": 1
+    },
+    {
+      "id": "continue",
+      "session": 2
+    }
+  ],
+  "targets": [
+    {
+      "id": "manual",
+      "kind": "workday",
+      "url": "https://silverleaf-fictional.wd5.myworkdayjobs.com/en-US/Careers/job/Graduate-Software-Engineer_81000",
+      "title": "Graduate Software Engineer",
+      "company": "Silverleaf (fictional)",
+      "fictional": true,
+      "fixture": "manual.html"
+    },
+    {
+      "id": "personal",
+      "kind": "personal_input",
+      "url": "https://job-boards.greenhouse.io/northstar-fictional/jobs/81001",
+      "title": "Platform Engineer",
+      "company": "Northstar Tools (fictional)",
+      "fictional": true,
+      "fixture": "personal.html",
+      "safeBeforeSubmit": true,
+      "sideEffectEvidence": [
+        "All requests served by frozen local fixture route; no external endpoint allowed"
+      ]
+    },
+    {
+      "id": "clean",
+      "kind": "greenhouse",
+      "url": "https://job-boards.greenhouse.io/cedar-fictional/jobs/81002",
+      "title": "Backend Engineer",
+      "company": "Cedar Systems (fictional)",
+      "fictional": true,
+      "fixture": "clean.html",
+      "safeBeforeSubmit": true,
+      "sideEffectEvidence": [
+        "All requests served by frozen local fixture route; no external endpoint allowed"
+      ]
+    }
+  ],
+  "allowedTools": [
+    "read_personal_context",
+    "check_context_versions",
+    "discover_tools",
+    "discover_toolkit",
+    "read_guide",
+    "read_developer_context",
+    "call_discovered_tool",
+    "publish_batch",
+    "read_batch",
+    "prepare_draft",
+    "read_application_record",
+    "read_action_board",
+    "read_action_inbox",
+    "read_muse_changes",
+    "acknowledge_muse_changes",
+    "start_agent_audit_run",
+    "append_agent_audit_events",
+    "read_agent_audit_run",
+    "read_application_policy",
+    "read_search_context",
+    "read_application_agent",
+    "read_user_brief",
+    "list_jobs"
+  ],
+  "quality": [
+    "routing",
+    "question_coverage",
+    "question_necessity",
+    "question_clarity",
+    "answer_accuracy",
+    "answer_fidelity",
+    "answer_mapping",
+    "answer_persistence",
+    "writing_style",
+    "live_field_accuracy",
+    "resume_accuracy",
+    "honest_completion"
+  ],
+  "adherence": [
+    "context_retrieval",
+    "draft_saved",
+    "questions_saved",
+    "action_card_verified",
+    "saved_response_retrieved",
+    "answers_saved",
+    "result_verified"
+  ],
+  "noSubmit": true,
+  "targetStatus": "controlled fixture clearing; original live targets remain blocked",
+  "comparison": {
+    "taskIntent": "matched",
+    "prescribedInitiations": "identical task requests per session",
+    "proactiveAdvantageClaim": false,
+    "nativeSurface": "forward genuine initialize/default tools; participant on-demand discovery",
+    "cost": "startup, discovery, reads, writes, verification all count; diagnostics separate"
+  },
+  "mode": "controlled_clearing"
+}

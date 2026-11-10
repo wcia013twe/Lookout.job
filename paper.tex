@@ -1,0 +1,170 @@
+\documentclass[twocolumn]{article}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\newcommand{\authorinput}[1]{\par\smallskip\noindent\begin{minipage}{\linewidth}\textcolor{red!65!black}{\textbf{Author input:} #1}\end{minipage}\par\smallskip}
+
+\raggedbottom
+\titlespacing*{\section}{0pt}{1.5ex}{0.5ex}
+
+\title{Beyond Tool Calling: Domain-Specific Workspaces
+for Personalized AI Agents}
+\author{Wei-Lin Chou}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Abstract}
+Personal agents can access external services through tools, yet workflows that extend across sessions also require durable records of decisions, authorization, and execution outcomes. We study the role of a shared software workspace in supporting these requirements. Lookout is a job-search system in which an external agent and its user operate on the same application records through authenticated tools and a web interface. The system combines domain-specific operations, selective context retrieval, revision checks, and explicit representations of pending input and uncertain outcomes. We describe its implementation and a controlled evaluation protocol covering job-search and communication tasks. The proposed comparison holds agent capabilities and task evidence fixed while varying access to Lookout's tools and records. Quality, execution time, observed user interactions, and cost are measured separately. This draft presents the system and methodology; experimental results remain pending.
+
+\section{Introduction}
+Delegating a job search requires an agent to maintain decisions whose consequences extend beyond the interaction in which they were made. A candidate may revise a location preference after roles have been saved, answer a question while application preparation is suspended, or report a submission for which no employer receipt is available. Each update changes which actions are appropriate. Execution therefore depends on recovering the current state of the workflow, including the source and authority of earlier decisions.
+
+General-purpose agents can retain this information in conversation histories or files. A domain workspace introduces an additional possibility: the agent and user can read and modify a common record, with validation applied when an action changes that record. Such an interface may reduce stale-state errors and repeated work, although its retrieval and verification operations also incur overhead. The resulting trade-off motivates our research question: under equivalent task evidence and execution budgets, how does access to a shared domain workspace affect task completion, execution cost, and the user interactions required to continue work?
+
+We investigate this question through Lookout, a job-search workspace accessible through the Model Context Protocol (MCP). An external agent supplies planning, reasoning, and browser execution. Lookout stores candidate facts, opportunities, drafts, decisions, and outcomes, and exposes operations that enforce ownership and revision constraints. Users inspect the same records through a web interface and supply corrections or missing information independently of an active agent session.
+
+This work contributes a system design for shared human--agent workflow state, an implementation spanning authenticated tools and persistent application records, and an evaluation protocol for testing continuity under staged changes in information. The protocol comprises eight JOB and COM case families with artifact-based grading and Langfuse reporting. The present draft makes no claim of improved agent performance; the proposed comparisons require completed experiments.
+
+\section{Related Work}
+\subsection{Interfaces and Persistent State}
+SWE-agent studies how the actions and observations exposed by an agent-computer interface affect software-engineering performance~\cite{sweagent}. Its interface ablations motivate treating tool design as an experimental variable rather than attributing performance solely to the underlying model. Lookout examines this issue in a different setting, where tool operations modify records that are also accessible to a user.
+
+StateHarness maintains evolving project state for coding agents, including decisions, findings, dependencies, and unresolved work~\cite{stateharness}. Its reported improvements in completion, together with regression trade-offs, suggest that persistent state should be evaluated through both progress and preservation. Ding et al.~\cite{alwayson} extend this perspective to permissions, commitments, provenance, and externally committed effects. Lookout implements these concerns through explicit domain records and validated state transitions. The empirical question is whether those mechanisms improve execution relative to a baseline that already has persistent files.
+
+\subsection{Long-Horizon Execution and Collaboration}
+OSWorld 2.0 evaluates 108 long-horizon computer-use workflows and identifies failures in constraint tracking, incorporation of incoming information, and verification~\cite{osworld}. These failures are relevant to recruiting workflows in which a later correction can invalidate an earlier plan. Our cases focus on continuity across staged sessions and updates to shared records, rather than broad computer-use coverage.
+
+Kolab examines how professionals adopt, modify, or reject agent contributions during extended workflows~\cite{kolab}. It demonstrates why autonomous completion alone is insufficient to characterize collaboration. The Lookout protocol records necessary information requests, redundant clarification, and preservation of user corrections. These observations provide a narrower measure than the professional judgments and collaboration assessments collected in Kolab.
+
+\subsection{Execution-Based Evaluation}
+SWE-bench determines whether repository changes satisfy required tests while preserving previously passing behavior~\cite{swebench}. MLE-bench specifies task artifacts, execution resources, and local grading procedures for ML-engineering agents~\cite{mlebench}. These benchmarks inform our use of fixed initial conditions, independently inspected artifacts, explicit resource limits, and preservation checks. JOB and COM remain domain-specific scenarios; their scores are not comparable to software-repair or ML-engineering benchmark scores.
+
+\section{System Design}
+\subsection{Workflow State and System Boundary}
+We consider workflows comprising dependent tasks, external observations, and user decisions distributed across agent sessions. At a continuation point, the agent must identify the current task state, determine which facts and permissions remain applicable, and select an admissible next action. A successful continuation preserves completed work and incorporates intervening updates without repeating an action whose external outcome is unresolved.
+
+Lookout maintains this state outside the agent's conversation. Figure~\ref{fig:architecture} shows the separation between the external host, authenticated MCP interface, domain services, persistence layer, and web interface. Agents and users access a common set of records. The host retains responsibility for model execution, scheduling, notifications, and browser capabilities; the workspace supplies domain data and validation.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.95\textwidth]{docs/figures/lookout-architecture.pdf}
+    \caption{Lookout system architecture showing
+    the interactions between users, personal agents,
+    MCP interfaces, and workspace services. The figure summarizes logical boundaries; its workers/browser path includes retained deterministic application code that is currently paused. Current AI Apply requests use the external agent host for browser execution.}
+    \label{fig:architecture}
+\end{figure*}
+
+\subsection{Domain Operations and Context Retrieval}
+MCP operations expose JSON input schemas and return domain observations. Mutations are subject to connection scope, record ownership, and revision checks. For example, an agent retrieves an application, submits a draft revision against its current version, and reads back the saved result. This operation sequence makes the stored revision available for subsequent decisions and permits the server to reject a write based on obsolete state.
+
+The initial tool surface contains common operations. Supporting schemas are retrieved through \texttt{discover\_tools}, while \texttt{read\_guide} supplies versioned procedures. Personal and developer context versions identify content that has changed since the connection's previous read. A known version does not replace the content itself: after context loss, the agent must retrieve any missing instructions or facts. This mechanism limits repeated delivery of unchanged workspace context, although its effect on total token use remains to be measured.
+
+Candidate facts, selected resumes, search constraints, and application history reside in structured domain records. Broader personal knowledge remains with the external agent. Workflow procedures are maintained separately as guides. The separation allows a fact correction or procedure update to become available through retrieval without modifying the model or reconstructing the entire conversation history.
+
+\subsection{Authorization and Outcome Semantics}
+Application state distinguishes preparation, authorization, execution, and confirmation. Human approval is associated with a particular draft revision. Automatic authorization additionally requires explicit account-wide consent and satisfaction of the submission policy. These conditions are checked at the server boundary against the current draft, resume, and verified answers.
+
+Outcome provenance determines subsequent transitions. A user's submission report can update reported progress, whereas employer-confirmed submission requires supporting evidence. An interrupted attempt can leave the outcome uncertain. In that state, continuation requires reconciliation before another submission attempt. Request completion, approval, and submission confirmation consequently remain separate records with different evidentiary requirements.
+
+Revision checks also govern collaboration. A user correction made between sessions must survive a later agent write. The agent therefore retrieves the current record before revising it, and a stale revision requires reconciliation. Change events identify affected records for subsequent retrieval; acknowledging an event records its handling without establishing that the associated task has been completed.
+
+\subsection{Asynchronous User Input}
+The Action Board presents missing information and execution blockers with the associated application context. A user can answer or correct a record while the agent is inactive. Approval records and application review are separate capabilities; submission-review cards are currently hidden in the website while application details and history remain accessible.
+
+Consider an application with an unanswered relocation question. The agent saves the observed question and records the blocker. The user then supplies an answer through the authenticated human-input path. On resumption, the agent retrieves the changed application and incorporates the answer into the existing draft. The saved answer supplies a fact; approval of the revised application remains subject to the applicable policy. This example specifies the intended interaction contract, which the evaluation tests through stored revisions and execution traces.
+
+
+
+\section{Implementation}
+\subsection{Technology Stack}
+Lookout uses Next.js, React, and Tailwind for the web interface, Supabase for authentication, PostgreSQL records, and private object storage, and Edge Functions and Node.js for backend operations. Agents connect through authenticated MCP endpoints. The optional GCP configuration targets a Docker-based API and worker deployment on a Compute Engine VM behind Caddy; GitHub Pages serves the static frontend. Langfuse records execution traces and evaluation summaries~\cite{langfuse}; grading evidence remains local. These services support the shared workspace and evaluation protocol rather than supply the agent's reasoning or scheduling.
+
+\subsection{Execution and Recovery}
+Bounded Node.js workers execute supported discovery tasks. Search jobs use execution leases and fenced references to temporary snapshots on worker storage. Recovery therefore depends on both durable job metadata and the availability of those snapshots. The database does not contain a complete checkpoint of worker execution.
+
+For application preparation, the current AI Apply path queues a request for a specific agent connection and emits a change-feed pointer. The external agent claims the request, retrieves saved materials, and uses its host's browser capabilities. Pickup and outcome reporting check current job and application versions. A running request has no timed takeover, so an interruption requires reconciliation before another executor proceeds.
+
+The repository also contains a Playwright application runner whose new worker pickup and browser-tool registrations are paused. The current execution path uses the external host. An optional watcher can poll workspace changes and invoke a configured host, but scheduling and delivery remain host dependencies.
+
+\subsection{Implementation Verification}
+The Node test suite contains 1,323 automated cases spanning unit, contract, and database tests. Coverage includes domain operations, MCP scope, context versions, deduplication, ownership, and outcome transitions. Database scenarios replay migrations in disposable PGlite instances with Auth and Storage test doubles. Harness regressions cover evidence release, executable hashes, transport, capture, and grading contracts. The full validation run passed all 1,318 enabled cases with zero failures; five Community MCP cases remain explicitly skipped while that interface is paused. These checks assess implementation behavior; agent performance and hosted integrations require separate evaluation.
+
+The setup and usage manual is provided in README.md.
+
+\section{Evaluation Protocol}
+\subsection{Conditions and Experimental Unit}
+The proposed study compares an agent using general-purpose tools and persistent files with the same agent using Lookout's MCP tools and domain records. Model configuration, candidate evidence, released events, task requests, and case-specific budgets are held constant. Both conditions must produce equivalent durable outputs. The baseline's persistent files permit cross-session recovery independently of Lookout, so the comparison does not conflate workspace access with the availability of any external memory.
+
+An episode comprises the full sequence of sessions for one case. Agent containers and fictional account owners are isolated between episodes. Reference answers, future events, and the other condition's artifacts remain unavailable to participants. Fixture, executable, guide, and rubric versions are bound to each prepared episode by hashes. Native read, write, read-back, and restoration checks establish that the required operations function before inference begins.
+
+A simulated business clock governs event ordering. Execution time is measured independently of simulated delays. Both conditions receive the same prescribed continuation requests; the protocol therefore measures differences in execution and additional clarification demands under matched task initiation. It does not estimate reductions in user effort from autonomous scheduling. Prompts, budgets, condition order, and output obligations are fixed before launch. Launched attempts and terminal failures are retained without participant repair during execution.
+
+\subsection{Scenario Construction}
+The eight case families in Table~\ref{tab:cases} cover job-search execution (JOB01--04) and communication continuity (COM01--04). Each introduces a change that makes continuation depend on the current evidence: a missing personal fact, a revised constraint, a duplicate notification, an interrupted task, or a terminal event. Unrelated applications or contacts provide preservation checks. Completion requires both the expected update and retention of state that the event should not affect.
+
+The cases impose distinct evidence requirements. JOB01 separates role retrieval from durable saving. JOB02 requires inspected form values and saved answers while stopping before submission. JOB03 distinguishes user-reported progress from confirmed outcomes and checks reminder delivery under a controlled service. JOB04 evaluates role- and round-specific preparation, including adaptation to a debrief and preservation of prior material.
+
+COM cases examine the consequences of changing intent and relationship state. COM02 tests whether rescheduling and cancellation supersede obsolete work. COM03 supplies a release-gated fictional source corpus shared by both conditions, allowing contact selection to be evaluated against the evidence available at each stage. COM04 evaluates dated commitments, appropriate waiting, follow-up, and resolution. Checkpoint evidence is retained because a correct final record can conceal an earlier continuity failure.
+
+\begin{table*}[t]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}l l X X@{}}
+\toprule
+Case & Task & Perturbation or decision & Required evidence \\
+\midrule
+JOB01 & Job discovery & New evidence, exclusions, duplicates, changed fit & Returned eligible roles, evidence-backed fit and gaps; durable saving checked separately \\
+JOB02 & Batch preparation & Missing personal answer; manual-only form; continuation & Exact unresolved question, correctly reused answer, saved draft and inspected form; no submission \\
+JOB03 & Application tracking & Multi-job update, duplicate rejection, interrupted preview & Correct per-job provenance, retained fields, one due reminder, unrelated job unchanged \\
+JOB04 & Interview preparation & Confirmed rounds, debrief, corrected logistics, rejection & Grounded round-specific material; no unnecessary regeneration; historical work retained \\
+COM01 & Networking preferences & Evolving user intent across conversations & Current preferences and relationship boundaries reflected in saved drafts and next actions \\
+COM02 & Recruiting communication & Rescheduling, missing start date, cancellation, stale reminder & Accurate unsent reply, current interview state, obsolete tasks closed \\
+COM03 & Contact discovery & Updated affiliation, referral refusal, one-contact limit & Released-source evidence, defensible selection, respected boundaries, durable next step \\
+COM04 & Introduction continuity & Conditional offer, dated promise, overdue check, meeting & Promise provenance, appropriate waiting/follow-up, resolved commitments, accurate final state \\
+\bottomrule
+\end{tabularx}
+\caption{Scenario families and required evidence. Each case evaluates progress under changing information together with preservation of existing state. JOB02 requires additional verification of live targets and the human-response path before execution.}
+\label{tab:cases}
+\end{table*}
+
+\subsection{Outcome Measures}
+\paragraph{Quality and safety.}
+Independent review uses captured files or native records, checkpoint snapshots, and action traces. Case-specific criteria assess required outcomes, factual support, use of current constraints, persistence, and preservation of unrelated state. Ratings distinguish unmet, partially supported, and fully supported behavior. Full task success requires all required outcomes and no critical violation. Unsafe attempted operations and backend rejections are reported separately, permitting agent decisions to be distinguished from server enforcement. Missing artifact capture leaves the relevant outcome unverified.
+
+\paragraph{Execution time.}
+Active participant time and total wall time are reported for every launched attempt, including failed turns. Setup, simulated waiting, grading, and export are recorded separately. Container startup and native tool initialization or discovery provide diagnostic breakdowns. Tool-response latency remains within participant execution time and is not added again to the total. Completion status accompanies duration so that early failure is not interpreted as efficient task completion.
+
+\paragraph{Observed user interactions.}
+The protocol distinguishes prescribed initiations, necessary information requests, avoidable clarification, restatements, and duplicate demands. Counts are supported by recorded requests. Scheduled turns and tool calls are not treated as equivalent to user effort, and scripted response delays do not measure cognitive workload. The resulting measure concerns observable interaction requirements rather than user satisfaction or total human effort.
+
+\paragraph{Usage and cost.}
+Per-turn structural counter deltas capture usage across resumed sessions. Cached input is included within total input, and reasoning output within output. Coverage is recorded as complete, partial, or unknown. Model-cost estimates require a frozen rate with a source and date for the exact model. Tool and infrastructure costs require attributable receipts. Unavailable costs remain null; token counts alone do not establish subscription charges. Quality, time, interaction counts, and cost are analyzed separately.
+
+\subsection{Evidence Capture}
+Each episode retains checkpoint artifacts, action traces, execution metadata, and an evidence digest. These records bind the observations to the case version, condition, model, harness, and grader. Independent review supplies success and quality scores after execution. Reporting exports contain structural metadata and scores; candidate documents and private messages remain local. Failed capture leaves the affected outcome unverified, and an export failure cannot trigger a participant rerun. Pilot, synthetic, and measured records remain separate.
+
+\subsection{Planned Analysis and Validity}
+The measured campaign will repeat reset episodes and alternate or randomize condition order. Analysis will report per-case outcomes and paired differences, with uncertainty estimated at the case level. Repeated reliability will distinguish success across all trials ($\mathrm{pass}^{k}$) from success in at least one attempt (pass@$k$). Proposed ablations vary schema-loading strategy, recovery from files or current domain records, and retained context or version-triggered refresh. These comparisons address the contribution of individual mechanisms beyond the complete-system comparison.
+
+The controlled protocol restricts the interpretation of any eventual result. Fictional evidence cannot establish open-web coverage or employer integration. Scripted user responses do not reproduce the range of human behavior in deployed use. Tool granularity, prebuilt domain logic, and host capabilities may affect both completion and overhead. Claims about hiring outcomes, submission reliability, or user satisfaction require separate studies.
+
+\authorinput{Add results, analysis, and conclusions after finalizing the evaluated campaigns. Specify model and host identifiers, repetitions, budgets, condition order, reviewer protocol, and any deviations from the proposed comparison.}
+
+\begin{thebibliography}{99}
+\bibitem{swebench} C. E. Jimenez et al., ``SWE-bench: Can Language Models Resolve Real-World GitHub Issues?'' ICLR, 2024. \url{https://arxiv.org/abs/2310.06770}.
+\bibitem{mlebench} J. S. Chan et al., ``MLE-bench: Evaluating Machine Learning Agents on Machine Learning Engineering,'' 2024. \url{https://arxiv.org/abs/2410.07095}.
+\bibitem{sweagent} J. Yang et al., ``SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering,'' 2024. \url{https://arxiv.org/abs/2405.15793}.
+\bibitem{langfuse} Langfuse, ``Evaluation of LLM Applications,'' documentation, accessed Nov. 9, 2026. \url{https://langfuse.com/docs/evaluation/overview}.
+\bibitem{osworld} M. Yuan et al., ``OSWorld 2.0: Benchmarking Computer Use Agents on Long-Horizon Real-World Tasks,'' arXiv:2606.29537, 2026. \url{https://arxiv.org/abs/2606.29537}.
+\bibitem{stateharness} C. Zou, Y. Zhou, X. Luo, and X. Zhang, ``StateHarness: Maintaining Evolving Project State for Long-Horizon Coding Agents,'' arXiv:2610.17616, 2026. \url{https://arxiv.org/abs/2610.17616}.
+\bibitem{alwayson} T. Ding, A. Nannapaneni, B. Liu, and L. Zhang, ``Always-On Agents: A Survey of Persistent Memory, State, and Governance in LLM Agents,'' arXiv:2606.30306, 2026. \url{https://arxiv.org/abs/2606.30306}.
+\bibitem{kolab} S. A. Hayati et al., ``Kolab: Benchmarking Human-Agent Collaboration in Long-Horizon Workflows,'' arXiv:2610.21109, 2026. \url{https://arxiv.org/abs/2610.21109}.
+\end{thebibliography}
+
+\end{document}

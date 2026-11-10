@@ -1,0 +1,13 @@
+# Opt-in overlay: pass --env-file .env.local from the repository root.
+# Only these values cross into the backend, not the rest of the root .env.
+x-tracing: &tracing
+  LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:?Set LANGFUSE_PUBLIC_KEY}
+  LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:?Set LANGFUSE_SECRET_KEY}
+  LANGFUSE_BASE_URL: ${LANGFUSE_BASE_URL:?Set LANGFUSE_BASE_URL}
+  LANGFUSE_TRACING_ENVIRONMENT: ${LANGFUSE_TRACING_ENVIRONMENT:-development}
+  LOOKOUT_TRACING_ENABLED: 'true'
+services:
+  api:
+    environment: *tracing
+  worker:
+    environment: *tracing

@@ -849,7 +849,7 @@ It cannot read records, acknowledge events, or authorize work. Rotate it after
 accidental disclosure. Runtime policies must permit storing this limited handle;
 this does not override a host rule against all capability URLs.
 
-Runtime setup (outside Lookout): poll about every 120 seconds with jitter, a
+Runtime setup (outside Lookout): poll about every 60 seconds (explicitly configure the host; legacy watch setup returns a 120-second recommendation) with jitter, a
 request timeout and exponential error backoff. On count > 0, serialize one
 authenticated worker: read_muse_changes → refresh affected records → handle
 already-authorized work → acknowledge handled IDs, paging until done. Coalesce

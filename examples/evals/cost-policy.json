@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "currency": "USD",
+  "rates": [],
+  "externalCosts": {
+    "toolUsd": null,
+    "infrastructureUsd": null,
+    "lookoutProcessingUsd": null,
+    "source": null
+  }
+}

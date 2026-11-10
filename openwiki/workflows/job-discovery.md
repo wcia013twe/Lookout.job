@@ -305,3 +305,42 @@ The batch URL migration updates only the returned link to the verified Pages pat
 Publishing an already cataloged canonical URL does not overwrite employer facts,
 including deadline; source-backed deadlines can remain explicit in the private
 Practical fit narrative without changing the shared catalog.
+### Single-portal persistence repair
+
+The existing `submit_portal_search` tool and leased worker remain the execution
+path. Shared observation validation and SQL now accept location text up to 2000
+characters: one valid 572-character Cisco location previously rejected an entire
+final save batch. This preserves the complete location rather than truncating it.
+
+The owned, paged worker history now includes applied/rejected imported tracker
+records as well as native applications, and is refreshed after collection before
+final deduplication. Imports are identity hints only; search never rewrites their
+records or excludes every role at a company. Lease, owner, settings and bounded
+transaction checks remain in place. Fictional SQL-leased tests cover multi-location
+saves, imported applied/rejected exclusions and an import arriving mid-collection.
+
+A live local Jobright-only run retained 845 source rows, but its 581 selected
+public detail pages exposed no employer application link; it saved zero listings.
+That is unresolved coverage, not evidence of an empty job market. Exact employer
+link research remains the existing agent handoff; no login bypass, guessed links,
+LLM worker or alternate write path was introduced. Local Docker persistence proof
+is recorded separately from hosted deployment in the feature change note.
+
+The repeat test also exposed a SmartRecruiters URL-alias gap: its native identity
+was not reconstructed from storage, which retained only Greenhouse/Lever triples.
+The existing adapter now restores all five verified provider triples (including
+Ashby, Workday and SmartRecruiters) before delegating to copied Career Ops dedup.
+An unchanged short/slugged URL pair is covered by both child-process and SQL-leased
+regressions; distinct native posting IDs remain separate.
+
+### Copy-only JD publication
+
+New canonical-URL jobs published through `publish_batch` copy the latest owned
+`search_observations.description` matching that URL, ordered by checked time,
+creation time and ID. Agent-supplied `employer.description` is ignored. Without a
+saved observation the description is empty and the UI reports it was not collected.
+Existing catalog jobs remain unchanged through both ID and URL publication. This
+guards publication only; it does not prove source captures are complete or repair
+previous summaries. Fictional SQL fixtures exercise full text, owner isolation,
+missing captures, separate fit analysis and existing-job publication. Hosted rollout
+requires the migration; local checks alone do not establish deployment.

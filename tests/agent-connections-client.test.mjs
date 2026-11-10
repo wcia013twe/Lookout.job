@@ -29,7 +29,7 @@ test('connection account guards reject signed out, stale sessions and late respo
 test('fictional connection creation, setup access and revocation remain isolated and resettable',async()=>{
   const store=createMemoryStore(createDemoWorkspace('2026-10-20'));
   const demo=createDemoServices(store);
-  const initial=await demo.connections('connections.list');assert.equal(initial.data.length,4);
+  const initial=await demo.connections('connections.list');assert.equal(initial.data.length,5);
   const issued=await demo.connections('connections.issue',{name:'Demo laptop',scopes:connectionScopes('work')});
   assert(issued.connection.scopes.includes('tracking:write'),'Default demo connections can import application history');
   assert.equal(issued.token,'demo_only_not_a_real_agent_token');assert(!JSON.stringify(store.get()).includes(issued.token));
@@ -40,5 +40,5 @@ test('fictional connection creation, setup access and revocation remain isolated
   const revoked=await demo.connections('connections.revoke',{id});assert(revoked.data.revoked_at);
   assert((await demo.connections('connections.list')).data.find(c=>c.id===id).revoked_at);
   await assert.rejects(demo.connections('connections.profile_setup',{id,enabled:true}),/Active demo/);
-  assert.equal((await createDemoServices(createMemoryStore(createDemoWorkspace('2026-10-20'))).connections('connections.list')).data.length,4);
+  assert.equal((await createDemoServices(createMemoryStore(createDemoWorkspace('2026-10-20'))).connections('connections.list')).data.length,5);
 });

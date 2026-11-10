@@ -1,8 +1,13 @@
 {
   "watchUrl": "https://YOUR-PROJECT.supabase.co/functions/v1/agent-gateway/pending-count?watchId=REPLACE-WITH-WATCH-ID",
-  "wake": {"command": "/absolute/path/to/runtime-wake-command", "args": ["lookout-changes"]},
-  "pollIntervalSeconds": 120,
-  "wakeCooldownSeconds": 1800,
+  "wake": {
+    "command": "/absolute/path/to/runtime-wake-command",
+    "args": [
+      "lookout-changes"
+    ]
+  },
+  "pollIntervalSeconds": 10,
+  "wakeCooldownSeconds": 10,
   "requestTimeoutSeconds": 15,
   "wakeTimeoutSeconds": 60
 }

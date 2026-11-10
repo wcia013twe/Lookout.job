@@ -1,0 +1,16 @@
+.indicator {
+ display: inline-flex;
+ align-items: center;
+ gap: .5rem;
+ color: var(--color-board-text);
+ font-size: .75rem;
+ line-height: 1.5;
+ font-weight: 600;
+}
+.dot {
+ flex: 0 0 auto;
+ width: .5rem;
+ height: .5rem;
+ border-radius: 50%;
+ background: var(--color-board-warning);
+}

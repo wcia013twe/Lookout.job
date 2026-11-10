@@ -24,17 +24,15 @@ function fixture() {
   const page = { goto: async value => visits.push(value), url: () => url, evaluate: async () => ({ questions, blockers: [] }), locator: selector => ({ count: async () => 1, fill: async value => fills.push(value) }) };
   return { context, reports, fills, visits, gateway, page };
 }
-test('stdio discovery and approved prefill traverse the concrete runtime', async () => {
+test('stdio cannot discover or call the temporarily paused deterministic prefill tool', async () => {
   const f = fixture(); const runtime = createLocalRuntime({ gateway: f.gateway, getPage: async () => f.page });
   const messages = [ { id: 1, method: 'initialize', params: { protocolVersion: '2025-11-25' } }, { method: 'notifications/initialized' }, { id: 2, method: 'tools/list' }, { id: 3, method: 'tools/call', params: { name: 'try_application', arguments: { applicationId: aid, attemptId: 'run1' } } } ].map(m => JSON.stringify({ jsonrpc: '2.0', ...m })+'\n');
   const output = []; await serveStdio({ input: Readable.from(messages), output: { write: s => output.push(s) }, token, runtime });
   const replies = output.map(s => JSON.parse(s)); assert.equal(replies.length, 3);
   assert.ok(!replies[1].result.tools.some(t => t.name === 'try_application'));
   assert.ok(replies[1].result.tools.some(t => t.name === 'call_discovered_tool'));
-  const result = JSON.parse(replies[2].result.content[0].text);
-  assert.equal(result.status, 'Prepared'); assert.equal(result.submission, 'manual-handoff');
-  assert.deepEqual(f.fills, ['test@example.com']); assert.deepEqual(f.visits, [url]); assert.equal(f.reports.length, 0);
-  assert.ok(!JSON.stringify(replies).includes('test@example.com'));
+  assert(replies[2].error||replies[2].result?.isError);
+  assert.deepEqual(f.fills, []);assert.deepEqual(f.visits, []);assert.equal(f.reports.length,0);
 });
 test('browser failure becomes Needs you through gateway without leaking error text', async () => {
   const f = fixture(); const runtime = createLocalRuntime({ gateway: f.gateway, getPage: async () => { throw Error('private-secret'); } });
@@ -79,4 +77,11 @@ test('unavailable file preserves application revision for failure reporting', as
     return operation === 'approvals.read' ? Response.json({ data: { application: f.context.application, approval: f.context.approval } }) : Response.json({ error: 'unavailable' }, { status: 404 });
   } });
   const result = await client.loadCurrentContext(aid); assert.equal(result.application.revision, 1); assert.equal(result.resumeBytes, undefined);
+});
+
+
+test('retained deterministic prefill implementation remains usable by explicit controlled fixtures',async()=>{
+ const f=fixture(),runtime=createLocalRuntime({gateway:f.gateway,getPage:async()=>f.page});
+ const result=await runtime.forward(token,'local.try',{applicationId:aid,attemptId:'retained-fixture'});
+ assert.equal(result.data.status,'Prepared');assert.deepEqual(f.fills,['test@example.com']);assert.deepEqual(f.visits,[url]);
 });

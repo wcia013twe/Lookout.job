@@ -38,14 +38,14 @@ test('Node HTTP MCP and browser read the same atomic handoffs through Edge/SQL',
   const tools=await call('tools/list',{});
   assert(tools.tools.some(t=>t.name==='read_action_inbox'));
   assert(!tools.tools.some(t=>/clear_action|dismiss_action|resolve_action/.test(t.name)));
-  const failure={applicationId,eventKey:'inbox-http-failure',expectedRevision:0,stage:'playwright',outcome:'blocked',reason:'Employer requires a manual step',nextAction:'Review employer form',attempts:[{stage:'playwright',status:'failed'}]};
+  const failure={applicationId,eventKey:'inbox-http-failure',expectedRevision:0,stage:'agent',outcome:'blocked',reason:'Employer secure entry requires the human',nextAction:'Complete the secure entry card, then resume the saved form',attempts:[{stage:'agent',status:'failed'}]};
   const failed=await call('tools/call',{name:'report_application_failure',arguments:failure});
   assert(!failed.isError,JSON.stringify(failed));
   const read=async()=>{
    const result=await call('tools/call',{name:'read_action_inbox',arguments:{state:'all'}});
    assert(!result.isError,JSON.stringify(result));return result.structuredContent||JSON.parse(result.content[0].text);
   };
-  const boardTool=await call('tools/call',{name:'read_action_board',arguments:{}});assert(!boardTool.isError);const board=boardTool.structuredContent||JSON.parse(boardTool.content[0].text);assert.equal(board.items[0].kind,'resolve_blocker');
+  const boardTool=await call('tools/call',{name:'read_action_board',arguments:{}});assert(!boardTool.isError);const board=boardTool.structuredContent||JSON.parse(boardTool.content[0].text);assert.equal(board.items[0].kind,'resolve_blocker');assert.equal(board.items[0].applicationId,applicationId);assert.match(board.items[0].reason,/Complete the secure entry card/);
   const inbox=await read();assert.equal(inbox.items.length,1);assert.equal(inbox.items[0].kind,'resolve_blocker');
   await call('tools/call',{name:'report_application_failure',arguments:failure});
   assert.equal((await read()).items.length,1);

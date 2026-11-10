@@ -38,3 +38,12 @@ test('valid nullable observations and bounded counters survive validation unchan
  for(const coverage of ['unknown','exhaustive','truncated','inaccessible'])validateRequest(progress({coverage,counts:{found:999999999,checked:0}}));
  validateRequest(progress({counts:{},checkpoint:{cursor:null,seen:['fictional']}}));
 });
+
+
+test('valid multi-location observations preserve full location text within the shared 2000-character bound',()=>{
+ const location='Austin, Texas, United States; '.repeat(20);
+ assert(location.length>500&&location.length<2000);
+ assert.doesNotThrow(()=>validateRequest(discovery([{...listing(),location}])));
+ assert.throws(()=>validateRequest(discovery([{...listing(),location:'x'.repeat(2001)}])),/location/);
+ assert.equal(TOOLS.find(t=>t.name==='save_search_discoveries').inputSchema.properties.listings.items.properties.location.maxLength,2000);
+});

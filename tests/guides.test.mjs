@@ -121,3 +121,51 @@ test('a workspace generator discovers the recipe and saves/reads static HTML thr
  assert.equal((await call('call_discovered_tool',{name:'save_artifact',arguments:{...payload,expectedVersion:1}})).isError,true);
  assert.equal(writes.length,1);
 });
+
+test('application guide requires saved, verified employer questions before notification',async()=>{
+ const guide=JSON.parse(await (await import('node:fs/promises')).readFile(new URL('../supabase/functions/agent-gateway/skills/application-workspace.json',import.meta.url),'utf8'));
+ assert.match(guide.instructions,/save each newly observed page of employer questions through prepare_draft/);
+ assert.match(guide.instructions,/Only this inspected full response may replace the immediate read_application_record after that draft write/);
+ assert.match(guide.instructions,/compact, incomplete, missing the exact saved application\/revision\/draft[\s\S]*call read_application_record/);
+ assert.match(guide.instructions,/never replaces read_action_board before a human handoff or fresh authorization\/attempt reads before submission/);
+ assert.match(guide.instructions,/claim\/report response and a subagent completion message do not verify complete saved draft content/);
+ assert.match(guide.instructions,/A chat bundle alone is not a saved handoff/);
+ assert.match(guide.instructions,/inspectionComplete=false/);
+});
+
+
+test('AI Apply conditionally prepares changed or incomplete work and reuses unchanged approved drafts',()=>{
+ const guide=readGuide('application-workspace').instructions;
+ const section=guide.split('## Decide whether preparation is needed')[1].split('\n## ')[0];
+ assert.match(section,/preparation is missing or incomplete/);
+ assert.match(section,/newly observed or conditional employer questions need filling/);
+ assert.match(section,/relevant facts, permitted answers or selected resume have changed/);
+ assert.match(section,/Otherwise reuse the current saved draft and prepared materials/);
+ assert.match(section,/Never rewrite an unchanged approved draft/);
+ assert.match(section,/same application\/jobId and current expectedRevision/);
+ assert.match(section,/preserving existing questions and human answers/);
+ assert.match(section,/use answerUpdates for supported corrections/);
+ assert.match(section,/do not assume rerunning it replaces stale values/);
+ assert.match(section,/ask about conflicts rather than silently overwriting them/);
+ assert.match(section,/Material corrections invalidate approval/);
+});
+
+
+test('routine consent follows explicit saved instructions while login and host access remain separate from submission',()=>{
+ const guide=readGuide('application-workspace');
+ assert.equal(guide.version,41);
+ for(const phrase of ['Application consent instructions','accept those routine required notices','Decline optional marketing','Do not infer this permission from AI Apply','save_search_profile','background/credit checks','review nonexistent answers','Recheck real host/employer access'])assert.ok(guide.instructions.includes(phrase),phrase);
+});
+
+test('temporary Workday and company-site handoff stops browser work and preserves recorded progress',()=>{
+ const guide=readGuide('application-workspace');
+ for(const phrase of ['Temporary manual handoff','return Workday and direct company-site applications to the user','Greenhouse, Ashby and Lever','do not attempt account creation','Manual application handoff:','inspectionComplete=false','terminal old request is history','Do not ask the user to sign in so Muse can resume','uncertain outcomes remain stopped'])assert.ok(guide.instructions.includes(phrase),phrase);
+});
+
+test('network guide handles duplicate evidence and rejected saves without invented completion',()=>{
+ const guide=readGuide('cold-outreach');
+ assert.match(guide.instructions,/stable source message ID/);
+ assert.match(guide.instructions,/no new draft, contact or commitment/);
+ assert.match(guide.instructions,/Do not repeat an unchanged invalid payload/);
+ assert.match(guide.instructions,/not a completed workspace update/);
+});

@@ -1,6 +1,8 @@
+import {createApplicationAgentDemo} from '../../lib/application-agent-demo.mjs';
+import {validateApplicationRequest} from '../../supabase/functions/agent-gateway/application-requests.mjs';
 import {validateRoundMetadata} from '../../lib/application-rounds.mjs';
 import {validateApplicationJob} from '../../supabase/functions/agent-gateway/application-jobs.mjs';
-import {createMuseChangeFeedDemo} from '../../lib/muse-change-feed-demo.mjs';
+import {createMuseChangeFeedDemo,emitDemoMuseChange} from '../../lib/muse-change-feed-demo.mjs';
 import {readDemoSubmissionBatches} from '../../lib/submission-batches-demo.mjs';
 import {reconcileProfileChanges} from '../../lib/profile-sync.mjs';
 import {editedWorkExperience} from '../../supabase/functions/agent-gateway/work-experience.mjs';
@@ -103,6 +105,7 @@ export function createDemoWorkspace(now = new Date()) {
   applications['demo-uncertain'].submissionAttempts = [{ id: uncertainAttempt.id, state: uncertainAttempt.state, startedAt: uncertainAttempt.started_at }];
   applications['demo-confirmed'].receipt = copy(confirmedAttempt.receipt);
   applications['demo-confirmed'].submittedAt = at;
+  applications['demo-confirmed'].executionJob = {id:'demo-historical-preparation',status:'partial',result:{executor:'muse',outcome:'blocked',verifiedSubmission:false,summary:'Fictional historical preparation blocker; submission was subsequently recorded separately.'}};
   const submittedResume = { id: resumeId, name: resume.name, version: 2, variant: 'Backend', contentHash: hash };
   applications['demo-confirmed'].submittedResume = { ...copy(submittedResume), evidenceSource: 'observed_confirmation' };
   applications['demo-interview'].submittedResume = { ...copy(submittedResume), evidenceSource: 'email' };
@@ -161,21 +164,58 @@ export function createDemoServices(store) {
     if (!value || value.backendId !== id || !String(id).startsWith('demo-')) throw new Error('Fictional demo application not found.');
     return value;
   }
+  const requestReceipts=new Map();
+  function applicationRequest(operation,payload){
+   validateApplicationRequest(operation,payload);
+   const app=Object.values(store.get('workflow.applications')||{}).find(a=>a.executionJob?.id===payload.jobId);
+   if(!app)throw Error('Fictional application request missing.');
+   const signature=JSON.stringify({operation,payload}),prior=requestReceipts.get(payload.eventKey);
+   if(prior){if(prior.signature!==signature)throw Error('Retry changed.');return copy(prior.result);}
+   const job=app.executionJob;
+   if(job.version!==payload.expectedVersion||(app.backendRevision||0)!==payload.expectedRevision)throw Error('Application request changed.');
+   const claim=operation==='applications.request.claim';
+   if(job.status!==(claim?'queued':'running')||!claim&&job.result?.executor!=='muse')throw Error('Request cannot continue.');
+   const next={...job,status:claim?'running':['blocked','uncertain'].includes(payload.outcome)?'partial':'completed',version:job.version+1,result:{fictional:true,executor:'muse',outcome:claim?'working':payload.outcome,applicationId:app.backendId,applicationRevision:app.backendRevision||0,verifiedSubmission:false,summary:claim?'Muse picked up the fictional request.':payload.summary}};
+   store.set('workflow.applications.'+app.id,{...app,executionJob:next});
+   const result={job:copy(next),applicationId:app.backendId};requestReceipts.set(payload.eventKey,{signature,result});
+   if(!claim)emitDemoMuseChange(store,{eventKey:'application-outcome:'+job.id,kind:'backend_job_finished',entity:'backend_job',recordId:job.id,version:next.version,status:next.status,summary:payload.summary});
+   return copy(result);
+  }
   const artifactDemo = createArtifactDemo(store);
   function plannerBundle() {
     return {...artifactDemo.artifactSnapshot(),imports:copy(store.get('demo.boardImports') || []),applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
   }
   return {
-    ...createMuseChangeFeedDemo(),
-    backendJobs:createBackendJobsDemo(),
+    ...createMuseChangeFeedDemo(store),
+    ...createApplicationAgentDemo(store),
+    backendJobs:createBackendJobsDemo(store),
     async queueApplicationJob(payload) {
       // The demo's example.com postings are inert; validate using a fictional supported URL.
       validateApplicationJob({...payload,posting:{...payload.posting,url:'https://job-boards.greenhouse.io/lookout_fictional_demo/jobs/1'}});
+      const routing=await createApplicationAgentDemo(store).readApplicationAgent();
+      if(routing.connectionId&&!routing.available)throw Error('Selected AI Apply agent is unavailable; choose an active agent in My Agent');
       const role=payload.posting,previous=store.get('workflow.applications.'+role.id);
-      const job=previous?.executionJob||{id:'demo-job-'+payload.eventKey,status:'queued'};
+      const job=previous?.executionJob||{id:crypto.randomUUID(),status:'queued',version:1,kind:'application_submit',connection_id:store.get('demo.applicationAgent')?.connectionId||null,input:{applicationId:'demo-application-'+role.id,expectedRevision:0}};
       const app={...role,url:role.url,backendId:'demo-application-'+role.id,id:role.id,status:'Queued',questions:[],backendRevision:0,...previous,executionJob:job};
       store.set('workflow.applications.'+role.id,app);
+      emitDemoMuseChange(store,{eventKey:'apply:'+job.id,kind:'application_requested',entity:'backend_job',recordId:job.id,applicationId:app.backendId,version:1,status:'queued',summary:'Fictional AI Apply request; preparation is not submission approval.'});
       return {application:copy(app),job:copy(job)};
+    },
+    async claimApplicationRequest(payload){return applicationRequest('applications.request.claim',payload);},
+    async reportApplicationRequest(payload){return applicationRequest('applications.request.report',payload);},
+    async recordApplicationProgress(payload) {
+      const {applicationId,expectedRevision,status,note,eventKey}=payload;
+      if(!['Submitted','Interview','Offer','Rejected','Withdrawn'].includes(status)||!note?.trim()||note.length>2000||!eventKey?.trim())throw Error('Progress report required');
+      const signature=JSON.stringify(payload),prior=requestReceipts.get('progress:'+eventKey);
+      if(prior){if(prior.signature!==signature)throw Error('Event key conflict');return copy(prior.result);}
+      const current=application(applicationId);
+      if((current.backendRevision||0)!==expectedRevision)throw Error('Application changed');
+      if((current.submissionAttempts||[]).some(a=>['claimed','started','uncertain'].includes(a.state)))throw Error('Submission requires human recovery');
+      if(['Interview','Offer'].includes(status)&&!['Submitted','Interview','Offer'].includes(current.status))throw Error('Record submission first');
+      const saved={...current,status,blocker:current.executionJob?.result?.outcome==='uncertain'?current.blocker:null,...(status==='Submitted'?{submittedAt:current.submittedAt||new Date().toISOString()}:{})};
+      store.set('workflow.applications.'+current.id,saved);
+      const result={request:copy(payload),application:copy(saved),source:'user-reported-through-agent',confirmed:false};
+      requestReceipts.set('progress:'+eventKey,{signature,result});return copy(result);
     },
     async readApplicationBatches(payload={}) {return readDemoSubmissionBatches(payload);},
     async resolveProfileConflict(choice='review') {

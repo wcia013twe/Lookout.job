@@ -1,4 +1,6 @@
 "use client";
+import ActionAttention from './action-attention';
+import {needsUnblocking,isVisibleBoardItem} from '../../lib/action-board.mjs';
 import {useActionBoard} from '../lib/use-action-board';
 import {EXTRA_FEATURES_ENABLED, pausedFrontendRoute} from "../../lib/feature-scope.mjs";
 import Link from "next/link";
@@ -17,7 +19,7 @@ import ProfileMenu from "./profile-menu";
 import GoogleSignInButton from "./google-sign-in-button";
 import { canViewWorkspace, isPublicReferencePage } from "../lib/workspace-access";
 import DashboardTour from "./dashboard-tour";
-import { demoNeedsYouTasks } from "../lib/demo.mjs";
+import {pendingActions} from "../../lib/action-inbox.mjs";
 
 const navigation = [
   ["/needs-you/", "Action board", "needs"],
@@ -67,24 +69,10 @@ export default function AppShell({ children }: { children: ReactNode }) {
     </main>;
   }
   const isCurrent = (href: string) => path === href || path === href.slice(0, -1) || (href === "/career-toolkit/" && path.startsWith(href)) || (href === "/" && /^\/discover\/?$/.test(path));
-  const apps = Object.values(w.state?.workflow?.applications || {}) as Array<{ status: string; submissionAttempts?: Array<{ state: string; startedAt: string }> }>;
-  const needs = (board.snapshot&&(!w.demo||w.state.demo?.connectedBoard) ? board.snapshot.items.length+(!w.state?.workflow?.profile?.verified||!w.state?.workflow?.resumes?.length?1:0) : w.demo ? demoNeedsYouTasks.length :
-    apps.filter(
-      (a) =>
-        a.status === "Blocked" ||
-        a.status === "Awaiting approval" ||
-        (w.models?.workflowModel?.canEdit(a) &&
-          (a.submissionAttempts || []).some(
-            (t) =>
-              t.state === "uncertain" ||
-              (t.state === "started" &&
-                Date.parse(t.startedAt) < Date.now() - 300000),
-          )),
-    ).length +
-    (!w.state?.workflow?.profile?.verified ||
-    !w.state?.workflow?.resumes?.length
-      ? 1
-      : 0));
+  const needs = (board.snapshot
+    ? board.snapshot.items.filter(isVisibleBoardItem).length
+    : pendingActions(w.state?.workflow?.actionInbox || [],Date.now()).filter(isVisibleBoardItem).length)
+    + (!w.state?.workflow?.profile?.verified || !w.state?.workflow?.resumes?.length ? 1 : 0);
   if(!w.demo&&!isPublicReferencePage(path)&&!/^\/workspace-reset\/?$/.test(path)&&(destination||(hasAccess&&w.websiteOnboarding?.status!=='complete'&&w.websiteOnboarding?.status!=='incomplete'))){
     return <WorkspaceLoading
       error={w.websiteOnboarding?.status === "error" ? "Could not check your setup. Retry to continue." : ""}
@@ -127,6 +115,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             className="workspace-nav-link"
           >
             <span>{label}</span>
+            {href === "/needs-you/" && !board.error && <ActionAttention count={board.snapshot?.items.filter(isVisibleBoardItem).filter(needsUnblocking).length||0} compact/>}
             {href === "/needs-you/" && needs > 0 && <span className="workspace-count grid min-h-5 min-w-5 place-items-center rounded-md px-1 text-[11px] tabular-nums">{needs}</span>}
           </Link>
         ))}

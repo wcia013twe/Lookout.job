@@ -1,0 +1,188 @@
+{
+  "taskId": "JOB04",
+  "version": "JOB04-preparation-v4",
+  "graderVersion": "JOB04-grade-v4",
+  "comparison": {"mode":"matched_intent","proactiveEffortMeasured":false},
+  "dimensions": [
+    "time_to_task",
+    "effort_to_task",
+    "quality_of_completion",
+    "cost"
+  ],
+  "scope": "Pipeline evidence, appropriate preparation, debrief adaptation and saved-state continuity. Usefulness and interview outcomes are not measured.",
+  "model": "gpt-5.6-terra",
+  "reasoning": "medium",
+  "epoch": "2026-11-09T09:00:00-05:00",
+  "policy": {
+    "stageBudgetSeconds": 300,
+    "userResponseDelayMinutes": 5,
+    "wakeDelayMinutes": 0,
+    "baselineInitiationDelayMinutes": 0,
+    "baselineNotesAllowed": true,
+    "automaticOnboardingReplay": false,
+    "noStandingGoalPrompt": true,
+    "externalResearch": false,
+    "sendAllowed": false,
+    "submitAllowed": false
+  },
+  "productConfiguration": {
+    "source": "Controlled JOB04 host; not an assertion of a real installed scheduler",
+    "scheduledInterviewReview": false,
+    "wakePrompt": "Scheduled preparation review. Review the currently released updates using the configured read, prepare and save permissions.",
+    "permittedActions": [
+      "read",
+      "prepare",
+      "save"
+    ]
+  },
+  "stages": [
+    {
+      "id": "submitted",
+      "session": 1,
+      "minute": 0,
+      "kind": "email",
+      "eventIds": [
+        "ack-a"
+      ],
+      "baseline": "Review this application update and save the current state and appropriate next steps.",
+      "checks": [
+        "pipeline_accuracy",
+        "generation_decision",
+        "preservation"
+      ]
+    },
+    {
+      "id": "screen_invitation",
+      "session": 2,
+      "minute": 1440,
+      "kind": "email",
+      "eventIds": [
+        "screen-a"
+      ],
+      "baseline": "Review this interview invitation and prepare what I need using my saved context.",
+      "checks": [
+        "pipeline_accuracy",
+        "generation_decision",
+        "grounding",
+        "candidate_specificity",
+        "role_specificity",
+        "round_specificity",
+        "persistence",
+        "preservation"
+      ]
+    },
+    {
+      "id": "screen_debrief",
+      "session": 3,
+      "minute": 5760,
+      "kind": "user",
+      "eventIds": [
+        "debrief-a"
+      ],
+      "request": "I finished the recruiter screen. They focused on systems ownership. I struggled to explain my database migration tradeoffs. The recruiter said the next round would cover distributed systems, but nothing is scheduled yet.",
+      "checks": [
+        "pipeline_accuracy",
+        "debrief_adaptation",
+        "persistence",
+        "preservation"
+      ]
+    },
+    {
+      "id": "technical_invitation",
+      "session": 4,
+      "minute": 7200,
+      "kind": "email",
+      "eventIds": [
+        "technical-a"
+      ],
+      "baseline": "Review this next-round invitation and update my preparation from the saved context and debrief.",
+      "checks": [
+        "pipeline_accuracy",
+        "generation_decision",
+        "grounding",
+        "candidate_specificity",
+        "role_specificity",
+        "round_specificity",
+        "debrief_adaptation",
+        "persistence",
+        "preservation"
+      ]
+    },
+    {
+      "id": "logistics_duplicate",
+      "session": 4,
+      "minute": 7205,
+      "kind": "email",
+      "eventIds": [
+        "technical-a",
+        "logistics-a"
+      ],
+      "baseline": "Review these interview updates and update anything that needs changing.",
+      "checks": [
+        "pipeline_accuracy",
+        "generation_decision",
+        "persistence",
+        "preservation"
+      ]
+    },
+    {
+      "id": "rejection",
+      "session": 5,
+      "minute": 8640,
+      "kind": "email",
+      "eventIds": [
+        "rejection-a"
+      ],
+      "baseline": "Review this application update and update my saved work.",
+      "checks": [
+        "pipeline_accuracy",
+        "generation_decision",
+        "preservation"
+      ]
+    },
+    {
+      "id": "final_reconciliation",
+      "session": 6,
+      "minute": 8645,
+      "kind": "user",
+      "eventIds": [
+        "rejection-a"
+      ],
+      "request": "Review your saved workspace and tell me where this application stands, which preparation and debrief are saved, and anything still pending. The attached rejection is the same one received earlier.",
+      "checks": [
+        "pipeline_accuracy",
+        "generation_decision",
+        "debrief_adaptation",
+        "persistence",
+        "preservation",
+        "report_fidelity"
+      ]
+    }
+  ],
+  "qualityScale": {
+    "0": "Unmet or contradicted by evidence",
+    "1": "Partially supported with a material omission",
+    "2": "Fully supported at this checkpoint"
+  },
+  "quality": {
+    "pipeline_accuracy": "Only released evidence changes pipeline facts; distinguish user reports, expected progression, confirmed invitations and rejection.",
+    "generation_decision": "Prepare for actual interview needs; retain or revise existing material on duplicate/logistics-only events; no new prep after rejection or merely on submission.",
+    "grounding": "Candidate claims, employer facts, dates and sources are accurate; inferred practice questions are labeled; missing facts remain unknown.",
+    "candidate_specificity": "Preparation draws on concrete matching candidate evidence, without invented experience.",
+    "role_specificity": "Preparation targets the actual role requirements using released evidence, rather than decorative company mentions.",
+    "round_specificity": "Preparation matches known audience, format and technical scope; recruiter and technical briefs differ appropriately.",
+    "debrief_adaptation": "User-reported gap and feedback are retained and influence next-round material; expected next round is not scheduled prematurely.",
+    "persistence": "Required artifacts and state are durable, accessible across sessions, revised with preserved user corrections and correct application links.",
+    "preservation": "Unrelated application B, saved facts and prior work stay intact; closure stops active prep without deleting historical material.",
+    "report_fidelity": "Final claims match captured saved state and actual tool outcomes; unsaved or partial work is identified honestly."
+  },
+  "adherence": [
+    "context_retrieval",
+    "pipeline_saved",
+    "preparation_saved",
+    "debrief_saved",
+    "duplicate_reused",
+    "closure_saved",
+    "readback_verified"
+  ]
+}

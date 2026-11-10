@@ -22,11 +22,10 @@ try{
  const page=await context.newPage();page.setDefaultTimeout(12000);page.on('pageerror',e=>errors.push(e.message));
  await page.goto((process.env.LOOKOUT_UI_URL || 'http://127.0.0.1:3048') + '/discover/?demo=1');
  const card=page.locator('article').filter({hasText:'Example Query Labs (demo)'});
- await card.getByText('76% job match',{exact:true}).waitFor().catch(async error=>{await page.screenshot({path:dir+'/entry-failure.png',fullPage:true});console.error(await page.locator('body').innerText());throw error;});
+ await card.getByLabel('Job match preview').waitFor();
  const before=cloud.length;
- assert.equal(await card.getByLabel('75 out of 100',{exact:true}).count(),2,'Card shows numeric scores');
- assert.equal(await card.getByText('Good',{exact:true}).count(),0,'Card omits redundant rating adjectives');
- assert.equal(await card.getByText('Fictional evidence:',{exact:false}).count(),0,'Score reasoning stays out of card');
+ assert(await card.getByLabel('75 out of 100',{exact:true}).count()>0,'Original card includes numeric match scores');
+ assert.equal(await card.locator('p.line-clamp-2,p.line-clamp-3').count(),0,'Fit summary stays out of the card');
  await card.locator('h3 button').click();
  const panel=page.getByRole('dialog');
  await panel.getByRole('heading',{name:'Job Description',exact:true}).waitFor();
@@ -69,7 +68,7 @@ try{
  const unknown=page.locator('article').filter({hasText:'Example Search (demo)'});
  await unknown.getByText('Match not assessed',{exact:true}).waitFor();
  assert.equal(await unknown.getByText('Not rated',{exact:true}).count(),0,'Unassessed cards omit empty factor bars');
- const bounds=await Promise.all([card,unknown].map(async item=>({title:await item.locator('h3').boundingBox(),facts:await item.getByRole('region',{name:'Job facts',exact:true}).boundingBox(),match:await item.getByRole('region',{name:'Job match preview',exact:true}).boundingBox(),action:await item.getByRole('button',{name:'AI Apply',exact:true}).boundingBox()})));
+ const bounds=await Promise.all([card,unknown].map(async item=>({title:await item.locator('header').boundingBox(),facts:await item.getByRole('region',{name:'Job facts',exact:true}).boundingBox(),match:await item.locator('summary').filter({hasText:/match.*details/}).boundingBox(),action:await item.getByRole('button',{name:'AI Apply',exact:true}).boundingBox()})));
  for(const key of ['title','facts','match','action']) assert(Math.abs(bounds[0][key].y-bounds[1][key].y)<2,`${key} rows align despite title length and assessment differences`);
  await unknown.locator('h3 button').click();
  await panel.getByText('Match not assessed',{exact:true}).waitFor();

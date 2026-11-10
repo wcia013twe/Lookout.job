@@ -1,0 +1,12 @@
+{
+  "episodeId": "fictional-networking-example",
+  "taskId": "DEMO",
+  "condition": "baseline",
+  "repeat": 1,
+  "pairId": "demo-only",
+  "pilot": true,
+  "model": "example-model",
+  "reasoning": "example",
+  "suiteHash": "fictional",
+  "status": "completed"
+}

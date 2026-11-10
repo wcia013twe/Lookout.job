@@ -69,3 +69,28 @@ test('account routes leave remembered demo mode while explicit previews remain i
  const storage={getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)};
  for(const route of ['login','signup']){values.set(DEMO_MODE_KEY,'1');assert.equal(resolveDemoMode(`https://example.com/${route}/`,()=>storage),false);assert.equal(resolveDemoMode(`https://example.com/${route}/?demo=1`,()=>storage),true);}
 });
+
+
+test('default demo hides submission cards while retaining drafts and resolvable input requests',async()=>{
+ const {orderBoardItems,needsUnblocking,isVisibleBoardItem}=await import('../lib/action-board.mjs');
+ const shared=await models(),runtime=createDetachedDemo({date:fixturesDate,models:shared,presets});
+ const first=await runtime.services.readActionBoard(),ordered=orderBoardItems(first.items);
+ assert.equal(ordered[0].kind,'review_application');
+ assert(first.items.some(i=>i.kind==='prepared_application'));
+ assert(first.items.some(i=>i.kind==='missing_answer'));
+ const visible=first.items.filter(isVisibleBoardItem);
+ assert(visible.length < first.items.length);
+ assert(visible.every(i=>!['review_application','prepared_application','submit_application'].includes(i.kind)));
+ for(const kind of ['missing_answer','resolve_blocker','check_submission'])assert(visible.some(i=>i.kind===kind),kind);
+ assert.deepEqual((await runtime.services.readActionBoard()).items,first.items);
+ const manual=first.items.find(i=>i.sourceId==='demo-manual-board');
+ assert.equal(manual.kind,'resolve_blocker');assert.match(manual.reason,/CAPTCHA/);assert(needsUnblocking(manual));
+ const uncertain=first.items.find(i=>i.sourceId==='demo-uncertain-board');
+ assert.equal(uncertain.kind,'check_submission');assert(needsUnblocking(uncertain));
+ await assert.rejects(runtime.services.respondActionBoard({key:uncertain.key,response:'accept',eventKey:'incomplete'}),/Verification note/);
+ await runtime.services.respondActionBoard({key:uncertain.key,response:'reject',input:{note:'Fictional employer portal shows no application.',confirmed:true},eventKey:'checked'});
+ assert(!(await runtime.services.readActionBoard()).items.some(i=>i.sourceId===uncertain.sourceId&&i.kind==='check_submission'));
+ assert.equal(runtime.store.get('workflow.applications')['demo-uncertain-board'].status,'Draft');
+ const reset=createDetachedDemo({date:fixturesDate,models:shared,presets});
+ assert((await reset.services.readActionBoard()).items.some(i=>i.sourceId===uncertain.sourceId&&i.kind==='check_submission'));
+});
