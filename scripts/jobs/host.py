@@ -37,6 +37,13 @@ def native_initialize(root):
  if reply.get('error'):raise ValueError('Native bootstrap unavailable')
  return reply['result']
 
+def preflight_cleanup(session,root,condition,out):
+ cleanup=session.close();write(out/(condition+'-cleanup.json'),cleanup)
+ if cleanup.get('containerRemoved') is not True:
+  write(root/'host-control-failure.json',{'condition':condition,'phase':'no_inference_preflight','cleanup':cleanup,'participantExecuted':False})
+  raise RuntimeError('No-inference container cleanup unconfirmed; launch blocked')
+ return cleanup
+
 def fixture_reference_contract(case,scenario):
  # Native terminal progress retires preparation blockers. Historical references
  # remain frozen; a prospective pair must reconcile this before execution.
@@ -257,7 +264,7 @@ class Host:
      gate('scoped_native_discovery',lambda:{'discovery':discovered,'deniedWrapper':denied})
     gate(c+'_container_surface',lambda:{'initialize':init,'tools':listed,'isolation':read(sd/'isolation.json')})
    finally:
-    if session:session.close()
+    if session:preflight_cleanup(session,root,c,out)
   if self.case=='JOB03':
    service=Services(out/'test-clock.sqlite');r=service.schedule('probe','A','2026-11-18T14:00:00Z','America/New_York');assert service.schedule('probe','A',r['dueAt'],r['timeZone'])['duplicate'];assert not service.deliver('2026-11-18T13:59:59Z');assert len(service.deliver(r['dueAt']))==1;assert not service.deliver(r['dueAt']);r=service.schedule('cancel','C',r['dueAt'],r['timeZone']);service.cancel(r['reminderId']);assert not service.deliver(r['dueAt']);gate('shared_test_clock',service.snapshot)
    service=Services(out/'preview.sqlite');service.seed({'B':{'preparation':{'completedFields':['name','email'],'pendingField':'earliest-start-date'}}})

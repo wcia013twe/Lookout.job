@@ -195,3 +195,11 @@ clock gate requires SQL, Edge and Node API readbacks to align. A local HTTP
 preload test passes, but this latest three-process wiring still needs the complete
 actual native preflight after Docker recovers. Earlier two-clock receipts cannot
 clear this revision. No production entry point imports the fixture preload.
+
+
+No-inference preflight also requires confirmed removal of its Session containers.
+Cleanup receipts are retained; an unconfirmed removal writes the private
+host-control marker and blocks readiness/subsequent setup. Dedicated endpoint
+identity inspection is time-bounded. Following shared-engine recovery, serialize
+complete native preflights with the recovery owner and other benchmark owners;
+do not overlap provisioning with their verification or launch participants.

@@ -1342,3 +1342,9 @@ Shared benchmark bridge teardown now stops its worker before joining in-flight
 HTTP handlers, preventing a reproduced partial-response cleanup deadlock. This
 prospective harness fix preserves graceful EOF shutdown and historical freezes;
 it does not establish the cause of the shared Docker outage.
+
+JOB no-inference readiness now requires confirmed test-container removal and
+retains cleanup failures as host-control markers. Endpoint inspection is bounded.
+Recovery owner reports the engine healthy; JOB has integrated53fbef83 and passed
+source checks while awaiting serialized Docker use after COM03. No latest native
+preflight or participant experiment has yet run in this recovery pass.

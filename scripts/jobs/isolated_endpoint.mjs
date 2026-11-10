@@ -4,7 +4,7 @@ const read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
 export function isolatedEndpoint(root){
  root=fs.realpathSync(root);const db=read(path.join(root,'database.json')),backend=read(path.join(root,'backend.json'));
  if(db.kind!=='isolated-job-clock-database-v1'||backend.kind!=='isolated-job-clock-http-v1'||db.root!==root||backend.root!==root||!['http_started_unverified','native_verified'].includes(backend.status)||!db.container.startsWith('job-clock-db-'))throw Error('Dedicated isolated native endpoint required');
- const info=name=>JSON.parse(execFileSync('docker',['inspect',name],{encoding:'utf8',stdio:['ignore','pipe','pipe']}))[0];
+ const info=name=>JSON.parse(execFileSync('docker',['inspect',name],{encoding:'utf8',stdio:['ignore','pipe','pipe'],timeout:10000,maxBuffer:4*1024*1024}))[0];
  for(const item of [{name:db.container,id:db.containerId},...Object.values(backend.services)]){
   const c=info(item.name);if(c.Id!==item.id||c.Config.Labels?.['lookout.job-clock-root']!==root||!c.State.Running)throw Error('Isolated native service ownership/liveness changed');
  }
