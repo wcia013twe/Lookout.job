@@ -1,6 +1,6 @@
 {
   "taskId": "JOB02",
-  "version": "JOB02-controlled-clearing-v3",
+  "version": "JOB02-controlled-clearing-v4",
   "graderVersion": "JOB02-review-v5",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
