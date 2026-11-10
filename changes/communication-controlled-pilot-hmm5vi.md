@@ -414,3 +414,30 @@
   receipts. Supplementary v3 audits pass for the three completed JOB03 pairs;
   old reports/grades/evidence remain. It is not a new quality grader. Main auditor
   source installation waits until frozen participant executions end.
+
+
+## JOB04 checkpoint and environment interruption
+
+- JOB04 EVAL-01 completed all seven checkpoints in both conditions and received
+  one fresh subscription gpt-5.6-terra medium independent review. Five reported
+  dimensions tied; baseline scored higher on generation decisions. JOB04 defines
+  no overall quality aggregate or strict pass. Active seconds were445.493/1281.450
+  (baseline/Lookout); usage coverage was complete. Concurrent host load remains
+  a confound. Both sanitized records now have verified Langfuse readback; baseline
+  required one delayed read-only check after the three original delivery attempts.
+  Original failed verification receipts remain unchanged.
+- JOB04 EVAL-02 passed19 actual no-inference gates, then became environment
+  interrupted: Lookout completed1/7 checkpoints and baseline completed0/7.
+  Saved host receipts show Docker participant start/create failures and an explicit
+  snapshot OSError errno28 (no space left on device). These do not support
+  attributing the interruption to participant quality. No participant retry,
+  replacement trial or independent grade has been launched for this attempt.
+- The private pipeline stopped when owned-backend cleanup exceeded its120-second
+  operation bound. Its earlier execution receipt remains unchanged; a separate
+  interruption receipt hashes the nine supporting run/failure/host-error records.
+  Cleanup remains unconfirmed while central Docker recovery owns the engine.
+  No global prune, Docker restart, volume removal or historical reset was performed.
+- Five of six scheduled pairs have been attempted; four pairs completed and were
+  independently graded. JOB04 EVAL-03 has not started. It requires recovered Docker
+  plus its own fresh actual preflight. Partial-attempt grading/export, remaining
+  execution, final audit installation and local landing remain outstanding.
