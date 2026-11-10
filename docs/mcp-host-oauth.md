@@ -86,7 +86,12 @@ Present a concrete setup package with these values before changing production:
 After approval, use the existing deployment workflow for tested merged code. Store
 an owner-readable-only (0600) JSON file outside source with `issuer`, `resource`,
 `consentUrl`, `clientId`, `redirectUri`, `jwks` (private ES256 JWKs with kid/use=sig),
-and `cookieKeys` (base64 random keys). Point `LOOKOUT_OAUTH_CONFIG_FILE` at it and
+and `cookieKeys` (base64 random keys). The existing `scripts/deploy-gcp.mjs` accepts that approved local file as its
+second argument when OAuth is explicitly enabled. It transfers it on SSH stdin to a private staging file, verifies its SHA-256,
+and under the existing deployment lock atomically installs it at `/etc/lookout/oauth/config.json` with mode 0600 for the
+existing container node UID 1000, and uses a read-only API-only Compose override.
+The worker receives no signing-file mount. No secrets enter source archives or image
+layers. Set `LOOKOUT_OAUTH_CONFIG_FILE=/run/lookout-oauth/config.json` and
 set `LOOKOUT_OAUTH_ENABLED=true`. Configure the singleton database policy to match
 that client/resource, approved maximum lifetime, and `enabled=true` through the
 existing trusted operator path. Startup fails if policy, keys or URLs are missing

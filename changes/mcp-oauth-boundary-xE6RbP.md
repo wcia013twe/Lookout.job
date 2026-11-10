@@ -25,3 +25,12 @@
 - No push, live deployment, credentials, client registration, grants or provider
   configuration changes. Activation requires the precise reviewed server keys,
   configuration and named connection consent described in docs/mcp-host-oauth.md.
+- Final verification: clean aggregate 1,383 passed, five skipped, zero failures;
+  frontend/runtime/intelligence typechecks and static build passed. Subsequent
+  deployment-only additions passed seven focused tests, including a real shell
+  truncated-upload/old-file-preservation check; Bash syntax and fictional-env
+  Compose rendering confirm the API-only read-only mount. Catalog: 158 roles.
+- Optional deployment support now stages digest-verified runtime/signing config
+  and installs it atomically under the existing deployment lock. This is source
+  support only, with no live file upload or configuration change. Independent
+  source review found no remaining blocker after the reported fixes.
