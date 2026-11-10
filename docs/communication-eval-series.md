@@ -10,6 +10,12 @@ The current chat runs the existing commands directly with distinct owners, roots
 
 After each pair, save validated grades and common summaries, then export detailed and common structural results and perform paginated readback. Attach the shared allowlisted provenance before the first final export; keep final artifacts immutable. Transport failure permits bounded delivery retry from those artifacts, never rerunning participants or semantic grading. Unknown dollar cost, provenance or coverage remains unknown. Count real native reads, discovery, writes, verification and audit costs; report startup/discovery components separately without adding them twice. Equal prescribed prompts do not measure proactive effort reduction. Three pairs support descriptive comparisons with uncertainty, not population-level causal claims.
 
+## EVAL-04/05 extension in progress
+
+The user authorized two additional pairs per case after EVAL-01–03 finished: EVAL-04 runs Lookout then baseline; EVAL-05 runs baseline then Lookout. They use eight new dedicated owners and frozen roots, execution source `aaa74e78`, the established v2 independent-review procedure, subscription `gpt-5.6-terra` medium, and no hard participant/grader task deadlines. Scenario, task evidence, rubric and prescribed prompts are unchanged. Eight actual no-inference preflights and four input-parity checks passed before inference. Historical outcomes below remain unchanged; extension outcomes are pending.
+
+A shared Docker no-space failure was resolved centrally before these owners were provisioned or any extension participant started. No extension attempt was interrupted or replaced. The pinned runtime image was preserved. Independent pairs may overlap on distinct owners; shared-host load remains uncontrolled.
+
 ## Recorded amendments and comparison limits
 
 - The user explicitly allowed healthy participants and graders to finish beyond former hard deadlines. COM03 EVAL-01 Lookout had already been terminated on its final stage by the original timer; it remains a timed-out attempt, with no replacement. COM04 EVAL-01 completed both participants and graders under the original limits. COM03 EVAL-01 grading uses the amended shared executor. EVAL-02/03 use the opt-in participant policy and the reference-only shared grader. Individual network, Docker, capture and cleanup operation limits and clock/containment checks remain bounded.

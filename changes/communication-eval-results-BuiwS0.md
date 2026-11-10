@@ -6,3 +6,8 @@
 - Preserved and documented healthy-completion and structural-review amendments; canonical future review instructions match the tested v2 procedure. Historical PILOT09 first reviews and score exports finished separately: baseline8/8, Lookout review invalid/unknown, historical detailed grader metadata caveat retained.
 - Active and historical frozen checkouts remain untouched. Documentation only in this checkout; no product changes, push, publication or deployment.
 - Final validation: report values generated from immutable grade records; linked source paths and canonical review-instruction hash checked, catalog validation158 and `git diff --check` passed. No full application/UI regression or hosted deployment is claimed.
+
+## EVAL-04/05 continuation
+
+- Added a prospective extension of two pairs per case with eight fresh isolated owners. Frozen tasks/rubrics, established v2 review instructions and Terra medium configuration retained; healthy work may finish without task deadlines. Eight no-inference preflights and four input-parity checks passed.
+- Central Docker recovery completed before provisioning/inference; no interrupted extension attempts or replacements. Runs and final outcome analysis remain in progress.
