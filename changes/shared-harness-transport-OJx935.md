@@ -51,3 +51,14 @@
   earlier internal-temp run stopped with ENOSPC; the SSD rerun completed.
 - Limits: no new inference, live preflight, human study, Langfuse registration/
   export, product change or deployment. The four-pair plan has not been executed.
+
+
+## Scheduled review: revised runner compatibility
+
+- Fix stale COM01/COM02 runtime version guards left behind by the prospective
+  scenario revision. Current preparations now configure; obsolete versions reject.
+- Add a no-inference runner-configuration regression check. Frozen pilot files,
+  participant execution, product behavior and shared services remain unchanged.
+- Validation: four setup/design/transport Node checks and catalog validation (158
+  roles) passed; COM01/COM02 stream and native-setup checks also passed. Live
+  preflight remains unverified while shared Docker is unavailable.

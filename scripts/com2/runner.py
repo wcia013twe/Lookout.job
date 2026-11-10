@@ -216,7 +216,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM2-stream-v7' or CONFIG.get('taskId')!='COM2':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM2-stream-v8' or CONFIG.get('taskId')!='COM2':raise RuntimeError('Wrong runtime configuration')
  account=json.loads((R/'account.private.json').read_text())
  if account.get('benchmarkTaskId')!='COM2':raise RuntimeError('Dedicated COM2 account receipt required')
 

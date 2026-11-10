@@ -194,7 +194,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM1-stream-v8':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM1-stream-v9':raise RuntimeError('Wrong runtime configuration')
 
 def released_sources(stages):
  inbox={};calendar={};deliveries=[]

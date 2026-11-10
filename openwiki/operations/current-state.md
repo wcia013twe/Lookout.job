@@ -1326,3 +1326,9 @@ The isolated Node API is now included in the ticking clock dependency and observ
 gate alongside SQL and Edge. Local HTTP preload and fail-closed three-clock
 observer tests pass; latest full native/container wiring remains unverified until
 the shared Docker engine responds. Earlier two-clock gates do not clear it.
+
+
+COM01/COM02 prospective runner guards now match COM1-stream-v9 and COM2-stream-v8;
+configuration regression checks exercise current and stale versions without Docker
+or inference. This corrects setup compatibility only; live preflight and the revised
+four-pair study remain unverified and unexecuted.
