@@ -1420,3 +1420,7 @@ state when baseline runs second. Source checks pass; actual new canonical gates
 await the shared-host slot after JOB01/02. No new EVAL participant has run and
 historical pilots remain separate. Existing shared serial_pair and the shared
 read-only grader executor are reused; no new orchestrator service is introduced.
+
+### Structural independent grader export provenance
+
+The common exporter and COM01/02 detailed exporters accept one optional strict allowlisted provenance object for participant/grader settings, receipt/freeze/evidence hashes, condition order and failure/repair/confound status. No private raw content is permitted. Summary adapters carry the same object. Reporting-only source is versioned separately from frozen participant execution. Focused contract/privacy and existing COM01/02/cost checks passed; network read-back remains a per-evaluation delivery gate.

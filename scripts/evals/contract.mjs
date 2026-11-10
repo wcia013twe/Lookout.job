@@ -1,3 +1,4 @@
+import {exportProvenance} from './provenance.mjs';
 import {costValues,costProvenance} from '../n01/cost-export.mjs';
 import {createHash} from 'node:crypto';
 import {statuses, VERSION} from './config.mjs';
@@ -18,6 +19,7 @@ export function validate(r) {
   if(!e.reviewed&&(e.taskSuccess!==null||e.quality!==null))throw Error('Unreviewed quality judgments must be null');
   if(e.taskSuccess===true&&r.status!=='completed')throw Error('Incomplete execution cannot be a full task success');
   for(const key of ['activeSeconds','toolCalls','wakesUsed'])if(e[key]!==null&&(!Number.isFinite(e[key])||e[key]<0||key!=='activeSeconds'&&!Number.isSafeInteger(e[key])))throw Error(key+' must be nonnegative or null');
+  exportProvenance(r.provenance);
   costValues(r.cost);
   return r;
 }
@@ -36,9 +38,11 @@ export function build(r,configIds={}) {
   const metadata=Object.fromEntries(['campaignId','suiteId','suiteVersion','scenarioId','scenarioVersion','condition','episodeId','model','reasoning','harnessVersion','graderVersion','evidenceDigest'].map(k=>[k,r[k]]));
   metadata.repeat=String(r.repeat);
   const experimentMetadata=Object.fromEntries(['campaignId','suiteId','suiteVersion','condition','model','reasoning','harnessVersion','graderVersion'].map(k=>[k,r[k]]));
+  const provenance=exportProvenance(r.provenance);
   const span={traceId,spanId:rootId,name:'evaluate-'+r.condition,kind:1,
     startTimeUnixNano:ns(r.startedAt),endTimeUnixNano:ns(r.endedAt),
     attributes:Object.entries({
+      ...(Object.keys(provenance).length?{'langfuse.observation.metadata.provenance':provenance,'langfuse.experiment.metadata.provenance':provenance}:{}),
       ...(r.cost?{'langfuse.observation.metadata.cost':costProvenance(r.cost)}:{}),
       'langfuse.observation.type':'span','langfuse.trace.name':[r.condition,r.campaignId,r.scenarioVersion,r.graderVersion].join(' · '),
       'langfuse.trace.tags':['eval-case:'+r.scenarioId,'eval-run:'+r.repeat],
