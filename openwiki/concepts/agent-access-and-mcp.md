@@ -214,3 +214,12 @@ See [the implementation and activation limits](../../docs/mcp-events.md) and
 Code support does not establish a cloud connection: the existing opaque bearer
 authentication remains unchanged and requires a separately authorized compatible
 connection path before ChatGPT can subscribe.
+
+## Host OAuth preparation (inactive)
+
+[The host authentication decision](../../docs/mcp-oauth-boundary.md) records the
+remaining consent, token isolation and revocation requirements. Ordinary Supabase
+OAuth user tokens must not replace scoped agent credentials: OIDC scopes do not
+restrict database permissions. This is a source-only design, with no OAuth routes,
+clients, hooks, grants or subscription activated. The current runtime provider is
+`osyrlausutnqzlegxmnd`; older-project discovery is not evidence for its configuration.
