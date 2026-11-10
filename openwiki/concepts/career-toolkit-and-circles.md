@@ -345,3 +345,5 @@ Palantir and Palantir Technologies resolve to the same palantir.com logo URL.
 Calendar day padding is 12px per edge with a 4px inter-day margin.
 
 The person draft footer uses a primary Copy message action, quiet Copy subject action and compact Reviewed / Mark ready / Dismiss row. Reviewed still saves the exact-version human review receipt; Mark ready stays disabled until that receipt is present. Draft changes invalidate the matching decision. Readiness remains separate from sending; the Action Board and existing human-only decision writer retain their validation.
+
+Network person details expose Delete contact beside Edit person. An inline confirmation names the person and warns that saved messages and relationship history are removed. Confirming uses the existing outreach deletion queue and owner/revision-checked writer, matching MCP `delete_contact`; demo deletion remains detached and resettable. Local validation does not establish hosted availability.
