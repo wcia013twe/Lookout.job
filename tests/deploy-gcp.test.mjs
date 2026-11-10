@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {validateRuntimeEnv, sourcePaths} from '../scripts/deploy-gcp.mjs';
 
 const valid = `SUPABASE_URL=https://osyrlausutnqzlegxmnd.supabase.co
@@ -38,4 +39,11 @@ test('cloud deploy requires credentials, explicit execution flag and disabled su
 test('source packaging allowlist excludes broad repo and local deployment state', () => {
   for (const path of ['.', 'infra', 'infra/gcp', '.env.gcp.local', 'data', 'google-cloud-sdk', 'next-app']) assert.ok(!sourcePaths.includes(path));
   assert.ok(sourcePaths.includes('backend/runtime'));
+});
+
+test('committed source archive covers every Docker build input', () => {
+  const dockerfile=readFileSync(new URL('../backend/runtime/Dockerfile',import.meta.url),'utf8');
+  const inputs=[...dockerfile.matchAll(/^COPY (.+) \S+$/gm)].flatMap(match=>match[1].split(/\s+/));
+  assert.ok(inputs.length>0);
+  for(const input of inputs) assert.ok(sourcePaths.some(path=>input===path||input.startsWith(path+'/')),`Missing archived Docker input: ${input}`);
 });

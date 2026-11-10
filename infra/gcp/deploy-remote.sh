@@ -9,6 +9,8 @@ flock -n 9 || { echo 'Another Lookout deployment is running.' >&2; exit 1; }
 cd "/opt/lookout/releases/$revision"
 umask 077
 export LOOKOUT_RELEASE="$revision" LOOKOUT_API_HOST="$hostname"
+# Generated runtime provenance belongs to this release's build, not source Git.
+printf '{"sourceCommit":"%s"}\n' "$revision" > supabase/functions/agent-gateway/runtime-version.json
 docker compose -f infra/gcp/compose.yaml config --quiet
 docker compose -f infra/gcp/compose.yaml build api
 docker compose -f infra/gcp/compose.yaml up -d --wait --wait-timeout 180

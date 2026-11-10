@@ -1473,3 +1473,16 @@ fresh-context confound. Original elapsed work, observed turns and incomplete usa
 remain in cumulative accounting. It checks artifact/state consistency before any
 participant inference, preserves failures, and requests independent grading after
 completion. It never resets the owner, changes the rubric or grants extra tools.
+
+
+### Hosted synchronization (2026-11-09)
+
+PR #83 synchronized accumulated local changes into production commit `1a54994d`.
+GitHub deployment `42748313688` passed hosted migrations/functions, full CI and
+Pages publication. Public API/MCP build variables now point to the existing GCP
+HTTPS endpoint. The first GCP retry stopped during local Terraform preflight.
+The release upload now includes the agent package and builder required by the
+Dockerfile and stamps its exact source revision before building; a regression
+checks all Docker COPY inputs. GCP activation and authenticated account smoke
+checks remain separate until verified. Execution/submission switches stay off.
+Local account data is not migrated by code deployment.
