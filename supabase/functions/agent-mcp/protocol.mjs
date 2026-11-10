@@ -134,7 +134,7 @@ export function createHandler(forward, allowedOrigins = ['https://wcia013twe.git
   return async request => {
     const origin = request.headers.get('Origin');
     if (origin && !allowedOrigins.includes(origin)) return error(null, -32000, 'Origin forbidden', 403);
-    const token = request.headers.get('Authorization')?.match(/^Bearer (jb_agent_[a-f0-9]{64})$/)?.[1];
+    const token = request.headers.get('Authorization')?.match(/^Bearer (jb_agent_[a-f0-9]{64}|[A-Za-z0-9_-]{43})$/)?.[1];
     if (!token) return error(null, -32000, 'Agent credential required', 401);
     // Discovery also validates expiry/revocation, without requiring workspace scope.
     let auth;
