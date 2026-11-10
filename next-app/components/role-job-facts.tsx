@@ -1,4 +1,5 @@
 import type {ReactNode} from 'react';
+import {SavedRoleTag} from './discovered-role-widget';
 import type { Role } from "./role-card";
 import {formatPostedDate,formatAvailabilityCheck,postingStatus} from "../../lib/posting-age.mjs";
 import {compensationLabel,jobFactText} from "../lib/job-fact-labels";
@@ -20,7 +21,7 @@ export default function RoleJobFacts({ role, compact = false, unrecorded = false
   return <section aria-label="Job facts">
     <div className="mb-3 flex flex-wrap items-center gap-2">
     <span className="inline-flex items-center gap-1.5 rounded-full bg-board-accent/10 px-3 py-1 text-xs font-semibold text-board-accent"><ProfileIcon name="briefcase" width={15} height={15} />{role.employmentType === "FT" ? "Full-time" : role.employmentType}</span>
-    {priorityTag}
+    {priorityTag === undefined ? <SavedRoleTag role={role}/> : priorityTag}
     <span className={`inline-flex items-center gap-1 text-xs ${status === "Live" ? "text-board-success" : "text-board-muted"}`} title={status === "Unverified" ? "Availability has not been verified." : `${status === "Live" ? "Active" : "Closed"} at the last employer check: ${formatAvailabilityCheck(role)}`}><ProfileIcon name={status === "Live" ? "check" : "clock"} width={14} height={14}/>{status}</span>
     </div>
     <dl className={compact ? "space-y-2" : "grid grid-cols-1 gap-x-5 gap-y-5 min-[380px]:grid-cols-2"}>

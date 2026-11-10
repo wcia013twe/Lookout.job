@@ -356,3 +356,22 @@ Company logos require the public `NEXT_PUBLIC_LOGO_DEV_TOKEN` repository variabl
 at static-build time. Pages publication checks that a `pk_` token is configured;
 local builds can still use placeholders without a token. No secret Logo.dev API
 key belongs in frontend configuration.
+
+### Typed Discover employer facts
+
+`publish_batch` exposes `discoverEmployerSchema` directly in its tool input schema.
+New canonical-URL postings require company/title text (1–200 characters),
+employmentType (`FT` or `Internship`) and location text (up to 1000 characters,
+empty when unknown). Optional employer fields have explicit types and bounds;
+dates use YYYY-MM-DD or null and locations is a string array. Candidate analysis
+remains in the private recommendation. Gateway/MCP validation and the canonical
+SQL publication writer enforce the contract before saving a new batch. Known
+full-time display aliases normalize to `FT`; unknown types fail rather than default.
+
+Migration `20261110084338_typed_discover_employer.sql` also repairs existing known
+employment-type aliases without touching personal application state. Missing
+legacy types remain unknown and need source verification. Existing immutable batch
+replays and ID references remain readable. Search guide22/developer157 make the
+schema discoverable after context refresh. Tests cover gateway/MCP, direct SQL,
+queue compatibility, upgrade preservation and detached fictional card facts;
+hosted rollout and real Muse schema refresh require separate verification.

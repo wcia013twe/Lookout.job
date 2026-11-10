@@ -1575,3 +1575,24 @@ and its test update, the merged suite passes1322/1327 with5 skipped and0 failed.
 All37 focused JOB Python tests, catalog158 and diff checks pass.
 Local delivery uses feature:land without Git push/deployment; task checkout and
 private evidence remain retained.
+
+
+### Saved Discover priority visibility
+
+Job facts render the existing saved assessment tag by default on Discover cards,
+role previews and application details. Explicit fit labels take precedence over
+the saved priority; missing labels do not synthesize a verdict from scores. The
+existing fictional Discover fixtures exercise Strong Consider. This display repair
+does not add plain Consider to backend priority validation or retag private jobs.
+Local render tests, typecheck and build establish frontend behavior only.
+
+### Typed Discover publication contract
+
+New Discover employer facts have an explicit tool input schema and shared gateway/
+MCP validation, with the canonical SQL publisher enforcing the same bounded fields.
+Known full-time labels normalize to FT; the versioned migration repairs existing
+aliases while preserving applications, approvals and receipts. Unknown legacy
+employment types remain unknown. Source coverage includes publication-to-queue,
+rollback/replay, upgrade preservation and detached demo facts. Production activation
+requires the normal merged-main migration and gateway/MCP deployment; a local test
+alone does not establish live Muse adoption of the refreshed schema.

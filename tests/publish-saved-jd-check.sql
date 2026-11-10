@@ -10,7 +10,7 @@ begin
  insert into public.search_observations(user_id,listing_id,run_id,source_id,checked_at,liveness,evidence,description,observed_url) values
  (u,listing,run,'fixture',now()-interval '1 hour','active','Fictional capture','Earlier capture','https://example.com/publish-jd'),
  (u,listing,run,'fixture',now(),'active','Fictional capture',full_jd,'https://example.com/publish-jd');
- payload:=jsonb_build_object('eventKey','publish-jd','label','Fictional JD proof','jobs',jsonb_build_array(jsonb_build_object('canonicalUrl','https://example.com/publish-jd','employer',jsonb_build_object('company','Fictional Systems','title','Engineer','description','Agent summary'),'recommendation',jsonb_build_object('whyItFits','Separate personal analysis'))));
+ payload:=jsonb_build_object('eventKey','publish-jd','label','Fictional JD proof','jobs',jsonb_build_array(jsonb_build_object('canonicalUrl','https://example.com/publish-jd','employer',jsonb_build_object('company','Fictional Systems','title','Engineer','employmentType','FT','location','','description','Agent summary'),'recommendation',jsonb_build_object('whyItFits','Separate personal analysis'))));
  result:=public.agent_dispatch(h,'batches.publish',payload);
  if (select employer->>'description' from public.jobs where canonical_url='https://example.com/publish-jd') is distinct from full_jd then raise exception 'Publication did not copy latest full JD';end if;
  if result#>>'{items,0,recommendation,whyItFits}' is distinct from 'Separate personal analysis' then raise exception 'Fit analysis changed';end if;
