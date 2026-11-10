@@ -46,6 +46,15 @@ begin
  if public.backend_job_dispatch(h,'applications.request.report',p)<>result then raise exception 'Outcome retry changed';end if;
  if (select status from public.applications where id=a)<>'Queued' or exists(select 1 from public.approvals where application_id=a) or exists(select 1 from public.submission_attempts where application_id=a) then raise exception 'Report minted approval/submission';end if;
  if (select execution_job->'result'->>'outcome' from public.applications where id=a)<>'prepared' then raise exception 'Visible projection missing';end if;
+ -- Independently exercise the completed outcome through its job, projection and feed.
+ select j.id,(j.input->>'applicationId')::uuid into b,other_app from private.backend_jobs j join public.applications x on x.id=(j.input->>'applicationId')::uuid where x.user_id=u and x.job_id='fictional-workday';
+ perform public.backend_job_dispatch(h,'applications.request.claim',jsonb_build_object('jobId',b,'expectedVersion',1,'expectedRevision',0,'eventKey','completed-claim'));
+ p:=jsonb_build_object('jobId',b,'expectedVersion',2,'expectedRevision',0,'eventKey','completed-report','outcome','completed','summary','Agent work finished; no submission receipt asserted.');
+ result:=public.backend_job_dispatch(h,'applications.request.report',p);
+ if result->'job'->>'status'<>'completed' or result->'job'->'result'->>'outcome'<>'completed' or result->'job'->'result'->>'verifiedSubmission'<>'false' then raise exception 'Completed outcome missing';end if;
+ if public.backend_job_dispatch(h,'applications.request.report',p)<>result then raise exception 'Completed replay changed';end if;
+ if (select execution_job->'result'->>'outcome' from public.applications where id=other_app)<>'completed' then raise exception 'Completed projection missing';end if;
+ if not exists(select 1 from public.activity_events where user_id=u and kind='muse.backend_job_finished' and payload->>'recordId'=b::text) then raise exception 'Missing completion event';end if;
  if not exists(select 1 from public.activity_events where user_id=u and kind='muse.application_requested' and payload->>'recordId'=b::text) then raise exception 'Missing Muse request event';end if;
  if not exists(select 1 from jsonb_array_elements(public.agent_dispatch(h,'changes.read','{}')->'items') x where x->>'kind'='application_requested' and x->>'recordId'=b::text) then raise exception 'Request missing from feed';end if;
  update private.agent_connections set revoked_at=now() where id=conn;
