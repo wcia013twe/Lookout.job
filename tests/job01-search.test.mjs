@@ -26,3 +26,6 @@ test('JOB01 score timestamps stay bound to execution across repeated exports',()
  assert.ok(a.scores.every(s=>s.timestamp==='1970-01-01T00:01:48.000Z'));
  assert.deepEqual(a,b);
 });
+
+
+test('JOB01 export includes only shared allowlisted evaluation provenance',()=>{const r={...run,startedAt:1700000000,pilot:true,synthetic:false};const g=grade(spec,ref,board,r);g.provenance={evaluationId:'EVAL-01',caseId:'JOB01',graderModel:'gpt-5.6-terra',graderReasoning:'medium'};const reg={datasetId:'ds',itemId:'item',scenarioHash:hash(spec),snapshotId:'test',sourceHash:'abc'};const p=build(r,g,spec,reg);const a=p.spans[0].attributes.find(a=>a.key==='langfuse.experiment.metadata.provenance');assert.equal(JSON.parse(a.value.stringValue).evaluationId,'EVAL-01');g.provenance.credentials='forbidden';assert.throws(()=>build(r,g,spec,reg),/Unsupported provenance/);});

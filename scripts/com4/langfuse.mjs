@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {exportProvenance} from '../evals/provenance.mjs';
 import {readScores} from '../communication/verify-langfuse-pilot.mjs';
 import {costValues} from '../n01/cost-export.mjs';
 // Versioned experiment mapping. Structural upload only; no participant credentials/content.
@@ -38,7 +39,8 @@ export function build(run,grade,spec,registration={}){
  const experimentId=sha(['com4-export-1',spec.version,m.pairId,m.condition,m.repeat,m.pilot===true]);
  const traceId=sha(['com4-export-1',spec.version,m.episodeId]).slice(0,32),rootId=sha(traceId+'root').slice(0,16);
  const experimentName=`${spec.version}-${m.pilot?'pilot':'measured'}-${m.pairId}-${m.condition}-r${m.repeat}`;
- const base={'langfuse.experiment.id':experimentId,'langfuse.experiment.name':experimentName,'langfuse.experiment.dataset.id':datasetId,'langfuse.experiment.item.id':itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':m.synthetic?'verification':m.pilot?'benchmark-pilot':'benchmark','langfuse.trace.name':'COM4 introduction continuity trajectory','session.id':m.episodeId,'langfuse.experiment.metadata.condition':m.condition,'langfuse.experiment.metadata.model':m.model,'langfuse.experiment.metadata.reasoning':m.reasoning,'langfuse.experiment.metadata.pilot':String(m.pilot===true),'langfuse.experiment.metadata.synthetic':String(m.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only'};
+ const provenance=exportProvenance(grade.provenance);
+ const base={...(Object.keys(provenance).length?{'langfuse.observation.metadata.provenance':JSON.stringify(provenance),'langfuse.experiment.metadata.provenance':JSON.stringify(provenance)}:{}),'langfuse.experiment.id':experimentId,'langfuse.experiment.name':experimentName,'langfuse.experiment.dataset.id':datasetId,'langfuse.experiment.item.id':itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':m.synthetic?'verification':m.pilot?'benchmark-pilot':'benchmark','langfuse.trace.name':'COM4 introduction continuity trajectory','session.id':m.episodeId,'langfuse.experiment.metadata.condition':m.condition,'langfuse.experiment.metadata.model':m.model,'langfuse.experiment.metadata.reasoning':m.reasoning,'langfuse.experiment.metadata.pilot':String(m.pilot===true),'langfuse.experiment.metadata.synthetic':String(m.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only'};
  const spans=[];
  function span(id,name,type,start,end,parent,extra={}){
   spans.push({traceId,spanId:id,...(parent?{parentSpanId:parent}:{}),name,kind:1,startTimeUnixNano:ns(start),endTimeUnixNano:ns(Math.max(start,end)),attributes:Object.entries({...base,'langfuse.observation.type':type,...extra}).map(([k,v])=>attr(k,v))});
