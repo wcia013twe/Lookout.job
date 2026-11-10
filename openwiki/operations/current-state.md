@@ -1462,3 +1462,14 @@ remain preserved and are not silently resumed or replaced.
 ### Communication healthy-completion policy amendment
 
 COM01/COM02 shared runners and orchestrators support explicit `--allow-healthy-completion` (stage adapter flag `allowHealthyCompletion=True`). Original seconds remain reference metadata, with no task timer or overrun-based status/timing rejection. Actual elapsed/usage and real process, clock and containment errors remain enforced; operation timeouts remain bounded. This source amendment does not change already-running Python frames or historical frozen evidence. Live macOS timer cancellation was denied before execution; no healthy participant was restarted. No product, prompt or rubric change.
+
+### Explicit JOB01 initial-timeout recovery
+
+`scripts/job01/recover.py` supports an operator-authorized recovery of a first-stage
+timeout only. It keeps original freezes and both old participant artifacts, copies
+the unchanged baseline, and continues Lookout against retained owned state in a new
+isolated session. A sibling evidence root records amended executor hashes and the
+fresh-context confound. Original elapsed work, observed turns and incomplete usage
+remain in cumulative accounting. It checks artifact/state consistency before any
+participant inference, preserves failures, and requests independent grading after
+completion. It never resets the owner, changes the rubric or grants extra tools.
