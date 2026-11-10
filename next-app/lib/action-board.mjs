@@ -3,16 +3,14 @@ const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 // Cloud sync announces successful account refreshes, including agent writes.
 // Keep the planner's separate RPC snapshot current even when application IDs
 // have not changed. The caller guards in-flight mutations and account changes.
-export function subscribePreparationRefresh(document, window, owner, refresh) {
-  const cloud = event => { if (event.detail?.userId === owner) refresh(); };
-  document.addEventListener('workspace:cloud-ready', cloud);
-  window.addEventListener('focus', refresh);
-  window.addEventListener('online', refresh);
-  return () => {
-    document.removeEventListener('workspace:cloud-ready', cloud);
-    window.removeEventListener('focus', refresh);
-    window.removeEventListener('online', refresh);
+export function subscribePreparationRefresh(document, window, owner, refresh, tables = ['applications','submission_attempts','application_milestones','preparation_plans','preparation_planner_settings','preparation_sessions','career_artifacts','learning_goals']) {
+  const cloud = event => {
+    if(event.detail?.userId!==owner)return;
+    const changed=event.detail.changedTables;
+    if(!Array.isArray(changed)||changed.includes('*')||changed.some(table=>tables.includes(table)))refresh();
   };
+  document.addEventListener('workspace:cloud-ready', cloud);
+  return () => document.removeEventListener('workspace:cloud-ready', cloud);
 }
 
 export function preparationReminders(plans = {}, applications = {}) {

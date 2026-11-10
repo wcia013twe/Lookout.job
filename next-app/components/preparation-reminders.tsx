@@ -112,7 +112,7 @@ function Planner() {
   const today = plannerToday(clock, timeZone);
   const localPlans = w.state.workflow.preparationPlans, localPlanner = w.state.workflow.preparationPlanner;
   const applicationKey = Object.values(w.state.workflow.applications as Record<string, Application>).map(a => `${a.id}:${a.backendId || ""}`).sort().join("|");
-  useEffect(() => { const timer = setInterval(() => { setClock(new Date()); if (document.visibilityState === "visible" && !mutation.current) setRetry(n => n + 1); }, 60000); return () => clearInterval(timer); }, []);
+  useEffect(() => { const timer = setInterval(() => { setClock(new Date()); }, 60000); return () => clearInterval(timer); }, []);
   useEffect(() => {
     if (!owner) return;
     return subscribePreparationRefresh(document, window, owner, () => {

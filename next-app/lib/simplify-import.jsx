@@ -1,5 +1,6 @@
 "use client";
 import {useCallback,useEffect,useRef,useState} from 'react';
+import {subscribePreparationRefresh} from './action-board.mjs';
 import {createSimplifyImporter} from '../../backend/simplify-import.mjs';
 import {useWorkspace} from './workspace';
 export function useSimplifyImports(){
@@ -14,6 +15,6 @@ export function useSimplifyImports(){
   return result;
  },[scope,w.client,w.services]);
  const refresh=useCallback(async()=>{try{const data=await call('list');setSnapshot({...data,scope});setError('');}catch(e){if(current.current===scope)setError(e.message);}},[call,scope]);
- useEffect(()=>{setSnapshot({records:[],version:0});setError('');if(!w.demo&&!w.user)return;void refresh();const timer=setInterval(()=>void refresh(),15000);return()=>clearInterval(timer);},[refresh,scope]);
+ useEffect(()=>{setSnapshot({records:[],version:0});setError('');if(!w.demo&&!w.user)return;void refresh();if(!w.demo)return subscribePreparationRefresh(document,window,w.user.id,()=>void refresh(),['imported_jobs']);},[refresh,scope]);
  return {ready:snapshot.scope===scope,version:snapshot.scope===scope?snapshot.version:0,records:snapshot.scope===scope?snapshot.records:[],error,call,refresh,scope};
 }
