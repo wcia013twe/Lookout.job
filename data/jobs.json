@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "lastRun": "2026-11-09 morning sweep (staged 2026-11-09)",
+ "lastRun": "2026-11-10 morning sweep (staged 2026-11-10)",
  "roles": [
   {
    "id": "doordash-software-engineer-storage-8024644",
@@ -1615,11 +1615,11 @@
    "sourceFreshness": "publish date ~2026-09-08 per aggregator mirror (approximate); older than the 72h window",
    "whyItFits": "High-signal AI dev-tool company with a flat, talent-dense engineering org. New grads own real product work end to end on Cursor and the systems underneath; the application requires an exceptional technical project or shipped product. Dev-tooling/product-engineering lane adjacent to his platform interests. NOTE: the live JD body references SpaceXAI/Grok surfaces (shared posting template with the merged xAI entity); verify the actual team and employer entity before applying. Application asks for GPA and SAT/ACT/GRE scores. Graduation dropdown includes Spring 2027 and Summer 2027.",
    "applicationUrl": "https://cursor.com/careers/software-engineer-new-grad-2027",
-   "verification": "Direct fetch of cursor.com/careers/software-engineer-new-grad-2027 2026-10-17; full JD and application form rendered (SF/NYC/Palo Alto, Spring 2027 grads eligible).",
+   "verification": "Direct fetch of cursor.com/careers/software-engineer-new-grad-2027 2026-10-17; full JD and application form rendered (SF/NYC/Palo Alto, Spring 2027 grads eligible). Re-verified live Nov 10, 2026 on cursor.com (now SpaceXSI-branded, $185,000, expected graduation 2027, SF/NYC/Palo Alto). Simplify Ashby link 164e27cd-289e-4bcd-8aaf-5280e75c5ed6 confirmed 404 in live browser; role stays boarded on the cursor.com URL.",
    "discoveredDate": "2026-10-17",
    "applicationStatus": "New",
    "discoverySource": "Morning sweep 2026-10-17",
-   "verifiedDate": "2026-10-17"
+   "verifiedDate": "2026-11-10"
   },
   {
    "id": "quora-ml-engineer-new-grad-40659fe7",
@@ -3896,8 +3896,8 @@
    "applicationUrl": "https://careers.withwaymo.com/jobs/2027-summer-intern-ms-phd-software-engineer-multiverse-san-francisco-california-united-states?gh_jid=8350832",
    "applicationStatus": "New",
    "discoverySource": "Morning sweep 2026-11-07 (Simplify intern list)",
-   "verification": "Verified live Nov 7, 2026 on Waymo careers (Job 5652): 2027 Summer Intern, MS/PhD, Software Engineer, Multiverse, San Francisco, $70/hr Master's.",
-   "verifiedDate": "2026-11-07"
+   "verification": "Verified live Nov 7, 2026 on Waymo careers (Job 5652): 2027 Summer Intern, MS/PhD, Software Engineer, Multiverse, San Francisco, $70/hr Master's. Re-verified live Nov 10, 2026 on Greenhouse (gh_jid 8350832, Job ID 5652). Note: the Simplify listing shows BS/MS with $60 BS/$70 MS per hour, while the Nov 7 Waymo careers verification recorded MS/PhD at $70/hr Master's; boarded title and pay retained from the Nov 7 verification, discrepancy flagged.",
+   "verifiedDate": "2026-11-10"
   },
   {
    "id": "waymo-2027-summer-intern-ml-simulation-realism-world-model-5673",
@@ -3914,8 +3914,8 @@
    "applicationUrl": "https://careers.withwaymo.com/jobs/2027-summer-intern-machine-learning-ms-phd-simulation-realism-world-model-mountain-view-california-united-states",
    "applicationStatus": "New",
    "discoverySource": "Morning sweep 2026-11-07 (Waymo careers related jobs)",
-   "verification": "Verified live Nov 7, 2026 on Waymo careers (Job 5673): 2027 Summer Intern, Machine Learning, MS/PhD, Simulation Realism (World Model), Mountain View, $70/hr Master's.",
-   "verifiedDate": "2026-11-07"
+   "verification": "Verified live Nov 7, 2026 on Waymo careers (Job 5673): 2027 Summer Intern, Machine Learning, MS/PhD, Simulation Realism (World Model), Mountain View, $70/hr Master's. Re-verified live Nov 10, 2026 on Greenhouse (gh_jid 8358262, Job ID 5673); MS/PhD, $70 MS/$85 PhD per hour confirmed.",
+   "verifiedDate": "2026-11-10"
   },
   {
    "id": "zoox-data-science-intern-summer-2027-85c6aec7",
@@ -3950,8 +3950,8 @@
    "applicationUrl": "https://tmobile.wd1.myworkdayjobs.com/External/job/Bellevue-Washington/Summer-2027-AI-Engineering-Internship_REQ380765",
    "applicationStatus": "New",
    "discoverySource": "Morning sweep 2026-11-07 (Simplify intern list)",
-   "verification": "Verified live Nov 7, 2026 on T-Mobile Workday (REQ380765): Summer 2027 AI Engineering Internship, Bellevue, $27-$50/hr. Re-confirmed live Nov 8, 2026 (full JD loads, published 2026-11-06; AI agents/dev-tools scope, Python/TypeScript, LLM workflow automation). Re-confirmed live Nov 9, 2026 on T-Mobile Workday (REQ380765; End Date Nov 12, 2026 confirmed; AI agents/dev-tools scope).",
-   "verifiedDate": "2026-11-09"
+   "verification": "Verified live Nov 7, 2026 on T-Mobile Workday (REQ380765): Summer 2027 AI Engineering Internship, Bellevue, $27-$50/hr. Re-confirmed live Nov 8, 2026 (full JD loads, published 2026-11-06; AI agents/dev-tools scope, Python/TypeScript, LLM workflow automation). Re-confirmed live Nov 9, 2026 on T-Mobile Workday (REQ380765; End Date Nov 12, 2026 confirmed; AI agents/dev-tools scope). Re-verified live Nov 10, 2026 on T-Mobile Workday (REQ380765; End Date Nov 12, 2026). Renumbered duplicate REQ381198 loads live with word-for-word identical text (same AI agents/dev tools team); not a distinct role.",
+   "verifiedDate": "2026-11-10"
   },
   {
    "id": "t-mobile-summer-2027-software-engineering-internship-req380917",
@@ -3968,8 +3968,8 @@
    "applicationUrl": "https://tmobile.wd1.myworkdayjobs.com/External/job/Bellevue-Washington/Summer-2027-Software-Engineering-Internship_REQ380917",
    "applicationStatus": "New",
    "discoverySource": "Morning sweep 2026-11-07 (Simplify intern list)",
-   "verification": "Verified live Nov 7, 2026 on T-Mobile Workday (REQ380917): Summer 2027 Software Engineering Internship, Bellevue, $27-$50/hr, End Date Nov 12, 2026. Re-confirmed live Nov 8, 2026 in the live browser (End Date Nov 12, 2026, 3 days left to apply; text-fetch of the same URL returned no content, a crawler quirk). Alternate req REQ380768 for the same title/location/description is also live (published 2026-11-06). Re-confirmed live Nov 9, 2026 on T-Mobile Workday (REQ380917; End Date Nov 12, 2026 confirmed; data/AI-ready focus).",
-   "verifiedDate": "2026-11-09"
+   "verification": "Verified live Nov 7, 2026 on T-Mobile Workday (REQ380917): Summer 2027 Software Engineering Internship, Bellevue, $27-$50/hr, End Date Nov 12, 2026. Re-confirmed live Nov 8, 2026 in the live browser (End Date Nov 12, 2026, 3 days left to apply; text-fetch of the same URL returned no content, a crawler quirk). Alternate req REQ380768 for the same title/location/description is also live (published 2026-11-06). Re-confirmed live Nov 9, 2026 on T-Mobile Workday (REQ380917; End Date Nov 12, 2026 confirmed; data/AI-ready focus). Re-verified live Nov 10, 2026 on T-Mobile Workday (REQ380917; End Date Nov 12, 2026). Renumbered duplicate REQ380768 loads live with word-for-word identical text (Bellevue Data/AI-ready team); not a distinct role.",
+   "verifiedDate": "2026-11-10"
   },
   {
    "id": "tesla-internship-swe-si-reinforcement-learning-289241",
@@ -4058,8 +4058,8 @@
    "applicationUrl": "https://tmobile.wd1.myworkdayjobs.com/External/job/Frisco-Texas/Summer-2027-Data-Engineering-Internship_REQ380754",
    "applicationStatus": "New",
    "discoverySource": "Morning sweep 2026-11-09 (Simplify intern list)",
-   "verification": "Verified live Nov 9, 2026 on T-Mobile Workday (REQ380754): Summer 2027 Data Engineering Internship, Frisco/Atlanta, $27-$50/hr, End Date Nov 12, 2026. Renumbered duplicate REQ380755 also loads live with identical title, locations and end date.",
-   "verifiedDate": "2026-11-09"
+   "verification": "Verified live Nov 9, 2026 on T-Mobile Workday (REQ380754): Summer 2027 Data Engineering Internship, Frisco/Atlanta, $27-$50/hr, End Date Nov 12, 2026. Renumbered duplicate REQ380755 also loads live with identical title, locations and end date. Re-verified live Nov 10, 2026 on T-Mobile Workday (REQ380754; End Date Nov 12, 2026).",
+   "verifiedDate": "2026-11-10"
   },
   {
    "id": "t-mobile-summer-2027-ai-engineering-internship-req381194",
@@ -4076,8 +4076,8 @@
    "applicationUrl": "https://tmobile.wd1.myworkdayjobs.com/External/job/Bellevue-Washington/Summer-2027-AI-Engineering-Internship_REQ381194",
    "applicationStatus": "New",
    "discoverySource": "Morning sweep 2026-11-09 (Simplify intern list)",
-   "verification": "Verified live Nov 9, 2026 on T-Mobile Workday (REQ381194): Summer 2027 AI Engineering Internship, Bellevue, $27-$50/hr, End Date Nov 12, 2026. Distinct from REQ380765 (AI agents/dev tools): this req is churn retention and cross/upsell, production-grade LLM solutions.",
-   "verifiedDate": "2026-11-09"
+   "verification": "Verified live Nov 9, 2026 on T-Mobile Workday (REQ381194): Summer 2027 AI Engineering Internship, Bellevue, $27-$50/hr, End Date Nov 12, 2026. Distinct from REQ380765 (AI agents/dev tools): this req is churn retention and cross/upsell, production-grade LLM solutions. Re-verified live Nov 10, 2026 on T-Mobile Workday (REQ381194; End Date Nov 12, 2026).",
+   "verifiedDate": "2026-11-10"
   },
   {
    "id": "tesla-internship-swe-inference-infrastructure-289254",
@@ -4096,6 +4096,204 @@
    "discoverySource": "Evening sudo check 2026-11-08 (zero2sudo story)",
    "verification": "Verified live Nov 8, 2026 on Tesla careers (Req 289254): Internship, Software Engineer, Inference Infrastructure (Summer 2027), Palo Alto, starts May 2027, min 12 weeks, full-time on-site; no deadline shown.",
    "verifiedDate": "2026-11-08"
+  },
+  {
+   "id": "whoop-software-engineer-i-backend-growth-d31312c2",
+   "company": "WHOOP",
+   "title": "Software Engineer I, Backend - Growth",
+   "employmentType": "FT",
+   "location": "Boston, MA",
+   "category": "Backend & distributed systems",
+   "priority": "Strong Consider",
+   "postedDate": "2026-11-09",
+   "discoveredDate": "2026-11-10",
+   "sourceFreshness": "Simplify new-grad tracker 3d; verified live Nov 10, 2026",
+   "whyItFits": "Growth-team backend role in Java, Kafka, Postgres, and AWS maps directly onto his Oracle backend and distributed-systems work, and the posting accepts internship or project experience in place of full-time experience. $105,000-145,000 base plus equity. Flag: posting is framed as an immediate hire and directs Winter 2026/Spring 2027 graduates to WHOOP's separate New Grad Opportunities posting instead. Distinct from boarded WHOOP Backend role (Ashby 0623a9e9, different ID, Growth team).",
+   "applicationUrl": "https://jobs.ashbyhq.com/whoop/d31312c2-236a-45f1-8da7-61a7ca8d1622",
+   "applicationStatus": "New",
+   "discoverySource": "Morning sweep 2026-11-10 (Simplify new-grad list)",
+   "verification": "Verified live Nov 10, 2026 on Ashby (d31312c2-236a-45f1-8da7-61a7ca8d1622): Software Engineer I, Backend - Growth, published 2026-11-09, Boston, $105,000-145,000 base plus equity.",
+   "verifiedDate": "2026-11-10"
+  },
+  {
+   "id": "ande-software-engineer-ai-early-career-8ff8145e",
+   "company": "Ande",
+   "title": "Software Engineer, AI (Early Career)",
+   "employmentType": "FT",
+   "location": "New York, NY",
+   "category": "AI infra & agents",
+   "priority": "Strong Consider",
+   "postedDate": "2026-11-07",
+   "discoveredDate": "2026-11-10",
+   "sourceFreshness": "Simplify new-grad tracker 3d; verified live Nov 10, 2026",
+   "whyItFits": "He would build the Ande Agent itself: subagents, tool use, evals, and memory, the same agentic-systems work he did on AI agents and semantic models at Oracle, shipping to production from week one. $120,000-160,000 plus equity. Corporate-entertainment AI booking, $52M+ raised. Gate: requires 1 year of professional experience with strong internships, or 1-2 years building with AI; his Oracle AI agents internship is the evidence for the second path. No employee reviews found (emerged from stealth Sep 2026), so no wellbeing score.",
+   "applicationUrl": "https://jobs.ashbyhq.com/ande/8ff8145e-8040-4a7a-a90c-cc1fdc36deb1",
+   "applicationStatus": "New",
+   "discoverySource": "Morning sweep 2026-11-10 (Simplify new-grad list)",
+   "verification": "Verified live Nov 10, 2026 on Ashby (8ff8145e-8040-4a7a-a90c-cc1fdc36deb1): Software Engineer, AI (Early Career), published 2026-11-07, New York, $120,000-160,000 plus equity.",
+   "verifiedDate": "2026-11-10"
+  },
+  {
+   "id": "shield-ai-engineer-i-software-autonomy-capabilities-new-grad-6129",
+   "company": "Shield AI",
+   "title": "Engineer I, Software - Autonomy Capabilities - New Grad - 6129",
+   "employmentType": "FT",
+   "location": "United States",
+   "category": "Robotics & autonomy",
+   "priority": "Skip Unless Team Fit",
+   "postedDate": null,
+   "discoveredDate": "2026-11-10",
+   "sourceFreshness": "Simplify new-grad tracker 3d; verified live Nov 10, 2026",
+   "whyItFits": "Entry-level autonomy software in C++ with simulation and multi-agent coordination, in the Hivemind Solutions Division, fits his systems interests and his C++ background. Full-time starting 2027, graduating Dec 2026-Aug 2027 (May 2027 fits). Gate: ability to obtain a SECRET clearance is required; defense work and export-control eligibility are unconfirmed.",
+   "applicationUrl": "https://jobs.ashbyhq.com/shield/955d48ad-9380-4621-91f4-51f3f093ac10/application",
+   "applicationStatus": "New",
+   "discoverySource": "Morning sweep 2026-11-10 (Simplify new-grad list)",
+   "verification": "Verified live Nov 10, 2026 on Ashby (canonical 955d48ad-9380-4621-91f4-51f3f093ac10): Engineer I, Software - Autonomy Capabilities - New Grad - 6129, Hivemind Solutions Division, Flight System Integration, full-time starting 2027. Reverses the Nov 9 skip: the Nov 9 404s were transient or URL-form related.",
+   "verifiedDate": "2026-11-10"
+  },
+  {
+   "id": "wolverine-trading-entry-level-cpp-software-engineer-33228344",
+   "company": "Wolverine Trading",
+   "title": "Entry Level C++ Software Engineer (Spring 2027 Graduates)",
+   "employmentType": "FT",
+   "location": "Chicago, IL",
+   "category": "Systems & infrastructure",
+   "priority": "Strong Consider",
+   "postedDate": "2026-08-15",
+   "discoveredDate": "2026-11-10",
+   "sourceFreshness": "Simplify new-grad tracker 0d; verified live Nov 10, 2026",
+   "whyItFits": "Entry-level C++ role building high-performance trading technology, aimed at Spring 2027 graduates with a summer 2027 start, matching his graduation date and his systems-level C++ strengths. BS/MS, onsite Chicago, no sponsorship required (satisfied). About $80,000-120,000 base plus discretionary bonus. Employer posted 2026-08-15 per mirrors, newly listed on Simplify Nov 10, 2026.",
+   "applicationUrl": "https://wolve.pinpointhq.com/en/postings/33228344-bcc7-4bcd-b3cb-22b60aaee82c",
+   "applicationStatus": "New",
+   "discoverySource": "Morning sweep 2026-11-10 (Simplify new-grad list)",
+   "verification": "Verified live Nov 10, 2026 on Pinpoint (33228344-bcc7-4bcd-b3cb-22b60aaee82c): Entry Level C++ Software Engineer (Spring 2027 Graduates), Chicago, onsite, about $80,000-120,000 base plus discretionary bonus.",
+   "verifiedDate": "2026-11-10"
+  },
+  {
+   "id": "kyndryl-associate-data-engineer-early-career-r-66870",
+   "company": "Kyndryl",
+   "title": "Associate Data Engineer, Early Career Consult Program",
+   "employmentType": "FT",
+   "location": "Frisco, TX",
+   "category": "Data infra / streaming",
+   "priority": "Skip Unless Team Fit",
+   "postedDate": null,
+   "discoveredDate": "2026-11-10",
+   "sourceFreshness": "Simplify new-grad tracker 3d; verified live Nov 10, 2026",
+   "whyItFits": "Associate Data Engineer work on RAG pipelines, vector embeddings, knowledge graphs, and Databricks is real data-infra work in his target lane. $77,000 plus bonus, rolling. Gap: consulting delivery at client sites, not product engineering, and the Frisco office is five days a week despite partial-remote language. No visa sponsorship; US work authorization required.",
+   "applicationUrl": "https://kyndryl.wd5.myworkdayjobs.com/en-US/KyndrylProfessionalCareers/job/Dallas-USDALFRI-Frisco-AI-HUB/Data-Engineer_R-66870",
+   "applicationStatus": "New",
+   "discoverySource": "Morning sweep 2026-11-10 (Simplify new-grad list)",
+   "verification": "Verified live Nov 10, 2026 on Workday (R-66870): Associate Data Engineer, Early Career Consult Program, Frisco, $77,000 plus bonus, rolling.",
+   "verifiedDate": "2026-11-10"
+  },
+  {
+   "id": "uipath-software-engineer-intern-4983eab7",
+   "company": "UiPath",
+   "title": "Software Engineer Intern",
+   "employmentType": "Internship",
+   "location": "Bellevue, WA",
+   "category": "Backend & distributed systems",
+   "priority": "Strong Consider",
+   "postedDate": "2026-11-09",
+   "discoveredDate": "2026-11-10",
+   "sourceFreshness": "Simplify intern tracker 3d; verified live Nov 10, 2026; deadline Nov 25, 2026",
+   "whyItFits": "Twelve-week summer internship building automation platform services with a highly technical team, using the same backend and CI/CD practices as his Oracle and Goldman internships. $58.85-64.58/hr. Deadline Nov 25, 2026.",
+   "applicationUrl": "https://jobs.ashbyhq.com/uipath/4983eab7-099d-4c77-9a5a-8dde72084c04",
+   "applicationStatus": "New",
+   "discoverySource": "Morning sweep 2026-11-10 (Simplify intern list)",
+   "verification": "Verified live Nov 10, 2026 on Ashby (4983eab7-099d-4c77-9a5a-8dde72084c04): Software Engineer Intern, Bellevue onsite, published 2026-11-09, deadline Nov 25, 2026, $58.85-64.58/hr.",
+   "verifiedDate": "2026-11-10"
+  },
+  {
+   "id": "uipath-ai-engineer-intern-f6857594",
+   "company": "UiPath",
+   "title": "AI Engineer Intern",
+   "employmentType": "Internship",
+   "location": "Bellevue, WA",
+   "category": "AI infra & agents",
+   "priority": "Strong Consider",
+   "postedDate": "2026-11-09",
+   "discoveredDate": "2026-11-10",
+   "sourceFreshness": "Simplify intern tracker 3d; verified live Nov 10, 2026; deadline Nov 25, 2026",
+   "whyItFits": "He would build the AI agents on UiPath's platform, context grounding, conversational agents, and agent memory, the exact agentic-systems and RAG work he did at Oracle. $72.92/hr, 12-week summer 2027. Requires currently pursuing MS or PhD in CS/Eng/AI; he qualifies as an MS student. Deadline Nov 25, 2026.",
+   "applicationUrl": "https://jobs.ashbyhq.com/uipath/f6857594-645c-4833-aa5b-763e9759b555",
+   "applicationStatus": "New",
+   "discoverySource": "Morning sweep 2026-11-10 (Simplify intern list)",
+   "verification": "Verified live Nov 10, 2026 on Ashby (f6857594-645c-4833-aa5b-763e9759b555): AI Engineer Intern, Bellevue onsite/hybrid, published 2026-11-09, deadline Nov 25, 2026, $72.92/hr, 12-week summer 2027.",
+   "verifiedDate": "2026-11-10"
+  },
+  {
+   "id": "regent-mission-software-engineering-intern-1da518a0",
+   "company": "REGENT",
+   "title": "Mission Software Engineering Intern (Summer)",
+   "employmentType": "Internship",
+   "location": "North Kingstown, RI",
+   "category": "Robotics & autonomy",
+   "priority": "Strong Consider",
+   "postedDate": null,
+   "discoveredDate": "2026-11-10",
+   "sourceFreshness": "Simplify intern tracker 3d; verified live Nov 10, 2026; deadline Jan 1, 2027",
+   "whyItFits": "Mission Software internship owning a real telemetry or fault-detection project against recorded vehicle data, with pub-sub data models and ingest pipelines, in his distributed-systems lane. Requires currently enrolled MS or PhD in CS/SE/robotics/ECE/aerospace; Python/C++17, Linux, event-driven/pub-sub, DDS/ROS2 a plus. No numeric pay shown; housing stipend available. Deadline Jan 1, 2027.",
+   "applicationUrl": "https://jobs.ashbyhq.com/regent/1da518a0-9030-48d1-a58c-15d1f88f0eaa",
+   "applicationStatus": "New",
+   "discoverySource": "Morning sweep 2026-11-10 (Simplify intern list)",
+   "verification": "Verified live Nov 10, 2026 on Ashby (1da518a0-9030-48d1-a58c-15d1f88f0eaa): Mission Software Engineering Intern (Summer), North Kingstown RI onsite, deadline Jan 1, 2027.",
+   "verifiedDate": "2026-11-10"
+  },
+  {
+   "id": "nyt-ml-scientist-intern-4752926005",
+   "company": "The New York Times",
+   "title": "ML Scientist Intern",
+   "employmentType": "Internship",
+   "location": "New York, NY",
+   "category": "ML systems & AI infrastructure",
+   "priority": "Strong Consider",
+   "postedDate": null,
+   "discoveredDate": "2026-11-10",
+   "sourceFreshness": "Simplify intern tracker 3d; verified live Nov 10, 2026",
+   "whyItFits": "ML Science group internship developing and deploying ML solutions to newsroom and business problems in Python, scikit-learn, and GCP, with real data products and cross-functional stakeholders. 10 weeks from Jun 7, 2027, $40/hr, hybrid NYC. Pay discrepancy: the posting body also shows a $20.00/hr line; the compensation section states $40/hr, which is the figure used. REQ-020967.",
+   "applicationUrl": "https://boards.greenhouse.io/thenewyorktimes/jobs/4752926005",
+   "applicationStatus": "New",
+   "discoverySource": "Morning sweep 2026-11-10 (Simplify intern list)",
+   "verification": "Verified live Nov 10, 2026 on Greenhouse (4752926005, REQ-020967): ML Scientist Intern, 10 weeks from Jun 7, 2027, $40/hr, hybrid NYC, ML Science group.",
+   "verifiedDate": "2026-11-10"
+  },
+  {
+   "id": "nvidia-systems-research-intern-observability-summer-2027-jr2026644",
+   "company": "NVIDIA",
+   "title": "Systems Research Intern, Observability, Summer 2027",
+   "employmentType": "Internship",
+   "location": "Santa Clara, CA",
+   "category": "Data infra / streaming",
+   "priority": "Strong Consider",
+   "postedDate": null,
+   "discoveredDate": "2026-11-10",
+   "sourceFreshness": "Simplify intern tracker 3d; verified live Nov 10, 2026; accepts until Nov 13, 2026",
+   "whyItFits": "Systems research internship in observability, OpenTelemetry, data lakes, and query engines, producing whitepapers plus a prototype, squarely in his data platform and systems lane. MS or PhD required (BS not listed); he qualifies as an MS student. $20-94/hr. Accepts applications at least until Nov 13, 2026.",
+   "applicationUrl": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Systems-Research-Intern--Observability---Summer-2027_JR2026644",
+   "applicationStatus": "New",
+   "discoverySource": "Morning sweep 2026-11-10 (Simplify intern list)",
+   "verification": "Verified live Nov 10, 2026 on Workday (JR2026644): Systems Research Intern, Observability, Summer 2027, Santa Clara, accepts applications at least until Nov 13, 2026, MS or PhD required, $20-94/hr.",
+   "verifiedDate": "2026-11-10"
+  },
+  {
+   "id": "amazon-software-development-engineer-intern-summer-2027-10597379",
+   "company": "Amazon",
+   "title": "Software Development Engineer Intern, Summer 2027",
+   "employmentType": "Internship",
+   "location": "Boston, MA; Austin, TX; Seattle, WA; Arlington, VA; Denver, CO",
+   "category": "Backend & distributed systems",
+   "priority": "Strong Consider",
+   "postedDate": null,
+   "discoveredDate": "2026-11-10",
+   "sourceFreshness": "Simplify intern tracker 3d; verified live Nov 10, 2026",
+   "whyItFits": "Twelve-week SDE internship owning a service end to end, with distributed-systems, database, and query-processing specializations, in his core backend lane. $109,650/yr annualized, 12 weeks May/June-Aug/Sep 2027, in person. Fits only under the Dec 2027 graduation framing: degree conferral Oct 2027-Sep 2029 and one term remaining after the internship are required.",
+   "applicationUrl": "https://amazon.jobs/en/jobs/10597379/software-development-engineer-intern-summer-2027",
+   "applicationStatus": "New",
+   "discoverySource": "Morning sweep 2026-11-10 (Simplify intern list)",
+   "verification": "Verified live Nov 10, 2026 on amazon.jobs (10597379): Software Development Engineer Intern, Summer 2027, Boston/Austin/Seattle/Arlington/Denver, rolling, $109,650/yr, 12 weeks May/June-Aug/Sep 2027, in person.",
+   "verifiedDate": "2026-11-10"
   }
  ]
 }
