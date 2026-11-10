@@ -70,10 +70,14 @@ def release(stage,condition,inputs):
  write(inputs/'sources.json',{'inbox':[email] if email else []})
  return packet
 
-def prepare(root,n01,reference,cost_policy=None):
+def prepare(root,n01,reference,cost_policy=None,condition_order="baseline,lookout"):
  root=Path(root).resolve();n01=Path(n01).resolve();reference=Path(reference).resolve()
  if not (root/'account.private.json').exists():raise RuntimeError('Create dedicated JOB01 account first')
  if (root/'freeze.json').exists():raise RuntimeError('Never overwrite a frozen pilot')
+ order=condition_order.split(',')
+ if sorted(order)!=['baseline','lookout']:raise RuntimeError('Each condition required exactly once')
+ canonical=json.loads((root/'canonical-context-clone.private.json').read_text())
+ if canonical.get('status')!='passed' or canonical.get('nativeReadbackVerified') is not True:raise RuntimeError('Canonical profile prerequisites unverified')
  source=REPO/'fixtures/job-board/jobright-swe-2026-9763907b1b91'
  ORIGINAL_COMMAND(['python3',str(REPO/'scripts/job-board/export.py'),'--snapshot',str(source)])
  for d in ['candidate','suite','packets','runs','receipts']: (root/d).mkdir(exist_ok=True,mode=0o700)
@@ -92,7 +96,7 @@ def prepare(root,n01,reference,cost_policy=None):
  shutil.copyfile(source/'manifest.json',root/'source-manifest.json')
  spec=json.loads((root/'suite/scenario.json').read_text())
  cfg={'version':spec['version'],'taskId':'JOB01','allowedTools':['read_personal_context','check_context_versions','discover_tools','discover_toolkit','read_guide','read_developer_context','call_discovered_tool','save_profile_package','save_search_profile','publish_batch','read_batch','read_muse_changes','acknowledge_muse_changes','start_agent_audit_run','append_agent_audit_events','read_agent_audit_run','read_search_context','save_search_document','read_search_document_history','list_jobs','read_user_brief','update_profile_fields','edit_work_experience','save_profile_facts','append_activity','read_toolkit_context','read_agent_tasks','read_agent_schedule','read_action_inbox','list_artifacts','read_artifact'],
-      'productConfiguration':{'source':'JOB01 controlled host configuration; candidate context cloned from N01; not an assertion of an installed live account schedule','scheduledJobReviewEnabled':False,'comparisonMode':'matched-intent','proactiveEffortSavingsMeasured':False,'wakePrompt':'Scheduled job-review check. Review the released inbox updates under the configured read/analyze/save permissions.','permittedActions':['read','analyze','save'],'sendAllowed':False},'langfuseReceiptDirectory':str(root/'receipts/langfuse'),'model':'gpt-5.6-terra','reasoning':'medium','noParticipantRunYet':True}
+      'productConfiguration':{'source':'JOB01 controlled host configuration; candidate context cloned from N01; not an assertion of an installed live account schedule','scheduledJobReviewEnabled':False,'comparisonMode':'matched-intent','proactiveEffortSavingsMeasured':False,'wakePrompt':'Scheduled job-review check. Review the released inbox updates under the configured read/analyze/save permissions.','permittedActions':['read','analyze','save'],'sendAllowed':False},'langfuseReceiptDirectory':str(root/'receipts/langfuse'),'model':'gpt-5.6-terra','reasoning':'medium','noParticipantRunYet':True,'conditionOrder':order}
  pricing=Path(cost_policy) if cost_policy else REPO/'examples/evals/cost-policy.json'
  runtime.cost.validate_policy(json.loads(pricing.read_text()))
  shutil.copyfile(pricing,root/'cost-policy.json')
@@ -116,7 +120,9 @@ def preflight(output):
  infrastructure()
  try:
   spec=json.loads((PRIVATE/'suite/scenario.json').read_text());first=spec['stages'][0]
-  for condition in ['baseline','lookout']:
+  order=runtime.CONFIG.get('conditionOrder',['baseline','lookout'])
+  if sorted(order)!=['baseline','lookout']:raise RuntimeError('Invalid frozen condition order')
+  for condition in order:
    run=output/condition;run.mkdir();inputs=run/'live-inputs';inputs.mkdir();out=run/'output';out.mkdir();sd=run/'stage-1';sd.mkdir()
    release(first,condition,inputs);session=None
    try:
@@ -164,10 +170,12 @@ def run_pair(pair_id):
  attempt=PRIVATE/'pilot-attempt.json'
  with attempt.open('x') as f:json.dump({'pairId':pair_id,'startedAt':time.time()},f)
  # One separately receipted account per pilot; no resets and no silent retries.
- results=[];infrastructure()
+ results=[];awake=runtime.ensure_awake();write(PRIVATE/'host-awake.json',awake);infrastructure()
  try:
   spec=json.loads((PRIVATE/'suite/scenario.json').read_text());manifest=json.loads((PRIVATE/'source-manifest.json').read_text())
-  for condition in ['baseline','lookout']:
+  order=runtime.CONFIG.get('conditionOrder',['baseline','lookout'])
+  if sorted(order)!=['baseline','lookout']:raise RuntimeError('Invalid frozen condition order')
+  for condition in order:
    run=PRIVATE/'runs'/f'JOB01-{condition}-{uuid.uuid4().hex[:8]}';run.mkdir(mode=0o700);inputs=run/'live-inputs';inputs.mkdir();out=run/'output';out.mkdir()
    meta={'version':spec['version'],'episodeId':run.name,'pairId':pair_id,'condition':condition,'pilot':True,'synthetic':False,'model':runtime.CONFIG['model'],'reasoning':runtime.CONFIG['reasoning'],'snapshotId':manifest['snapshotId'],'sourceHash':manifest['files']['jobs.json'],'startedAt':time.time(),'status':'running','checkpoints':[]};session=None;previous=None
    write(run/'run.json',meta)
@@ -220,8 +228,8 @@ def run_pair(pair_id):
  print(json.dumps({'graderHandoff':str(PRIVATE/'grading/handoff.json'),'pilotAttempts':results,'grading':'independent extraction and semantic review required; no participant rescue'}))
 
 if __name__=='__main__':
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=['prepare','preflight','run']);p.add_argument('--root',type=Path,required=True);p.add_argument('--n01',type=Path);p.add_argument('--reference',type=Path);p.add_argument('--output',type=Path);p.add_argument('--pair-id');p.add_argument('--cost-policy',type=Path);a=p.parse_args()
- if a.action=='prepare':prepare(a.root,a.n01,a.reference,a.cost_policy)
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=['prepare','preflight','run']);p.add_argument('--root',type=Path,required=True);p.add_argument('--n01',type=Path);p.add_argument('--reference',type=Path);p.add_argument('--output',type=Path);p.add_argument('--pair-id');p.add_argument('--cost-policy',type=Path);p.add_argument('--condition-order',default='baseline,lookout');a=p.parse_args()
+ if a.action=='prepare':prepare(a.root,a.n01,a.reference,a.cost_policy,a.condition_order)
  else:
   configure(a.root)
   if a.action=='preflight':preflight(a.output)

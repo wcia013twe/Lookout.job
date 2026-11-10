@@ -16,6 +16,8 @@ try{
   if(fs.existsSync(root+'/freeze.json'))throw Error('Never overwrite a frozen JOB02 setup');account(root);
   for(const d of ['runs','receipts'])fs.mkdirSync(root+'/'+d,{recursive:true,mode:0o700});
   const scenario=read(v.scenario||repo+'/examples/job02/scenario.json'),actor=read(v.actor||repo+'/examples/job02/actor.json'),runtime=read(v.runtime);
+  const order=runtime.conditionOrder||['baseline','lookout'];if(JSON.stringify([...order].sort())!==JSON.stringify(['baseline','lookout']))throw Error('Each condition required exactly once');
+  const canonical=read(root+'/canonical-context-clone.private.json');if(canonical.status!=='passed'||canonical.nativeReadbackVerified!==true)throw Error('Canonical profile prerequisites unverified');
   if(runtime.model!==scenario.model||runtime.reasoning!==scenario.reasoning||runtime.networkPolicy!=='JOB01-isolated-inference'||!runtime.imageId)throw Error('Pinned runtime/explicit network policy required');
   for(const name of ['profile.md','resume.pdf']){const to=root+'/candidate/'+name;fs.mkdirSync(path.dirname(to),{recursive:true,mode:0o700});fs.copyFileSync(path.resolve(v.candidate,name),to);fs.chmodSync(to,0o600);}
   const fullSettings=settingsForParticipant(read(root+'/cloned-context.private.json').settings);
@@ -25,7 +27,7 @@ try{
   write(root+'/suite/scenario.json',scenario);write(root+'/suite/actor.private.json',actor);write(root+'/runtime.private.json',runtime);write(root+'/reference.private.json',read(v.reference));
   fs.copyFileSync(lib+'/grader-instructions.md',root+'/suite/grader-instructions.md');
   const inputs={};for(const folder of [root+'/candidate',root+'/suite'])for(const p of Object.keys(files(folder)))inputs[path.relative(root,path.join(folder,p))]=digest(path.join(folder,p));
-  for(const p of ['owned-targets.private.json','account.private.json','runtime.private.json','reference.private.json','cost-policy.json'])inputs[p]=digest(root+'/'+p);
+  for(const p of ['canonical-context-clone.private.json','owned-targets.private.json','account.private.json','runtime.private.json','reference.private.json','cost-policy.json'])inputs[p]=digest(root+'/'+p);
   for(const folder of [lib,repo+'/scripts/n01',repo+'/scripts/job01',repo+'/scripts/evals',repo+'/scripts/communication'])for(const p of fs.readdirSync(folder))if(/\.(mjs|py|md)$/.test(p))inputs[path.relative(root,path.join(folder,p))]=digest(path.join(folder,p));
   for(const p of ['lib/search/documents.mjs','lib/search-profile.mjs','lib/search/discovery-config.mjs','lib/search/default-portals.json','lib/search/title-aliases.mjs','lib/job-assessment.mjs','lib/application-preference-fields.mjs','supabase/functions/agent-gateway/job-assessment.mjs'])inputs[path.relative(root,repo+'/'+p)]=digest(repo+'/'+p);
   inputs[path.relative(root,repo+'/package-lock.json')]=digest(repo+'/package-lock.json');
