@@ -1405,6 +1405,9 @@ repair remains with the owning chat. No product or participant run was changed.
 The user has selected EVAL-01 through EVAL-03 for each communication case, with alternating condition order. Both participant and independent grader must be subscription-backed `gpt-5.6-terra` with medium reasoning; no model substitution. Existing historical pilots/diagnostics remain separate. Use separate dedicated per-condition owners/roots so native audit history is preserved when Lookout runs first. Task facts and rubric stay fixed; input parity permits only explicit ownership-ID remapping. Quality misses remain outcomes, not triggers for replacement runs. Execution/containment or validity failures retain their evidence and are disclosed.
 
 Before this series, COM04 adopts the already-tested shared bounded host-stop behavior (COM4-stream-v6/grade-v4); COM03 remains v7/grade-v4. Ten focused checks and eight runtime tests pass. No product, task-prompt or rubric tuning is included. New frozen roots, live readiness and the three evaluations remain pending the serialized host queue; an existing active pilot is never relabeled as EVAL. The current chat orchestrates existing commands directly and reuses the shared read-only Terra grader executor.
+### Shared subscription independent grader executor
+
+`scripts/evals/subscription_grader.py` provides one read-only independent grading invocation using the existing pinned subscription runtime, exact gpt-5.6-terra/medium settings, separate output JSON, shared bounded stop/timing and observed-model validation. Case owners directly invoke it and apply their frozen deterministic grader afterward. Four mocked boundary checks pass; live inference/model access is not established by those checks. No scheduler, product writer, model substitution or participant orchestration is added.
 
 ### JOB03/JOB04 planned EVAL-01–03 freeze
 

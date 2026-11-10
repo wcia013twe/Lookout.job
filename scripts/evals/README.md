@@ -41,3 +41,11 @@ reuse; avoid a registry, plugin system or new workflow layer for its own sake.
 
 Verification: `node --test tests/eval-transport.test.mjs` uses fictional local
 workers and mocked preparation dependencies, without accounts or inference.
+
+## Exact subscription-backed independent grading
+
+`python3 scripts/evals/subscription_grader.py --evidence <sanitized-bundle-dir> --instructions <frozen-review-instructions.md> --output <new-grading-attempt-dir> --seconds <declared-budget> --expected-image-id <frozen-image-id>`
+
+The owning chat invokes this once per independent review; it is not an orchestrator. It uses the existing `lookout-benchmark:0.164.0` container, subscription login, shared bounded stop/timing helpers and usage reader. The model is fixed to `gpt-5.6-terra` with `model_reasoning_effort=medium`; there is no override or substitution. Evidence is mounted at `/evidence` read-only, review output at `/workspace/output`, and the grader must write `review.json`. No product connection, account credentials, MCP server, host settings/history or participant session is supplied. Grading instructions go through stdin; the caller supplies the frozen rubric/template and local evidence bundle. Credential/private configuration files and symlinks in that bundle are rejected.
+
+`grader-run.json` binds executor/instructions/evidence/image hashes, command, declared budget, timing, requested settings, observed model, usage, cleanup and output hash. A missing/different observed model, invalid timing, malformed/missing JSON, timeout or unconfirmed cleanup fails loudly. Reasoning effort is command evidence; the provider does not separately attest effort here. This executor only obtains a JSON review: the case's frozen deterministic grader must still validate its schema, evidence references and digest before accepting/exporting scores. Preserve failures; never correct semantic judgments with a different model. Output JSON and traces stay local. Live execution is a separate host-serialized check; unit tests use mocked Docker and never infer actual model access.
