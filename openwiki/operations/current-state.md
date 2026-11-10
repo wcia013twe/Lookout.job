@@ -1399,3 +1399,16 @@ JOB02 selected-profile draft calls reproduce a pre-writer P0002 rejection. Histo
 clearance/grades remain intact, but native-workflow attribution requires this setup
 caveat. See docs/job-controlled-pilot-results.md; prospective shared-clone/lifecycle
 repair remains with the owning chat. No product or participant run was changed.
+
+
+### JOB03/JOB04 planned EVAL-01–03 freeze
+
+Latest authorization supersedes four repeats with three paired evaluations per
+case in AB/BA/AB order. Both participant and grader must be subscription
+ gpt-5.6-terra medium. Scenarios/rubrics stay unchanged. New owner setup reuses the
+shared canonical-profile serializer/readback helper; personal-settings equality
+alone is not full native context parity. Counterbalanced setup preserves native
+state when baseline runs second. Source checks pass; actual new canonical gates
+await the shared-host slot after JOB01/02. No new EVAL participant has run and
+historical pilots remain separate. Existing shared serial_pair and the shared
+read-only grader executor are reused; no new orchestrator service is introduced.

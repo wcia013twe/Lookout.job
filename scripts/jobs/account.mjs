@@ -6,6 +6,7 @@ import {execFileSync} from 'node:child_process';
 import {randomUUID,randomBytes,createHash} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import {createClient} from '@supabase/supabase-js';
+import {cloneCanonicalProfiles,verifyCanonicalProfiles} from '../evals/canonical-search-context.mjs';
 import {isolatedEndpoint,isolatedSql,isScopeDenial,isOwnershipDenial} from './isolated_endpoint.mjs';
 const [operation,root,...args]=process.argv.slice(2);
 const read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
@@ -51,10 +52,16 @@ if(operation==='create'){
   for(const r of expected.resumes){ok(await db.storage.from('resumes').upload(r.object_path,pdf,{contentType:'application/pdf'}));ok(await db.from('resumes').insert(r));}
   ok(await db.from('preferences').upsert({...expected.preferences,user_id:user.id}));
  }
+ const canonicalDb=endpoint?{from(table){
+  if(!['search_documents','search_document_revisions'].includes(table))throw Error('Canonical fixture table required');
+  return {select(fields){if(fields!=='user_id,kind,id,version,content,projection')throw Error('Canonical fixture fields required');return {async eq(field,value){if(field!=='user_id'||value!==user.id)throw Error('Canonical fixture owner mismatch');return {data:JSON.parse(sql(`SELECT coalesce(jsonb_agg(jsonb_build_object('user_id',user_id,'kind',kind,'id',id,'version',version,'content',content,'projection',projection)),'[]'::jsonb) FROM public.${table} WHERE user_id=${q(user.id)}::uuid;`).trim())};}};},async insert(rows){for(const row of rows){if(row.user_id!==user.id)throw Error('Canonical insert owner mismatch');sql(`INSERT INTO public.${table}(user_id,kind,id,version,content,projection) SELECT user_id,kind,id,version,content,projection FROM jsonb_populate_record(NULL::public.${table},${q(JSON.stringify(row))}::jsonb);`);}return {data:null};}};
+ }}:db;
+ const canonicalClone=await cloneCanonicalProfiles(canonicalDb,expected,user.id);
  const credential=async(name,scopes)=>{const token='jb_agent_'+randomBytes(32).toString('hex'),payload={name,tokenHash:hash(token),expiresInDays:endpoint?90:7,scopes};if(endpoint)sql(`SELECT public.manage_agent_connection(${q(user.id)}::uuid,'connections.issue',${q(JSON.stringify(payload))}::jsonb);`);else ok(await db.rpc('manage_agent_connection',{owner_id:user.id,operation:'connections.issue',payload}));return token;};
  a.scopes=['workspace:read','drafts:write','activity:write','tracking:write','answers:write'];a.token=await credential(caseId+' participant',a.scopes);a.idMapping=Object.fromEntries(mapping);write(path.join(root,'account.private.json'),a);
  const readToken=await credential(caseId+' terminal verification',['workspace:read']);write(path.join(root,'grader.private.json'),{taskId:caseId,userId:user.id,mcpUrl:a.mcpUrl,readToken,scopes:['workspace:read']});
  const actual=await mcp(a,'read_personal_context',{},true),normalize=x=>({...x,resumes:[...x.resumes].sort((a,b)=>a.id.localeCompare(b.id))});
+ const canonicalReadback=verifyCanonicalProfiles(expected,await mcp(a,'read_search_context',{},true));write(path.join(root,'canonical-context.private.json'),{...canonicalClone,...canonicalReadback});
  if(!isDeepStrictEqual(normalize(actual.settings),normalize(expected)))throw Error('Candidate differs beyond ownership remapping');
  if(!endpoint)for(const r of expected.resumes){const bytes=ok(await db.storage.from('resumes').download(r.object_path));if(hash(Buffer.from(await bytes.arrayBuffer()))!==hash(pdf))throw Error('Resume hash mismatch');}
  if(endpoint)write(path.join(root,'resume-parity.json'),{inputPdfSha256:hash(pdf),nativeMetadataHashes:expected.resumes.map(r=>r.content_hash),remoteStorageVerified:false,bothParticipantsReceiveExactLocalPdf:true});
@@ -63,7 +70,7 @@ if(operation==='create'){
 }else{
  const a=read(path.join(root,'account.private.json')),g=guard(a),uid=q(a.userId)+'::uuid';
  if(operation==='snapshot'){
-  const tables=['profiles','preferences','resumes','answer_library','applications','application_milestones','activity_events','approvals','career_artifacts','career_artifact_revisions','preparation_plans'];
+  const tables=['profiles','preferences','resumes','answer_library','applications','application_milestones','activity_events','approvals','career_artifacts','career_artifact_revisions','preparation_plans','search_documents','search_document_revisions'];
   const selects=tables.map(t=>`${q(t)},(SELECT coalesce(jsonb_agg(to_jsonb(x)),'[]'::jsonb) FROM public.${t} x WHERE ${t==='career_artifact_revisions'?`x.artifact_id IN (SELECT id FROM public.career_artifacts WHERE user_id=${uid})`:`x.user_id=${uid}`})`);
   console.log(sql(g+`SELECT jsonb_build_object('capturedAt',now(),'ownerId',${uid},'tables',jsonb_build_object(${selects}));`).trim());
  }else if(operation==='seed'){

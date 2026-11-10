@@ -287,3 +287,35 @@
   unpriced cost, shared-host load and historical timeout causality remain limited.
   Later participant experiments need separate authorization and a current freeze;
   this repair/audit does not invent a replacement experiment series.
+
+
+## EVAL-01–03 initial freeze preparation (no participant execution)
+
+- Latest authorization is three planned paired evaluations per case, superseding
+  the intervening four-repeat request. EVAL-01/02/03 use AB/BA/AB order and the
+  existing scenario/rubric. Historical and diagnostic roots remain separate.
+  Participants AND independent graders require subscription gpt-5.6-terra medium;
+  the prior historical 6.1 grading exception does not apply to this series.
+- Integrated shared canonical-profile helper from34f7869b. JOB clone receipts
+  previously proved personal settings only. New fictional owners now materialize
+  canonical profile documents/revisions using the existing product serializer and
+  verify native read_search_context. No rules/portals or candidate facts invented.
+  Added frozen canonical receipt and gate; live verification awaits the host slot.
+- Source audit: retained JOB03/04 calls do not select searchProfileId; core tracking,
+  artifact and preparation routes do not require canonical search documents.
+  JOB04's five recorded milestone writes returned JSON-RPC invalid-argument errors,
+  not evidence of the JOB02 selected-profile P0002. Scores alone establish no defect.
+  Still, canonical setup is necessary for the full granted native surface before
+  claiming prospective context equivalence. No historical owner was changed.
+- Added per-freeze repetition/order provenance using shared condition_order and
+  checked alternating coordinator execution. Baseline setup no longer reseeds the
+  native owner, preserving Lookout state when Lookout runs first. Prompts, rubrics,
+  budgets, product behavior and model remain unchanged.
+- Source checks:28 JOB Python and42 Node checks plus catalog158 pass. Fresh native
+  canonical gates remain pending the shared-host handoff; no Docker work or model
+  execution occurred while COM03 PILOT09 owns the host. Shared serial_pair will
+  cover each planned case; no extra orchestrator or scheduling machinery is added.
+- Queue: active COM03, COM01/02, JOB01/02, then JOB03/04, then COM03/04 series.
+  Cases remain planned until the required slot/readiness exists. Quality failures
+  are results, never reasons to replace attempts. Exact-model grading will use the
+  shared read-only executor being supplied by COM01/02; no substitute model.
