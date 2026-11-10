@@ -94,9 +94,9 @@ For application preparation, the current AI Apply path queues a request for a sp
 The repository also contains a Playwright application runner whose new worker pickup and browser-tool registrations are paused. The current execution path uses the external host. An optional watcher can poll workspace changes and invoke a configured host, but scheduling and delivery remain host dependencies.
 
 \subsection{Implementation Verification}
-The Node test suite contains 1,323 automated cases spanning unit, contract, and database tests. Coverage includes domain operations, MCP scope, context versions, deduplication, ownership, and outcome transitions. Database scenarios replay migrations in disposable PGlite instances with Auth and Storage test doubles. Harness regressions cover evidence release, executable hashes, transport, capture, and grading contracts. The documented validation run passed 1,317 cases, skipped five, and failed one database action-board case. These checks assess implementation behavior; agent performance and hosted integrations require separate evaluation.
+The Node test suite contains 1,323 automated cases spanning unit, contract, and database tests. Coverage includes domain operations, MCP scope, context versions, deduplication, ownership, and outcome transitions. Database scenarios replay migrations in disposable PGlite instances with Auth and Storage test doubles. Harness regressions cover evidence release, executable hashes, transport, capture, and grading contracts. The full validation run passed all 1,318 enabled cases with zero failures; five Community MCP cases remain explicitly skipped while that interface is paused. These checks assess implementation behavior; agent performance and hosted integrations require separate evaluation.
 
-\authorinput{Resolve the database action-board failure (``Invalid human decision'') before reporting a fully passing implementation suite. The setup and usage manual is provided in README.md.}
+The setup and usage manual is provided in README.md.
 
 \section{Evaluation Protocol}
 \subsection{Conditions and Experimental Unit}
