@@ -1399,3 +1399,7 @@ JOB02 selected-profile draft calls reproduce a pre-writer P0002 rejection. Histo
 clearance/grades remain intact, but native-workflow attribution requires this setup
 caveat. See docs/job-controlled-pilot-results.md; prospective shared-clone/lifecycle
 repair remains with the owning chat. No product or participant run was changed.
+
+### Shared subscription independent grader executor
+
+`scripts/evals/subscription_grader.py` provides one read-only independent grading invocation using the existing pinned subscription runtime, exact gpt-5.6-terra/medium settings, separate output JSON, shared bounded stop/timing and observed-model validation. Case owners directly invoke it and apply their frozen deterministic grader afterward. Four mocked boundary checks pass; live inference/model access is not established by those checks. No scheduler, product writer, model substitution or participant orchestration is added.
