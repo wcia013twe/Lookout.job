@@ -113,7 +113,7 @@ test('fictional admin demo edits profile, discovers and reads a gated brief, rej
 });
 test('startup explains executable discovery and preserves the small permanent contract',()=>{
  assert.match(bootstrapInstructions,/discover_tools/);assert.match(bootstrapInstructions,/call_discovered_tool/);
- assert.equal(contract.developerVersion,157);
+ assert.equal(contract.developerVersion,158);
  assert(Buffer.byteLength(JSON.stringify(contract))+Buffer.byteLength(bootstrapInstructions)<=6000);
  assert.equal(ACCESS_TOOLS.length,2);
 });

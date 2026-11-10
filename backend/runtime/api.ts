@@ -8,8 +8,8 @@ import {agentPackageResponse} from './agent-package.ts';
 import type {Payload} from './types.ts';
 
 type Dispatch = (token: string, operation: string, payload: Payload) => Promise<Reply>;
-export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]'],allowedOrigins=['http://localhost:3000','http://127.0.0.1:3000'],parseHuman,readCount,readPackage=agentPackageResponse,executionTools=[]}: {dispatch: Dispatch; allowedHosts?: string[]; allowedOrigins?: string[]; parseHuman?: (token:string,payload:Payload)=>Promise<any>; readCount?: (watchId:string)=>Promise<any>; readPackage?: (request:Request)=>Promise<Response>; executionTools?: any[]}) {
-  const mcp=createHandler(dispatch,allowedOrigins,[RESUME_PARSE_TOOL,...executionTools]);
+export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]'],allowedOrigins=['http://localhost:3000','http://127.0.0.1:3000'],parseHuman,readCount,readPackage=agentPackageResponse,executionTools=[],events}: {dispatch: Dispatch; allowedHosts?: string[]; allowedOrigins?: string[]; parseHuman?: (token:string,payload:Payload)=>Promise<any>; readCount?: (watchId:string)=>Promise<any>; readPackage?: (request:Request)=>Promise<Response>; executionTools?: any[]; events?: (token:string,method:string,params:any)=>Promise<any>}) {
+  const mcp=createHandler(dispatch,allowedOrigins,[RESUME_PARSE_TOOL,...executionTools],undefined,events);
   const server=createServer(async (req,res)=>{
     const json=(status:number,data: unknown)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
     let url:URL;
