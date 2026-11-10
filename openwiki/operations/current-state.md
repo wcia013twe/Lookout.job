@@ -1630,9 +1630,9 @@ Webhook receipt does not acknowledge work or authorize submission. See
 
 Local aggregate validation passed 1,352 tests with five skipped and zero failures;
 the production static build, runtime/intelligence typechecks and catalog validation
-also passed. No draft PR, exact-commit CI, merge, deployment or live dot subscription
-has been verified. Draft PR creation was denied by automatic approval review for
-missing explicit PR authorization. Production at
+also passed. Draft [PR #91](https://github.com/wcia013twe/Lookout.job/pull/91) is open after
+explicit user approval resolved the initial PR-creation denial. Exact-commit CI,
+merge, deployment and a live dot subscription remain unverified. Production at
 `https://34-148-155-27.sslip.io/mcp` retains its opaque custom bearer authentication,
 which is not supported by the documented ChatGPT plugin authentication flow. A
 host-compatible authentication decision and a verified subscription/delivery/dot run
