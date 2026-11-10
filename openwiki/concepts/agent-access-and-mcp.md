@@ -195,3 +195,22 @@ unavailable assignment remains visible with its actual reason so the person can
 remove or replace it. This is presentation filtering, not credential deletion or
 a permission change. Website/MCP schedule saves keep their existing version and
 ownership checks. The detached connection demo includes revoked and expired history.
+
+
+### MCP Events alternative to host polling (source update)
+
+The Node `/mcp` endpoint optionally enables `events/list`, `events/subscribe` and
+`events/unsubscribe`; the Edge endpoint does not advertise these methods. The
+`lookout.work_available` event requires existing `workspace:read` and `activity:write`
+scopes and exposes only a change ID and kind. Private subscriptions bind to the
+authenticated connection, with signed challenge verification and rotation-aware
+Standard Webhooks signatures. Delivery uses the existing workspace invalidation
+channel, a transactional private outbox, fenced leases and stable event IDs.
+The consumer still reads current records and acknowledges handled changes through
+the existing tools; event receipt grants no authority.
+
+See [the implementation and activation limits](../../docs/mcp-events.md) and
+[current verification state](../operations/current-state.md#mcp-events-source-support-not-activated).
+Code support does not establish a cloud connection: the existing opaque bearer
+authentication remains unchanged and requires a separately authorized compatible
+connection path before ChatGPT can subscribe.

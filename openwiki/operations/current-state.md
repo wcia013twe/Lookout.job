@@ -1612,3 +1612,29 @@ This source change requires `20261110152808_workspace_incremental_sync.sql` and
 the matching frontend release. It has not been deployed or measured against
 hosted CPU/IO. Auxiliary views still use their owned projection readers when
 relevant data changes; the separate shared Circle feed is outside this contract.
+
+
+### MCP Events source support (not activated)
+
+The existing Node API now advertises MCP Events and accepts scoped subscription
+create/refresh/remove requests for `lookout.work_available`. New system Muse feed
+rows enqueue private durable deliveries; the existing `workspace_changes` Realtime
+notification wakes the API without a new polling worker or publication change.
+Signed callback verification, public-address socket pinning, expiration/revocation
+checks, leases and bounded retries preserve the existing authority boundary.
+Webhook receipt does not acknowledge work or authorize submission. See
+[the protocol and activation contract](../../docs/mcp-events.md),
+[Node event implementation](../../backend/runtime/mcp-events.mjs),
+[outbox migration](../../supabase/migrations/20261110165522_mcp_events.sql), and
+[protocol/database tests](../../tests/mcp-events.test.mjs).
+
+Local aggregate validation passed 1,352 tests with five skipped and zero failures;
+the production static build, runtime/intelligence typechecks and catalog validation
+also passed. No draft PR, exact-commit CI, merge, deployment or live dot subscription
+has been verified. Draft PR creation was denied by automatic approval review for
+missing explicit PR authorization. Production at
+`https://34-148-155-27.sslip.io/mcp` retains its opaque custom bearer authentication,
+which is not supported by the documented ChatGPT plugin authentication flow. A
+host-compatible authentication decision and a verified subscription/delivery/dot run
+are still required before retiring existing watchers. No credentials or permissions
+were changed.
