@@ -94,7 +94,7 @@ Deno.serve(withGatewayCors(async request => {
       return respond(result.status===200 ? {data:result.data} : {error:result.error},result.status);
     }
     if (operation.startsWith('connections.')) {
-      if (bearer.startsWith('jb_agent_')) return respond({ error: 'Human sign-in required' }, 403);
+      if (/^(?:jb_agent_[a-f0-9]{64}|[A-Za-z0-9_-]{43})$/.test(bearer)) return respond({ error: 'Human sign-in required' }, 403);
       const { data: { user }, error } = await admin.auth.getUser(bearer);
       if (error || !user || user.is_anonymous) return respond({ error: 'Sign in required' }, 401);
       const token = operation === 'connections.issue' ? generateToken() : null;
@@ -107,7 +107,7 @@ Deno.serve(withGatewayCors(async request => {
       if (dbError) return respond({ error: dbError.code==='40001' ? 'Permissions changed elsewhere. Cancel and reopen Edit permissions before retrying.' : 'Connection request rejected' }, dbError.code==='40001'?409:400);
       return respond(token ? { connection: data, token } : { data, ...(operation === 'connections.list' ? {supportedScopes: SCOPES} : {}) });
     }
-    if (!/^jb_agent_[a-f0-9]{64}$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
+    if (!/^(?:jb_agent_[a-f0-9]{64}|[A-Za-z0-9_-]{43})$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
     if(['search.filters.inspect','search.leads.submit','search.source.leads','search.discoveries.screen'].includes(operation)) {
       const auth=await admin.rpc('agent_dispatch',{credential_hash:await hashToken(bearer),operation:'credentials.verify',payload:{}});
       if(auth.error){const [status,message]=databaseFailure(auth.error);return respond({error:message},status);}

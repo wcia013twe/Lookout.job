@@ -15,7 +15,7 @@ export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume}: {rpc
   const gateway=new URL('/functions/v1/agent-gateway',supabaseUrl);
   if(!['https:','http:'].includes(gateway.protocol) || (gateway.protocol==='http:' && !['127.0.0.1','localhost','kong','host.docker.internal'].includes(gateway.hostname))) throw Error('Use HTTPS Supabase or an explicit local development host');
   const dispatch = async (token: string, operation: string, payload: Payload): Promise<Reply> => {
-    if(!/^jb_agent_[a-f0-9]{64}$/.test(token))return {status:401,error:'Agent credential required'};
+    if(!/^(?:jb_agent_[a-f0-9]{64}|[A-Za-z0-9_-]{43})$/.test(token))return {status:401,error:'Agent credential required'};
     try {validateRequest({operation,payload});}catch(error){return {status:400,error:validationMessage(error)};}
     const service=operationService(operation);
     if(!service)return {status:400,error:'This tool has no route in the running API. Update the backend before retrying; changing the content will not fix it.'};

@@ -1,4 +1,7 @@
-# MCP host authentication: preparation only
+# Direct-provider MCP authentication research
+
+The selected source implementation is now the [opaque-token host bridge](mcp-host-oauth.md).
+This document preserves rejected direct-provider research; its hook is never activated.
 
 Decision, 2026-11-10: do not connect ChatGPT to ordinary Supabase user tokens.
 No OAuth route, client, hook, role, grant or connection is activated by this document.

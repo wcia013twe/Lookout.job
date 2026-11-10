@@ -1638,3 +1638,14 @@ which is not supported by the documented ChatGPT plugin authentication flow. A
 host-compatible authentication decision and a verified subscription/delivery/dot run
 are still required before retiring existing watchers. No credentials or permissions
 were changed.
+
+### Host OAuth bridge source (not activated)
+
+The selected source path now uses `oidc-provider` for fixed-client PKCE and opaque
+host tokens, with existing Supabase human sign-in confined to Lookout consent.
+Private durable grants bind one reviewed connection's owner, scopes and expiry;
+scoped dispatch and event delivery recheck that authority. Both runtime issuance
+and database policy default disabled. [Setup and rollback requirements](../../docs/mcp-host-oauth.md)
+name the keys, provided-client configuration and explicit persistent grant still
+requiring action-time approval. No host connection, grant or wakeup is established
+by source tests. The older direct-Supabase-hook experiment remains inactive research.
