@@ -108,3 +108,9 @@ PILOT07 completed but does not clear: its allowlist hid `read_application_timeli
 ### Bounded host-failure handling
 
 PILOT08 exposed an unresponsive Docker daemon and a deadline-handler failure after seven completed baseline stages. COM03 v7 bounds the Docker kill and local reader teardown, records unconfirmed container termination independently, preserves partial output before native capture, closes transport even on cleanup error, and halts the pair before another participant or grading. Focused fictional-process regressions pass; live host recovery and a new frozen preflight remain required. PILOT08 evidence is preserved without quality inference.
+
+### COM03 recovery verification (no inference)
+
+Coordinated Docker recovery is complete. PILOT08's exact container is independently confirmed exited (255), with a separate shutdown receipt; its original failed evidence remains unchanged. A fresh fictional owner and `com3-native-v7-readiness` freeze at source `53fbef83` passed actual no-inference preflight: both subscription containers, native startup/discovery/wrapper isolation, complete rolled-back reset, contact, exact seed, audit and timeline write/readback probes. Frozen source integrity was rechecked. Six Node COM03/transport checks (including sixteen Python COM03 checks) and eight shared-runtime tests pass. No active career-session containers remained when the Docker verification slot was released to JOB03/04.
+
+No new participant pair or product change was authorized in this bounded pass. COM03 still needs a prospective paired trial and independent review; COM04/PILOT06 stays cleared. The subsequently landed shared bridge teardown repair (`4cf6e44b`, implementation `ec91e19c`) does not rewrite this freeze or establish the cause of Docker's outage. Future execution preparation must pull and re-freeze that helper; the completed `53fbef83` preflight remains historical readiness evidence.
