@@ -83,9 +83,10 @@ Consider an application with an unanswered relocation question. The agent saves 
 
 
 \section{Implementation}
-\subsection{Services and Execution}
-The web interface uses Next.js and React. Supabase provides authentication, PostgreSQL storage for workflow records, and private object storage for resumes and generated documents. Supabase Edge Functions and an optional Node.js API implement backend operations. The MCP transport validates protocol requests and forwards authenticated operations to the gateway, where scope, ownership, and revision constraints are enforced.
+\subsection{Technology Stack}
+Lookout uses Next.js, React, and Tailwind for the web interface, Supabase for authentication, PostgreSQL records, and private object storage, and Edge Functions and Node.js for backend operations. Agents connect through authenticated MCP endpoints. The optional GCP configuration targets a Docker-based API and worker deployment on a Compute Engine VM behind Caddy; GitHub Pages serves the static frontend. Langfuse records execution traces and evaluation summaries~\cite{langfuse}; grading evidence remains local. These services support the shared workspace and evaluation protocol rather than supply the agent's reasoning or scheduling.
 
+\subsection{Execution and Recovery}
 Bounded Node.js workers execute supported discovery tasks. Search jobs use execution leases and fenced references to temporary snapshots on worker storage. Recovery therefore depends on both durable job metadata and the availability of those snapshots. The database does not contain a complete checkpoint of worker execution.
 
 For application preparation, the current AI Apply path queues a request for a specific agent connection and emits a change-feed pointer. The external agent claims the request, retrieves saved materials, and uses its host's browser capabilities. Pickup and outcome reporting check current job and application versions. A running request has no timed takeover, so an interruption requires reconciliation before another executor proceeds.
@@ -93,20 +94,9 @@ For application preparation, the current AI Apply path queues a request for a sp
 The repository also contains a Playwright application runner whose new worker pickup and browser-tool registrations are paused. The current execution path uses the external host. An optional watcher can poll workspace changes and invoke a configured host, but scheduling and delivery remain host dependencies.
 
 \subsection{Implementation Verification}
-Node unit and contract tests cover domain operations, MCP schemas and scope, context versions, deduplication, and outcome semantics. Database scenarios replay the migration chain in disposable PGlite databases with Auth and Storage test doubles. Ordinary scenarios receive independent copies of a migrated baseline, while migration-upgrade tests replay their own histories. This arrangement tests ownership and transition behavior without modifying account data.
+The Node test suite contains 1,323 automated cases spanning unit, contract, and database tests. Coverage includes domain operations, MCP scope, context versions, deduplication, ownership, and outcome transitions. Database scenarios replay migrations in disposable PGlite instances with Auth and Storage test doubles. Harness regressions cover evidence release, executable hashes, transport, capture, and grading contracts. The documented validation run passed 1,317 cases, skipped five, and failed one database action-board case. These checks assess implementation behavior; agent performance and hosted integrations require separate evaluation.
 
-Harness regressions cover evidence release, executable hashes, transport, timing, capture, and grader contracts. Python checks exercise case-specific runtime behavior. These tests establish properties of the implementation and measurement code; agent performance requires separate participant runs. Hosted authentication, network behavior, and external execution also require environment-specific verification.
-
-The local setup installs locked root and frontend dependencies. \texttt{npm test} runs the implementation suite, \texttt{npm run validate:data} checks catalog records, and the frontend build is performed separately. With Docker and the Supabase CLI available, \texttt{make dev} starts the local stack. The detached \texttt{?demo=1} interface uses fictional, resettable memory stores for demonstration without real account writes.
-
-\subsection{Deployment Configuration}
-The GCP configuration provisions a single Ubuntu 24.04 Compute Engine VM with a dedicated network, subnet, and static IP. Its default configuration uses an \texttt{e2-medium} instance and a 30\,GB balanced disk. HTTP and HTTPS are public; SSH is restricted to the Identity-Aware Proxy address range. OS Login and Secure Boot are enabled, and the VM service account has no project roles.
-
-Docker Compose defines separate API, worker, and Caddy TLS-proxy services. A named volume stores worker search snapshots and is mounted read-only by the API. Supabase retains authentication, database, and object storage responsibilities, while GitHub Pages serves the static frontend export. Deployment packages an allowlist of committed runtime files and transfers server credentials separately over IAP/SSH to a root-only environment file. The deployment validator requires browser submissions to remain disabled.
-
-This configuration documents the deployment architecture. Claims about hosted availability require health checks, authenticated MCP verification, and execution receipts from the deployed revision.
-
-\authorinput{Provide the deployed revision and verification receipts if a live GCP deployment is reported. Add the code-archive README and narrated-video links, together with clean-machine reproduction checks.}
+\authorinput{Resolve the database action-board failure (``Invalid human decision'') before reporting a fully passing implementation suite. The setup and usage manual is provided in README.md.}
 
 \section{Evaluation Protocol}
 \subsection{Conditions and Experimental Unit}
@@ -156,12 +146,8 @@ The protocol distinguishes prescribed initiations, necessary information request
 \paragraph{Usage and cost.}
 Per-turn structural counter deltas capture usage across resumed sessions. Cached input is included within total input, and reasoning output within output. Coverage is recorded as complete, partial, or unknown. Model-cost estimates require a frozen rate with a source and date for the exact model. Tool and infrastructure costs require attributable receipts. Unavailable costs remain null; token counts alone do not establish subscription charges. Quality, time, interaction counts, and cost are analyzed separately.
 
-\subsection{Instrumentation and Evidence Management}
-Langfuse stores observations and evaluation scores~\cite{langfuse}, while local evidence supplies the grading record. Optional backend instrumentation uses the pinned 6.1.1 SDK packages to trace tool dispatch and worker execution. A separate exporter imports terminal agent runs and associates recorded tool observations with their turns. The exporter preserves the available observation boundaries without reconstructing unobserved model calls. An ingestion failure is handled independently of participant execution and cannot trigger a repeated domain action.
-
-The common result schema records campaign, suite, case version, condition, repetition, model, harness, grader, episode identifier, and evidence digest. Each episode corresponds to one summary experiment item linked to its detailed traces. Success and normalized quality are supplied after independent review; unreviewed values remain null. Default exports contain structural identifiers, statuses, timing, and scores. Candidate profiles, resumes, messages, and native snapshots remain local.
-
-Ingestion receipts distinguish server acknowledgement from verified read-back. Case and repetition filters display both conditions, while campaign and version labels disambiguate repeated run numbers. Measured, pilot, and synthetic records occupy separate environments. This separation preserves the provenance of reported comparisons without treating unpopulated measured views as zero-valued results.
+\subsection{Evidence Capture}
+Each episode retains checkpoint artifacts, action traces, execution metadata, and an evidence digest. These records bind the observations to the case version, condition, model, harness, and grader. Independent review supplies success and quality scores after execution. Reporting exports contain structural metadata and scores; candidate documents and private messages remain local. Failed capture leaves the affected outcome unverified, and an export failure cannot trigger a participant rerun. Pilot, synthetic, and measured records remain separate.
 
 \subsection{Planned Analysis and Validity}
 The measured campaign will repeat reset episodes and alternate or randomize condition order. Analysis will report per-case outcomes and paired differences, with uncertainty estimated at the case level. Repeated reliability will distinguish success across all trials ($\mathrm{pass}^{k}$) from success in at least one attempt (pass@$k$). Proposed ablations vary schema-loading strategy, recovery from files or current domain records, and retained context or version-triggered refresh. These comparisons address the contribution of individual mechanisms beyond the complete-system comparison.
