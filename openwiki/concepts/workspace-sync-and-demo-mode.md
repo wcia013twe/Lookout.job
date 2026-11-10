@@ -184,9 +184,10 @@ than reloading each batch separately. Posting evidence is deduplicated across al
 batches and fetched in chunks of 50 unique job IDs, with 200-row pagination so a
 job with many observations cannot hide another job. The latest observation wins.
 An in-memory cache is scoped to the Supabase client and current owner, retains
-results (including missing evidence) for 60 seconds, shares concurrent reads, and
-evicts failed reads. Evidence may therefore lag by up to one minute on the next
-refresh; it is informational and grants no application/submission authority.
+results (including missing evidence) until workspace notifications, reconnect,
+account changes, tab focus/visibility, online recovery or explicit refresh invalidate
+it. Concurrent reads share work; failed reads are evicted. No timer or expiry
+policy is used. Evidence is informational and grants no submission authority.
 Notification bursts use a 100 ms refresh debounce. Existing account-generation,
 RLS, write/version checks and detached demo boundaries remain authoritative.
 No new MCP operation or database schema is introduced; existing scoped agent

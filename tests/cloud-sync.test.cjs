@@ -39,7 +39,7 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
    if(operation==='upsert'){writes++;if(gate){const pending=gate;gate=null;await pending.promise;}if(fail){fail=false;return {error:Error('Offline')};}db[table]=[clone(fields)];return {data:clone(fields)};}
    if(table==='profiles' && readGate){const pending=readGate;readGate=null;await pending.promise;}
    if(table==='profiles' && failRead){failRead=false;return {error:Error('Offline')};}
-   const rows=(db[table]||[]).filter(row=>filters.every(([key,value])=>row[key]===value)).slice(start,end+1);return {data:single?rows[0]:clone(rows)};
+   const rows=(db[table]||[]).filter(row=>filters.every(([key,value])=>(key==='search_listings.user_id'?row.user_id:row[key])===value)).slice(start,end+1);return {data:single?rows[0]:clone(rows)};
   })().then(resolve,reject);}};return query;
  }};
  global.JB={store,auth:{get userId(){return owner;}},catalogReady:Promise.resolve(),setBatch(){}};
@@ -277,4 +277,14 @@ test('resume import creates a sparse profile when the parser omits the name',asy
  assert.equal(env.db.profiles[0].facts.email,'fictional@example.com');
  assert.equal(env.store.get('workflow.profile.workExperience')[0].company,'Example');
  const writes=env.writes;await env.flush();assert.equal(env.writes,writes);
+});
+
+test('workspace notifications invalidate cached posting evidence without a timer',async()=>{
+ const env=await environment(null,true),seen=[];JB.setBatch=value=>seen.push(value);
+ env.db.job_batches=[{id:'batch',user_id:one,batch_date:'2026-11-10'}];
+ env.db.batch_items=[{id:'item',user_id:one,batch_id:'batch',job_id:'role',position:0,recommendation:{},jobs:{canonical_url:'https://fictional.test/job',employer:{company:'Fictional',title:'Engineer',description:'Snapshot'}}}];
+ env.db.search_observations=[{user_id:one,checked_at:'2026-11-10T12:00:00Z',liveness:'active',description:'First evidence',search_listings:{job_id:'role'}}];
+ await env.event('focus');assert.equal(seen.at(-1).roles[0].description,'First evidence');
+ env.db.search_observations[0].description='Updated evidence';env.notify();await env.flush();
+ assert.equal(seen.at(-1).roles[0].description,'Updated evidence');
 });

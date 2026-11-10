@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {withLatestPostingEvidence,withLatestPostingEvidenceForBatches,postingRecency} from '../lib/batch-posting-evidence.mjs';import {batchRoles} from '../lib/cloud-model.mjs';
+import {withLatestPostingEvidence,withLatestPostingEvidenceForBatches,invalidatePostingEvidence,postingRecency} from '../lib/batch-posting-evidence.mjs';import {batchRoles} from '../lib/cloud-model.mjs';
 const batch={batch:{user_id:'owner'},items:[{job_id:'job',jobs:{employer:{description:'Old description'},canonical_url:'https://example.com/job'},recommendation:{sourceFreshness:'Old snapshot',whyItFits:'Keep analysis'}}]};
 test('a new owned observation refreshes the same published batch in website and MCP projection',async()=>{
  const filters=[];const q={select(){return q},eq(k,v){filters.push([k,v]);return q},order(){return q},in(k,v){filters.push([k,v]);return q},range(){return Promise.resolve({data:[{checked_at:'2026-10-27T01:45:00Z',liveness:'active',employer_posted_at:'2026-09-15T00:00:00Z',description:'New description',search_listings:{job_id:'job'}}]})}};
@@ -15,16 +15,14 @@ test('read errors fail loudly; no observation retains the publication fallback',
  assert.match(postingRecency({checkedAt:'2026-10-27T01:45:00Z',liveness:'expired',postedAt:null}),/expired.*not disclosed/);
 });
 
-test('bulk evidence deduplicates batches, shares concurrent reads and expires after one minute',async()=>{
- let reads=0,now=1000;const original=Date.now;Date.now=()=>now;
- try{
+test('bulk evidence deduplicates batches, shares concurrent reads until explicitly invalidated',async()=>{
+ let reads=0;
  const client={from(){const q={select(){return q},eq(){return q},in(k,ids){assert.deepEqual(ids,['job']);return q},order(){return q},async range(){reads++;await Promise.resolve();return {data:[]}}};return q}};
  const batches=[batch,structuredClone(batch)];
  await Promise.all([withLatestPostingEvidenceForBatches(client,batches,'owner'),withLatestPostingEvidence(client,batch,'owner')]);
  assert.equal(reads,1);await withLatestPostingEvidence(client,batch,'owner');assert.equal(reads,1);
- now+=60001;await withLatestPostingEvidence(client,batch,'owner');assert.equal(reads,2);
+ invalidatePostingEvidence(client);await withLatestPostingEvidence(client,batch,'owner');assert.equal(reads,2);
  const other={...batch,batch:{user_id:'other'}};await withLatestPostingEvidence(client,other,'other');assert.equal(reads,3);
- }finally{Date.now=original;}
 });
 test('pagination does not lose jobs when one job has many newer observations',async()=>{
  let reads=0;const client={from(){const q={select(){return q},eq(){return q},in(){return q},order(){return q},async range(start){reads++;return {data:start===0?Array.from({length:200},()=>({checked_at:'2026-11-10T00:00:00Z',liveness:'active',search_listings:{job_id:'job'}})):[{checked_at:'2026-11-09T00:00:00Z',liveness:'expired',search_listings:{job_id:'second'}}]}}};return q}};
