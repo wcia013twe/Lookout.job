@@ -1575,3 +1575,13 @@ and its test update, the merged suite passes1322/1327 with5 skipped and0 failed.
 All37 focused JOB Python tests, catalog158 and diff checks pass.
 Local delivery uses feature:land without Git push/deployment; task checkout and
 private evidence remain retained.
+
+
+### Saved Discover priority visibility
+
+Job facts render the existing saved assessment tag by default on Discover cards,
+role previews and application details. Explicit fit labels take precedence over
+the saved priority; missing labels do not synthesize a verdict from scores. The
+existing fictional Discover fixtures exercise Strong Consider. This display repair
+does not add plain Consider to backend priority validation or retag private jobs.
+Local render tests, typecheck and build establish frontend behavior only.

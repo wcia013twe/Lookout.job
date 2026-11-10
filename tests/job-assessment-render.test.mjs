@@ -24,3 +24,25 @@ test('compact card renders exactly four numeric/unrated scores and reveals reaso
  assert.ok(preview.includes('$27–$50/hour is disclosed'));assert.ok(!preview.includes('>Unknown<'));
  for(const factor of Object.values(sample).filter(value=>typeof value==='object'))assert.ok(preview.includes(factor.reasoning));
 });
+
+const JobFacts=(await bundleComponent('next-app/components/role-job-facts.tsx',{plugins:[{name:'css-test',setup(build){build.onLoad({filter:/\.module\.css$/},()=>({contents:'export default {};',loader:'js'}));}}]}))();
+test('cards, previews and application facts retain saved priority tags without inventing verdicts',()=>{
+ for(const compact of [true,false]){
+  for(const priority of ['Apply Now','Strong Consider','Skip Unless Team Fit']){
+   const html=renderToStaticMarkup(React.createElement(JobFacts,{role:{priority,employmentType:'FT'},compact}));
+   assert.ok(html.includes(`>${priority}</span>`),priority);
+  }
+  const missing=renderToStaticMarkup(React.createElement(JobFacts,{role:{employmentType:'FT'},compact}));
+  assert.ok(!missing.includes('Saved assessment label'));
+  const fit=renderToStaticMarkup(React.createElement(JobFacts,{role:{priority:'Strong Consider',fitLabel:'Consider',employmentType:'FT'},compact}));
+  assert.ok(fit.includes('>Consider</span>'));assert.ok(!fit.includes('>Strong Consider</span>'));
+ }
+});
+
+test('resettable fictional Discover scenarios display saved assessment tags',async()=>{
+ const {discoverPreviewRoles}=await import('../next-app/lib/discover-preview-demo.mjs');
+ for(const role of discoverPreviewRoles('2026-11-10')){
+  const html=renderToStaticMarkup(React.createElement(JobFacts,{role,compact:true}));
+  assert.ok(html.includes(`>${role.fitLabel || role.priority}</span>`));
+ }
+});
