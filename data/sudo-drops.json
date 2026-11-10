@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "lastRun": "2026-11-09 midday story check (staged 2026-11-09)",
+ "lastRun": "2026-11-09 evening story check (staged 2026-11-09)",
  "drops": [
   {
    "company": "Cloudflare",
@@ -159,7 +159,7 @@
    "note": "Verified live 2026-10-08. Term-time = during school semester."
   },
   {
-   "company": "Estée Lauder",
+   "company": "Est\u00e9e Lauder",
    "title": "Lauder Summer 2027 Intern, Technology, Data & Analytics",
    "location": "New York, NY",
    "type": "Internship",
@@ -481,7 +481,7 @@
    "source": "zero2sudo",
    "status": "pending",
    "skipReason": null,
-   "note": "Interest form only, not an application. For anticipated graduation Fall/Winter 2027 - Spring 2028; undergrad-level application opens later this Fall. Link sticker present in story but URL not visible (not clicked)."
+   "note": "Interest form only, not an application. For anticipated graduation Fall/Winter 2027 - Spring 2028; undergrad-level application opens later this Fall. Link sticker present in story but URL not visible (not clicked). Nov 9 evening story frame shows a Dropbox email stating the Summer 2027 search for this position has concluded; verify at source before closing. This record is an interest form for a later opening, not the same application."
   },
   {
    "company": "Amazon",
@@ -741,7 +741,7 @@
    "source": "zero2sudo",
    "status": "pending",
    "skipReason": null,
-   "note": "Live per trackers (Built In, crawled <12h ago; $80K-$120K/yr; Spring 2027 grads, Chicago on-site). Built In apply requires login and exposes no employer ATS URL (directApply=false). wolve.com/careers bot-blocks direct fetches, so the exact employer ATS URL is not pinned."
+   "note": "Live per trackers (Built In, crawled <12h ago; $80K-$120K/yr; Spring 2027 grads, Chicago on-site). Built In apply requires login and exposes no employer ATS URL (directApply=false). wolve.com/careers bot-blocks direct fetches, so the exact employer ATS URL is not pinned. Re-dropped in Nov 9 evening story (CAREERS.WOLVE.COM link text only); gate unchanged, employer ATS URL still not pinned."
   },
   {
    "company": "Google",
@@ -1689,7 +1689,7 @@
    "source": "zero2sudo",
    "status": "pending",
    "skipReason": null,
-   "note": "Story-verified 2026-10-23 midday (Bosch Research and Technology Center NA; Sunnyvale/Pittsburgh/Cambridge; jobs.smartrecruiters.com). Canonical SmartRecruiters URL not located; mirrored copies (career.io, simplify.jobs) of the 'LLM & Agentic AI R&D Intern' JD verify content (Sunnyvale, $39-64/hr; the mirror version is Summer 2026). Eligibility: PhD or Master's, min 3.0 GPA — Wesley (M.S.) eligible. Kept pending until the live req URL is confirmed."
+   "note": "Story-verified 2026-10-23 midday (Bosch Research and Technology Center NA; Sunnyvale/Pittsburgh/Cambridge; jobs.smartrecruiters.com). Canonical SmartRecruiters URL not located; mirrored copies (career.io, simplify.jobs) of the 'LLM & Agentic AI R&D Intern' JD verify content (Sunnyvale, $39-64/hr; the mirror version is Summer 2026). Eligibility: PhD or Master's, min 3.0 GPA \u2014 Wesley (M.S.) eligible. Kept pending until the live req URL is confirmed."
   },
   {
    "company": "RTX",
@@ -4458,7 +4458,7 @@
    "source": "zero2sudo",
    "status": "skipped",
    "skipReason": "Generic SWE intern, Common tier, no exceptional team evidence on frame",
-   "note": "Evening story frame, part time, Posted Today."
+   "note": "Evening story frame, part time, Posted Today. Re-dropped in Nov 9 evening story check."
   },
   {
    "company": "Carnegie Mellon University Software Engineering Institute",
@@ -5788,7 +5788,7 @@
   },
   {
    "company": "NVIDIA",
-   "title": "Technical Learning Content Development Intern, Physical AI – Summer 2027",
+   "title": "Technical Learning Content Development Intern, Physical AI \u2013 Summer 2027",
    "location": "Santa Clara, CA",
    "type": "Internship",
    "comp": null,
@@ -5840,7 +5840,7 @@
   },
   {
    "company": "Bosch",
-   "title": "Junior Management Program – Manufacturing – VM",
+   "title": "Junior Management Program \u2013 Manufacturing \u2013 VM",
    "location": "Florence, KY",
    "type": "Full Time",
    "comp": null,
@@ -6759,7 +6759,7 @@
    "source": "morning sweep",
    "status": "skipped",
    "skipReason": "Common, full-stack ground-control UI; export-control question in form; no ML-systems/distributed team evidence.",
-   "note": "Verified live Nov 9, 2026 on Lever (0d, on-site). Common, full-stack ground-control UI; export-control question in form; no ML-systems/distributed team evidence."
+   "note": "Verified live Nov 9, 2026 on Lever (0d, on-site). Common, full-stack ground-control UI; export-control question in form; no ML-systems/distributed team evidence. Re-dropped in Nov 9 evening story check."
   },
   {
    "company": "Shield AI",
@@ -6772,7 +6772,7 @@
    "source": "morning sweep",
    "status": "skipped",
    "skipReason": "Not confirmed live: Ashby 'Page not found' on repeated live-browser loads and text fetch 404 on Nov 9, 2026; likely removed/unlisted (404 is not proof of closure).",
-   "note": "Not confirmed live Nov 9, 2026: Ashby 'Page not found' on repeated live-browser loads and text fetch returned HTTP 404; board stayed blank, posting API Unauthorized. Likely removed/unlisted; separate Shield AI Lever new-grad role (Ground Control Station) is live."
+   "note": "Not confirmed live Nov 9, 2026: Ashby 'Page not found' on repeated live-browser loads and text fetch returned HTTP 404; board stayed blank, posting API Unauthorized. Likely removed/unlisted; separate Shield AI Lever new-grad role (Ground Control Station) is live. Nov 9 evening: a Lever posting for the same role family (Engineer I, Software - Autonomy Capabilities - New Grad - 6129) verified live; recorded as a separate drop."
   },
   {
    "company": "T-Mobile",
@@ -6874,7 +6874,7 @@
    "source": "zero2sudo",
    "status": "skipped",
    "skipReason": "Autonomous pilot / flight-system integration, defense focus; weak fit for backend/distributed/AI-infra targets (same call as Oct 8 Simulation Framework Engineer I)",
-   "note": "Evening story frame Nov 8, 2026 (3h). Req 6125; verified live Nov 8, 2026 on Shield AI Lever (jobs.lever.co/shieldai): Hivemind Solutions, Flight System Integration, full-time on-site; grad Dec 2026-Aug 2027; no deadline shown."
+   "note": "Evening story frame Nov 8, 2026 (3h). Req 6125; verified live Nov 8, 2026 on Shield AI Lever (jobs.lever.co/shieldai): Hivemind Solutions, Flight System Integration, full-time on-site; grad Dec 2026-Aug 2027; no deadline shown. Re-dropped in Nov 9 evening story check."
   },
   {
    "company": "The New York Times",
@@ -6940,6 +6940,305 @@
    "status": "skipped",
    "skipReason": "Android/mobile scope, off-target lane",
    "note": "November 8 Recap frame, Nov 9, 2026 (~21m at 12:24 PM). Story segments 5-8 could not be isolated as separate frames despite repeated navigation attempts; role listed in the Recap only, frame not individually read, so location, link domain, and compensation are not individually verified. Sibling NYT engineering intern frames (Frontend, read Nov 9) show New York, NY on job-boards.greenhouse.io. Off-target on title evidence."
+  },
+  {
+   "company": "Parspec",
+   "title": "Applied AI Engineer Intern",
+   "location": "Hybrid - San Mateo, California",
+   "type": "Internship",
+   "comp": "Competitive stipend",
+   "url": "https://jobs.ashbyhq.com/parspec/0a897c21-0df7-40ba-85f2-694bf6678504",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 9, 2026 on Ashby: Summer 2027, 10-12 weeks, hybrid San Mateo. Must be currently enrolled in a US-based degree-seeking Bachelor's, Master's, or PhD in Engineering, CS or a related field at application time and during the internship; already-graduated candidates not eligible (fits Dec 2027 framing). Common tier kept on direct applied-AI lane fit."
+  },
+  {
+   "company": "UiPath",
+   "title": "Software Engineer Intern",
+   "location": "Bellevue, WA",
+   "type": "Internship",
+   "comp": "$58.85-$64.58/hr",
+   "url": "https://jobs.ashbyhq.com/uipath/4983eab7-099d-4c77-9a5a-8dde72084c04",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 9, 2026 on Ashby: 12-week summer internship May/June-Aug/Sept 2027, onsite/hybrid Bellevue. Deadline Nov 25, 2026; reviewed on a rolling basis. Currently pursuing a Bachelor's, Master's, or PhD in CS, Mathematics or a related field. Common tier; SWE intern at an automation software company."
+  },
+  {
+   "company": "UiPath",
+   "title": "AI Engineer Intern",
+   "location": "Bellevue, WA",
+   "type": "Internship",
+   "comp": "$72.92/hr",
+   "url": "https://jobs.ashbyhq.com/uipath/f6857594-645c-4833-aa5b-763e9759b555",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 9, 2026 on Ashby: 12-week summer internship May/June-Aug/Sept 2027, on-site Bellevue. Deadline Nov 25, 2026 (footer says rolling, no fixed deadline). Currently pursuing an MS or PhD in CS, Engineering, AI or a related field (fits M.S.). Common tier kept on direct AI lane fit."
+  },
+  {
+   "company": "Shield AI",
+   "title": "Engineer I, Software - Perception - New Grad - 6135",
+   "location": "Washington, D.C.",
+   "type": "FT",
+   "comp": "$77,200-$211,200/yr + Bonus + Benefits + Equity",
+   "url": "https://jobs.lever.co/shieldai/cd641bcb-f613-44dd-b66d-2df360067319",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 9, 2026 on Lever: Hivemind Solutions Division, Flight System Integration, on-site, full-time. Graduating Dec 2026-Aug 2027 (fits May 2027); currently pursuing a Bachelor's, Master's, or PhD in CS, Robotics, EE, Aerospace or a related field; ability to obtain a SECRET clearance. Common tier; FT wide net plus ML perception lane fit."
+  },
+  {
+   "company": "Shield AI",
+   "title": "Engineer I, Software - Autonomy Capabilities - New Grad - 6129",
+   "location": "United States",
+   "type": "FT",
+   "comp": "$77,200-$211,200/yr + Bonus + Benefits + Equity",
+   "url": "https://jobs.lever.co/shieldai/f8e0f87f-0e12-4e05-a491-4e8272494896",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 9, 2026 on Lever: the Ashby posting for this role family returned 404 earlier Nov 9, but the Lever version is live. Hivemind Solutions Division, Flight System Integration, on-site, full-time. Same graduation window and clearance terms as Perception 6135. Team scope unconfirmed. Common tier; FT wide net."
+  },
+  {
+   "company": "Shield AI",
+   "title": "Summer 2027 - Software Engineer Intern",
+   "location": "San Diego, CA; Washington, DC; Dallas, TX; Seattle, WA",
+   "type": "Internship",
+   "comp": "$37-$97/hr by academic level + relocation/housing stipend",
+   "url": "https://jobs.lever.co/shieldai/8c850c75-081d-4d09-bebf-096379a93010",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 9, 2026 on Lever (Shield's Ashby board is dead; shield.ai/careers now links to Lever): multi-location posting, 10-12 weeks, on-site, Campus Recruiting - Software. Currently pursuing a Bachelor's or Master's in CS, CE, EE or a related technical field; described as an opportunity for Fall and Spring graduates. Common tier; SWE intern at an autonomy company."
+  },
+  {
+   "company": "Apple",
+   "title": "Tools & Automation Engineer \u2014 Early Career",
+   "location": "Sunnyvale, CA",
+   "type": "FT",
+   "comp": "$123,700-$186,900 base pay",
+   "url": "https://jobs.apple.com/en-us/details/200692689/tools-automation-engineer-early-career",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 9, 2026 on Apple jobs: Role 200692689, posted Nov 9, 2026, 40 hours/week, early career full-time. Recent or upcoming graduate with a Bachelor's degree in CS or a related field and a strong CS foundation. Epic tier; tools/automation is a dev infra/platform lane fit."
+  },
+  {
+   "company": "Lila Sciences",
+   "title": "Co-op, Software, Applied AI Platform Engineer",
+   "location": "San Francisco, CA",
+   "type": "Co-op",
+   "comp": null,
+   "url": "https://job-boards.greenhouse.io/lilasciences/jobs/4472540009",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Verified live Nov 9, 2026 on Greenhouse (correct board slug lilasciences; lila-sciences is dead): two tracks, Platform Infrastructure (backend-heavy: Python, Kubernetes, cloud, APIs) and Data Platform / ML Infrastructure (AI agent, LLM, RAG, vector databases, embeddings). GATE: co-op term/dates not stated in the posting; confirm summer vs term-time before boarding. Currently pursuing a Bachelor's, Master's, or PhD in CS, SWE or a related field."
+  },
+  {
+   "company": "Cisco",
+   "title": "Software Engineer Full-Stack / Backend I (Intern) - United States",
+   "location": "San Jose, CA; Austin, TX; RTP, NC",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://cisco.wd5.myworkdayjobs.com/en-US/Cisco_Careers/details/Software-Engineer-Full-Stack---Backend-I--Intern----United-States_2024647-1",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Undergraduate enrollment required: posting requires current enrollment in an undergraduate Associate/Bachelor's degree or workforce-development program, expecting to continue enrollment after the internship. Wesley is in an M.S. program.",
+   "note": "Verified live Nov 9, 2026 on Workday (Job 2024647, posted Nov 9): hybrid, ends Nov 13, 2026. Distinct from the Nov 5 skipped 'Software Engineer Intern Summer 2027' record (different title and req)."
+  },
+  {
+   "company": "Microsoft",
+   "title": "Research Intern - Next-Generation AI Agents",
+   "location": "Redmond, WA",
+   "type": "Internship",
+   "comp": "$6,810-$13,480/mo",
+   "url": "https://apply.careers.microsoft.com/careers?query=Research+Intern+-+Next-Generation+AI+Agents",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "PhD-gated: posting requires current enrollment in a Doctorate program in CS, SWE, EE or a related STEM field. Wesley is in an M.S. program.",
+   "note": "Verified live Nov 9, 2026 (Job 200066468, posted Nov 9): 12-week internship, 3 days/week in-office Redmond. Minimum of two reference letters plus a cover letter required. URL is the Microsoft careers search URL; the job detail opens in-page."
+  },
+  {
+   "company": "7-Eleven",
+   "title": "Data Engineer Intern",
+   "location": "SSC Irving, TX",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://my7elevenhr.wd12.myworkdayjobs.com/Careers/job/SSC-Irving-TX/Data-Engineer-Intern_R26_6281",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Common, non-tech corporate IT (retail); no exceptional team fit.",
+   "note": "Verified live Nov 9, 2026 on Workday (Req R26_6281, posted Nov 9): Summer 2027 paid internship, Store Support Center Irving. Currently pursuing a Bachelor's or Master's in CS, Data Science, IS, Engineering or a related field."
+  },
+  {
+   "company": "Zoetis",
+   "title": "AI Acceleration Intern - AI Development Lifecycle",
+   "location": "US Remote (preference East Coast / near Parsippany, NJ)",
+   "type": "Internship",
+   "comp": "Graduate $32.50/hr (scale by degree: Associate $16, Undergraduate $22, Graduate $32.50, Doctorate $36)",
+   "url": "https://zoetis.wd5.myworkdayjobs.com/en-US/Zoetis/details/AI-Acceleration-Intern---AI-Development-Lifecycle_JR00022013-2",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Common, non-tech corporate (animal health pharma); no exceptional team fit evidence.",
+   "note": "Verified live Nov 9, 2026 on Workday (Req JR00022013, posted Nov 9): currently pursuing a Bachelor's or Master's in CS, Data Science, IS, CE, SWE, Business Analytics or a related field."
+  },
+  {
+   "company": "Zoetis",
+   "title": "AI Assistant Development Intern",
+   "location": "Parsippany, NJ (Hybrid)",
+   "type": "Internship",
+   "comp": "$24.20/hr undergraduate in NJ (scale by degree)",
+   "url": "https://zoetis.wd5.myworkdayjobs.com/en-US/Zoetis/details/AI-Assistant-Development-Intern_JR00022012-1",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Bachelor's-seeking (rising juniors/seniors preferred); Wesley has completed his B.S. and is in an M.S. program. Also Common, non-tech corporate; no exceptional team fit.",
+   "note": "Verified live Nov 9, 2026 on Workday (Req JR00022012, posted Nov 9): hybrid, Parsippany."
+  },
+  {
+   "company": "NBCUniversal",
+   "title": "Software Engineering Internships - Summer 2027",
+   "location": "New York, NY",
+   "type": "Internship",
+   "comp": "$30-$40/hr",
+   "url": "https://jobs.smartrecruiters.com/NBCUniversal3/744000160659459-software-engineering-internships-summer-2027",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Common, non-tech media; generic SWE intern, no exceptional team fit.",
+   "note": "Verified live Nov 9, 2026 on SmartRecruiters: 30 Rockefeller Plaza, 40 hrs/week, Jun 7-Aug 13, 2027. Applications Nov 9-Dec 4, 2026 (may close early). Must be actively enrolled throughout the internship; sophomore standing or above (30 credits), junior preferred, GPA 3.0 preferred, US work authorization without sponsorship (fits Dec 2027 framing)."
+  },
+  {
+   "company": "NBCUniversal",
+   "title": "Software Engineering Internships - Summer 2027",
+   "location": "Universal City, CA",
+   "type": "Internship",
+   "comp": "up to $30/hr",
+   "url": "https://jobs.smartrecruiters.com/NBCUniversal3/744000160659379-software-engineering-internships-summer-2027",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Common, non-tech media; generic SWE intern, no exceptional team fit.",
+   "note": "Verified live Nov 9, 2026 on SmartRecruiters: distinct requisition from the NY variant (different SmartRecruiters ID). 100 Universal City Plaza, Jun 7-Aug 13, 2027. Same enrollment gates."
+  },
+  {
+   "company": "NBCUniversal",
+   "title": "Media Tech: Data, AI & Machine Learning Internships - Summer 2027",
+   "location": "New York, NY",
+   "type": "Internship",
+   "comp": "$43/hr",
+   "url": "https://jobs.smartrecruiters.com/NBCUniversal3/744000160650767-media-tech-data-ai-machine-learning-internships-summer-2027",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Common, non-tech media; Data/AI/ML generalist track, no ML-systems team evidence.",
+   "note": "Verified live Nov 9, 2026 on SmartRecruiters: 30 Rockefeller Plaza, Jun 7-Aug 13, 2027. Applications Nov 9-Dec 4, 2026. Same enrollment gates. A separate Universal City variant exists (ID 744000160649935) but was not in the story tray and not verified this run."
+  },
+  {
+   "company": "NBCUniversal",
+   "title": "Media Tech: Product & Engineering Internships - Summer 2027",
+   "location": "Universal City, CA",
+   "type": "Internship",
+   "comp": "$38-$43/hr",
+   "url": "https://jobs.smartrecruiters.com/NBCUniversal3/744000160652254-media-tech-product-engineering-internships-summer-2027",
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Common, non-tech media; bundled product/engineering tracks, no exceptional team fit.",
+   "note": "Verified live Nov 9, 2026 on SmartRecruiters: 100 Universal City Plaza, Jun 7-Aug 13, 2027. $43/hr Platform Engineering, $38/hr Studio Production Technology and Product & AI Solutions. Applications Nov 9-Dec 4, 2026. A Miami, FL variant also exists under the same reference; not verified this run."
+  },
+  {
+   "company": "Jane Street",
+   "title": "Trading Desk Operations Engineer Internship, May-August",
+   "location": "New York, NY",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Operations role (Trading Desk Operations), not SWE.",
+   "note": "Evening story frame Nov 9, 2026. Frame only; employer page not opened."
+  },
+  {
+   "company": "NBCUniversal",
+   "title": "Streaming Platforms, Product Management Internships - Summer 2027",
+   "location": "New York, NY",
+   "type": "Internship",
+   "comp": "up to $30/hr",
+   "url": null,
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Product Management role, not SWE.",
+   "note": "Evening story frame Nov 9, 2026. Frame only; employer page not opened."
+  },
+  {
+   "company": "NBCUniversal",
+   "title": "Media Tech: Cybersecurity, Governance & Security Engineering Internships - Summer 2027",
+   "location": "New York, NY",
+   "type": "Internship",
+   "comp": "up to $43/hr",
+   "url": null,
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Security engineering role, off-lane.",
+   "note": "Evening story frame Nov 9, 2026. Frame only; employer page not opened."
+  },
+  {
+   "company": "NBCUniversal",
+   "title": "Studio Operations, Data Analytics Internships - Summer 2027",
+   "location": "Universal City, CA",
+   "type": "Internship",
+   "comp": "up to $22/hr",
+   "url": null,
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Data analytics role, off-lane.",
+   "note": "Evening story frame Nov 9, 2026. Frame only; employer page not opened."
+  },
+  {
+   "company": "Tinder",
+   "title": "Android Engineer Intern",
+   "location": "Los Angeles, CA",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Mobile (Android) engineering intern, off-lane; same as NYT iOS/Android precedent.",
+   "note": "Evening story frame Nov 9, 2026 (Lever). Frame only; employer page not opened."
+  },
+  {
+   "company": "Tinder",
+   "title": "iOS Engineer Intern",
+   "location": "Los Angeles, CA; Palo Alto, CA",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Mobile (iOS) engineering intern, off-lane; same as NYT iOS/Android precedent.",
+   "note": "Evening story frame Nov 9, 2026 (Lever). Frame only; employer page not opened."
   }
  ]
 }
