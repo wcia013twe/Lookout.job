@@ -1,5 +1,5 @@
 """Exercise real local HTTP/subprocess transport without accounts or inference."""
-import hashlib,http.client,importlib.util,json,os,subprocess,sys,tempfile,unittest
+import hashlib,http.client,importlib.util,json,os,subprocess,sys,tempfile,unittest,threading,time
 from contextlib import suppress
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -90,6 +90,26 @@ class TransportTests(unittest.TestCase):
     if case in ['n01','com2']:
      self.assertEqual(freeze['files']['suite/grading-contract.md'],hashlib.sha256((destination/'suite/grading-contract.md').read_bytes()).hexdigest())
     self.assertEqual(freeze['files'][os.path.relpath(shared,destination.resolve())],hashlib.sha256(shared.read_bytes()).hexdigest())
+ def test_close_stops_worker_before_joining_inflight_response(self):
+  # A partial line leaves the HTTP handler blocked in the worker stdout reader.
+  self.script.write_text('import sys\nfrom pathlib import Path\nsys.stdin.readline()\nsys.stdout.write("{");sys.stdout.flush()\nPath(__file__).with_suffix(".ready").touch()\nsys.stdin.read()\n')
+  for graceful in [False,True]:
+   with self.subTest(graceful=graceful):
+    marker=self.script.with_suffix('.ready');marker.unlink(missing_ok=True)
+    bridge=self.start(graceful_close=graceful)
+    with ThreadPoolExecutor(max_workers=1) as pool:
+     response=pool.submit(self.request,bridge,{'id':1})
+     deadline=time.monotonic()+3
+     while not marker.exists() and time.monotonic()<deadline:time.sleep(.01)
+     self.assertTrue(marker.exists(),'Fictional worker did not enter partial response')
+     closer=threading.Thread(target=bridge.close);closer.start();closer.join(2)
+     blocked=closer.is_alive()
+     if blocked:bridge.proc.kill();bridge.proc.wait();closer.join(3)
+     self.assertFalse(blocked,'Bridge joined an HTTP thread before stopping its worker')
+     self.assertEqual(response.result(timeout=3)[0],200)
+    self.bridges.remove(bridge)
+    for pipe in [bridge.proc.stdin,bridge.proc.stdout]:
+     if pipe and not pipe.closed:pipe.close()
  def test_job02_graceful_close_delivers_eof(self):
   bridge=self.start(graceful_close=True);bridge.close();self.bridges.remove(bridge)
   self.assertEqual(bridge.proc.returncode,0)

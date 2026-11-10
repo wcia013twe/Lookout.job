@@ -27,9 +27,11 @@ class WorkspaceBridge:
   self.thread=threading.Thread(target=self.server.serve_forever,daemon=True);self.thread.start()
   self.url='http://host.docker.internal:'+str(self.server.server_port)+'/mcp'
  def close(self):
-  self.server.daemon_threads=True;self.server.shutdown();self.server.server_close()
+  self.server.daemon_threads=True;self.server.shutdown()
   if self.graceful_close:
    if self.proc.stdin:self.proc.stdin.close()
   else:self.proc.terminate()
   try:self.proc.wait(timeout=15 if self.graceful_close else 3)
   except subprocess.TimeoutExpired:self.proc.kill();self.proc.wait()
+  # Request threads may be waiting on this worker; stop it before joining them.
+  self.server.server_close()

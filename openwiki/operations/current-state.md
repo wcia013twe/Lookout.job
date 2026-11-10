@@ -1336,3 +1336,9 @@ four-pair study remain unverified and unexecuted.
 ### COM02 prospective containment propagation
 
 COM02 now propagates host-control and container-removal failures through run finalization and pair orchestration. Unconfirmed participants are not assigned an end timestamp, terminal snapshot, grade or export; the remaining condition is halted. Focused mocked checks pass; live containment recovery is not verified or attempted. Historical frozen trials are unchanged.
+
+
+Shared benchmark bridge teardown now stops its worker before joining in-flight
+HTTP handlers, preventing a reproduced partial-response cleanup deadlock. This
+prospective harness fix preserves graceful EOF shutdown and historical freezes;
+it does not establish the cause of the shared Docker outage.

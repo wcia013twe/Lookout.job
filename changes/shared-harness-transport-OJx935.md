@@ -62,3 +62,14 @@
 - Validation: four setup/design/transport Node checks and catalog validation (158
   roles) passed; COM01/COM02 stream and native-setup checks also passed. Live
   preflight remains unverified while shared Docker is unavailable.
+
+
+## Docker recovery follow-up: shared bridge teardown
+
+- Reproduced a separate bridge cleanup deadlock with a fictional worker emitting
+  a partial response line. HTTP handler joining waited on the still-live worker.
+- Stop the bridge worker before joining request threads; retain JOB02 graceful
+  EOF behavior. Regression exercises both graceful and immediate shutdown.
+- Validation: seven focused Node checks (including real local worker regressions),
+  catalog validation (158 roles), and diff checks passed. No participant run, product
+  behavior or frozen evidence changes.
