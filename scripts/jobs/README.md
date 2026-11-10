@@ -244,3 +244,23 @@ conditions' terminal boundaries and a session transition without inference.
 Historical freezes, independent grades and partial attempts remain intact.
 Future participant execution requires separate authorization; this closeout adds
 no experiment series or quality/performance result.
+
+
+## Planned EVAL-01–03 series
+
+The current authorization is three paired evaluations per case (AB/BA/AB), with
+both participants and independent graders pinned to subscription-backed
+`gpt-5.6-terra` and medium reasoning. Historical pilots and diagnostics are not
+members of this series. `host.py prepare --repeat N` freezes the counterbalanced
+order using shared condition_order; coordinators verify it and record it in run
+provenance. Baseline setup never resets native state in reversed pairs.
+
+Fresh-owner setup reuses canonical-search-context.mjs to migrate the supplied
+legacy profiles through the product serializer, verify revisions and read native
+search context. This extends personal-settings parity; it does not manufacture
+source rules/portals or modify a historical owner. The native canonical gate must
+pass before execution. Serialize each planned case with the existing shared
+serial_pair helper and the agreed host handoff. No prompt/rubric/quality tuning or
+favorable-score replacement runs. Preserve failures, declared budgets, repair
+provenance and separate independent grading. Pending live readiness is not a
+participant result. The current chat directly coordinates existing executors.

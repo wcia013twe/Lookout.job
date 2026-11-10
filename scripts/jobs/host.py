@@ -13,6 +13,7 @@ import clock_control
 import isolated_backend
 sys.path.insert(0,str(REPO/'scripts/communication'))
 from diagnostics import call_metrics
+from design import condition_order
 sys.path.insert(0,str(REPO/'scripts/com2'))
 spec=importlib.util.spec_from_file_location('job_com_session',REPO/'scripts/com2/runner.py');runtime=importlib.util.module_from_spec(spec);spec.loader.exec_module(runtime)
 runtime.Bridge=Bridge
@@ -73,7 +74,7 @@ def collect_files(out):
    result[str(p.relative_to(out))]=p.read_text()
  return result
 
-def prepare(case,root,source,background,backend_root=None):
+def prepare(case,root,source,background,backend_root=None,repeat=1):
  if root.exists():raise ValueError('New private frozen root required')
  owned=root.with_name(root.name+'-owner')
  result=account(owned,'create',case,source,background/'resume.pdf',*([backend_root] if backend_root else []))
@@ -83,13 +84,13 @@ def prepare(case,root,source,background,backend_root=None):
  initial={'profileFacts':clone['settings']['profile']['facts'],'contacts':[]}
  onboarding,receipt=parity.complete_and_verify(owned,background,(background/'profile.md').read_text(),initial)
  files=[LIB/n for n in ['account.mjs','host.py','client.py','bridge.py','transport.py','services.py','preflight.mjs','audit.py']]+[REPO/'scripts/com2'/n for n in ['runner.py','service.py']]+[REPO/'scripts/n01/cost.py',REPO/'scripts/communication/runtime.py',REPO/'scripts/communication/diagnostics.py',REPO/'scripts/com2/parity.py']
- files += [REPO/'scripts/evals/workspace_transport.py',REPO/'scripts/communication/native_contract.py']
+ files += [REPO/'scripts/evals/workspace_transport.py',REPO/'scripts/communication/native_contract.py',REPO/'scripts/communication/design.py',REPO/'scripts/evals/canonical-search-context.mjs',REPO/'lib/search/documents.mjs']
  if backend_root:
   files += [LIB/n for n in ['isolated_endpoint.mjs','isolated_backend.py','isolated_clock_database.py','virtual_clock.mjs','clock_control.py','clock_proxy.mjs','clock_node.mjs','clock-edge/index.ts']]
   descriptor=read(Path(backend_root)/'backend.json')
   files += [REPO/n for n in descriptor['sourceFiles']]
   files=list(dict.fromkeys(files))
- cfg={'benchmarkTaskId':case,'dedicated':True,'fictional':True,'ownerId':a['userId'],'readOnlyOwnerId':a['userId'],'source':'Dedicated local JOB host; matched intent; no proactive comparison','model':'gpt-5.6-terra','reasoning':'medium','hostVersion':'jobs-host-v3' if backend_root else 'jobs-host-v2','normalProductConfiguration':{'captured':True,'status':'captured','scheduledApplicationCommunicationEnabled':False},'runtimeFiles':[str(p) for p in files],'costPolicy':read(REPO/'examples/evals/cost-policy.json')}
+ cfg={'repeat':repeat,'conditionOrder':condition_order(repeat),'benchmarkTaskId':case,'dedicated':True,'fictional':True,'ownerId':a['userId'],'readOnlyOwnerId':a['userId'],'source':'Dedicated local JOB host; matched intent; no proactive comparison','model':'gpt-5.6-terra','reasoning':'medium','hostVersion':'jobs-host-v3' if backend_root else 'jobs-host-v2','normalProductConfiguration':{'captured':True,'status':'captured','scheduledApplicationCommunicationEnabled':False},'runtimeFiles':[str(p) for p in files],'costPolicy':read(REPO/'examples/evals/cost-policy.json')}
  if case=='JOB04':cfg['applicationIdMapping']={x['id']:str(uuid.uuid5(uuid.UUID(a['userId']),x['id'])) for x in read(REPO/'examples/job04/evidence.json')['applications']}
  cfgpath=owned/'configuration.json';write(cfgpath,cfg)
  cmd=['node',str(REPO/'scripts'/case.lower()/'task.mjs'),'--action','prepare','--root',str(root),'--configuration',str(cfgpath)]
@@ -97,7 +98,7 @@ def prepare(case,root,source,background,backend_root=None):
   candidate=owned/'grader-candidate';candidate.mkdir();shutil.copyfile(background/'resume.pdf',candidate/'resume.pdf');(candidate/'profile.md').write_text(onboarding);(candidate/'profile.md').chmod(0o600)
   cmd+=['--candidate',str(candidate)]
  subprocess.run(cmd,check=True,capture_output=True,text=True)
- for name in ['account.private.json','grader.private.json','cloned-context.private.json','source-manifest.private.json']+(['resume-parity.json'] if backend_root else []):shutil.copyfile(owned/name,root/name);(root/name).chmod(0o600)
+ for name in ['account.private.json','grader.private.json','cloned-context.private.json','canonical-context.private.json','source-manifest.private.json']+(['resume-parity.json'] if backend_root else []):shutil.copyfile(owned/name,root/name);(root/name).chmod(0o600)
  (root/'account.lock').symlink_to(owned/'account.lock')
  (root/'background').mkdir();shutil.copyfile(background/'resume.pdf',root/'background/resume.pdf');(root/'background/resume.pdf').chmod(0o600)
  write(root/'context-parity.json',receipt);(root/'background/onboarding.md').write_text(onboarding);(root/'background/onboarding.md').chmod(0o600)
@@ -115,7 +116,7 @@ def prepare(case,root,source,background,backend_root=None):
   write(binding,{'pilotRoot':str(root.resolve()),'ownerId':a['userId'],'caseId':case})
  write(root/'adapter.json',[sys.executable,str(LIB/'client.py'),str(root)])
  image=runtime.command(['docker','image','inspect',runtime.IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()
- frozen_files=['account.private.json','grader.private.json','cloned-context.private.json','source-manifest.private.json','context-parity.json','background/onboarding.md','background/resume.pdf','host-initial.json','host-config.json','adapter.json']
+ frozen_files=['account.private.json','grader.private.json','cloned-context.private.json','canonical-context.private.json','source-manifest.private.json','context-parity.json','background/onboarding.md','background/resume.pdf','host-initial.json','host-config.json','adapter.json']
  if backend_root:frozen_files+=['resume-parity.json']
  external={}
  if backend_root:
@@ -175,7 +176,8 @@ class Host:
   run=self.root/'host-runs'/c;out=run/'output';inputs=run/'live-inputs'
   if op=='condition.setup':
    if run.exists():raise ValueError('Condition already attempted; no retry')
-   inputs.mkdir(parents=True);out.mkdir();account(self.root,'seed')
+   inputs.mkdir(parents=True);out.mkdir()
+   if c=='lookout':account(self.root,'seed')
    if self.case=='JOB03':self.service(c).seed(read(self.root/'suite/fixture.json')['jobs'])
    write(run/'sources.json',{'releasedStageIds':[],'events':[]})
    return {'status':'ready','initial':self.snapshot(c)}
@@ -234,6 +236,7 @@ class Host:
    initial=first.get('at') or (datetime.datetime.fromisoformat(spec['epoch'])+datetime.timedelta(minutes=first['minute'])).isoformat()
    clock_control.restore_preflight(self.cfg['backendRoot'],root,initial)
   gate('native_owner_snapshot',lambda:account(root,'snapshot'))
+  gate('canonical_search_context',lambda:read(root/'canonical-context.private.json'))
   gate('context_parity',lambda:{'receipt':read(root/'context-parity.json'),'nativeOwner':native(root,'read_personal_context',read_only=True)['settings']['profile']['user_id']})
   developer=native(root,'read_developer_context')
   if developer.get('developerVersion')!=self.cfg['developerVersion']:raise ValueError('Native developer guidance differs from frozen source')
@@ -318,8 +321,8 @@ class Host:
   if self.backend_lock:fcntl.flock(self.backend_lock,fcntl.LOCK_UN);self.backend_lock.close()
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('action',choices=['prepare','serve']);p.add_argument('--root',type=Path,required=True);p.add_argument('--case',choices=['JOB03','JOB04']);p.add_argument('--source-manifest',type=Path);p.add_argument('--background',type=Path);p.add_argument('--backend',type=Path);a=p.parse_args();root=a.root.resolve()
- if a.action=='prepare':prepare(a.case,root,a.source_manifest,a.background,a.backend);return
+ p=argparse.ArgumentParser();p.add_argument('action',choices=['prepare','serve']);p.add_argument('--root',type=Path,required=True);p.add_argument('--case',choices=['JOB03','JOB04']);p.add_argument('--source-manifest',type=Path);p.add_argument('--background',type=Path);p.add_argument('--backend',type=Path);p.add_argument('--repeat',type=int,default=1);a=p.parse_args();root=a.root.resolve()
+ if a.action=='prepare':prepare(a.case,root,a.source_manifest,a.background,a.backend,a.repeat);return
  host=Host(root);host.verify();key=secrets.token_urlsafe(32)
  class Handler(http.server.BaseHTTPRequestHandler):
   def log_message(self,*args):pass

@@ -134,3 +134,9 @@ test('terminal cleanup failure halts JOB03 before peer and grading',async t=>{
  assert.equal(read(path.join(root,'runs/baseline/run.json')).hostControlFailed,true);assert.equal(read(path.join(root,'runs/baseline/terminal-confirmation.json')).hostControlFailed,true);
  const {handoff}=await import('../scripts/job03/task.mjs');assert.throws(()=>handoff(root),/containment/);
 });
+
+test('repeat order agrees with the shared counterbalance helper and rejects changed order',async()=>{
+ const {executionOrder}=await import('../scripts/jobs/preflight.mjs');const {execFileSync}=await import('node:child_process');
+ for(const repeat of [1,2,3,4]){const shared=JSON.parse(execFileSync('python3',['-B','-c',"import sys,json;sys.path.insert(0,'scripts/communication');from design import condition_order;print(json.dumps(condition_order(int(sys.argv[1]))))",String(repeat)],{encoding:'utf8'}));assert.deepEqual(executionOrder({repeat}),shared);assert.deepEqual(executionOrder({repeat,conditionOrder:shared}),shared);}
+ assert.throws(()=>executionOrder({repeat:2,conditionOrder:['baseline','lookout']}),/alternate/);assert.throws(()=>executionOrder({repeat:0}),/Positive/);
+});
