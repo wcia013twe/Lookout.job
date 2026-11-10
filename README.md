@@ -123,6 +123,8 @@ The verified full-suite run reports **1,323 tests: 1,318 passed, zero failed, an
 
 The static frontend is written to `next-app/out/`. Endpoint overrides must be set before building. For a local static build, use the matching public URL and anonymous/publishable key from `make status`; otherwise the configured hosted defaults apply. Build output and test success are separate from hosted deployment verification.
 
+The communication evaluation in the paper is separate from the automated implementation suite. It covers two workflow storylines (COM01 and COM02), each spanning seven sessions with connected subtasks. Checkpoints explain where failures occurred; whole trajectories show overall success. Primary scores preserve the predefined outcome groups so repeated symptoms of one stale record do not become independent failure counts. Groups and checkpoints are not independent samples. See [the grading contract](docs/com-final-state-grading.md#prospective-com01com02-outcome-study).
+
 To rebuild the report with [Tectonic](https://tectonic-typesetting.github.io/):
 
 ```sh
