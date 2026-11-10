@@ -1,3 +1,4 @@
+import {validateDiscoverEmployer} from './discover-employer.mjs';
 import {APPLICATION_AGENT_TOOLS,validateApplicationAgent} from './application-agent.mjs';
 import {APPLICATION_REQUEST_TOOLS,validateApplicationRequest} from './application-requests.mjs';
 import {CONNECTION_SCOPES,PERMISSIONS_HANDOFF_TOOL,validatePermissionEdit} from './connection-permissions.mjs';
@@ -177,7 +178,7 @@ export function validateRequest(input) {
       if(!job||typeof job!=='object'||Array.isArray(job)||Object.keys(job).some(k=>!['jobId','canonicalUrl','employer','recommendation'].includes(k)))throw Error('Each batch job must be {jobId,recommendation?} or {canonicalUrl,employer,recommendation?}.');
       if(job.jobId!==undefined&&(typeof job.jobId!=='string'||!job.jobId.trim()))throw Error('jobId must be an existing catalog ID.');
       if (!job.jobId && (!job.employer || typeof job.employer!=='object' || Array.isArray(job.employer) || Object.keys(job.employer).some(key => !EMPLOYER_FIELDS.includes(key)))) throw new Error('Only public employer facts may be published');
-      if(!job.jobId) {let url;try{url=new URL(job.canonicalUrl);}catch{throw Error('New batch jobs need canonicalUrl as a public HTTPS employer posting URL.');}if(url.protocol!=='https:'||url.username||url.password)throw Error('New batch jobs need a public HTTPS canonicalUrl.');}
+      if(!job.jobId) {job.employer=validateDiscoverEmployer(job.employer);let url;try{url=new URL(job.canonicalUrl);}catch{throw Error('New batch jobs need canonicalUrl as a public HTTPS employer posting URL.');}if(url.protocol!=='https:'||url.username||url.password)throw Error('New batch jobs need a public HTTPS canonicalUrl.');}
       validateJobRecommendation(job.recommendation);
       validatePackRecommendation(job.recommendation);
       if(job.recommendation!==undefined&&(!job.recommendation||typeof job.recommendation!=='object'||Array.isArray(job.recommendation)))throw Error('Private fit notes belong in the recommendation object.');
