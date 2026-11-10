@@ -1400,6 +1400,15 @@ clearance/grades remain intact, but native-workflow attribution requires this se
 caveat. See docs/job-controlled-pilot-results.md; prospective shared-clone/lifecycle
 repair remains with the owning chat. No product or participant run was changed.
 
+### JOB participant deadline policy amendment (2026-11-09)
+
+JOB01 and JOB02 adapters opt into healthy completion in the shared session executor.
+Historical scenario seconds remain a measured reference; they no longer install a
+participant kill timer, invalidate timing, or classify completed work as timed out.
+Both conditions use the same policy. Actual process failures and host timing faults
+remain recorded; network, state capture, and containment cleanup operations retain
+bounded timeouts. Previously frozen sources and terminated attempts stay unchanged.
+The separate coordinator owns the corresponding independent-grader policy.
 ### Frozen repeated communication evaluations
 
 The user has selected EVAL-01 through EVAL-03 for each communication case, with alternating condition order. Both participant and independent grader must be subscription-backed `gpt-5.6-terra` with medium reasoning; no model substitution. Existing historical pilots/diagnostics remain separate. Use separate dedicated per-condition owners/roots so native audit history is preserved when Lookout runs first. Task facts and rubric stay fixed; input parity permits only explicit ownership-ID remapping. Quality misses remain outcomes, not triggers for replacement runs. Execution/containment or validity failures retain their evidence and are disclosed.
@@ -1439,6 +1448,9 @@ JOB01/JOB02 prospective EVAL-01–03 preparation pins participant and independen
 
 COM03/COM04 prospective evaluation reporting now carries the shared allowlisted provenance via `scripts/evals/provenance.mjs` in detailed exports and common summaries. This is reporting-only; historical frozen participant sources and final records are preserved. Twelve focused case/provenance checks passed; new EVAL-01–03 execution remains queued.
 
+### Healthy communication task completion amendment
+
+The user explicitly removes hard participant deadlines for healthy COM03/COM04 work. The opt-in `LOOKOUT_PARTICIPANT_DEADLINES=disabled-by-user` bypasses the task Timer and elapsed-budget classification, records policy/source hashes, and keeps bounded individual operation/containment guards. Former scenario seconds remain reference metadata. Original frozen sources and previously interrupted attempts are preserved; no automatic replacement. Seventeen COM03 and 28 COM04 Python checks passed; live amended execution remains prospective. Shared independent grader policy is owned separately.
 
 Shared subscription grading now treats `--seconds` as reference duration only,
 with no total task deadline for healthy work. Receipts record reference overruns;
@@ -1446,3 +1458,7 @@ model/evidence/timing-integrity and containment checks remain enforced. Individu
 setup/cleanup operation limits remain bounded. Participant deadline-policy changes
 are handled in their owning chats with amendment provenance; old terminated runs
 remain preserved and are not silently resumed or replaced.
+
+### Communication healthy-completion policy amendment
+
+COM01/COM02 shared runners and orchestrators support explicit `--allow-healthy-completion` (stage adapter flag `allowHealthyCompletion=True`). Original seconds remain reference metadata, with no task timer or overrun-based status/timing rejection. Actual elapsed/usage and real process, clock and containment errors remain enforced; operation timeouts remain bounded. This source amendment does not change already-running Python frames or historical frozen evidence. Live macOS timer cancellation was denied before execution; no healthy participant was restarted. No product, prompt or rubric change.

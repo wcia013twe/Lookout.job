@@ -96,7 +96,8 @@ class Session:
   (stage_dir/'lookout-trace.jsonl').touch(exist_ok=True)
   prompt=(inputs_prompt(stage,self.condition))
   (stage_dir/'prompt.txt').write_text(prompt)
-  meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
+  deadlines_disabled=os.environ.get('LOOKOUT_PARTICIPANT_DEADLINES')=='disabled-by-user'
+  meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'deadlineEnforced':not deadlines_disabled,'deadlinePolicy':'explicit_user_override_healthy_work_finishes' if deadlines_disabled else 'frozen_stage_budget','executionSourceSha256':digest(Path(__file__)),'command':cmd};write(stage_dir/'stage-run.json',meta)
   usage_before=cost.capture(self.name,self.thread_id if resume else None)
   clock=StageClock();meta['startedAt']=clock.startWall
   expired=threading.Event();usage=None;events=0;usage_complete=False;termination={};stop_lock=threading.Lock()
@@ -107,7 +108,9 @@ class Session:
      if proc.poll() is None:
       expired.set();termination.update(stop_container_client(proc,self.name))
       write(stage_dir/'termination.json',termination)
-   timer=threading.Timer(stage['seconds'],stop);timer.start()
+   timer=None
+   if not deadlines_disabled:
+    timer=threading.Timer(stage['seconds'],stop);timer.start()
    try:
     proc.stdin.write(prompt);proc.stdin.close()
     with (stage_dir/'trace.jsonl').open('w') as trace:
@@ -129,7 +132,7 @@ class Session:
       trace.write(json.dumps({'sequence':events,'capturedAt':time.time(),'event':json.loads(raw)})+'\n');trace.flush()
     code=proc.wait()
    finally:
-    timer.cancel();timer.join(timeout=20)
+    if timer:timer.cancel();timer.join(timeout=20)
     if proc.poll() is None:stop()
     timing=clock.finish()
     if termination and not termination.get('containerStopped'):
@@ -142,7 +145,7 @@ class Session:
   meta.update(status='artifact_failed' if meta.get('hostControlFailed') else 'timed_out' if expired.is_set() else 'execution_finished',durationSeconds=active_seconds);write(stage_dir/'stage-run.json',meta)
   usage_after={'error':'container_stop_unconfirmed'} if meta.get('hostControlFailed') else cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
   meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
-  meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or timing['monotonicSeconds']>stage['seconds']+3 else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
+  meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or (not deadlines_disabled and timing['monotonicSeconds']>stage['seconds']+3) else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
   write(stage_dir/'stage-run.json',meta);return meta
 
 def run(condition,repeat,pair_id,pilot=False):
@@ -152,7 +155,7 @@ def run(condition,repeat,pair_id,pilot=False):
  existing=[json.loads(x.read_text()) for x in RUNS.glob('*/run.json')]
  if any(x.get('taskId')==TASK and x.get('pairId')==pair_id and x.get('condition')==condition for x in existing):raise RuntimeError('This pair/condition already has an attempt; use a new pair ID for a separately reported attempt')
  run=RUNS/f'{TASK}-{condition}-r{repeat}-{uuid.uuid4().hex[:8]}';run.mkdir(mode=0o700);out=run/'output';out.mkdir();inputs=run/'live-inputs';inputs.mkdir()
- meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[],'hostAwakeGuard':awake};write(run/'run.json',meta)
+ meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','participantDeadlineEnforced':os.environ.get('LOOKOUT_PARTICIPANT_DEADLINES')!='disabled-by-user','executionSourceSha256':digest(Path(__file__)),'budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[],'hostAwakeGuard':awake};write(run/'run.json',meta)
  session=None
  try:
   snapshot(run/'before-reset.json');command(['node',str(R/'reset.mjs')]+[v.replace('{task}',TASK) for v in CONFIG.get('resetArgs',[])]);snapshot(run/'initial-state.json');validate_initial(run/'initial-state.json')
