@@ -1,0 +1,7 @@
+# Email and password sign-in
+
+- Add email/password login beside Google, with a same-account password setup/recovery email and a dedicated static `/reset-password/` screen. Keep recovery outside onboarding redirects; preserve private account ownership and generic sign-in errors. Passwords go only to Supabase Auth.
+- Human-only MCP boundary: agents direct the user to website sign-in/password setup; no agent password or MFA action is added. Existing MFA policy is unchanged.
+- Detached demo: login and password setup show fictional feedback without a production auth client, email, account storage or writes. The new browser scenario covers both account and demo boundaries.
+- Validation: full npm test passed (1,326 passed, five skipped); six focused password/onboarding tests passed; frontend typecheck and production static build passed; validate:data passed (158 roles); desktop/mobile browser checks passed login failure, PKCE recovery request, same-session password save, invalid-link state, overflow and demo isolation. Screenshots inspected; Impeccable detector and diff checks passed.
+- Limits: browser auth tests use fictional intercepted services. Hosted Google availability, same-account recovery-link generation and recovery redirect were checked separately; real password choice, recovery email delivery and a human password login remain to be completed by the account holder. No password, token or personal account export is included in this change.
