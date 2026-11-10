@@ -24,7 +24,9 @@ export default function NeedsYou() {
   async function demoProgress(item:TrackerWork,stage:string){try{await w.services.recordTrackerActionProgress({key:item.key,expectedVersion:item.version,stage,...(stage==='completed'?{note:'Fictional outcome saved by Muse. No external action occurred.'}:{}),eventKey:crypto.randomUUID()});await board.refresh();}catch{setFeedback('Demo progress could not save. Reload actions and try again.');}}
   const [review, setReview] = useState<string | null>(null);
   const setup =
-    !w.state.workflow.profile.verified || !w.state.workflow.resumes.length;
+    !w.state.workflow.profile.name?.trim() ||
+    !w.state.workflow.profile.email?.trim() ||
+    !w.state.workflow.resumes.some((resume: { supersededBy?: string }) => !resume.supersededBy);
   const [now,setNow]=useState(()=>Date.now());
   const inbox: {id:string;application_id:string;kind:string;reason:string;available_at:string;created_at:string;resolved_at:string|null;resolution:string|null;revision:number}[]=w.state.workflow.actionInbox || [];
   useEffect(()=>{
