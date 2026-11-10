@@ -55,7 +55,8 @@ attempts. Use the existing Langfuse command with --verify and a NEW receipt
 directory; do not upload again. Preserve the original failed delivery receipts.
 A separate completion receipt must bind the unchanged common record hash and
 the matching trace/experiment identity to each successful verification receipt.
-The JOB04 EVAL-01 baseline required this path; its original delivery3 stays false.
+JOB04 EVAL-01 baseline and both EVAL-03 conditions required this path; their
+original failed delivery receipts stay unchanged.
 
 A grader process completing is not an accepted review. For JOB04 EVAL-02, the
 exact-model grader completed, but its unchanged submission failed assignment-hash

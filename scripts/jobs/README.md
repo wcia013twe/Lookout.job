@@ -259,8 +259,9 @@ Fresh-owner setup reuses canonical-search-context.mjs to migrate the supplied
 legacy profiles through the product serializer, verify revisions and read native
 search context. This extends personal-settings parity; it does not manufacture
 source rules/portals or modify a historical owner. The native canonical gate must
-pass before execution. Serialize each planned case with the existing shared
-serial_pair helper and the agreed host handoff. No prompt/rubric/quality tuning or
+pass before execution. Run each pair in its frozen order. Under the amended user
+policy, independent chats/cases may execute concurrently; record shared-host load
+and retain owner-scoped guards/cleanup without a global queue. No prompt/rubric/quality tuning or
 favorable-score replacement runs. Preserve failures, declared budgets, repair
 provenance and separate independent grading. Pending live readiness is not a
 participant result. The current chat directly coordinates existing executors.
@@ -281,3 +282,15 @@ Existing roots, active old timers and terminated attempts retain their original
 freeze; no healthy participant is restarted or historical result rewritten.
 Reference-only pairs have a distinct harness version and must be reported with the
 policy amendment, rather than silently pooled with hard-deadline attempts.
+
+
+## Evidence-specific post-pair clock reporting
+
+After the EVAL participant series terminated, structural audit v3 replaced its
+unconditional historical clock warnings with root-specific evidence checks. It
+verifies the native clock gate path/digest/stage coverage and actual captured
+SQL/Edge/Node readbacks, separately from monotonic receipt coverage. Missing,
+altered or incomplete captures stay unverified; preflight alone cannot prove
+complete actual-turn coverage. It never assigns semantic quality. Use a NEW
+output filename and retain all older audit versions and frozen source receipts.
+Independent grading/finalization and sanitized report readback remain separate.

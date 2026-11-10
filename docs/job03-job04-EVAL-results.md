@@ -1,7 +1,8 @@
 # JOB03/JOB04 EVAL-01–03 observations
 
-Execution checkpoint: four pairs have accepted independent reviews; JOB04 EVAL-02
-is environment-interrupted with a rejected grader submission, and EVAL-03 is running.
+All six scheduled pairs are terminal. Five pairs completed in both conditions and
+have accepted independent reviews. JOB04 EVAL-02 is environment-interrupted with
+a rejected grader submission; its quality remains unknown.
 Historical pilots and diagnostic attempts remain separate. This document is not a
 claim of a general product advantage or disadvantage.
 
@@ -20,11 +21,13 @@ Concurrent shared-host load remains a confound; keep those policy groups distinc
 | JOB03-EVAL-02 | 0.954545 | 0.363636 | 302.372 | 1503.835 |
 | JOB03-EVAL-03 | 0.795455 | 0.352273 | 330.916 | 1269.319 |
 | JOB04-EVAL-01 | dimension ratings | dimension ratings | 445.493 | 1281.450 |
+| JOB04-EVAL-03 | dimension ratings | dimension ratings | 489.097 | 1322.054 |
 
 All six JOB03 condition reviews have strictPass=false. Completion is not a quality pass.
 JOB04 defines no overall quality/pass aggregate. In EVAL-01, five dimensions tied at 2/2
 for both; generation decisions rated baseline 2 and Lookout 1.666667. Full criterion
-ratings and native adherence stay in private grading/final.json.
+ratings and native adherence stay in private grading/final.json. In EVAL-03, both
+conditions rated 2/2 on all six reported dimensions.
 
 Active time includes real in-turn native startup/discovery, reads, writes, failures
 and participant verification. Container setup is retained separately; independent
@@ -39,6 +42,7 @@ Unavailable participant timing stays unknown; native tool latency is not subtrac
 | JOB03-EVAL-02 | 7 | 0 | 4 |
 | JOB03-EVAL-03 | 7 | 1 | 5 |
 | JOB04-EVAL-01 | 6 | 0 | 0 |
+| JOB04-EVAL-03 | 6 | 1 | 0 |
 
 JOB03 has eight prescribed checkpoint packets; JOB04 has seven. Scripted initiations
 and simulated notification/debrief schedules are not observed human effort. Additional
@@ -57,8 +61,10 @@ fixed fictional actor; real human time and proactive effort savings were not mea
 | JOB03-EVAL-03 | lookout | 7857909 | 7357952 | 43280 |
 | JOB04-EVAL-01 | baseline | 728516 | 621312 | 15603 |
 | JOB04-EVAL-01 | lookout | 8427321 | 7922944 | 44535 |
+| JOB04-EVAL-03 | baseline | 1030954 | 919040 | 17249 |
+| JOB04-EVAL-03 | lookout | 8867362 | 8368128 | 47721 |
 
-Usage coverage is complete for these eight reviewed condition runs. Cached input is
+Usage coverage is complete for these ten reviewed condition runs. Cached input is
 a subset of input. Dollar billing, subscription allocation and unmetered product
 processing remain unknown; token totals are not invoices.
 
@@ -72,10 +78,13 @@ Its single fresh exact-model grader completed, but the unchanged submission used
 incorrect assignment hash and failed validation. No repaired attestation or regrade
 is accepted. Quality and full active time remain unknown.
 
-All four accepted pairs have sanitized common export readbacks verified. JOB04 EVAL-01
+All five accepted pairs have sanitized common export readbacks verified. JOB04 EVAL-01
 baseline required a delayed read-only check; original failed delivery receipts remain.
 The interrupted pair has verified failure-only exports, with quality/task success null.
-The final pair still needs termination, its single independent review and reporting.
+The final pair completed and its single independent review passed validation. Both
+condition exports verified on a delayed read-only pass; the three original delivery
+attempts remain unchanged. All 12 condition records, including failure-only records,
+have verified readback.
 See [reporting procedure and limits](job03-job04-reporting.md). Private evidence indexes
 bind run manifests, frozen sources, graders and delivery receipts; candidate contents,
 prompts, reviews and credentials are excluded from common exports.

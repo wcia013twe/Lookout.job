@@ -468,3 +468,38 @@
   scripted initiations, additional interaction demands and recorded token usage.
   Interrupted/rejected and still-running evidence is kept separate. Real human
   effort, invoiced dollars and general comparative advantage remain unmeasured.
+
+
+## EVAL series terminal verification
+
+- All six originally scheduled pairs are terminal. Five pairs completed both
+  conditions and have accepted independent exact5.6 medium reviews. The interrupted
+  JOB04 EVAL-02 retains its rejected single grader submission, unknown quality and
+  failure-only exports. No participant/grader retry, replacement or substitution.
+- JOB04 EVAL-03:7/7 per condition; all six dimensions rated2/2 in both. Recorded
+  active seconds489.097/1322.054; additional interaction turns1/0, separate from
+  six scripted initiations each. Usage is complete; full tokens are in the result
+  document. Both condition readbacks passed on one delayed read-only pass after
+  the original three delivery attempts. All 12 condition exports now verified.
+- Installed canonical audit-v3 reporting only after every participant terminated.
+ 37 JOB Python tests pass. All six new audits preserve prior files and find no
+  intent/evidence mismatch; five complete pairs have captured three-clock and
+  monotonic proof. Interrupted capture/confirmation gaps remain explicit.
+- Final read-only receipt audit checked 406 participant evidence files, runtime
+  pins, AB/BA/AB, session continuity, six fresh distinct exact-model graders and
+  export bindings/readbacks. Historical 134 files and both historical final-grade
+  hashes match their preserved manifests. No private candidate contents or
+  credentials enter result documents or common exports.
+- Repository validation and local delivery results follow below. Existing unrelated
+  shared-main edits remain untouched; no Git push or deployment was requested.
+
+- Final full npm test:1325 tests,1319 passed,1 failed,5 skipped. The retained
+  failure is the previously observed connected Action Board SQL test, with
+  Invalid human decision; it is outside this harness change. Focused37 JOB Python
+  tests pass, and the earlier installed adapter53 Node/48 shared Session checks
+  remain recorded. Generated Python caches from this test run were removed only
+  from the owned task checkout. Catalog/diff validation precedes commit/landing.
+
+- Final resource inspection found110 owned retained containers, none running. No
+  unrelated resource was stopped/removed. Local delivery uses the authorized
+  feature:land command; all private evidence and this task checkout are retained.

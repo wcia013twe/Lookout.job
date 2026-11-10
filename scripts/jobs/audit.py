@@ -45,6 +45,51 @@ def host_observations(root,condition,checkpoints):
    'evidence':{str(p.relative_to(root)):digest(p) for p in sd.iterdir() if p.is_file()}})
  return result
 
+def contextualize(root,result,spec):
+ # Report only clock/timing provenance actually captured for this root. Old
+ # historical warnings must not describe a newer isolated-clock execution.
+ preflight_clock=False;clock_status='unavailable'
+ preflight=root/'receipts/preflight.json'
+ if preflight.exists():
+  receipt=read(preflight)
+  for gate in receipt.get('host',{}).get('gates',[]):
+   if gate.get('name')!='native_clock_alignment':continue
+   try:
+    p=Path(gate.get("path",""))
+    if p.is_symlink() or not p.resolve().is_relative_to((root/"receipts").resolve()) or gate.get("status")!="passed" or digest(p)!=gate.get("sha256"):
+     raise ValueError("Invalid native clock receipt")
+    value=read(p)
+    preflight_clock=value.get("aligned") is True and [x.get("stage") for x in value.get("stages",[])]==[x["id"] for x in spec["stages"]]
+    clock_status="verified" if preflight_clock else "unverified"
+   except (OSError,ValueError,TypeError):
+    clock_status="invalid_receipt";result["structuralIssues"].append("Native clock gate evidence unavailable or changed")
+   break
+ native_turn_clocks=[]
+ for p in sorted((root/'runs/lookout').glob('*/response.json')):
+  clock=read(p).get('clock',{})
+  native_turn_clocks.append(clock.get('aligned') is True and clock.get('clockMode')=='ticking_isolated_backend' and all(clock.get(k) for k in ['sqlNow','javascriptNow','nodeApiNow']))
+ native_count=len(result['conditions']['lookout']['reached'])
+ turn_clocks=bool(native_turn_clocks) and len(native_turn_clocks)==native_count and all(native_turn_clocks)
+ timing_records=[]
+ for condition in result['conditions'].values():
+  observations=condition['hostObservations']
+  timing_records.append(bool(observations) and len(observations)==len(condition['reached']) and all(isinstance(x.get('timing'),dict) and isinstance(x['timing'].get('monotonicSeconds'),(int,float)) and isinstance(x['timing'].get('valid'),bool) for x in observations))
+  condition['timingBasis']='Recorded checkpoint execution time; monotonic where executor timing was captured. Historical wall/adapter observations remain separate; unavailable execution time stays unknown.'
+  condition['semanticQuality']='not_assessed_by_structural_audit'
+ result['auditVersion']='jobs-structural-v3'
+ result['clockVerification']={'nativePreflight':clock_status,'nativeTurnReadbacksAligned':turn_clocks,'sqlEdgeNodeProven':preflight_clock and turn_clocks,'monotonicReceiptsCapturedForBoth':all(timing_records),'baselineClockMode':'shared_local_services_and_explicit_business_time; no native task reads'}
+ notes=result['limitations']
+ notes[0]='Structural audit only; completed turns are not quality passes.'
+ notes[1]="Native stage-clock alignment lacks complete bound evidence; calendar-derived comparisons remain unverified."
+ notes[2]="Complete monotonic/wall integrity receipts are unavailable for both conditions. Retain measured timings and do not attribute failures from wall duration alone."
+ if preflight_clock and not turn_clocks:
+  notes[1]="Native clock preflight is verified; complete actual-turn clock captures are unavailable. Calendar-derived comparisons remain unverified."
+ if preflight_clock and turn_clocks:
+  notes[1]='Isolated SQL, Edge and Node clocks align in bound preflight and captured native turns. Auth/Storage remains a fixture bootstrap, not hosted-service verification.'
+ if all(timing_records):
+  notes[2]='Monotonic/wall timing and integrity receipts are captured. Reference overruns alone do not establish participant fault; retain actual environment/clock-integrity findings.'
+ return result
+
 def audit(root):
  root=Path(root).resolve();spec=read(root/'suite/scenario.json');config=read(root/'configuration.json');case=config['benchmarkTaskId'];problems=[];conditions={};inputs={}
  required=['baseline','lookout'];stage_ids=[s['id'] for s in spec['stages']]
@@ -87,7 +132,8 @@ def audit(root):
   p=root/relative;supplemental[relative]=digest(p)
  for c in required:
   for p in sorted((root/'host-runs'/c).glob('stage-*/prompt.txt')):supplemental[str(p.relative_to(root))]=digest(p)
- return {'auditVersion':'jobs-structural-v2','caseId':case,'scenarioVersion':spec['version'],'pairedIntentEvidenceMatch':not any('mismatch' in p.lower() for p in problems),'structuralIssues':problems,'conditions':conditions,'supplementalReviewerEvidence':supplemental,'independentQualityReviewRequired':True,'qualityPass':None,'measuredComparisonReady':False,'limitations':['Harness-clearing pilot only; completed turns are not quality passes.','Native backend uses real time; historical simulated-stage clock alignment was not established. Calendar-derived preparation is confounded.','Historical wall-budget overruns and DNS failures are supplemental diagnostics, not proof of participant fault. Monotonic timing and suspension receipts were not captured.','Timing reflects the shared host load; no subtraction of native discovery/read/write/verification costs.','Use the case finalizer with a fresh independent reviewer; this operator audit cannot supply that review.','No Langfuse publication or independent grading is performed by this command.']}
+ result={'auditVersion':'jobs-structural-v2','caseId':case,'scenarioVersion':spec['version'],'pairedIntentEvidenceMatch':not any('mismatch' in p.lower() for p in problems),'structuralIssues':problems,'conditions':conditions,'supplementalReviewerEvidence':supplemental,'independentQualityReviewRequired':True,'qualityPass':None,'measuredComparisonReady':False,'limitations':['Harness-clearing pilot only; completed turns are not quality passes.','Native backend uses real time; historical simulated-stage clock alignment was not established. Calendar-derived preparation is confounded.','Historical wall-budget overruns and DNS failures are supplemental diagnostics, not proof of participant fault. Monotonic timing and suspension receipts were not captured.','Timing reflects the shared host load; no subtraction of native discovery/read/write/verification costs.','Use the case finalizer with a fresh independent reviewer; this operator audit cannot supply that review.','No Langfuse publication or independent grading is performed by this command.']}
+ return contextualize(root,result,spec)
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()

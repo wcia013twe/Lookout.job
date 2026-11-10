@@ -1489,3 +1489,30 @@ scheduled EVAL-03 passed19 fresh actual gates and is executing AB without a tota
 turn deadline, using prospective SSD participant/backend/grader storage. There is
 no participant retry or replacement trial. Four pairs have accepted independent
 grades; final execution, auditor installation and local landing remain pending.
+
+
+### JOB03/JOB04 EVAL series terminal closeout
+
+All six scheduled AB/BA/AB pairs are terminal: five pairs completed both conditions
+and have accepted independent subscription gpt-5.6-terra medium reviews. The
+environment-interrupted JOB04 EVAL-02 keeps its rejected single grader submission
+and unknown quality; no retry/replacement occurred. All 12 sanitized condition
+records have verified Langfuse readback, using delayed read-only checks where
+needed while preserving original failed transport receipts.
+
+[Measured observations and limits](../../docs/job03-job04-EVAL-results.md) separate
+quality, active time, scripted initiations, interaction demands and tokens. No
+JOB03 condition strict-passed. JOB04 EVAL-03 tied at 2/2 on all six dimensions;
+JOB04 has no overall quality/pass aggregate. Dollar billing and real human effort
+remain unmeasured; mixed deadline policies and shared-host load remain explicit.
+
+After every participant terminated, the canonical structural auditor gained
+evidence-specific clock/timing reporting. 37 focused Python tests pass. New audits
+find no intent/evidence mismatch; completed pairs have bound three-clock and
+monotonic evidence, while the interrupted pair retains capture/confirmation gaps.
+The final receipt audit checked 406 participant files, exact pins/order/continuity,
+six distinct independent grader threads and export readbacks. Historical 134 files
+and both historical final-grade hashes remain unchanged. Final repository validation:37 focused Python tests pass; full npm test reports
+1319 passed,1 pre-existing Action Board SQL failure and5 skipped. Catalog158 passes.
+Local delivery uses feature:land without Git push/deployment; task checkout and
+private evidence remain retained.
