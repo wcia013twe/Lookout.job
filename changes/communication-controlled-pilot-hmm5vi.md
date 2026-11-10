@@ -441,3 +441,24 @@
   independently graded. JOB04 EVAL-03 has not started. It requires recovered Docker
   plus its own fresh actual preflight. Partial-attempt grading/export, remaining
   execution, final audit installation and local landing remain outstanding.
+
+- Recovery follow-up: central recovery cleared build cache only and restored Docker.
+  Independently verified the four owned HTTP backend services are stopped; retained
+  all resources and recorded a separate recovery receipt. The interrupted pair
+  then received its single fresh exact-model grader attempt: execution completed
+  with unchanged read-only evidence, but the submission failed assignment-hash
+  validation. Preserve that rejected submission; do not repair its attestation or
+  rerun grading. Quality remains unknown. Failure-only common exports verified
+  on delivery3, retaining the earlier transport attempts.
+- The final scheduled JOB04 EVAL-03 now uses prospective external-SSD storage
+  for participant/backend/grader artifacts, recorded separately without moving
+  existing evidence. All19 actual no-inference gates passed before AB inference.
+  Participant policy/model/rubric remain frozen; healthy turns have no total cap.
+  Operator cleanup now always writes its terminal receipt even if the individually
+  bounded backend-stop operation fails. Original launcher snapshots remain.
+- Seven synthetic clock-reporting evidence tests pass on a separately retained
+  auditor draft, including missing/tampered/symlinked receipts, partial captures
+  and historical unknowns. First probe used the wrong synthetic stage key and
+  failed two assertions; corrected fixture and transcript are preserved. The
+  interrupted-pair draft audit retains both harness failures and missing native
+  terminal confirmation. Canonical installation still waits for final execution.
