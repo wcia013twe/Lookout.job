@@ -35,7 +35,7 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
   db.preferences=[clone(row)];return {data:row};
  },auth:{getUser:async()=>({data:{user:{id:owner}}})},from(table){
   let operation='select',fields=null,filters=[],start=0,end=Infinity,single=false;
-  const query={select(){return query;},eq(key,value){filters.push([key,value]);return query;},order(){return query;},range(a,b){start=a;end=b;return query;},limit(n){end=n-1;return query;},single(){single=true;return query;},upsert(value){operation='upsert';fields=value;return query;},insert(value){operation='insert';fields=value;return query;},delete(){operation='delete';return query;},then(resolve,reject){return (async()=>{
+  const query={select(){return query;},eq(key,value){filters.push([key,value]);return query;},in(){return query;},order(){return query;},range(a,b){start=a;end=b;return query;},limit(n){end=n-1;return query;},single(){single=true;return query;},upsert(value){operation='upsert';fields=value;return query;},insert(value){operation='insert';fields=value;return query;},delete(){operation='delete';return query;},then(resolve,reject){return (async()=>{
    if(operation==='upsert'){writes++;if(gate){const pending=gate;gate=null;await pending.promise;}if(fail){fail=false;return {error:Error('Offline')};}db[table]=[clone(fields)];return {data:clone(fields)};}
    if(table==='profiles' && readGate){const pending=readGate;readGate=null;await pending.promise;}
    if(table==='profiles' && failRead){failRead=false;return {error:Error('Offline')};}

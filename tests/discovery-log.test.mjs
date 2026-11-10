@@ -23,13 +23,13 @@ test('cumulative default excludes applied jobs while including queued/unapplied 
  const visible=roles.filter(r=>matchesDiscoveryStatus(r,{applications}));assert.deepEqual(visible.map(r=>r.id),['two','three']);
  assert.equal(roles.filter(r=>matchesDiscoveryStatus(r,{applications,includeApplied:true})).length,3);assert.deepEqual(applications,before);
 });
-test('all owned batches are paged beyond 200 and account changes reject accumulated results',async()=>{
- let owner='one',calls=0;
- const rows=Array.from({length:205},(_,i)=>({id:String(i).padStart(3,'0')}));
- const client={auth:{getUser:async()=>({data:{user:{id:owner}}})},from:()=>{let start=0,end=0;const q={select(){return q;},eq(k,v){assert.equal(k,'user_id');assert.equal(v,'one');return q;},order(){return q;},range(a,b){start=a;end=b;return q;},then(done){calls++;return Promise.resolve({data:rows.slice(start,end+1)}).then(done);}};return q;}};
- const api=createBackend(client,'one');api.getBatch=async id=>batch(id,'2026-11-07',[item(id)]);
- assert.equal((await api.allBatches()).length,205);assert.equal(calls,2);
- api.getBatch=async id=>{owner='two';return batch(id,'2026-11-07',[]);};await assert.rejects(()=>api.allBatches(),/Account changed/);
+test('all owned batches and items are bulk paged and account changes reject results',async()=>{
+ let owner='one',calls=0,switchOwner=false;
+ const rows=Array.from({length:205},(_,i)=>({id:String(i).padStart(3,'0'),user_id:'one'}));
+ const client={auth:{getUser:async()=>({data:{user:{id:owner}}})},from:table=>{const q={select(){return q},eq(k,v){assert.equal(k,'user_id');assert.equal(v,'one');return q},order(){return q},async range(a,b){calls++;if(switchOwner)owner='two';return {data:table==='job_batches'?rows.slice(a,b+1):[]}}};return q}};
+ const api=createBackend(client,'one');
+ assert.equal((await api.allBatches()).length,205);assert.equal(calls,3);
+ switchOwner=true;await assert.rejects(()=>api.allBatches(),/Account changed/);
 });
 
 
@@ -65,4 +65,15 @@ test('Discover reads imported outcomes without collapsing native duplicates or g
 test('all matching tracker keys participate instead of allowing an empty alias to mask rejection',()=>{
  const role={id:'catalog',applicationUrl:'https://example.com/jobs/exact'};
  assert.equal(matchesDiscoveryStatus(role,{applications:{alias:{id:'different',url:role.applicationUrl,status:'Queued'}},trackerItems:{alias:{},catalog:{status:'Rejected'}}}),false);
+});
+
+test('Discover refresh uses bulk reads and reuses evidence across repeated batches',async()=>{
+ const user='owner',batches=Array.from({length:5},(_,i)=>({id:`batch-${i}`,user_id:user}));
+ const items=batches.flatMap(b=>Array.from({length:20},(_,i)=>({id:`${b.id}-${i}`,batch_id:b.id,user_id:user,job_id:`job-${i}`,position:19-i})));
+ const calls=[];
+ const client={auth:{getUser:async()=>({data:{user:{id:user}}})},from(table){const q={select(){return q},eq(){return q},in(k,ids){assert.equal(ids.length,20);return q},order(){return q},async range(a,b){calls.push(table);return {data:(table==='job_batches'?batches:table==='batch_items'?items:[]).slice(a,b+1)}}};return q}};
+ const api=createBackend(client,user),first=await api.allBatches();
+ assert.deepEqual(calls,['job_batches','batch_items','search_observations']);
+ assert.equal(first.length,5);assert.equal(first[0].items[0].position,0);
+ calls.length=0;await createBackend(client,user).allBatches();assert.deepEqual(calls,['job_batches','batch_items']);
 });

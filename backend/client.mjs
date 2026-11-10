@@ -1,6 +1,6 @@
 import {validateApplicationAgent} from '../lib/application-agent.mjs';
 import {actionBoardMessageFields} from '../lib/action-board.mjs';
-import {withLatestPostingEvidence} from '../lib/batch-posting-evidence.mjs';
+import {withLatestPostingEvidence,withLatestPostingEvidenceForBatches} from '../lib/batch-posting-evidence.mjs';
 import {validateWorkExperience} from '../supabase/functions/agent-gateway/work-experience.mjs';
 import {createBackendJobsService} from '../lib/backend-jobs.mjs';
 import {validateCardPacks,batchPackDrops} from '../lib/card-packs.mjs';
@@ -428,8 +428,10 @@ function createBackend(client, expectedUserId = null) {
     async allBatches() {
       const userId=await owner();
       const batches=await allRows('job_batches',userId);
-      const prepared=[];
-      for(const batch of batches)prepared.push(await this.getBatch(batch.id));
+      const items=await allRows('batch_items',userId,'id','*,jobs(*)');
+      const grouped=new Map();
+      for(const item of items){if(!grouped.has(item.batch_id))grouped.set(item.batch_id,[]);grouped.get(item.batch_id).push(item);}
+      const prepared=await withLatestPostingEvidenceForBatches(client,batches.map(batch=>({batch,items:(grouped.get(batch.id)||[]).sort((a,b)=>a.position-b.position)})),userId);
       if(await owner()!==userId)throw Error('Account changed');
       return prepared;
     },

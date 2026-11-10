@@ -175,3 +175,20 @@ authentication boundaries, not MCP actions: agents direct the human to the websi
 and cannot set passwords or enroll/remove MFA through product tools. This UI does
 not enroll or disable MFA; an account with existing MFA still follows Auth policy.
 Local checks do not establish email delivery or live hosted login.
+
+
+### Lightweight Discover refresh (focused source update)
+
+The browser reads saved batches and their items with paginated bulk queries rather
+than reloading each batch separately. Posting evidence is deduplicated across all
+batches and fetched in chunks of 50 unique job IDs, with 200-row pagination so a
+job with many observations cannot hide another job. The latest observation wins.
+An in-memory cache is scoped to the Supabase client and current owner, retains
+results (including missing evidence) for 60 seconds, shares concurrent reads, and
+evicts failed reads. Evidence may therefore lag by up to one minute on the next
+refresh; it is informational and grants no application/submission authority.
+Notification bursts use a 100 ms refresh debounce. Existing account-generation,
+RLS, write/version checks and detached demo boundaries remain authoritative.
+No new MCP operation or database schema is introduced; existing scoped agent
+reads retain their server validation. Local checks do not establish hosted rollout
+or measured CPU/disk improvement.
