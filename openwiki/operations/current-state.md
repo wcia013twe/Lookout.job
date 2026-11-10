@@ -1248,6 +1248,37 @@ new participant run or product-effectiveness claim.
 
 Future JOB01 freezes also bind the shared executor timing/capture source, checked against the actual imported helper implementations. Historical freezes remain unchanged; this closes a prospective source-integrity gap without claiming a changed participant outcome.
 
+
+### JOB03/JOB04 native HTTP clock integration (prospective, launch blocked)
+
+The [shared JOB host](../../scripts/jobs/README.md#native-http-clock-integration-and-retained-launch-blocks)
+now connects an isolated ticking SQL/JavaScript backend to unchanged native HTTP
+services, with source/image/package bindings and ownership guards. Host v3 clones
+complete canonical candidate settings; both participants receive exact local PDF
+bytes, while remote Auth/Storage services remain unverified. Native startup,
+Unicode/JSON responses and all granted on-demand tools pass through. Audit calls
+and every actual native operation inside a turn remain product costs.
+
+Earlier full no-inference roots passed 17/15 then-current gates; later native
+surface/audit changes still require fresh actual gates after Docker timed out
+before provisioning. JOB03's reference-contract gate additionally blocks the
+withdrawn-application blocker mismatch; partial-form native mapping needs audit.
+No new participant was launched. Historical freezes and grading remain intact.
+Focused checks pass; the full suite has one Action Board SQL failure reproduced
+on unchanged local main. This records harness progress, not comparative quality
+or final launch clearance; see the feature change note for verification limits.
+### Prospective COM01/COM02 outcome study
+
+COM01 v9/grade v8 and COM02 v8/grade v7 separate eight/thirteen primary outcomes
+from diagnostic checkpoint counts, require evidence-grounded user impact for
+reached failures, and clarify Sam's unsent draft. Existing orchestrators share a
+serial pair lock and alternate order across the four-pair prospective pilot plan.
+Read-only COM02 terminal evidence adds the native timeline; future export checks
+reuse shared pagination. See the [study contract](../../docs/com-final-state-grading.md#prospective-com01com02-outcome-study).
+Synthetic checks do not establish participant performance or design effectiveness;
+no new pair, account mutation, human-effort benefit or product change is claimed.
+Historical PILOT-05 evidence and grades remain unchanged.
+
 ### JOB01/JOB02 controlled comparison closeout
 
 [Controlled pilot results](../../docs/job-controlled-pilot-results.md) distinguish
@@ -1262,3 +1293,109 @@ separate; no live employer readiness, proactive-effort benefit or general winner
 claimed. Dollar costs remain unknown. This focused update does not regenerate the wiki.
 
 Supplemental JOB setup audit found legacy preferences were cloned without canonical search documents. Future JOB01/JOB02 accounts share canonical-profile migration and native readback; JOB02 lifecycle includes the selected profile explicitly. Historical evidence is preserved, and prior product-attribution claims require the supplemental setup caveat. This is prospective harness setup, not a product fix or a rerun.
+
+### COM03 native timeline restriction
+
+PILOT07 completed but retained an isolation confound: native application timeline tools were hidden while change-feed events referenced them. COM03 v6 restores the existing scoped reader/writer and adds rolled-back timeline readback/provenance verification to the full reset probe. No product behavior or approval authority changes. COM04/PILOT06 clears its controlled comparison; quality remains 14/14 baseline versus 13/14 Lookout, with a late promise checkpoint. See [communication results](../../docs/communication-cleared-pilots.md). COM03 requires a new prospective pair; completed stages alone do not establish clearance.
+
+### COM03 host-control failure
+
+PILOT08 remains uncleared after Docker stopped responding during baseline checkpoint 8; the timeout's Docker kill also timed out. Partial evidence and a failed-clearance receipt are preserved. Prospective COM03 v7 bounds local reader teardown, retains termination/timing evidence and halts the pair without grading when container death is unconfirmed. Eight shared runtime tests and five Node checks pass; live recovery/preflight remains unverified pending ownership authorization for the failed run/shared Docker. COM04/PILOT06 remains cleared. This is harness failure handling, not a Lookout product change.
+
+
+### JOB03 prospective fixture and shared identifier reconciliation
+
+JOB03 v6 clears active preparation blockers after withdrawal while preserving
+initial/historical evidence. The reference-contract guard now passes the corrected
+prospective scenario without rewriting frozen reviews. Shared fictional preview
+and reminder services normalize application keys and native UUIDs to one state
+for both conditions, reject unknown identifiers, and preserve exactly one injected
+failure, saved fields and single/cancelled delivery behavior. The partial form is
+this shared service, not a seeded native employer form. Actual standalone service
+proof passed, with no inference. Latest complete native/container gates remain
+unverified because the shared Docker engine still times out; no new pair is cleared.
+
+
+The JOB-used COM2 Session also now reuses shared bounded container/client teardown.
+Unconfirmed remote termination persists timing/termination evidence and halts JOB
+before the other condition or final grading. Local client exit is not remote
+termination proof; active time/usage remain unknown where capture is incomplete.
+Scripted process/coordinator checks pass; live Docker recovery and complete native
+preflight remain outstanding. No historical participant was resumed or retried.
+
+
+The isolated Node API is now included in the ticking clock dependency and observer
+gate alongside SQL and Edge. Local HTTP preload and fail-closed three-clock
+observer tests pass; latest full native/container wiring remains unverified until
+the shared Docker engine responds. Earlier two-clock gates do not clear it.
+
+
+COM01/COM02 prospective runner guards now match COM1-stream-v9 and COM2-stream-v8;
+configuration regression checks exercise current and stale versions without Docker
+or inference. This corrects setup compatibility only; live preflight and the revised
+four-pair study remain unverified and unexecuted.
+
+### COM02 prospective containment propagation
+
+COM02 now propagates host-control and container-removal failures through run finalization and pair orchestration. Unconfirmed participants are not assigned an end timestamp, terminal snapshot, grade or export; the remaining condition is halted. Focused mocked checks pass; live containment recovery is not verified or attempted. Historical frozen trials are unchanged.
+
+
+Shared benchmark bridge teardown now stops its worker before joining in-flight
+HTTP handlers, preventing a reproduced partial-response cleanup deadlock. This
+prospective harness fix preserves graceful EOF shutdown and historical freezes;
+it does not establish the cause of the shared Docker outage.
+
+JOB no-inference readiness now requires confirmed test-container removal and
+retains cleanup failures as host-control markers. Endpoint inspection is bounded.
+Recovery owner reports the engine healthy; JOB has integrated53fbef83 and passed
+source checks while awaiting serialized Docker use after COM03. No latest native
+preflight or participant experiment has yet run in this recovery pass.
+
+
+### JOB03/JOB04 serialized recovery preflights
+
+After 4cf6e44b, actual fresh JOB03/JOB04 no-inference roots passed 20/17 gates,
+including native permissions/discovery, full context and SQL/Edge/Node API dates
+at all 8/7 stages. Fixture setup now waits for Edge readiness beyond Node health.
+Retained startup failures and address-pool exhaustion remain separate; exactly
+four empty root-owned failed-fixture networks were released with stopped-container
+checks and retained receipts/volumes. Both new roots' runtime/gate hashes and owned
+service shutdowns were verified. No inference or participant experiment ran.
+Participant-path Session.close receipt propagation still needs a source-only
+containment audit before later execution; these gates do not prove product quality
+or performance. See the shared JOB host and feature note for exact limits.
+### COM03 recovery verification (no inference)
+
+Coordinated Docker recovery is complete. PILOT08's exact container is independently confirmed exited (255), with a separate shutdown receipt; its original failed evidence remains unchanged. A fresh fictional owner and `com3-native-v7-readiness` freeze at source `53fbef83` passed actual no-inference preflight: both subscription containers, native startup/discovery/wrapper isolation, complete rolled-back reset, contact, exact seed, audit and timeline write/readback probes. Frozen source integrity was rechecked. Six Node COM03/transport checks (including sixteen Python COM03 checks) and eight shared-runtime tests pass. No active career-session containers remained when the Docker verification slot was released to JOB03/04.
+
+No new participant pair or product change was authorized in this bounded pass. COM03 still needs a prospective paired trial and independent review; COM04/PILOT06 stays cleared. The subsequently landed shared bridge teardown repair (`4cf6e44b`, implementation `ec91e19c`) does not rewrite this freeze or establish the cause of Docker's outage. Future execution preparation must pull and re-freeze that helper; the completed `53fbef83` preflight remains historical readiness evidence.
+
+
+### JOB03/JOB04 cleanup propagation and repair closeout
+
+JOB now retains shared Session.close outcomes across session transitions, terminal
+confirmation and host shutdown, as well as preflight. Unconfirmed removal or
+cleanup exceptions preserve receipts and halt further participants/native terminal
+capture/grading. Host-dispatch and scripted coordinator failure tests pass.
+Fresh final-source root job-native-clock-v3-preflights-08 passed JOB03 20/20 and
+JOB04 17/17 actual no-inference gates. Gate/runtime hashes, all scripted three-clock
+readbacks and owned service shutdown were verified. All 134 historical evidence
+files and independent-review assignments remain intact. No inference was run.
+This closes the previously listed propagation gap; historical timing/transport
+confounds, unpriced costs and diagnostic-only grading limits remain documented.
+No new participant experiment or product-performance conclusion is implied.
+### COM01/COM02 revised live readiness
+
+Current-source COM1-stream-v9 and COM2-stream-v8 passed fresh no-inference setup on the recovered local stack. COM01 receipts are `com1-v9-readiness-final01-preflight`; COM02 receipts are `com2-v8-readiness-final02-preflight` under private experiment-control. COM02's native writer/readback and restoration passed on a freshly provisioned owner. Its old fixed-ID owner was rejected by the reset guard and preserved; prospective owner-scoped fixtures require a fresh account. Nine focused checks and catalog validation passed. No participant experiment or new study was launched; historical PILOT-05 remains unchanged.
+
+### COM01 prospective containment parity
+
+COM01 now has the same shared bounded stop and host-failure pair halt behavior as COM02. Seven focused Node checks, including mocked process/run/pair regressions, passed. No live preflight or participant was run for this source revision; previous readiness receipts still bind their original checkout. Fresh freeze/preflight remains required before revised execution.
+
+
+Supplemental JOB01/JOB02 investigation found that legacy preferences were cloned
+without canonical search profile documents. JOB01 frozen reads expose the mismatch;
+JOB02 selected-profile draft calls reproduce a pre-writer P0002 rejection. Historical
+clearance/grades remain intact, but native-workflow attribution requires this setup
+caveat. See docs/job-controlled-pilot-results.md; prospective shared-clone/lifecycle
+repair remains with the owning chat. No product or participant run was changed.

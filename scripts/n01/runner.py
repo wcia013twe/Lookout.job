@@ -4,7 +4,7 @@ from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import verify_contact_writer,verify_runtime_guidance,verify_seed_contacts
 from transport import Bridge
-from runtime import StageClock,ensure_awake,snapshot_with_receipt
+from runtime import StageClock,ensure_awake,snapshot_with_receipt,stop_container_client
 from terminal_state import capture_terminal_state
 import cost
 LIB=Path(__file__).resolve().parent; CONTROL=LIB.parent
@@ -67,8 +67,14 @@ class Session:
    write(run/'isolation.json',{'session':label,'hostPathsVisible':visible,'mounts':json.loads(command(['docker','inspect',self.name,'--format','{{json .Mounts}}'],text=True).stdout),'auth':'Subscription credential in ephemeral container tmpfs, readable by runtime; no host config/history copied. Network remains available for inference.'})
   except Exception:self.close();raise
  def close(self):
-  subprocess.run(['docker','rm','-f',self.name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=30)
-  if self.bridge:self.bridge.close();self.bridge=None
+  result={'containerRemoved':False}
+  try:
+   response=subprocess.run(['docker','rm','-f',self.name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=10)
+   result['containerRemoved']=response.returncode==0
+  except (OSError,subprocess.SubprocessError) as error:result['errorType']=type(error).__name__
+  finally:
+   if self.bridge:self.bridge.close();self.bridge=None
+  return result
  def turn(self,stage_dir,stage,resume=False):
   cmd=['docker','exec','-i',self.name,'codex','--no-daemon','--ask-for-approval','never','exec']
   if resume:
@@ -78,19 +84,22 @@ class Session:
   cmd+=['--ignore-user-config','--ignore-rules','--skip-git-repo-check','--json','--model','gpt-5.6-terra','-c','model_reasoning_effort="medium"','-c','project_doc_max_bytes=0','-c','skills.bundled.enabled=false','-c','web_search="disabled"']
   for feature in ['apps','plugins','remote_plugin','memories','multi_agent','skill_search']:cmd+=['--disable',feature]
   if self.bridge:cmd+=['-c','mcp_servers.workspace.command="python3"','-c','mcp_servers.workspace.args=["/service.py"]','-c','mcp_servers.workspace.env_vars=["WORKSPACE_SERVICE_URL","WORKSPACE_SERVICE_KEY"]']
-  # Deliberately no --ephemeral: only stage 2 resumes stage 1 inside the same disposable tmpfs.
+  # Resume only adjacent turns bearing the same frozen session ID.
   write(stage_dir.parent/'active-stage.json',{'stage':stage['_index']})
   (stage_dir/'lookout-trace.jsonl').touch(exist_ok=True)
   prompt=(inputs_prompt(stage,self.condition))
   (stage_dir/'prompt.txt').write_text(prompt)
-  usage_before=cost.capture(self.name,self.thread_id if resume else None)
   meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
+  usage_before=cost.capture(self.name,self.thread_id if resume else None)
   clock=StageClock();meta['startedAt']=clock.startWall
-  expired=threading.Event();usage=None;events=0;usage_complete=False
+  expired=threading.Event();usage=None;events=0;usage_complete=False;termination={};stop_lock=threading.Lock()
   with (stage_dir/'stderr.log').open('w') as errors:
    proc=subprocess.Popen(cmd+['-'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=errors,text=True)
    def stop():
-    if proc.poll() is None:expired.set();subprocess.run(['docker','kill',self.name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=30)
+    with stop_lock:
+     if proc.poll() is None:
+      expired.set();termination.update(stop_container_client(proc,self.name))
+      write(stage_dir/'termination.json',termination)
    timer=threading.Timer(stage['seconds'],stop);timer.start()
    try:
     proc.stdin.write(prompt);proc.stdin.close()
@@ -113,13 +122,19 @@ class Session:
       trace.write(json.dumps({'sequence':events,'capturedAt':time.time(),'event':json.loads(raw)})+'\n');trace.flush()
     code=proc.wait()
    finally:
-    timer.cancel()
-    if proc.poll() is None:stop();proc.wait(timeout=30)
+    timer.cancel();timer.join(timeout=20)
+    if proc.poll() is None:stop()
     timing=clock.finish()
+    if termination and not termination.get('containerStopped'):
+     timing['valid']=False;timing['invalidReasons'].append('container_stop_unconfirmed')
   active_seconds=timing['wallSeconds']
+  timing['wallBudgetExceeded']=timing['wallSeconds']>stage['seconds']+5
   meta['timing']=timing
+  if termination:meta['termination']=termination;meta['hostControlFailed']=not termination.get('containerStopped')
   meta['executionSeconds']=timing['monotonicSeconds'] if timing['valid'] else None
-  usage_after=cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
+  meta['environmentTimingConfounded']=not timing['valid'] or timing['monotonicSeconds']>stage['seconds']+5
+  meta.update(status='artifact_failed' if meta.get('hostControlFailed') else 'timed_out' if expired.is_set() else 'execution_finished',durationSeconds=active_seconds);write(stage_dir/'stage-run.json',meta)
+  usage_after={'error':'container_stop_unconfirmed'} if meta.get('hostControlFailed') else cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
   meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
   meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or timing['monotonicSeconds']>stage['seconds']+3 else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
   write(stage_dir/'stage-run.json',meta);return meta
@@ -153,15 +168,19 @@ def run(condition,repeat,pair_id,pilot=False):
    write(sd/'input-hashes.json',file_hashes(inputs));snapshot(sd/'before-state.json')
    resume=stage['_session']==previous_session
    if not resume:
-    if session:session.close()
+    if session:
+     cleanup=session.close()
+     if not cleanup['containerRemoved']:meta['hostControlFailed']=True;raise RuntimeError('Container cleanup unconfirmed; halt pair')
     session=Session(sd,inputs,out,condition,stage['_session'])
    previous_session=stage['_session']
    meta['status']='running';write(run/'run.json',meta)
    record={'stage':i,'eventId':stage['id'],'kind':stage['kind'],'releasedMinute':stage['minute'],'triggerMinute':stage['minute'],'assignedInitiation':stage['kind']=='external','assignedOnboarding':stage['kind']=='onboarding','necessaryUserUpdate':stage['kind']=='user_update'}
    write(sd/'delivery.json',record)
    sm=session.turn(sd,stage,resume=resume);meta['stages'].append(sm)
+   if sm.get('hostControlFailed'):meta['hostControlFailed']=True;meta['status']='artifact_failed'
    write(run/'run.json',meta)
    hashes=file_hashes(out);shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',hashes)
+   if sm.get('hostControlFailed'):break
    snapshot(sd/'after-state.json')
    write(run/'run.json',meta)
    print(json.dumps({'run':str(run),'stage':i,'status':sm['status']}),flush=True)
@@ -171,17 +190,22 @@ def run(condition,repeat,pair_id,pilot=False):
  except Exception as e:
   meta.update(status='artifact_failed' if meta['stages'] else 'setup_failed',errorType=type(e).__name__,error=str(e)[:400]);raise
  finally:
-  if session:session.close()
-  try:snapshot(run/'final-state.json');meta['finalStateCaptured']=True
-  except Exception:meta['finalStateCaptured']=False
-  meta['participantEndedAt']=time.time();meta['durationSeconds']=meta['participantEndedAt']-meta['startedAt'];write(run/'run.json',meta)
-  try:
-   capture_terminal_state(run,R,meta)
-   meta['terminalCaptureStatus']='captured'
-  except Exception as e:
-   meta['terminalCaptureStatus']='failed'
-   write(run/'terminal-capture-error.json',{'errorType':type(e).__name__,'error':str(e)[:300]})
-  write(run/'run.json',meta)
+  if session:
+   cleanup=session.close();meta['cleanup']=cleanup
+   if not cleanup['containerRemoved']:meta['hostControlFailed']=True;meta['status']='artifact_failed'
+  if meta.get('hostControlFailed'):
+   meta['participantTerminationConfirmed']=False;meta['finalStateCaptured']=False;meta['terminalCaptureStatus']='skipped_unconfirmed_termination'
+  else:
+   meta['participantEndedAt']=time.time();meta['participantTerminationConfirmed']=True
+   try:snapshot(run/'final-state.json');meta['finalStateCaptured']=True
+   except Exception:meta['finalStateCaptured']=False
+   try:
+    capture_terminal_state(run,R,meta)
+    meta['terminalCaptureStatus']='captured'
+   except Exception as e:
+    meta['terminalCaptureStatus']='failed'
+    write(run/'terminal-capture-error.json',{'errorType':type(e).__name__,'error':str(e)[:300]})
+  meta['durationSeconds']=time.time()-meta['startedAt'];write(run/'run.json',meta)
   meta['cost']=cost.persist(run,R/'cost-policy.json');write(run/'run.json',meta)
   for p in run.rglob('*'):
    if p.is_file() and not p.is_symlink():p.chmod(0o600)
@@ -194,7 +218,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM1-stream-v8':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM1-stream-v9':raise RuntimeError('Wrong runtime configuration')
 
 def released_sources(stages):
  inbox={};calendar={};deliveries=[]

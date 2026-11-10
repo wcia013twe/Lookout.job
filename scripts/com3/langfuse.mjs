@@ -34,7 +34,7 @@ export function build(run,grade,spec,registration={}){
  const evidence=spawnSync('python3',[path.join(path.dirname(fileURLToPath(import.meta.url)),'digest.py'),run],{encoding:'utf8'});
  if(evidence.status!==0||evidence.stdout.trim()!==grade.evidenceDigest)throw Error('Stale grade evidence');
  const datasetId=registration.datasetId||'lookout-com3-stream-v1';
- const itemId=registration.itemId||'COM3-stream-v5';
+ const itemId=registration.itemId||spec.version;
  const experimentId=sha(['com3-export-1',spec.version,m.pairId,m.condition,m.repeat,m.pilot===true]);
  const traceId=sha(['com3-export-1',spec.version,m.episodeId]).slice(0,32),rootId=sha(traceId+'root').slice(0,16);
  const experimentName=`${spec.version}-${m.pilot?'pilot':'measured'}-${m.pairId}-${m.condition}-r${m.repeat}`;
@@ -61,7 +61,7 @@ export function build(run,grade,spec,registration={}){
  }
  const scores=[];
  function score(name,value,dataType='NUMERIC'){
-  scores.push({id:sha([traceId,name]),traceId,observationId:rootId,name:'com3_'+name,value,dataType,environment:m.synthetic?'verification':m.pilot?'benchmark-pilot':'benchmark',timestamp:new Date((m.startedAt+m.durationSeconds)*1000).toISOString(),comment:'COM3-stream-v5; '+grade.status});
+  scores.push({id:sha([traceId,name]),traceId,observationId:rootId,name:'com3_'+name,value,dataType,environment:m.synthetic?'verification':m.pilot?'benchmark-pilot':'benchmark',timestamp:new Date((m.startedAt+m.durationSeconds)*1000).toISOString(),comment:spec.version+'; '+grade.status});
  }
  for(const [name,value,type] of costValues(m.cost))score(name,value,type);
  for(const [k,v] of Object.entries(grade.metrics))if(Number.isFinite(v))score(k,v);
@@ -84,11 +84,11 @@ async function main(){
  const config=tracingConfig();const project=sha(config?[config.baseUrl,config.publicKey]:['offline']);
  const regfile=path.join(receiptDir,project+'-dataset.json');
  if(v.register){
-  const name='Lookout-COM3-stream-v5';
+  const name='Lookout-COM3-stream-v7';
   if(v['dry-run']){console.log(JSON.stringify({name,version:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),qualityKeys:Object.keys(spec.quality),mode:'metadata-only'}));return;}
   const ds=unwrap(cli(['datasets','create'],{name,description:'COM3 application communication across sessions. Structural manifest only; private user profile and event packets stay local.',metadata:{version:spec.version,unit:'whole trajectory',status:'prospective'}}));
   if(!ds.id)throw Error('Missing dataset id');
-  const item=unwrap(cli(['dataset-items','create'],{datasetName:name,id:'lookout-COM3-stream-v5',input:{scenario:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),policy:spec.policy},expectedOutput:Object.fromEntries(Object.keys(spec.quality).map(k=>[k,true])),metadata:{version:spec.version,privateEvidence:'not uploaded'}}));
+  const item=unwrap(cli(['dataset-items','create'],{datasetName:name,id:'lookout-COM3-stream-v7',input:{scenario:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),policy:spec.policy},expectedOutput:Object.fromEntries(Object.keys(spec.quality).map(k=>[k,true])),metadata:{version:spec.version,privateEvidence:'not uploaded'}}));
   if(!item.id)throw Error('Missing item id');
   const saved={datasetId:ds.id,itemId:item.id,name,scenarioHash:sha(spec)};writeFileSync(regfile,JSON.stringify(saved,null,2)+'\n',{mode:0o600});console.log(JSON.stringify(saved));return;
  }

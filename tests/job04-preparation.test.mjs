@@ -86,3 +86,29 @@ test('historical review survives retired runtime bytes while execution remains h
  const {submission}=pair(root);fs.unlinkSync(retired);
  assert.throws(()=>frozen(root));assert.equal(finalize(root,submission).grades.baseline.status,'reviewed');
 });
+
+test('invalid execution timing stays unknown in a partial final review',()=>{
+ const {root}=setup(),{submission}=pair(root,true),dir=path.join(root,'runs/lookout');
+ const run=read(path.join(dir,'run.json'));run.checkpoints[0].executionSeconds=null;fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(run,null,2)+'\n');
+ const files=read(path.join(dir,'evidence-hashes.json'));files['run.json']=hash(fs.readFileSync(path.join(dir,'run.json'),'utf8'));fs.writeFileSync(path.join(dir,'evidence-hashes.json'),JSON.stringify(files));
+ const h=read(path.join(root,'grading/handoff.json'));const item=h.runs.find(x=>x.condition==='lookout');item.runHash=hash(run);item.manifest=files;fs.writeFileSync(path.join(root,'grading/handoff.json'),JSON.stringify(h));
+ const a=read(path.join(root,'grading/assignment.json'));a.handoffHash=hash(h);fs.writeFileSync(path.join(root,'grading/assignment.json'),JSON.stringify(a));submission.attestation.assignmentHash=hash(a);
+ assert.equal(finalize(root,submission).grades.lookout.executionSeconds,null);
+});
+
+test('unconfirmed container termination halts pair before other condition or grading',()=>{
+ const {root,command}=setup();
+ fs.writeFileSync(command[1],`import fs from 'node:fs';import{createHash}from'node:crypto';const q=JSON.parse(fs.readFileSync(0,'utf8'));let r={requestHash:createHash('sha256').update(JSON.stringify(q)).digest('hex'),receiptId:'fixture',ownerId:q.ownerId,capturedAt:'2026-11-09T15:00:00Z'};if(q.operation==='participant.turn')Object.assign(r,{status:'execution_failed',hostControlFailed:true,timing:{valid:false,wallSeconds:11},executionSeconds:null});else r.status='confirmed';console.log(JSON.stringify(r));`);
+ const receipt=path.join(root,'receipts/fixture.json');assert.equal(preflight(root,command,receipt,service).ready,true);
+ const halted=run(root,command,receipt,'uncontained-fixture');assert.equal(halted.gradingBlocked,true);assert.deepEqual(halted.unattemptedConditions,['lookout']);assert.equal(fs.existsSync(path.join(root,'runs/lookout')),false);assert.equal(fs.existsSync(path.join(root,'grading/handoff.json')),false);
+ const r=read(path.join(root,'runs/baseline/run.json'));assert.equal(r.checkpoints[0].executionSeconds,null);assert.equal(r.checkpoints[0].executionWallSeconds,11);assert.equal(r.hostControlFailed,true);
+ assert.equal(read(path.join(root,'runs/baseline/stage-1/after.json')).reason,'container_stop_unconfirmed');
+});
+
+test('terminal cleanup failure halts JOB04 after a completed condition before peer and grading',()=>{
+ const {root,command}=setup();
+ fs.writeFileSync(command[1],`import fs from 'node:fs';import{createHash}from'node:crypto';const q=JSON.parse(fs.readFileSync(0,'utf8'));let r={requestHash:createHash('sha256').update(JSON.stringify(q)).digest('hex'),receiptId:'fixture',ownerId:q.ownerId,capturedAt:'2026-11-09T15:00:00Z'};if(q.operation==='participant.turn')Object.assign(r,{participantExecuted:true,synthetic:false,status:'completed',session:q.session,resume:q.resume,executionSeconds:1,isolation:{futureEvidenceVisible:false,graderVisible:false,credentialsVisible:false},trace:[{}],toolTrace:[],files:{},interactions:[]});else if(q.operation==='baseline.final_files')Object.assign(r,{status:'execution_failed',hostControlFailed:true,participantExecuted:false});else r.status='confirmed';console.log(JSON.stringify(r));`);
+ const receipt=path.join(root,'receipts/fixture.json');assert.equal(preflight(root,command,receipt,service).ready,true);
+ const halted=run(root,command,receipt,'terminal-cleanup');assert.equal(halted.gradingBlocked,true);assert.equal(fs.existsSync(path.join(root,'runs/lookout')),false);assert.equal(fs.existsSync(path.join(root,'grading/handoff.json')),false);
+ const r=read(path.join(root,'runs/baseline/run.json'));assert.equal(r.checkpoints.length,spec.stages.length);assert.ok(r.checkpoints.every(c=>c.status==='completed'));assert.equal(r.hostControlFailed,true);assert.equal(r.status,'harness_failed');assert.equal(read(path.join(root,'runs/baseline/terminal-confirmation.json')).hostControlFailed,true);
+});

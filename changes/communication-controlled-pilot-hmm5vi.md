@@ -86,3 +86,204 @@
 - Integrated current local main's shared transport instead of copying it. After
   integration, four focused Node checks (clock plus shared transport), 19 Python
   checks (clock fixture, JOB host and shared timing) and catalog validation pass.
+
+
+## Native HTTP/context/surface continuation — intentional progress
+
+- Connected owner-isolated native PostgREST/Edge/Node HTTP services to ticking
+  SQL/JavaScript clocks. Bound product source, image IDs and immutable Edge npm
+  payloads; guarded backend identity, private networks and pilot ownership.
+  No product service/schema, host clock or shared account was changed.
+- Complete canonical settings now include false/null/zero/empty values in initial
+  baseline context. Clone equality and exact local resume PDF bytes are checked;
+  real Auth/Storage services and remote resume retrieval remain unverified.
+- Preserved native bootstrap, all scoped on-demand tools, audit instructions and
+  exact Unicode/JSON responses. Scope/ownership proof rejects protocol406 as
+  permission evidence; audit probes share the COM rolled-back SQL helper.
+  Actual native audit/read/write/discovery/verification costs remain in turns.
+- Prospective JOB03 v5/JOB04 v4 match retrieve/save/verify obligations. Captured
+  prompts are frozen; partial/invalid execution time stays null, wall time separate.
+- Retained gzip-framing, port/network, missing-Accept and other failed/prototype
+  roots. Two full then-current no-inference freezes passed 17/15 gates and were
+  stopped with retained volumes. Final-surface attempt failed before provisioning
+  on unresponsive Docker; no shared-engine restart and no inference or retry.
+- New reference-contract gate blocks JOB03: withdrawn reference retains an active
+  preparation blocker while source terminal transitions clear it. Partial-form
+  native question mapping remains to audit. Historical grades/references unchanged.
+- Verification so far: 54 focused Node checks and catalog158 passed; host/clock
+  Python checks passed before the new reference guard, with final checks below.
+  Full npm test:1303 total,1297 passed,1 failed,5 skipped. The Action Board SQL
+  `Invalid human decision` failure reproduces on unchanged main; unrelated source
+  was preserved. Latest native-surface/audit gates still need actual live preflight.
+- No new pair is cleared. No push/publication/deployment or paid API use.
+
+- Final local guards: 31 Python checks pass (21 JOB, four controlled contract, six shared runtime); targeted Node/coordinator and catalog checks rerun after the reference launch guard. Live final-source preflight remains outstanding.
+
+- Integrated newer local main shared termination guards, preserving both wiki updates. Post-integration: 40 Node checks,21 JOB Python guards,eight shared runtime checks and catalog158 pass.
+
+
+## JOB03 reference and shared-identifier reconciliation
+
+- Prospective JOB03 tracking/grade v6 clears C's active blocker after withdrawal,
+  matching terminal semantics for both storage orientations; historical initial
+  state, frozen references and independent grades are unchanged.
+- Shared services previously used A/B keys while native records exposed UUIDs,
+  with no schema explanation. Both identifiers now normalize to the same shared
+  state, identically for both conditions; unknown identifiers fail without writes.
+- Audited partial preparation: saved name/email markers and the pending question
+  live in the shared fictional preview service. Both see identical initial state;
+  native initialSavedState preserves it. This is deliberately not a real employer
+  form or native question-prefill benchmark. No candidate values were invented.
+- Added actual no-inference gate for identifier parity, deduplicated reminder
+  schedule and interruption recovery. Independent standalone service proof passed:
+  saved fields persist, failure occurs once, resume stays unsubmitted, reminder
+  delivers once, cancellation persists. Its private receipt is retained.
+- Focused checks:22 JOB Python and34 coordinator Node tests pass before final
+  documentation checks. Docker read-only version probe still times out; no restart
+  or new participant attempt. Latest complete native gates remain outstanding.
+
+
+## Shared timeout containment audit
+
+- The JOB-used COM2 Session still depended on Docker kill to unblock its reader.
+  It now reuses the existing shared stop_container_client helper used by COM03:
+  bounded remote stop plus bounded local client teardown, with distinct receipts.
+  Session close always releases its bridge and reports container removal status.
+- Unconfirmed native container stop invalidates timing, skips further Docker usage
+  capture, persists termination evidence before more I/O, and marks host control
+  failed. JOB host forbids subsequent participant setup/turns. Both coordinators
+  halt the pair before the other condition or grading, retaining partial state.
+- Corrected JOB03's remaining invalid/null-to-adapter fallback and both cases'
+  adapter-error timing fallback: unavailable active time stays null; adapter/wall
+  duration is retained separately. Historical receipts are never recalculated.
+- Verification:23 JOB Python,45 COM2 Python,eight shared-runtime Python and42 Node
+  checks passed; catalog158 and diff checks passed. Scripted coordinator probes
+  confirm no other condition/grading starts after unconfirmed stop; runtime probe
+  confirms partial usage and persisted termination. No inference or actual Docker
+  shutdown was performed. Shared Docker version probes still time out.
+- Final-source actual native preflights remain the external blocker. No new pair,
+  remote publication or product-effectiveness conclusion is implied.
+
+
+## Three-process clock audit and remaining external block
+
+- Source audit found native Node API still used real time while Edge/SQL were
+  simulated. The isolated API now preloads the same opt-in Date proxy, with its
+  dependency hash bound. Observer-only HTTP telemetry reports its actual process
+  date; the gate rejects missing/divergent SQL, Edge or Node readbacks. Product
+  source/body/permissions and participant runtime are unchanged.
+- Verification:24 JOB Python and42 Node checks, catalog158 and diff checks pass.
+  Actual local Node HTTP preload preserves status/body and advances the wall clock
+  without changing monotonic timing. It is not complete native-stack clearance.
+- Read-only historical revalidation: both review freezes and all134 run-evidence
+  files (76 JOB03,58 JOB04) match. Independent submissions, final reviews and runtime
+  attestations are present. Frozen grades/references were not rewritten.
+- Completion audit: timeout attribution is honestly limited by DNS/wall-time
+  confounds; native-surface/context/timing/continuity/shared-service repairs and
+  independent review are recorded. Final-source native permissions/discovery,
+  full three-process clocks and owned-process inventory still require actual live
+  preflights. Earlier successful roots cannot prove this revision. No new pair
+  may launch. Focused verification and documentation are committed/local-landed;
+  no push or publication is authorized or performed.
+- Docker version probes have timed out across three consecutive goal turns.
+  Last full preflight attempt failed at image inspection before provisioning;
+  both private logs and all earlier attempts remain retained. The engine is shared
+  with other sessions, so no restart or unrelated process/container action was
+  attempted. Remaining verification requires external shared-engine recovery;
+  inspect ownership before stopping any leftover pilot process afterward.
+
+
+## Recovery coordination: bounded source-only pass
+
+- Recovery owner reports Docker29.9.2 healthy and has reserved first no-inference
+  use for COM03. JOB performed no Docker probes, provisioning or participant work
+  while waiting for the serialized handoff. Recovery is reported by that owner;
+  JOB final-source native gates have not yet been rerun.
+- Integrated local main53fbef83 (including prospective COM runtime version guards
+  and containment halt). Dedicated native endpoint inspection now has a10-second
+  bound instead of an unbounded Docker subprocess.
+- No-inference host preflight now records container cleanup and refuses readiness
+  if removal is unconfirmed; it retains a private host-control marker rather than
+  allowing subsequent participant setup. This extends existing shared teardown
+  evidence; no product behavior or participant budget changed.
+- Source-only validation:25 JOB Python,47 COM2 Python,eight Node checks and
+  catalog158 pass; diff checks pass. Historical roots are untouched. Native
+  three-process clocks/permission/discovery still require a fresh actual preflight
+  after the recovery owner hands over engine use. No participant experiments.
+
+
+## Serialized recovery verification — no participants (2026-11-09)
+
+- Integrated4cf6e44b shared bridge shutdown before creating fresh roots. The first
+  fresh HTTP fixtures failed on native developer-context setup. Read-only routing
+  diagnosis in the owned failed fixture subsequently succeeded, and Node health
+  was found not to establish Edge readiness. The fixture now waits for an
+  unauthenticated405 plus clock header before native setup; no task read, native
+  response rewriting, participant retry or inference is involved.
+- Retained both05 failures, the06 JOB04 address-pool-exhaustion failure and all
+  previous freezes. Released exactly four05 networks after checking root labels,
+  exact container IDs, stopped state and zero active endpoints. Release receipts,
+  containers, volumes and historical files are preserved. No unrelated networks
+  or shared services were altered.
+- Actual final-source no-inference gates passed: JOB03 root
+  job-native-clock-v3-preflights-06/JOB03 has20 passed gates; JOB04 root
+  job-native-clock-v3-preflights-07/JOB04 has17. Three-process SQL/Edge/Node dates
+  were read back at all8/7 stages, with full canonical context, native scope and
+  ownership denial, native audit contract, startup/discovery passthrough and
+  scoped participant containers. JOB03 additionally verified shared reminders,
+  one-time preview interruption and key/UUID parity. No model was invoked.
+- Independently rechecked every gate digest and frozen runtime hash. Both local
+  Session-container removals are confirmed for each case; all five owned backend
+  services are stopped, volumes retained. These ready roots are verification-only,
+  not participant runs or quality/cost outcomes. No participant experiment was
+  authorized or launched by this recovery pass.
+- Focused checks:25 JOB Python,42 Node, six shared transport tests and catalog158
+  pass. Initial shared-transport test invocation lacked socket-bind permission;
+  rerun with permitted local sockets passed. Prior full-suite Action Board SQL
+  failure remains a separately reproduced limitation; full suite was not repeated.
+- Remaining source audit: JOB participant session-transition/terminal paths still
+  discard Session.close cleanup receipts, unlike the newly checked preflight path.
+  A future source-only containment pass should propagate unconfirmed cleanup and
+  rebind/reverify prospective freezes before any later experiment. No completion
+  or product-performance claim follows from these preflight results.
+
+
+## Participant cleanup propagation and goal closeout
+
+- Reused shared Session.close for every JOB boundary. Exceptions/unconfirmed
+  removal retain cleanup receipts and the original host-control failure marker.
+  Session transitions return a failure before constructing the next Session;
+  terminal confirmation returns it before any native/file capture. Host shutdown
+  records each outstanding cleanup. No participant rescue/retry was added.
+- JOB03/JOB04 coordinators propagate terminal cleanup failure into condition status
+  and pair-halted evidence, stop before the peer and forbid grading handoff. Tests
+  cover failure after all turns complete as well as partial/transition paths.
+- Fresh source-bound08 roots passed20 JOB03 and17 JOB04 actual no-inference gates.
+  Gate/runtime digests, eight/seven SQL/Edge/Node date stages and both Session
+  removals per case were checked; all exact owned backend services are stopped.
+  Four older02 empty networks were released only after exact-ID/label/stopped
+  checks, with release receipts and all evidence/containers/volumes retained.
+- Focused checks pass:44 Node,27 JOB Python,eight shared runtime,six shared transport
+  and catalog158; diff checks pass. Shared runtime is unchanged in this pass.
+  Full suite was previously run with one Action Board SQL failure reproduced on
+  unchanged local main; that unrelated limitation is retained, not hidden.
+- Requirement audit: (1) actual historical traces establish model-endpoint DNS
+  failure and wall overruns, plus a legacy host-reader containment defect; absent
+  monotonic evidence prevents participant-only attribution. (2) native scopes,
+  discovery/startup, canonical context, continuity boundaries, reminders/previews,
+  timing/usage and all native clocks were audited and prospectively checked.
+  Actual native operations remain product costs; scripted prompts remain distinct
+  from unobserved human effort. (3) confirmed harness fixes are prospective;
+  historical freezes/timeouts/partials remain intact. (4) focused checks and fresh
+  actual no-inference gates pass; no participant experiment was launched.
+  (5) independent grader results and approved grading-only Terra6.1 runtime are
+  retained separately; all134 evidence hashes and reviewer assignments revalidate.
+  (6) documentation is current for this repair and verified changes are locally
+  committed/landed; no push/publication or unrelated edits are included.
+- Honest limits remain: JOB03 historical strict quality fails in both conditions;
+  JOB04 Lookout is partial with four unreached checkpoints. These confounded pilots
+  support no product winner. Native fixture Auth/Storage is a SQL bootstrap with
+  exact local PDFs, not real hosted Auth/Storage verification. Actual human effort,
+  unpriced cost, shared-host load and historical timeout causality remain limited.
+  Later participant experiments need separate authorization and a current freeze;
+  this repair/audit does not invent a replacement experiment series.

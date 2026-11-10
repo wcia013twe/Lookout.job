@@ -23,7 +23,7 @@ def fixture(run,condition='lookout',status='completed'):
  review=grade.template(run,SPEC);review.update(reviewer='fixture-only',independentOfParticipant=True,interactionReviewComplete=True)
  for key,x in review['quality'].items():
   indices=list(range(1,len(SPEC['stages'])+1)) if key=='preservation' else [i for i,s in enumerate(SPEC['stages'],1) if key in s['checks']]
-  x.update({'pass':True,'reason':'Synthetic fixture only','evidence':[f'stage-{i}/output/result.md' for i in indices]})
+  x.update({'pass':True,'reason':'Synthetic fixture only','userImpact':'Fictional checkpoint task outcome is incorrect; cited fixture state is the evidence.','evidence':[f'stage-{i}/output/result.md' for i in indices]})
  for key in ['initial_context','preparation','tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
   review['quality'][key]['evidence'] += [f'stage-{i}/after-state.json' for i,stage in enumerate(SPEC['stages'],1) if key in stage['checks']]
  for key in ['saved_state','report_accuracy']:review['quality'][key]['evidence']+=['terminal-state.json','stage-8/output/final-report.md']
@@ -31,6 +31,71 @@ def fixture(run,condition='lookout',status='completed'):
  for key,x in review['adherence'].items():x.update(outcomeVerified=True,reason='Synthetic fixture only',evidence=[f"stage-{SPEC['adherence'][key]['stage']}/after-state.json"])
  return review
 class Tests(unittest.TestCase):
+ def test_host_failure_persists_stage_and_unblocks_reader(self):
+  import sys
+  from unittest.mock import patch
+  from runtime import stop_container_client
+  real_popen=subprocess.Popen
+  def local_process(*args,**kwargs):
+   return real_popen([sys.executable,'-c','import time; time.sleep(60)'],**kwargs)
+  def unavailable(*args,**kwargs):raise subprocess.TimeoutExpired('fictional Docker probe',10)
+  with tempfile.TemporaryDirectory() as td:
+   sd=Path(td)/'stage-1';sd.mkdir()
+   session=runner.Session.__new__(runner.Session);session.name='fictional-container';session.condition='baseline';session.bridge=None;session.thread_id=None;session.auth={'tokens':{}}
+   with patch.object(runner.subprocess,'Popen',side_effect=local_process),patch.object(runner,'inputs_prompt',return_value='fictional task'),patch.object(runner.cost,'capture',return_value={'error':'unavailable'}),patch.object(runner,'stop_container_client',side_effect=lambda proc,name:stop_container_client(proc,name,unavailable)):
+    result=session.turn(sd,{'_index':1,'_session':'test','seconds':1})
+   self.assertEqual(result['status'],'artifact_failed');self.assertTrue(result['hostControlFailed']);self.assertIsNone(result['executionSeconds'])
+   self.assertIn('container_stop_unconfirmed',result['timing']['invalidReasons'])
+   self.assertTrue(json.loads((sd/'termination.json').read_text())['hostClientStopped'])
+   self.assertEqual(json.loads((sd/'stage-run.json').read_text())['status'],'artifact_failed')
+ def test_cleanup_failure_still_closes_bridge(self):
+  from unittest.mock import patch
+  from unittest.mock import Mock
+  session=runner.Session.__new__(runner.Session);session.name='fictional-container';bridge=Mock();session.bridge=bridge
+  with patch.object(runner.subprocess,'run',side_effect=subprocess.TimeoutExpired('fictional Docker probe',10)):
+   result=session.close()
+  self.assertFalse(result['containerRemoved']);bridge.close.assert_called_once();self.assertIsNone(session.bridge)
+
+ def test_run_does_not_seal_unconfirmed_participant(self):
+  from unittest.mock import patch,Mock
+  from contextlib import ExitStack
+  for turn_failed,removed in [(True,True),(False,False)]:
+   with self.subTest(turn_failed=turn_failed,removed=removed),tempfile.TemporaryDirectory() as td,ExitStack() as stack:
+    root=Path(td);suite=root/'suite';suite.mkdir();(root/'background').mkdir();(root/'background/resume.pdf').write_bytes(b'fictional')
+    save(suite/'scenario.json',SPEC);(suite/'contract.md').write_text('fictional');save(root/'grader.private.json',{'userId':'fictional'})
+    stage={'_index':1,'_session':'one','seconds':10,'id':'one','kind':'onboarding','minute':0}
+    session=Mock();session.turn.return_value={'hostControlFailed':turn_failed,'status':'artifact_failed' if turn_failed else 'completed'};session.close.return_value={'containerRemoved':removed}
+    for key,val in {'R':root,'S':suite,'RUNS':root/'runs','CONFIG':{'version':SPEC['version']},'TASK':'COM1'}.items():stack.enter_context(patch.object(runner,key,val))
+    for key,val in {'ensure_awake':{},'verify':('hash','image'),'packets':[stage],'released_sources':{},'command':None,'validate_initial':None,'Session':session}.items():stack.enter_context(patch.object(runner,key,return_value=val))
+    snapshots=stack.enter_context(patch.object(runner,'snapshot'));terminal=stack.enter_context(patch.object(runner,'capture_terminal_state'));stack.enter_context(patch.object(runner.cost,'persist',return_value={}))
+    run=runner.run('baseline',1,'fictional',True);meta=json.loads((run/'run.json').read_text())
+    self.assertTrue(meta['hostControlFailed']);self.assertFalse(meta['participantTerminationConfirmed']);self.assertNotIn('participantEndedAt',meta)
+    self.assertFalse(meta['finalStateCaptured']);terminal.assert_not_called()
+    self.assertNotIn('final-state.json',[call.args[0].name for call in snapshots.call_args_list])
+
+ def test_pair_halts_without_grading_after_unconfirmed_termination(self):
+  import runpy,sys
+  from unittest.mock import patch
+  from contextlib import nullcontext
+  from types import SimpleNamespace
+  from unittest.mock import Mock
+  with tempfile.TemporaryDirectory() as td:
+   root=Path(td);runs=root/'runs';runs.mkdir()
+   def write(path,value):path.write_text(json.dumps(value))
+   def failed_run(*args):
+    run=runs/'fictional-baseline';run.mkdir();write(run/'run.json',{'hostControlFailed':True,'status':'artifact_failed'});return run
+   fake_runner=SimpleNamespace(RUNS=runs,S=root,configure=Mock(),run=Mock(side_effect=failed_run),write=write)
+   write(root/'scenario.json',SPEC)
+   fake_grade=SimpleNamespace(grade=Mock());fake_summary=SimpleNamespace(build=Mock())
+   args=['orchestrate.py','--task-dir',str(root),'--pair-id','FICTIONAL','--repeat','1','--pilot','--langfuse-env',str(root/'absent.env'),'--receipt-dir',str(root/'receipts')]
+   with patch('design.serial_pair',return_value=nullcontext()),patch.dict(sys.modules,{'runner':fake_runner,'grade':fake_grade,'summary':fake_summary}),patch.object(sys,'argv',args),self.assertRaises(SystemExit) as stopped:
+    runpy.run_path(str(ROOT/'scripts/n01/orchestrate.py'),run_name='__main__')
+   self.assertEqual(stopped.exception.code,1);fake_runner.run.assert_called_once_with('baseline',1,'FICTIONAL',True)
+   fake_grade.grade.assert_not_called();fake_summary.build.assert_not_called()
+   self.assertTrue(json.loads((root/'pair-halted.json').read_text())['remainingConditionNotStarted'])
+   self.assertFalse(json.loads((runs/'fictional-baseline/grading-invalid.json').read_text())['scored'])
+
+
  def setUp(self):self.t=tempfile.TemporaryDirectory();self.run=Path(self.t.name)/'fictional';self.review=fixture(self.run)
  def tearDown(self):self.t.cleanup()
  def test_invalid_host_timing_is_unknown_not_zero(self):
@@ -42,6 +107,15 @@ class Tests(unittest.TestCase):
    v=json.loads(p.read_text());v.update(timing={'valid':True},executionSeconds=1);save(p,v)
   g=grade.grade(self.run,SPEC)
   self.assertEqual(g['metrics']['timing_valid'],1);self.assertEqual(g['metrics']['execution_seconds'],len(SPEC['stages']))
+ def test_related_checkpoint_failures_count_as_one_primary_outcome(self):
+  for key in ['initial_context', 'preservation', 'report_accuracy']:self.review['quality'][key]['pass']=False
+  result=grade.grade(self.run,SPEC,self.review)
+  self.assertEqual(result['metrics']['quality_fraction'],7/8)
+  self.assertEqual(result['metrics']['primary_outcome_count'],8)
+  self.assertEqual(sum(x is False for x in result['primaryOutcomes'].values()),1)
+ def test_failed_check_needs_user_impact(self):
+  item=self.review['quality']['initial_context'];item['pass']=False;item['userImpact']=''
+  with self.assertRaisesRegex(ValueError,'user impact'):grade.grade(self.run,SPEC,self.review)
  def test_missing_review_pending(self):
   g=grade.grade(self.run,SPEC);self.assertEqual(g['status'],'pending_review');self.assertNotIn('quality_pass',g['metrics']);self.assertTrue(all(v is None for v in g['quality'].values()))
  def test_no_tools_omitted_even_good_quality(self):

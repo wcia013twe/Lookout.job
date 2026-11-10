@@ -36,36 +36,49 @@ def load(root):
  if not manifest['container'].startswith('job-clock-db-'):raise ValueError('Wrong container prefix')
  info=json.loads(call(['docker','inspect',manifest['container']]).stdout)[0]
  if info['Config'].get('Labels',{}).get(LABEL)!=str(root) or info['Id']!=manifest['containerId']:raise ValueError('Container owner/identity changed')
- if info['HostConfig']['NetworkMode']!='none' or info['HostConfig'].get('PortBindings'):raise ValueError('Clock database unexpectedly network-exposed')
+ expected=m_network=manifest.get('network','none')
+ if info['HostConfig']['NetworkMode']!=expected or info['HostConfig'].get('PortBindings'):raise ValueError('Clock database unexpectedly network-exposed')
+ if expected!='none':
+  network=json.loads(call(['docker','network','inspect',expected]).stdout)[0]
+  if not expected.startswith('job-clock-net-') or network.get('Labels',{}).get(LABEL)!=str(root) or not network['Internal']:raise ValueError('Wrong isolated network')
+  if set(info['NetworkSettings']['Networks'])!={expected}:raise ValueError('Unexpected database network attachment')
  return root,manifest,info
 
 def sql(root,text):
  _,m,_=load(root)
  return call(['docker','exec','-i',m['container'],'psql','-h','/tmp','-U','postgres','-d','postgres','-v','ON_ERROR_STOP=1','-Atq'],input=text,timeout=180).stdout
 
-def prepare(root,virtual_clock=False):
+def prepare(root,virtual_clock=False,private_network=False,initial_at="2026-11-16T14:00:00Z"):
  root=Path(root).resolve()
  if root.exists():raise ValueError('New root required; preserve every earlier preparation')
  root.mkdir(parents=True,mode=0o700)
  suffix=secrets.token_hex(6);name='job-clock-db-'+suffix;volume=name+'-data';label=LABEL+'='+str(root)
+ network='job-clock-net-'+suffix if private_network else 'none'
  image_name='lookout-job-clock-postgres:0.1' if virtual_clock else IMAGE
  image=json.loads(call(['docker','image','inspect',image_name]).stdout)[0]
  migrations=sorted((REPO/'supabase/migrations').glob('*.sql'))
- manifest={'kind':'isolated-job-clock-database-v1','root':str(root),'container':name,'volume':volume,'image':image_name,'clockMode':'process_local_ticking_offset' if virtual_clock else 'real','imageId':image['Id'],'status':'provisioning','participantExecuted':False,'migrations':{p.name:sha(p.read_bytes()) for p in migrations},'bootstrapSha256':sha(BOOTSTRAP.encode()),'limitations':['No native HTTP endpoint or aligned virtual clock yet.','Minimal isolated Auth/Storage SQL bootstrap; no actual Supabase Auth/Storage server is claimed.']}
+ manifest={'kind':'isolated-job-clock-database-v1','root':str(root),'container':name,'volume':volume,'network':network,'image':image_name,'clockMode':'process_local_ticking_offset' if virtual_clock else 'real','imageId':image['Id'],'status':'provisioning','participantExecuted':False,'migrations':{p.name:sha(p.read_bytes()) for p in migrations},'bootstrapSha256':sha(BOOTSTRAP.encode()),'limitations':['No native HTTP endpoint or aligned virtual clock yet.','Minimal isolated Auth/Storage SQL bootstrap; no actual Supabase Auth/Storage server is claimed.']}
  save(root/'database.json',manifest)
  try:
+  if private_network:call(['docker','network','create','--internal','--label',label,network])
   call(['docker','volume','create','--label',label,volume])
   call(['docker','run','--rm','--user','root','--network','none','--label',label,'--mount','type=volume,source='+volume+',target=/job-data','--entrypoint','sh',image['Id'],'-c','chown postgres:postgres /job-data'])
   clock_args=[]
   if virtual_clock:
    clock_dir=root/'clock';clock_dir.mkdir(mode=0o755);clock_dir.chmod(0o755)
-   initial=datetime.datetime(2026,11,16,14,tzinfo=datetime.timezone.utc)
+   initial=datetime.datetime.fromisoformat(initial_at.replace('Z','+00:00'))
+   if initial.tzinfo is None:raise ValueError('Explicit offset required')
    offset=initial.timestamp()-time.time()
    (clock_dir/'time.rc').write_text(f'{offset:+.6f}\n');(clock_dir/'time.rc').chmod(0o644)
    save(root/'clock-state.json',{'lastBusinessTarget':initial.isoformat(),'offsetSeconds':offset})
    clock_args=['--mount','type=bind,source='+str(clock_dir)+',target=/job-clock,readonly','-e','LD_PRELOAD=/usr/local/lib/job-clock.so.1','-e','FAKETIME_TIMESTAMP_FILE=/job-clock/time.rc','-e','FAKETIME_NO_CACHE=1','-e','FAKETIME_DONT_FAKE_MONOTONIC=1','-e','TZ=UTC']
-  command='if [ ! -f /job-data/data/PG_VERSION ]; then initdb -D /job-data/data -U postgres -A trust --no-locale >/tmp/initdb.log || exit 1; fi; exec postgres -D /job-data/data -c listen_addresses= -c unix_socket_directories=/tmp'
-  ident=call(['docker','create','--name',name,'--label',label,'--network','none','--user','postgres','--cap-drop','ALL','--security-opt','no-new-privileges','--memory','1g','--cpus','1','--mount','type=volume,source='+volume+',target=/job-data','--entrypoint','sh',*clock_args,image['Id'],'-c',command]).stdout.strip()
+  if private_network:
+   # The trusted subnet contains only this fixture's labeled server containers.
+   hba="printf '\\nhost all all 0.0.0.0/0 trust\\n' >> /job-data/data/pg_hba.conf; "
+  else:hba=''
+  listen='*' if private_network else ''
+  command='if [ ! -f /job-data/data/PG_VERSION ]; then initdb -D /job-data/data -U postgres -A trust --no-locale >/tmp/initdb.log || exit 1; fi; '+hba+'exec postgres -D /job-data/data -c listen_addresses='+listen+' -c unix_socket_directories=/tmp'
+  ident=call(['docker','create','--name',name,'--label',label,'--network',network,'--user','postgres','--cap-drop','ALL','--security-opt','no-new-privileges','--memory','1g','--cpus','1','--mount','type=volume,source='+volume+',target=/job-data','--entrypoint','sh',*clock_args,image['Id'],'-c',command]).stdout.strip()
   manifest['containerId']=ident;save(root/'database.json',manifest);call(['docker','start',name])
   for _ in range(100):
    ready=subprocess.run(['docker','exec',name,'pg_isready','-h','/tmp','-U','postgres'],capture_output=True,timeout=5)

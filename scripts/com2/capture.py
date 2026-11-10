@@ -1,7 +1,7 @@
 """Read-only post-termination verification; no writer credential or write operation accepted."""
 import hashlib,json,shutil,time,urllib.request
 from pathlib import Path
-READS={'read_personal_context','read_application_record','list_contacts','list_artifacts','read_artifact'}
+READS={'read_personal_context','read_application_record','read_application_timeline','list_contacts','list_artifacts','read_artifact'}
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 def files(root):
@@ -34,7 +34,7 @@ def capture(run,root):
   snapshot=json.loads((run/'final-state.json').read_text())
   if snapshot.get('userId')!=config['userId'] or not all(isinstance(snapshot.get('tables',{}).get(k),list) for k in ['profiles','applications','application_milestones','outreach_contacts','career_artifacts']):raise ValueError('Incomplete or foreign final native snapshot')
   receipt['nativeSnapshotSha256']=sha(run/'final-state.json')
-  requests=[('read_personal_context',{}),('list_contacts',{})]+[('read_application_record',{'applicationId':app['id']}) for app in snapshot['tables']['applications']]+[('read_artifact',{'id':artifact['id']}) for artifact in snapshot['tables']['career_artifacts']]
+  requests=[('read_personal_context',{}),('list_contacts',{})]+[('read_application_record',{'applicationId':app['id']}) for app in snapshot['tables']['applications']]+[('read_application_timeline',{'applicationId':app['id']}) for app in snapshot['tables']['applications']]+[('read_artifact',{'id':artifact['id']}) for artifact in snapshot['tables']['career_artifacts']]
   for name,args in requests:
    try:
     value=lookup(config,name,args)

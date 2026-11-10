@@ -8,7 +8,9 @@ def stamp(value):
  return d.timestamp()
 
 class Services:
- def __init__(self,file):
+ def __init__(self,file,applications=None):
+  self.aliases=None if applications is None else {alias:app['key'] for app in applications for alias in [app['key'],app['id']]}
+  if applications is not None and len(self.aliases)!=len(applications)*2:raise ValueError('Ambiguous application mapping')
   self.file=Path(file);self.file.parent.mkdir(parents=True,exist_ok=True)
   with self.db() as db:
    db.execute('CREATE TABLE IF NOT EXISTS reminders (id TEXT PRIMARY KEY, key TEXT UNIQUE, application TEXT, due TEXT, zone TEXT, state TEXT, delivery TEXT)')
@@ -20,7 +22,12 @@ class Services:
   try:
    with db:yield db
   finally:db.close()
+ def application_key(self,value):
+  if self.aliases is None:return value
+  if value not in self.aliases:raise ValueError('Unknown application identifier')
+  return self.aliases[value]
  def schedule(self,key,applicationId,dueAt,timeZone):
+  applicationId=self.application_key(applicationId)
   from zoneinfo import ZoneInfo
   stamp(dueAt);ZoneInfo(timeZone)
   with self.db() as db:
@@ -48,6 +55,7 @@ class Services:
      receipt=str(uuid.uuid4());db.execute("UPDATE reminders SET state='delivered',delivery=? WHERE id=? AND state='scheduled'",(receipt,row['id']));due.append({**self.reminder(dict(row)),'state':'delivered','deliveryReceiptId':receipt,'deliveryCount':1})
   return due
  def arm(self,applicationId,eventKey):
+  applicationId=self.application_key(applicationId)
   with self.db() as db:
    r=db.execute('SELECT armed,failures FROM previews WHERE application=?',(applicationId,)).fetchone()
    if not r:raise ValueError('Unknown saved preparation')
@@ -55,6 +63,7 @@ class Services:
    db.execute('UPDATE previews SET armed=? WHERE application=?',(eventKey,applicationId))
   return {'armed':True,'eventKey':eventKey}
  def preview(self,applicationId,answers=None):
+  applicationId=self.application_key(applicationId)
   with self.db() as db:
    row=db.execute('SELECT * FROM previews WHERE application=?',(applicationId,)).fetchone()
    if not row:raise ValueError('Unknown saved preparation')

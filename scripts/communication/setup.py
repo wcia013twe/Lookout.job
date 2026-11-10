@@ -1,6 +1,7 @@
 """One no-inference setup path for COM01–04. Existing destinations are never overwritten."""
 import argparse,hashlib,json,subprocess,sys
 from pathlib import Path
+from design import outcome_groups
 REPO=Path(__file__).resolve().parents[2]
 CASES={'COM1':'n01','COM2':'com2','COM3':'com3','COM4':'com4'}
 
@@ -12,6 +13,7 @@ def normalize(value):
 def validate_setup(root,case):
  root=Path(root);read=lambda n:json.loads((root/n).read_text())
  a=read('account.private.json');g=read('grader.private.json');spec=read('suite/scenario.json');config=read('runtime-config.json')
+ groups=outcome_groups(spec)
  if config.get('taskId')!=case or spec.get('taskId')!=case:raise ValueError('Case identity mismatch')
  if a.get('status')!='verified' or a.get('apiUrl')!='http://127.0.0.1:54321' or a.get('mcpUrl')!='http://127.0.0.1:8080/mcp' or not a.get('email','').endswith('@example.test'):raise ValueError('Verified local fictional account required')
  if g.get('userId')!=a.get('userId') or g.get('scopes')!=['workspace:read'] or {g[k] for k in ['benchmarkTaskId','taskId'] if k in g}!={case} or g.get('mcpUrl')!=a['mcpUrl']:raise ValueError('Dedicated read-only grader mismatch')
@@ -25,7 +27,7 @@ def validate_setup(root,case):
  sys.path.append(str(REPO/'scripts/n01'));from cost import validate_policy
  validate_policy(read('cost-policy.json'))
  if not (root/'account.lock').is_symlink():raise ValueError('Shared owner lock required')
- return {'case':case,'scenarioVersion':spec['version'],'model':spec['model'],'reasoning':spec['reasoning'],'turns':len(spec['stages']),'sessions':len({s['session'] for s in spec['stages']}),'nativeTools':sorted(config['allowedTools']),'localTools':['read_calendar','read_inbox','ask_user']+(['search_sources','read_source'] if case=='COM3' else []),'requiredGuidance':config['requiredGuidance'],'costPolicySha256':hashlib.sha256((root/'cost-policy.json').read_bytes()).hexdigest(),'readOnlyGrader':True,'inferenceExecuted':False}
+ return {'case':case,'scenarioVersion':spec['version'],'model':spec['model'],'reasoning':spec['reasoning'],'turns':len(spec['stages']),'sessions':len({s['session'] for s in spec['stages']}),'nativeTools':sorted(config['allowedTools']),'localTools':['read_calendar','read_inbox','ask_user']+(['search_sources','read_source'] if case=='COM3' else []),'requiredGuidance':config['requiredGuidance'],'costPolicySha256':hashlib.sha256((root/'cost-policy.json').read_bytes()).hexdigest(),'readOnlyGrader':True,'inferenceExecuted':False,'primaryOutcomes':list(groups),'study':spec.get('study')}
 
 def verify_grader(root):
  import urllib.request
@@ -59,7 +61,7 @@ def main():
   native=json.loads((smoke/'receipt.json').read_text())
   if not native.get('restored') or not native.get('writerRoundtripsVerified') or not native.get('applicationRediscovered') or not native.get('exactSeededContactsRoundtripped'):raise RuntimeError('Exact fixture native roundtrip incomplete')
   receipt['nativeRoundtripVerified']=True
- receipt.update(setupVersion='communication-setup-v1',taskDir=str(a.destination.resolve()),preflight='passed',commands={'run':str(folder/'orchestrate.py'),'grade':str(folder/'grade.py'),'summary':str(folder/'summary.py'),'export':str(folder/'langfuse.mjs')})
+ receipt.update(setupVersion='communication-setup-v2',taskDir=str(a.destination.resolve()),preflight='passed',commands={'run':str(folder/'orchestrate.py'),'grade':str(folder/'grade.py'),'summary':str(folder/'summary.py'),'export':str(folder/'langfuse.mjs')})
  dest=a.preflight_output/'setup-receipt.json';dest.write_text(json.dumps(receipt,indent=2)+'\n');dest.chmod(0o600)
  print(json.dumps({'case':a.case,'ready':True,'inferenceExecuted':False,'receipt':str(dest)}))
 if __name__=='__main__':main()

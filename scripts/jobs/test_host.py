@@ -21,9 +21,78 @@ class ServicesTest(unittest.TestCase):
    result=Services(s.file).preview('B',{'earliest-start-date':'2027-01-19'});self.assertEqual(result['status'],'prepared');self.assertFalse(result['submitted'])
    self.assertEqual(s.snapshot()['previews'][0]['failures'],1)
    with self.assertRaises(ValueError):s.arm('B','timeout-1')
- def test_native_clean_keeps_startup_and_filters_only_scope(self):
+ def test_shared_services_use_one_state_for_keys_and_native_ids(self):
+  apps=[{'key':'A','id':'uuid-a'},{'key':'B','id':'uuid-b'},{'key':'C','id':'uuid-c'}]
+  with tempfile.TemporaryDirectory() as tmp:
+   file=Path(tmp)/'state.sqlite';s=Services(file,apps)
+   s.seed({'B':{'preparation':{'completedFields':['name','email'],'pendingField':'earliest-start-date'}}})
+   original=s.schedule('A-followup','uuid-a','2026-11-18T14:00:00Z','America/New_York')
+   self.assertEqual(original['applicationId'],'A')
+   self.assertEqual(s.schedule('A-followup','A',original['dueAt'],original['timeZone'])['reminderId'],original['reminderId'])
+   s.arm('uuid-b','one-failure');self.assertEqual(s.preview('B')['status'],'preview_timeout')
+   resumed=Services(file,apps).preview('uuid-b',{'earliest-start-date':'2027-01-19'})
+   self.assertEqual(resumed['status'],'prepared');self.assertEqual(set(resumed['savedFields']),{'name','email','earliest-start-date'})
+   self.assertEqual(s.snapshot()['previews'][0]['failures'],1)
+   for value in ['missing','another-account-uuid']:
+    with self.assertRaises(ValueError):s.schedule('foreign',value,original['dueAt'],original['timeZone'])
+    with self.assertRaises(ValueError):s.preview(value)
+   with self.assertRaises(ValueError):Services(file,[{'key':'A','id':'same'},{'key':'B','id':'same'}])
+
+ def test_no_inference_cleanup_must_be_confirmed_before_readiness(self):
+  from unittest.mock import MagicMock
+  import host
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);out=root/'receipts';out.mkdir();session=MagicMock()
+   session.close.return_value={'containerRemoved':False,'errorType':'TimeoutExpired'}
+   with self.assertRaisesRegex(RuntimeError,'launch blocked'):host.preflight_cleanup(session,root,'baseline',out)
+   marker=json.loads((root/'host-control-failure.json').read_text());self.assertFalse(marker['participantExecuted'])
+   self.assertEqual(marker['phase'],'no_inference_preflight');self.assertFalse(json.loads((out/'baseline-cleanup.json').read_text())['containerRemoved'])
+   (root/'host-control-failure.json').unlink();session.close.return_value={'containerRemoved':True}
+   self.assertTrue(host.preflight_cleanup(session,root,'lookout',out)['containerRemoved']);self.assertFalse((root/'host-control-failure.json').exists())
+
+ def test_terminal_cleanup_failure_skips_native_or_file_confirmation(self):
+  from unittest.mock import MagicMock,patch
+  import host
+  for condition,operation in [('baseline','baseline.final_files'),('lookout','native.readonly_confirmation')]:
+   with tempfile.TemporaryDirectory() as tmp:
+    h=host.Host.__new__(host.Host);h.root=Path(tmp);h.case='JOB04';h.owner='fictional';h.cfg={};h.verify=MagicMock();h.snapshot=MagicMock()
+    session=MagicMock();session.close.return_value={'containerRemoved':False};h.sessions={condition:('s1',session)}
+    with patch.object(host,'account') as account:
+     result=h.dispatch({'benchmarkTaskId':'JOB04','ownerId':'fictional','condition':condition,'operation':operation})
+    self.assertTrue(result['hostControlFailed']);self.assertFalse(result['participantExecuted']);h.snapshot.assert_not_called();account.assert_not_called()
+    self.assertNotIn(condition,h.sessions);self.assertEqual(json.loads((h.root/'host-control-failure.json').read_text())['phase'],'terminal_confirmation')
+    with self.assertRaises(ValueError):h.dispatch({'benchmarkTaskId':'JOB04','ownerId':'fictional','condition':condition,'operation':'condition.setup'})
+
+ def test_transition_cleanup_failure_never_constructs_next_session(self):
+  from unittest.mock import MagicMock,patch
+  import host
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);h=host.Host.__new__(host.Host);h.root=root;h.case='JOB04';h.owner='fictional';h.cfg={};h.verify=MagicMock();h.stage=0
+   session=MagicMock();session.close.return_value={'containerRemoved':False};h.sessions={'baseline':('s1',session)}
+   (root/'suite').mkdir();(root/'suite/scenario.json').write_text('{}');(root/'background').mkdir();(root/'background/resume.pdf').write_bytes(b'fixture')
+   run=root/'host-runs/baseline';(run/'output').mkdir(parents=True);(run/'live-inputs').mkdir();(run/'sources.json').write_text('{"releasedStageIds":[],"events":[]}')
+   req={'benchmarkTaskId':'JOB04','ownerId':'fictional','condition':'baseline','operation':'participant.turn','packet':{'stage':'next','session':'s2','events':[],'sources':{}},'budgetSeconds':1}
+   with patch.object(host,'account',return_value={'capturedAt':'2026-11-09T14:00:00Z'}),patch.object(host,'clock_alignment',return_value={'aligned':True}),patch.object(host.runtime,'Session') as constructor:
+    result=h.dispatch(req)
+   constructor.assert_not_called();self.assertTrue(result['hostControlFailed']);self.assertIsNone(result['executionSeconds']);self.assertEqual(json.loads((root/'host-control-failure.json').read_text())['phase'],'session_transition')
+
+ def test_native_reply_is_not_reformatted_or_pruned(self):
   source={'instructions':['Keep native behavior.'],'tools':[{'name':'read_guide','inputSchema':{}},{'name':'forbidden','inputSchema':{}}]}
-  result=clean(source,{'read_guide'});self.assertEqual(result['instructions'],source['instructions']);self.assertEqual([x['name'] for x in result['tools']],['read_guide'])
+  result=clean(source,{'read_guide'});self.assertEqual(result['instructions'],source['instructions']);self.assertEqual(result,source);self.assertEqual(clean('{"name":"Résumé"}',{'read_guide'}),'{"name":"Résumé"}')
+ def test_native_startup_and_audit_guide_are_not_rewritten(self):
+  native={'instructions':['Assignment data collection is enabled.','For authorized work load agent-audit to record the run.'],'guides':[{'id':'agent-audit','name':'Native audit guide'}]}
+  self.assertEqual(clean(native,{'read_guide','start_agent_audit_run'}),native)
+
+ def test_native_audit_writes_remain_measured_product_calls(self):
+  import host
+  with tempfile.TemporaryDirectory() as tmp:
+   stage=Path(tmp);rows=[]
+   for i,name in enumerate(['start_agent_audit_run','append_agent_audit_events'],1):
+    params={'name':name,'arguments':{}} if i==1 else {'name':'call_discovered_tool','arguments':{'name':name,'arguments':{}}}
+    rows += [{'type':'mcp.request','data':{'id':i,'method':'tools/call','params':params}},{'type':'mcp.measurement','data':{'method':'tools/call','tool':name,'durationSeconds':.25,'responseBytes':10}},{'type':'mcp.response','data':{'id':i,'result':{'content':[]}}}]
+   (stage/'lookout-trace.jsonl').write_text(''.join(json.dumps(x)+'\n' for x in rows));metrics=host.call_metrics([stage])
+   self.assertEqual(metrics['tool_write_calls'],2);self.assertEqual(metrics['tool_other_calls'],0);self.assertEqual(metrics['mcp_task_tools_seconds'],.5)
+
  def test_actor_has_no_future_facts(self):
   self.assertNotIn('January',actor('Birch start date?',[])[0]);self.assertIn('January',actor('Birch start date?',['multi_update'])[0]);self.assertNotIn('migration',actor('What was my feedback?',[])[0])
 
@@ -42,6 +111,39 @@ class ServicesTest(unittest.TestCase):
    self.assertEqual(result['timing']['monotonicSeconds'],3);self.assertEqual(result['status'],'artifact_failed')
    self.assertTrue(result['environmentTimingConfounded']);self.assertEqual(result['cost']['status'],'unknown')
 
+
+ def test_unconfirmed_container_stop_keeps_receipt_and_skips_docker_usage(self):
+  from unittest.mock import patch,MagicMock
+  import host
+  runtime=host.runtime;session=runtime.Session.__new__(runtime.Session)
+  session.name='fictional-owned-container';session.condition='baseline';session.bridge=None;session.thread_id='thread';session.auth={'tokens':{}}
+  proc=MagicMock();proc.stdout=[];proc.poll.return_value=None;proc.wait.return_value=1
+  def terminate(*args):
+   proc.poll.return_value=1
+   return {'containerStopped':False,'hostClientStopped':True,'errors':['TimeoutExpired']}
+  def timer_factory(seconds,callback):
+   timer=MagicMock();timer.start.side_effect=callback;return timer
+  clock=MagicMock();clock.startWall=100;clock.finish.return_value={'wallSeconds':3,'monotonicSeconds':3,'valid':True,'invalidReasons':[]}
+  with tempfile.TemporaryDirectory() as tmp:
+   stage=Path(tmp)/'stage-1';stage.mkdir()
+   with patch.object(runtime,'inputs_prompt',create=True,return_value='fixture'),patch.object(runtime.subprocess,'Popen',return_value=proc),patch.object(runtime.threading,'Timer',side_effect=timer_factory),patch.object(runtime,'stop_container_client',side_effect=terminate),patch.object(runtime.cost,'capture',return_value={'error':'fixture'}) as capture,patch.object(runtime,'StageClock',return_value=clock):
+    result=session.turn(stage,{'_index':1,'_session':1,'seconds':1})
+   self.assertTrue(result['hostControlFailed']);self.assertEqual(result['status'],'artifact_failed');self.assertIsNone(result['executionSeconds'])
+   self.assertIn('container_stop_unconfirmed',result['timing']['invalidReasons']);self.assertEqual(capture.call_count,1)
+   self.assertFalse(json.loads((stage/'termination.json').read_text())['containerStopped'])
+   self.assertTrue(json.loads((stage/'stage-run.json').read_text())['hostControlFailed'])
+
+ def test_context_parity_includes_keyed_false_null_zero_and_empty_values(self):
+  import importlib.util,copy
+  library=Path(__file__).resolve().parents[1]/'com2/parity.py';spec=importlib.util.spec_from_file_location('clock_parity_fixture',library);parity=importlib.util.module_from_spec(spec);spec.loader.exec_module(parity)
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);settings={'profile':{'user_id':'original','facts':{'enabled':False,'empty':[],'missing':None,'count':0}},'preferences':{'emptyText':''},'resumes':[],'answers':[]};actual=copy.deepcopy(settings);actual['profile']['user_id']='cloned'
+   for name,value in [('source-manifest.private.json',{'settings':settings}),('cloned-context.private.json',{'settings':actual}),('account.private.json',{'idMapping':{'original':'cloned'}})]:
+    (root/name).write_text(json.dumps(value))
+   (root/'profile.md').write_text('November, yes, no and zero occur in unrelated prose.')
+   text,receipt=parity.complete_and_verify(root,root,(root/'profile.md').read_text(),{'contacts':[]})
+   canonical=text.split('```json\n')[-1].split('```')[0]
+   self.assertEqual(json.loads(canonical),settings);self.assertTrue(receipt['canonicalCompleteSettingsIncluded'])
 
  def test_native_clock_gate_rejects_compressed_future_dates(self):
   now='2026-11-09T14:00:00Z'
@@ -76,5 +178,25 @@ class ServicesTest(unittest.TestCase):
     save(f'runs/{c}/failed/input.json',{'input':{'message':'same'}})
     save(f'runs/{c}/evidence-hashes.json',{str(p.relative_to(root/'runs'/c)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files})
    result=audit(root);self.assertFalse(result['pairedIntentEvidenceMatch']);self.assertIsNone(result['qualityPass']);self.assertFalse(result['measuredComparisonReady']);self.assertEqual(result['conditions']['baseline']['participantTurnSeconds'],8);self.assertEqual(result['conditions']['baseline']['missingResponseStages'],['failed'])
+   partial=__import__('json').loads((root/'runs/baseline/run.json').read_text());partial['checkpoints'][1]['executionSeconds']=None;save('runs/baseline/run.json',partial)
+   result=audit(root);self.assertIsNone(result['conditions']['baseline']['participantTurnSeconds']);self.assertEqual(result['conditions']['baseline']['executionTimingCoverage'],'partial');self.assertEqual(result['conditions']['baseline']['knownParticipantSeconds'],1)
+
+
+class ReferenceContractTest(unittest.TestCase):
+ def test_terminal_reference_mismatch_blocks_without_regrading_history(self):
+  import ast
+  source=Path(__file__).with_name('host.py').read_text()
+  node=next(n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name=='fixture_reference_contract')
+  ns={};exec(compile(ast.Module(body=[node],type_ignores=[]),'host.py','exec'),ns)
+  audit=ns['fixture_reference_contract']
+  bad={'expected':{'withdraw':{'C':{'status':'withdrawn','blocker':'work-authorization'}}}}
+  self.assertFalse(audit('JOB03',bad)['aligned'])
+  self.assertTrue(audit('JOB04',bad)['aligned'])
+  bad['expected']['withdraw']['C']['blocker']=None
+  self.assertTrue(audit('JOB03',bad)['aligned'])
+  scenario=json.loads((Path(__file__).resolve().parents[2]/'examples/job03/scenario.json').read_text())
+  self.assertTrue(audit('JOB03',scenario)['aligned'])
+  self.assertEqual(scenario['expected']['initial']['C']['blocker'],'work-authorization')
+  self.assertIsNone(scenario['expected']['multi_update']['C']['blocker'])
 
 if __name__=='__main__':unittest.main()
