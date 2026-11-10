@@ -185,3 +185,13 @@ The narrowly scoped claim_application_request and report_application_request too
 ### Event-driven Muse wake contract
 
 The receiver polls the existing pending-event count, including application requests and Action Board decisions, independently of context versions. Agent package 0.2.0 defaults to 60-second polling and wake cooldown with capped error backoff. The authenticated worker reads actual events, deduplicates by event ID, reconciles durable domain state, verifies progress/blockers and acknowledges only handled events. Hosts must coalesce workers and retain a pending drain while busy. Existing explicit host settings must be updated; legacy configure_agent_watch responses still recommend 120 seconds. Package/guide source and local builds do not establish host activation or end-to-end delivery.
+
+
+### Task connection choices
+My Agent task editors show active connections with batch-publishing access.
+Unselected revoked, expired and read-only connections stay out of the assignment
+picker; their records remain available to backend history and validation. A saved
+unavailable assignment remains visible with its actual reason so the person can
+remove or replace it. This is presentation filtering, not credential deletion or
+a permission change. Website/MCP schedule saves keep their existing version and
+ownership checks. The detached connection demo includes revoked and expired history.
