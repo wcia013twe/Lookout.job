@@ -1,6 +1,11 @@
+% Standalone manuscript: tables and bibliography are inline.
+% Required content files: paper.tex and lookout-architecture.pdf.
+% Put the PDF alongside this file; the repository figure path also works.
+% Build with: tectonic paper.tex (or XeLaTeX, twice for references).
 \documentclass[twocolumn]{article}
 
 \usepackage{graphicx}
+\graphicspath{{./}{docs/figures/}}
 \usepackage{url}
 \usepackage[margin=0.75in]{geometry}
 \usepackage{titlesec}
@@ -125,7 +130,7 @@ User answers, preference edits, and backend results create events in a connectio
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.95\textwidth]{docs/figures/lookout-architecture.pdf}
+    \includegraphics[width=0.95\textwidth]{lookout-architecture.pdf}
     \caption{Lookout architecture. Users and personal agents access a common set of records through the web interface and the authenticated MCP interface, respectively. The figure shows logical boundaries only.}
     \label{fig:architecture}
 \end{figure*}
