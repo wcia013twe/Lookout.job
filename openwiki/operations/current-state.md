@@ -1470,3 +1470,22 @@ claim. JOB04 EVAL-01 passed19 source-bound actual no-inference gates and is exec
 with no total turn deadline. All JOB04 outcomes and overall goal completion remain
 pending. Read-only audit-v3 supplements confirm recorded native clocks/timing for
 completed JOB03 roots without replacing their original audits or quality grades.
+
+
+### JOB04 execution and environment recovery checkpoint
+
+JOB04 EVAL-01 completed7/7 in both conditions with accepted exact5.6 medium
+independent review. Five reported dimensions tied; baseline scored higher on
+generation decisions. No overall JOB04 quality/pass aggregate exists. Both common
+exports have verified readback; baseline needed a delayed read-only verification
+with original failed delivery receipts retained. See [reporting limits](../../docs/job03-job04-reporting.md).
+
+JOB04 EVAL-02 retained Docker start/create failures and a snapshot errno28 disk
+exhaustion error (Lookout1/7 completed, baseline0/7). Central build-cache recovery
+restored Docker; owned stopped services and all evidence remain. Its single fresh
+exact-model grader completed but failed assignment-hash validation. That rejected
+review remains unchanged; failure-only exports verified, quality unknown. The final
+scheduled EVAL-03 passed19 fresh actual gates and is executing AB without a total
+turn deadline, using prospective SSD participant/backend/grader storage. There is
+no participant retry or replacement trial. Four pairs have accepted independent
+grades; final execution, auditor installation and local landing remain pending.

@@ -49,3 +49,17 @@ whole-runtime tool/wake counts remain null; detailed diagnostics stay local.
 Raw profiles, resumes, prompts, reviews and credentials are never spread into the
 common record. Export provenance uses the shared allowlist. This adapter changes
 no frozen participant source, task, rubric or model and starts no background service.
+
+A delayed read-only check may confirm eventual visibility after the three delivery
+attempts. Use the existing Langfuse command with --verify and a NEW receipt
+directory; do not upload again. Preserve the original failed delivery receipts.
+A separate completion receipt must bind the unchanged common record hash and
+the matching trace/experiment identity to each successful verification receipt.
+The JOB04 EVAL-01 baseline required this path; its original delivery3 stays false.
+
+A grader process completing is not an accepted review. For JOB04 EVAL-02, the
+exact-model grader completed, but its unchanged submission failed assignment-hash
+validation. No amended attestation, regrade or replacement is accepted. Its
+failure-only export retains unknown quality/task success, independently of the
+verified transport readback. Environment interruption and rejected review remain
+explicit in the local evidence index and change note.
