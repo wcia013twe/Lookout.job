@@ -344,3 +344,15 @@ guards publication only; it does not prove source captures are complete or repai
 previous summaries. Fictional SQL fixtures exercise full text, owner isolation,
 missing captures, separate fit analysis and existing-job publication. Hosted rollout
 requires the migration; local checks alone do not establish deployment.
+
+
+### Compact Discover controls
+
+Discover keeps search, posting-age and discovery-day filters in one unboxed row
+on desktop and a two-row grid on mobile. The applied-jobs toggle and live result
+count share the compact row below. Filtering, profile selection, counters and
+owner-scoped actions are unchanged. Demo uses the same layout and fictional data.
+Company logos require the public `NEXT_PUBLIC_LOGO_DEV_TOKEN` repository variable
+at static-build time. Pages publication checks that a `pk_` token is configured;
+local builds can still use placeholders without a token. No secret Logo.dev API
+key belongs in frontend configuration.

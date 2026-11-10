@@ -223,6 +223,7 @@ button:not(:disabled) {
 .workspace-count { color: #0e2033; background: #b9def5; }
 .workspace-shell .workspace-heading h1 { font-size: clamp(1.6rem, 3vw, 2rem); line-height: 1.2; letter-spacing: -0.03em; text-wrap: balance; }
 .workspace-shell .workspace-heading p { max-width: 68ch; }
+.workspace-shell .discover-header .workspace-heading { margin-bottom: 0; }
 .workspace-shell .workspace-section { border-color: #60778c45; margin-top: 2.5rem; padding-top: 1.75rem; }
 .workspace-shell .workspace-section > h2 { letter-spacing: -0.02em; }
 .workspace-shell .workspace-control {
