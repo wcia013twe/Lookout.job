@@ -1400,6 +1400,15 @@ clearance/grades remain intact, but native-workflow attribution requires this se
 caveat. See docs/job-controlled-pilot-results.md; prospective shared-clone/lifecycle
 repair remains with the owning chat. No product or participant run was changed.
 
+### JOB participant deadline policy amendment (2026-11-09)
+
+JOB01 and JOB02 adapters opt into healthy completion in the shared session executor.
+Historical scenario seconds remain a measured reference; they no longer install a
+participant kill timer, invalidate timing, or classify completed work as timed out.
+Both conditions use the same policy. Actual process failures and host timing faults
+remain recorded; network, state capture, and containment cleanup operations retain
+bounded timeouts. Previously frozen sources and terminated attempts stay unchanged.
+The separate coordinator owns the corresponding independent-grader policy.
 ### Frozen repeated communication evaluations
 
 The user has selected EVAL-01 through EVAL-03 for each communication case, with alternating condition order. Both participant and independent grader must be subscription-backed `gpt-5.6-terra` with medium reasoning; no model substitution. Existing historical pilots/diagnostics remain separate. Use separate dedicated per-condition owners/roots so native audit history is preserved when Lookout runs first. Task facts and rubric stay fixed; input parity permits only explicit ownership-ID remapping. Quality misses remain outcomes, not triggers for replacement runs. Execution/containment or validity failures retain their evidence and are disclosed.
@@ -1449,3 +1458,18 @@ model/evidence/timing-integrity and containment checks remain enforced. Individu
 setup/cleanup operation limits remain bounded. Participant deadline-policy changes
 are handled in their owning chats with amendment provenance; old terminated runs
 remain preserved and are not silently resumed or replaced.
+
+### Communication healthy-completion policy amendment
+
+COM01/COM02 shared runners and orchestrators support explicit `--allow-healthy-completion` (stage adapter flag `allowHealthyCompletion=True`). Original seconds remain reference metadata, with no task timer or overrun-based status/timing rejection. Actual elapsed/usage and real process, clock and containment errors remain enforced; operation timeouts remain bounded. This source amendment does not change already-running Python frames or historical frozen evidence. Live macOS timer cancellation was denied before execution; no healthy participant was restarted. No product, prompt or rubric change.
+
+### Explicit JOB01 initial-timeout recovery
+
+`scripts/job01/recover.py` supports an operator-authorized recovery of a first-stage
+timeout only. It keeps original freezes and both old participant artifacts, copies
+the unchanged baseline, and continues Lookout against retained owned state in a new
+isolated session. A sibling evidence root records amended executor hashes and the
+fresh-context confound. Original elapsed work, observed turns and incomplete usage
+remain in cumulative accounting. It checks artifact/state consistency before any
+participant inference, preserves failures, and requests independent grading after
+completion. It never resets the owner, changes the rubric or grants extra tools.

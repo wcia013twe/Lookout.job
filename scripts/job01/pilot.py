@@ -182,7 +182,7 @@ def run_pair(pair_id):
    try:
     snapshot(run/'initial-state.json')
     for index,s in enumerate(spec['stages'],1):
-     stage=dict(s,_index=index,_session=s['session'],seconds=spec['policy']['stageBudgetSeconds'])
+     stage=dict(s,_index=index,_session=s['session'],seconds=spec['policy']['stageBudgetSeconds'],allowHealthyCompletion=True)
      sd=run/f'stage-{index}';sd.mkdir();release(stage,condition,inputs);shutil.copytree(inputs,sd/'inputs')
      write(sd/'input-hashes.json',runtime.file_hashes(inputs));snapshot(sd/'before-state.json')
      resume=previous==stage['session'];session_startup=0

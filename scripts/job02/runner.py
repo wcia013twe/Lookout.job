@@ -50,7 +50,7 @@ def run(pair_id):
    try:
     snapshot(out/'initial-state.json')
     for index,step in enumerate(spec['stages'],1):
-     stage=dict(step,_index=index,_session=step['session'],seconds=spec['stageBudgetSeconds']);sd=out/f'stage-{index}';sd.mkdir();(sd/'browser').mkdir();shutil.copytree(inputs,sd/'inputs')
+     stage=dict(step,_index=index,_session=step['session'],seconds=spec['stageBudgetSeconds'],allowHealthyCompletion=True);sd=out/f'stage-{index}';sd.mkdir();(sd/'browser').mkdir();shutil.copytree(inputs,sd/'inputs')
      if index==2:
       node('respond','--condition',condition,'--run',out);meta['simulatedWaitingMinutes']=spec['wakeDelayMinutes']+spec['userResponseDelayMinutes']
      cfg={'targets':spec['targets'],'resume':str(ROOT/'candidate/resume.pdf'),'output':str(sd/'browser'),'profile':str(out/'browser-profile'),'executablePath':json.loads((ROOT/'runtime.private.json').read_text()).get('browserExecutable'),'synthetic':False,'controlled':spec.get('mode')=='controlled_clearing','fixtureRoot':str(ROOT/'suite/forms')}

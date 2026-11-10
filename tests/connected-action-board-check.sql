@@ -74,11 +74,19 @@ begin
  if (select version from public.preparation_plans where application_id=app)<=version_before then raise exception 'Round reschedule did not fence stale practice';end if;
  if result->>'round_id'<>round1::text then raise exception 'Reschedule lost stable identity';end if;
  if not exists(select 1 from public.preparation_plans p,jsonb_array_elements(p.plan->'tasks') t where p.application_id=app and t->>'id'=task_id) then raise exception 'Reschedule discarded prior tasks';end if;
- -- Proposals stay on the application; human confirmation preserves original evidence.
+ -- Interview proposals belong to the application timeline, not the Action Board.
+ -- Confirm through the authenticated milestone writer while retaining the source.
  result:=to_jsonb(private.record_application_milestone_owned(u,app,jsonb_build_object('eventKey','proposal','kind','interview','label','Proposed round','phase','scheduled','proposedAt','2026-11-13T17:00:00Z','practiceCategory','ml','source',jsonb_build_object('kind','user_reported','note','Candidate reported a proposed time')),'user_reported'));
- if exists(select 1 from private.action_board_items(u) x where x->>'sourceId'=result->>'id') then raise exception 'Interview context leaked onto Action Board';end if;
- perform public.record_application_milestone(app,jsonb_build_object('eventKey','human-confirm-proposal','kind','interview','label','Proposed round','phase','scheduled','occurredAt','2026-11-13T17:00:00Z','supersedesId',result->>'id','practiceCategory','ml','source',jsonb_build_object('kind','user','timestampConfirmed',true)));
- if not exists(select 1 from public.application_milestones where supersedes_id=(result->>'id')::uuid and confirmation='confirmed' and practice_category='ml') then raise exception 'Human confirmation did not create canonical correction';end if;
+ if result->>'confirmation' is distinct from 'needs_confirmation' then raise exception 'Proposal confirmed without human input';end if;
+ if exists(select 1 from private.action_board_items(u) x where x->>'sourceId'=result->>'id') then raise exception 'Interview proposal entered decision queue';end if;
+ if public.read_action_board() is distinct from public.agent_dispatch(h,'actions.board.read','{}') then raise exception 'Website/MCP filtered snapshot mismatch';end if;
+ if exists(select 1 from jsonb_array_elements(public.read_action_board()->'items') x where x->>'sourceId'=result->>'id') then raise exception 'Interview proposal leaked through board snapshot';end if;
+ execute 'set local role authenticated';
+ begin perform public.respond_action_board(jsonb_build_object('key','interview:'||(result->>'id'),'response','accept','eventKey',gen_random_uuid()));raise exception 'Retired interview card accepted';exception when serialization_failure then null;end;
+ replacement:=(public.record_application_milestone(app,jsonb_build_object('eventKey','human-confirmed-proposal','kind','interview','label','Proposed round','phase','scheduled','occurredAt','2026-11-13T17:00:00Z','supersedesId',result->>'id','practiceCategory','ml','timeZone','UTC','source',jsonb_build_object('kind','user','timestampConfirmed',true,'note','Confirmed in application timeline')))).id;
+ execute 'reset role';
+ if not exists(select 1 from public.application_milestones where id=replacement and supersedes_id=(result->>'id')::uuid and round_id=(result->>'round_id')::uuid and confirmation='confirmed' and practice_category='ml' and occurred_at='2026-11-13T17:00:00Z'::timestamptz and source->>'kind'='user') then raise exception 'Human confirmation did not create canonical correction';end if;
+ if not exists(select 1 from public.application_milestones where id=(result->>'id')::uuid and confirmation='needs_confirmation' and occurred_at is null and proposed_at='2026-11-13T17:00:00Z'::timestamptz and source=result->'source') then raise exception 'Human correction overwrote original proposal';end if;
  if public.agent_dispatch(h,'human.request',jsonb_build_object('action','verify-answer','recordId',answer_id))->>'url' not like '%section=agent&answer=%' then raise exception 'Answer handoff not precise';end if;
  -- Human-only writer is not an agent operation, even with full scopes.
  begin perform public.agent_dispatch(h,'actions.board.respond',request);raise exception 'Agent decision path exposed';exception when invalid_parameter_value then null;end;
