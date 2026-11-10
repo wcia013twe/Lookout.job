@@ -199,3 +199,11 @@ Run the focused checks before changing these boundaries:
 ```sh
 node --test tests/onboarding.test.mjs tests/profile-setup.test.mjs tests/resume-upload.test.mjs tests/resume-import.test.mjs tests/profile-resume-selection.test.mjs tests/context-versions.test.mjs
 ```
+
+### Action Board setup reminder
+
+The setup reminder and its action count clear once a name, email and current
+(non-superseded) résumé are saved. Profile verification is separate: unverified
+saved facts do not keep the setup flag visible, and application approval still
+requires human profile review. The detached demo includes this saved-but-unverified
+state. This is a frontend display rule; no backend or MCP approval boundary changes.
