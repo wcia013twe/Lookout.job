@@ -1612,3 +1612,18 @@ This source change requires `20261110152808_workspace_incremental_sync.sql` and
 the matching frontend release. It has not been deployed or measured against
 hosted CPU/IO. Auxiliary views still use their owned projection readers when
 relevant data changes; the separate shared Circle feed is outside this contract.
+
+
+### Incremental sync production activation
+
+PR #90 merged as c7cac585bd56e322a0cb250525ee60b7c0619b8a. Main production
+workflow [42847435452](https://github.com/wcia013twe/Lookout.job/actions/runs/42847435452)
+installed migration 20261110152808, deployed the backend functions and published
+the frontend. The first Pages publication timed out during updating_pages; its
+targeted retry succeeded. Public HTML and the delta-merge asset match the exact
+production artifact, and the account bundle exposes sync_workspace. A read-only
+hosted backend smoke returned an empty 63-byte unchanged delta after a snapshot.
+Authenticated-only execution and private pointer-table denial were verified.
+This establishes deployed source/read availability, not a real browser write or
+measured CPU/IO reduction. Existing open tabs must reload to adopt the new code.
+The earlier source-only status above describes the pre-release checkpoint.

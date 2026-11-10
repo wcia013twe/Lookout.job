@@ -229,3 +229,10 @@ bytes and one agent update is 385 bytes, with zero unchanged answers resent.
 These are deterministic local PGlite/browser-contract measurements, not hosted
 CPU/IO measurements. The migration and frontend must be released together before
 claiming hosted activation; a frontend-only deployment cannot enable this path.
+
+
+Production activation: PR #90 / c7cac585 is released through main workflow
+42847435452. Migration, backend functions and frontend publication succeeded;
+public artifact and hosted unchanged-delta checks passed. A Pages timeout required
+one targeted publication retry. Reload existing tabs; hosted CPU/IO savings and a
+real-account browser mutation round trip remain unmeasured.
