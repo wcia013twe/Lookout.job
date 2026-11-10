@@ -133,6 +133,9 @@ tectonic paper.tex
 
 Optional tracing setup is in [Langfuse tracing](docs/langfuse-tracing.md); evaluation reporting is in [Langfuse evals](docs/langfuse-evals.md). Server-only keys are optional for ordinary app use. GCP provisioning files are in `infra/gcp/`; deploying them requires separate cloud, DNS, and server-secret configuration. No cloud provisioning command is needed for local review.
 
+Paper-ready COM/JOB result tables, their timestamped JSON/CSV data, and offline regeneration/read-only Langfuse refresh commands are in [benchmark tables](docs/paper-tables/README.md). Unavailable scores remain unknown; versions and releases remain separate.
+
+
 ### 6. Troubleshooting
 
 | Symptom | Check or next step |
