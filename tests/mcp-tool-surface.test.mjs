@@ -125,3 +125,9 @@ test('private mock tools have a Node service route through the checked Edge boun
  const {MOCK_TOOLS}=await import('../supabase/functions/agent-gateway/mock-interviews.mjs');
  for(const tool of MOCK_TOOLS)assert.equal(operationService(tool.operation)?.handler,'edge',tool.name);
 });
+
+
+test('Discover visibility is routed by the Node API',async()=>{
+ const {operationService}=await import('../lib/mcp-services.mjs');
+ assert.equal(operationService('discover.visibility.set')?.handler,'edge');
+});
