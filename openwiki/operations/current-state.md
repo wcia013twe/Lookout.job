@@ -91,6 +91,12 @@ This shows the hosted MCP authorization path; it does not depict an autonomous a
 
 ### Search and discovery execution
 
+Saved named searches now supply frozen per-run profile/portal configuration for
+collection, screening and retries. Later configuration edits apply to future runs;
+revocation, cancellation and lease checks remain live. This is a focused source
+update, not a wiki-wide regeneration or evidence of a hosted rollout. See
+`changes/frozen-search-snapshot-xFd9IB.md` for verification and release limits.
+
 The current direct-search implementation uses pipeline version 2: immutable temporary
 snapshots on a named Docker worker volume, metadata gates before official verification,
 full configured gates and historical dedup before permanent shortlist saves. SQL stores

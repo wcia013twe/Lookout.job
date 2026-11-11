@@ -1,6 +1,6 @@
 begin;
 do $$
-declare u uuid:=gen_random_uuid();v uuid:=gen_random_uuid();h text:=repeat('a',64);h2 text:=repeat('b',64);hr text:=repeat('c',64);p jsonb;r jsonb;req jsonb;x jsonb;result jsonb;l uuid;obs uuid;ctx jsonb;plan jsonb;
+declare u uuid:=gen_random_uuid();v uuid:=gen_random_uuid();h text:=repeat('a',64);h2 text:=repeat('b',64);hr text:=repeat('c',64);p jsonb;r jsonb;r2 jsonb;req jsonb;x jsonb;result jsonb;l uuid;obs uuid;ctx jsonb;plan jsonb;pv integer;personal bigint;
 begin
  insert into auth.users values(u),(v);
  insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Pipeline',h,array['workspace:read','drafts:write','preferences:write'],now()+interval '1 day'),(v,'Other',h2,array['workspace:read','drafts:write'],now()+interval '1 day'),(u,'Reader',hr,array['workspace:read'],now()+interval '1 day');
@@ -20,14 +20,22 @@ begin
  l:=(result#>>'{saved,0,listingId}')::uuid;obs:=(result#>>'{saved,0,observationId}')::uuid;
  req:=jsonb_build_object('runId',r->>'id','listingIds',jsonb_build_array(l::text),'eventKey','pipeline-screen');ctx:=public.agent_dispatch(h,'search.context','{"profileId":"general"}');
  plan:=jsonb_build_object('request',req,'expectedPersonalVersion',ctx->'personalVersion','expectedProfileVersion',1,'screenings',jsonb_build_array(jsonb_build_object('listingId',l,'observationId',obs,'expectedVersion',0,'decision','review-needed','checks','[]'::jsonb,'explanation','Unresolved personal eligibility remains explicit.')));
- begin perform public.agent_dispatch(h,'search.screenings.commit',plan||'{"expectedPersonalVersion":0}');raise exception 'Stale settings accepted';exception when serialization_failure then null;end;
+ begin perform public.agent_dispatch(h,'search.screenings.commit',plan||'{"expectedPersonalVersion":0}');raise exception 'Mismatched pinned settings accepted';exception when sqlstate 'PT409' then null;end;
  result:=public.agent_dispatch(h,'search.screenings.commit',plan);
  if public.agent_dispatch(h,'search.screenings.read',jsonb_build_object('request',req))<>result then raise exception 'Screening replay failed';end if;
  if (select count(*) from public.search_screenings where user_id=u)<>1 then raise exception 'Duplicate screenings';end if;
- -- A current changed profile can rescreen the original observations.
- perform private.save_search_profile_for_owner(u,1,p||'{"filters":{"Employment":"Internship"}}');ctx:=public.agent_dispatch(h,'search.context','{"profileId":"general"}');
- req:=req||'{"eventKey":"pipeline-rescreen"}';plan:=jsonb_set(plan,'{screenings,0,expectedVersion}','1');plan:=plan||jsonb_build_object('request',req,'expectedPersonalVersion',ctx->'personalVersion','expectedProfileVersion',2);
- result:=public.agent_dispatch(h,'search.screenings.commit',plan);if result->>'evaluatedProfileVersion'<>'2' then raise exception 'Current profile not used';end if;
+ -- Profile edits cannot rescreen an existing run against a newer context.
+ perform private.save_search_profile_for_owner(u,1,p||'{"filters":{"Employment":"Internship"}}');ctx:=public.agent_dispatch(h,'search.context','{"profileId":"general"}');personal:=(ctx->>'personalVersion')::bigint;
+ req:=req||'{"eventKey":"pipeline-rescreen-current"}';
+ begin perform public.agent_dispatch(h,'search.screenings.commit',plan||jsonb_build_object('request',req,'expectedPersonalVersion',ctx->'personalVersion','expectedProfileVersion',2));raise exception 'Changed settings accepted for pinned run';exception when sqlstate 'PT409' then null;end;
+ req:=req||'{"eventKey":"pipeline-rescreen-pinned"}';plan:=jsonb_set(plan,'{screenings,0,expectedVersion}','1');plan:=plan||jsonb_build_object('request',req);
+ result:=public.agent_dispatch(h,'search.screenings.commit',plan);if result->>'evaluatedProfileVersion'<>'1' then raise exception 'Pinned profile version not used';end if;
+ r:=public.agent_dispatch(h,'search.run.read',jsonb_build_object('runId',r->>'id'));
+ perform public.agent_dispatch(h,'search.run.finish',jsonb_build_object('runId',r->>'id','expectedVersion',(r->>'version')::integer,'state','partial','summary','Pinned screening scenario complete.','eventKey','pipeline-finish'));
+ r2:=public.agent_dispatch(h,'search.run.start','{"profileId":"general","eventKey":"pipeline-run-after-edit"}');
+ if (r2#>>'{context_snapshot,personalVersion}')::bigint<>personal then raise exception 'New run missed current personal version';end if;
+ select (q->>'version')::integer into pv from jsonb_array_elements(r2#>'{context_snapshot,documents}') q where q->>'kind'='profile' and q->>'id'='general';
+ if pv<>2 then raise exception 'New run missed current profile version';end if;
  if exists(select 1 from public.applications where user_id=u) or exists(select 1 from public.job_batches where user_id=u) then raise exception 'Screening minted application or publication';end if;
 end $$;
 rollback;

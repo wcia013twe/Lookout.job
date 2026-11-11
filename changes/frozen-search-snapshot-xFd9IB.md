@@ -1,0 +1,6 @@
+# frozen-search-snapshot
+
+- Saved named searches reuse the existing immutable run context. Collection, screening, retries and pipeline-v2 final receipts use its profile/portal configuration and pinned versions instead of live settings. Later edits affect future runs; live ownership, cancellation, revocation and lease checks remain enforced.
+- Search guide23 and developer contract158 explain setup-before-execution and same-run retries through existing scoped tools, with matching toolkit and workflow references. Detached demo fixtures preserve historical run snapshots when the selected or saved profile changes. Focused wiki/runtime documentation updated; generated wiki provenance is not refreshed.
+- Validation: full `npm test` passed (1,350 passed, 5 skipped, zero failures), including database and interrupted-run snapshot regressions. Catalog validation (158 roles), frontend typecheck/static build, intelligence typecheck, runtime typecheck, toolkit generation check and `git diff --check` passed.
+- Limits: no hosted deployment or live provider run performed. Existing runs without usable snapshots fail closed. Scheduling, new UI and disk-write optimization are deferred. This freezes configuration, not changing external job listings.

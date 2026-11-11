@@ -40,7 +40,7 @@ test('database observation batches are bounded by rows and encoded UTF-8 bytes',
 });
 
 function harness(sources){
- const calls=[];const stored=[];const run={id:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',state:'active',version:0,sources:structuredClone(sources)};
+ const calls=[];const stored=[];const run={id:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',state:'active',version:0,sources:structuredClone(sources),context_snapshot:{personalVersion:1,documents:[{kind:'profile',id:'general',version:1,projection:{filters:{}}},{kind:'portals',id:'shared',version:1,projection:{tracked_companies:structuredClone(sources.map(s=>({id:s.source_id.replace('portal:',''),...s.source,enabled:true}))),search_queries:[]}}]}};
  const dispatch=async(operation,payload)=>{
   calls.push({operation,payload});
   if(operation==='search.run.start'||operation==='search.run.read')return structuredClone(run);

@@ -9,6 +9,12 @@ My Agent is the single schedule configuration; the personal agent runtime owns
 recurrence and submits one bounded job per authorized run. The Node worker only
 claims already queued jobs. There is no Node recurring-search scheduler.
 
+Configure saved named search profiles before starting work. Each run freezes its
+selected profile and portals, and collection, screening and retries consume that
+snapshot. Saved-search edits apply to future runs. Connection revocation,
+cancellation and lease ownership remain live checks; freezing filters grants no
+additional authorization. External source results can still change between retries.
+
 HiringCafe, Simplify and copied Career Ops collection are registered through one
 `{id, detect, fetch}` interface in `source-providers.ts`. Every provider returns
 leads, provenance and coverage diagnostics to the same deduplication and employer

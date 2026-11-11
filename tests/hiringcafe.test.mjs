@@ -36,7 +36,7 @@ test('unresolved HiringCafe pages remain diagnostics and never enter employer ve
 });
 test('one batch search job collects HiringCafe, verifies employer URLs, screens and deduplicates the saved shortlist',async()=>{
  const context={personalVersion:7,documents:[{kind:'profile',id:'general',version:3,projection:{filters:{Employment:'Full-time',Location:'United States','Experience level':'Entry-level'}}}]};
- const run={id:'run',profile_id:'general',state:'active',version:0,days:3,sources:[{source_id:'portal:cafe',source,version:0,state:'pending'}]},saved=[],calls=[],http=[];
+ const run={id:'run',profile_id:'general',state:'active',version:0,days:3,context_snapshot:structuredClone(context),sources:[{source_id:'portal:cafe',source,version:0,state:'pending'}]},saved=[],calls=[],http=[];
  const dispatch=async(op,p)=>{calls.push(op);if(op==='search.run.start'||op==='search.run.read')return structuredClone(run);if(op==='search.context')return context;if(op==='search.discoveries.save'){saved.push(...p.listings.map((r,i)=>({...r,id:'listing-'+i,canonical_url:r.url,observation:{id:'observation-'+i,description:r.description,employer_posted_at:r.employerPostedAt},screeningVersion:0})));return {};}
   if(op==='search.history.read')return {listings:[],nextOffset:null};if(op==='search.discoveries.read')return {listings:saved,nextOffset:null};if(op==='search.screenings.read')return null;if(op==='search.screenings.commit')return {screenings:p.screenings,evaluatedProfileVersion:3,personalVersion:7};if(op==='search.progress'){Object.assign(run.sources[0],p);run.version++;return {};}
   if(op==='search.run.finish'){run.state=p.state;return {};}throw Error('Unexpected '+op);

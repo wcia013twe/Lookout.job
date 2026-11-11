@@ -164,7 +164,7 @@ test('admin demo services expose the same workflow routing while keeping pending
 });
 
 test('direct search completion requires personal analysis then private publication and read-back; demo retains the pending state',async()=>{
- const guide=readGuide('career-find-jobs');assert.equal(guide.version,22);
+ const guide=readGuide('career-find-jobs');assert.equal(guide.version,23);
  assert.match(guide.instructions,/Private Discover publication is the final step[\s\S]*after agent personal fit analysis/);
  assert.match(guide.instructions,/Read back every returned batch with read_batch/);
  assert.match(guide.instructions,/discover:<runId>:profile:<version>:part:<index>/);
@@ -174,7 +174,7 @@ test('direct search completion requires personal analysis then private publicati
 
 test('broad fit guidance retains clearance unknowns, conditional scenarios and routine authorized preparation',()=>{
  const search=readGuide('career-find-jobs'),apps=readGuide('application-workspace'),digest=readGuide('notifications');
- assert.equal(search.version,22);assert.equal(apps.version,41);assert.equal(digest.version,6);
+ assert.equal(search.version,23);assert.equal(apps.version,41);assert.equal(digest.version,6);
  assert.match(search.instructions,/How good a fit is this job/);
  assert.match(search.instructions,/Missing clearance, citizenship[\s\S]*is unknown, not a negative fact/);
  assert.match(search.instructions,/keep them visible[\s\S]*active clearance required at application\/start/);

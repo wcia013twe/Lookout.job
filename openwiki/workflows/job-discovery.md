@@ -66,6 +66,13 @@ In particular, raw discoveries do not populate Discover cards. Muse must read th
 
 ## Entrypoints and configuration
 
+Configure named saved searches before execution. Each new run freezes its selected
+profile and portal configuration; collection, screening and retries use that run's
+snapshot. Editing a saved search affects future runs, not an existing run. This
+freezes query configuration, not external job listings or authorization: live
+connection revocation, cancellation and lease ownership still stop work. Recurrence
+remains the personal agent host's responsibility.
+
 A connected agent can edit a profile/rules/portals document through `save_search_document`, start or resume a durable manual sweep through `start_search_run`, or queue a request for a personal agent. These are configuration and coordination boundaries: a queued request does not execute work, and an active run means unfinished durable work rather than a hosted process.
 
 Profiles use bounded YAML frontmatter (`id`, `name`, `active`, `filters`, and `priorities`) plus a targeting narrative. Portals describe enabled public sources with bounded URLs, provider/API options, keywords, and configuration. Parsing rejects unknown document fields, oversized text, invalid source shapes, duplicate source IDs, and invalid discovery-filter declarations. If no saved portals document exists, context exposes built-in source templates without silently writing a personal portals document.
@@ -133,17 +140,22 @@ A source checkpoint is durable operational progress, not a claim of quality or f
 | job `completed` | Every run source is completed with exhaustive coverage. |
 | job/run `partial` | At least one source is blocked, truncated, inaccessible, or otherwise incomplete. Saved evidence remains available. |
 
-On a retry of an already completed run, the pipeline can reconstruct the shortlist from saved observations without recollecting or duplicating screening records. A lease failure or settings race does not turn retained observations into a successful shortlist. Operational logs report database outages at most once per minute while the polling worker waits five seconds between attempts.
+On a retry of an already completed run, the pipeline can reconstruct the shortlist from saved observations without recollecting or duplicating screening records. A lease failure does not turn retained observations into a successful shortlist. Runs without a usable saved context fail closed rather than silently using current settings. Operational logs report database outages at most once per minute while the polling worker waits five seconds between attempts.
 
 ## Screening and deduplication are version-fenced
 
-After source collection, the worker re-reads profile and personal-context versions. If either differs from the collection snapshot, it stops with “settings changed” rather than combining old collection with new requirements. It pages all persisted discoveries into the shortlist pipeline, processes screening in groups of ten, and derives a stable screening event key from the run, current versions, and listing/observation IDs.
+Collection and screening use the same frozen run configuration. Saved-profile or
+personal-context edits during collection do not replace its filters or invalidate
+the run. The worker pages persisted discoveries into the shortlist pipeline and
+uses the run's pinned versions for screening receipts.
 
-`screenSearchDiscoveries` first looks up the same screening request for replay. Otherwise it reloads the owned run/context/listings, passes only the requested listings and portal projection to `filter-discovery`, validates the returned result contract, and commits each decision with its expected screening version plus the expected personal and profile versions. An eligible decision requires an active employer observation, actual location, and resolved required checks; unknowns are review-needed and do not prove candidate facts or authorize applying.
+`screenSearchDiscoveries` first looks up the same screening request for replay. Otherwise it reads the owned run's `context_snapshot` and requested listings, passes the saved profile and portal projection to `filter-discovery`, validates the returned result contract, and commits each decision with its expected screening version plus the pinned personal and profile versions. An eligible decision requires an active employer observation, actual location, and resolved required checks; unknowns are review-needed and do not prove candidate facts or authorize applying.
 
 Only non-ineligible rows proceed to copied CareerOps deduplication. The adapter exposes canonical URL, company, title, location, ATS identity, requisition ID, and listing identity—deliberately excluding description, observation text, and application state. Its result must be a unique subset of the requested listing IDs or the job fails rather than saving a false shortlist. Native identity aliases are suppressed, but same-title postings with distinct requisitions, locations, or functional query URLs are retained. The current job-level call compares retained rows within the run; explicit prior-history comparison is available to the reusable adapter but is not silently assumed.
 
-Immediately before run completion, the worker checks versions again. The SQL final receipt independently locks and compares the personal/profile versions, bounds retained IDs to 250, and verifies every retained ID belongs to that job's run. This double fence protects both a JavaScript-time race and a change between the final read and commit.
+Final receipts validate the pinned run configuration and owned shortlist, alongside
+the current job version and lease. Configuration edits are separate from live
+authorization and cannot silently retarget an existing run.
 
 The result records `pipelineVersion: 1`, observed/saved counts, source blockers/provenance, filter plan, stages, and a shortlist with retained IDs, duplicate IDs, screening counts, and the evaluated versions. It expressly marks `applicantEligibility: 'not-evaluated'` and `reporting: 'pending-muse'`. The summary reports incomplete sources. No language model runs in this pipeline.
 

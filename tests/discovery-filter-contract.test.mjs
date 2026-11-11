@@ -38,7 +38,7 @@ test('shared contract has a checked TypeScript surface as well as runtime guards
 });
 test('malformed child results fail before persisting a screening',async()=>{
  const {screenSearchDiscoveries}=await import('../lib/search-screening.mjs');const calls=[];
- const dispatch=async(op)=>{calls.push(op);return {data:op==='search.screenings.read'?null:op==='search.run.read'?{profile_id:'ft'}:op==='search.context'?{personalVersion:1,documents:[{kind:'profile',id:'ft',version:1,projection:{filters:{}}}]}:{listings:[{id:'a',title:'Engineer',location:null,observation:{id:'o'}}],nextOffset:null},error:null};};
+ const dispatch=async(op)=>{calls.push(op);return {data:op==='search.screenings.read'?null:op==='search.run.read'?{profile_id:'ft',context_snapshot:{personalVersion:1,documents:[{kind:'profile',id:'ft',version:1,projection:{filters:{}}}]}}:op==='search.context'?{personalVersion:1,documents:[{kind:'profile',id:'ft',version:1,projection:{filters:{}}}]}:{listings:[{id:'a',title:'Engineer',location:null,observation:{id:'o'}}],nextOffset:null},error:null};};
  const result=await screenSearchDiscoveries(dispatch,{runId:'r',listingIds:['a'],eventKey:'new'},{evaluate:async()=>({results:[{listingId:'a',passed:true,rejectedBy:[],checks:[{requirement:'employment',status:'guessed',evidence:'Bad'}],decision:'review-needed',explanation:'Bad child output.'}]})});
  assert.equal(result.error.code,'22023');assert.equal(calls.includes('search.screenings.commit'),false);
 });
@@ -54,7 +54,7 @@ test('shared screening finds discoveries beyond the former 5000-row sample',asyn
  const dispatch=async(op,payload)=>{
   let data;
   if(op==='search.screenings.read')data=null;
-  else if(op==='search.run.read')data={profile_id:'ft'};
+  else if(op==='search.run.read')data={profile_id:'ft',context_snapshot:{personalVersion:1,documents:[{kind:'profile',id:'ft',version:1,projection:{filters:{}}}]}};
   else if(op==='search.context')data={personalVersion:1,documents:[{kind:'profile',id:'ft',version:1,projection:{filters:{}}}]};
   else if(op==='search.discoveries.read'){pages++;data={listings:payload.offset===5100?[{id:'a',observation:{id:'o'}}]:[],nextOffset:payload.offset<5100?payload.offset+100:null};}
   else if(op==='search.screenings.commit'){committed=true;data={screenings:payload.screenings};}

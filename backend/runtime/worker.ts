@@ -47,13 +47,21 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
  const prefix=`job:${job.id}:`;
  let run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):null;
  const profileId=run?.profile_id||job.input.profileId;
- const context=await dispatch('search.context',{profileId});
+ const currentContext=run?null:await dispatch('search.context',{profileId});
+ const context=run?.context_snapshot||currentContext;
+ if(!context?.documents||!Number.isSafeInteger(context.personalVersion))throw Error('Pinned search context unavailable');
  const profile=context.documents.find((d:Payload)=>d.kind==='profile'&&d.id===profileId);
- if(!profile)throw Error('Current job profile unavailable');
+ if(!profile)throw Error('Pinned job profile unavailable');
  const portals=context.documents.find((d:Payload)=>d.kind==='portals')?.projection||{};
- const filterPlan=await execute('inspect-discovery-filters',{profile:profile.projection,portals});
+ let filterPlan=await execute('inspect-discovery-filters',{profile:profile.projection,portals});
  if(!filterPlan.ready)return {status:'failed',result:{code:'search_filters_not_ready',summary:'Configure the selected profile filters before searching.',profileId,filterPlan,evaluatedProfileVersion:profile.version,personalVersion:context.personalVersion,recovery:{tool:'read_search_filter_plan',arguments:{profileId}}}};
- if(!run)run=await dispatch('search.run.start',{profileId,...(job.input.portalId?{portalId:job.input.portalId}:{}),eventKey:prefix+'start'});
+ if(!run){run=await dispatch('search.run.start',{profileId,...(job.input.portalId?{portalId:job.input.portalId}:{}),eventKey:prefix+'start'});if(!run.context_snapshot?.documents)throw Error('Pinned search context unavailable');}
+ const pinnedContext=run.context_snapshot||context;
+ const pinnedProfile=pinnedContext.documents.find((d:Payload)=>d.kind==='profile'&&d.id===profileId);
+ if(!pinnedProfile)throw Error('Pinned job profile unavailable');
+ const pinnedPortals=pinnedContext.documents.find((d:Payload)=>d.kind==='portals')?.projection||{};
+ filterPlan=await execute('inspect-discovery-filters',{profile:pinnedProfile.projection,portals:pinnedPortals});
+ if(!filterPlan.ready)return {status:'failed',result:{code:'search_filters_not_ready',summary:'Configure the selected profile filters before searching.',profileId,filterPlan,evaluatedProfileVersion:pinnedProfile.version,personalVersion:pinnedContext.personalVersion,recovery:{tool:'read_search_filter_plan',arguments:{profileId}}}};
  if(job.input.portalId&&(run.sources?.length!==1||run.sources[0].source_id!=='portal:'+job.input.portalId))throw Error('Portal search scope mismatch');
  const staging=new SearchStaging(stagingRoot,job.id,run.id);
  await pruneSearchStaging(stagingRoot);
@@ -81,10 +89,10 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
    version=result?.version??version+1;
   };
   await checkpoint('active','unknown','');
-  const collected=await fetchSource(source.source_id,source.source,{execute,previous:[...seen,...history.filter(h=>h.tracked)],profile:profile.projection,request,signal,prefilter:filterPlan.config||true,onLeads:async rows=>{snapshot!.retainedAt??=new Date().toISOString();snapshot!.rawLeads=[...new Map([...(snapshot!.rawLeads||[]),...rows].map((row:Payload)=>[row.url,row])).values()];await checkpoint('active','unknown','Jobright leads retained for resolution and triage.');},days:filterPlan.config?.max_posting_age_days||run.days||(run.mode==='backlog'?30:3),onBatch:async(result,progress)=>{
+   const collected=await fetchSource(source.source_id,source.source,{execute,previous:[...seen,...history.filter(h=>h.tracked)],profile:pinnedProfile.projection,request,signal,prefilter:filterPlan.config||true,onLeads:async rows=>{snapshot!.retainedAt??=new Date().toISOString();snapshot!.rawLeads=[...new Map([...(snapshot!.rawLeads||[]),...rows].map((row:Payload)=>[row.url,row])).values()];await checkpoint('active','unknown','Jobright leads retained for resolution and triage.');},days:filterPlan.config?.max_posting_age_days||run.days||(run.mode==='backlog'?30:3),onBatch:async(result,progress)=>{
    signal?.throwIfAborted();
    const rows=result.listings.map(row=>({...row,id:row.url}));
-   const evaluated=rows.length?await execute('filter-discovery',{profile:profile.projection,portals,listings:rows.map(row=>({...row,canonical_url:row.url,employment_type:row.employmentType,observation:{description:row.description,employer_posted_at:row.employerPostedAt}})),now:Date.now()}):{results:[]};
+    const evaluated=rows.length?await execute('filter-discovery',{profile:pinnedProfile.projection,portals:pinnedPortals,listings:rows.map(row=>({...row,canonical_url:row.url,employment_type:row.employmentType,observation:{description:row.description,employer_posted_at:row.employerPostedAt}})),now:Date.now()}):{results:[]};
    assertDiscoveryResults(evaluated.results,rows);
    const passing=new Set(evaluated.results.filter((r:Payload)=>r.passed).map((r:Payload)=>r.listingId));
    snapshot!.accepted.push(...rows.filter(row=>passing.has(row.id)).map(row=>({listing:row,screening:evaluated.results.find((r:Payload)=>r.listingId===row.id)})));
@@ -101,8 +109,6 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
   snapshot!.examined=collected.examined??collected.total;snapshot!.prefilterExcluded=collected.provenance?.prefilterExcluded||0;
   await checkpoint(collected.coverage==='exhaustive'?'completed':'blocked',collected.coverage,collected.blocker,collected.diagnostics);
  },10,onFailure);
- const latestContext=await dispatch('search.context',{profileId});
- if(latestContext.personalVersion!==context.personalVersion||latestContext.documents.find((d:Payload)=>d.kind==='profile'&&d.id===profileId)?.version!==profile.version)throw Error('Job settings changed during source collection');
  // Catch applications/imports recorded while provider collection was running.
  await refreshHistory();
  // Compare unchanged content only after fresh verification. Existing tracked
@@ -136,7 +142,7 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
  }
  const finishedRun=await dispatch('search.run.read',{runId:run.id});
  const incomplete=latest.sources.filter((s:Payload)=>s.state!=='completed'||s.coverage!=='exhaustive').length;
- const shortlist={runId:run.id,retainedListingIds:finalRows.slice(0,100).map(r=>r.id),totalRetained:finalRows.length,nextOffset:finalRows.length>100?100:null,evaluatedProfileVersion:profile.version,personalVersion:context.personalVersion,screenedCount:[...snapshots.values()].reduce((n,s)=>n+s.screened,0),excludedCount:[...snapshots.values()].reduce((n,s)=>n+s.excluded,0),unchangedOrDuplicate:pool.length-selected.length,applicantEligibility:'not-evaluated',reporting:'pending-muse'};
+  const shortlist={runId:run.id,retainedListingIds:finalRows.slice(0,100).map(r=>r.id),totalRetained:finalRows.length,nextOffset:finalRows.length>100?100:null,evaluatedProfileVersion:pinnedProfile.version,personalVersion:pinnedContext.personalVersion,screenedCount:[...snapshots.values()].reduce((n,s)=>n+s.screened,0),excludedCount:[...snapshots.values()].reduce((n,s)=>n+s.excluded,0),unchangedOrDuplicate:pool.length-selected.length,applicantEligibility:'not-evaluated',reporting:'pending-muse'};
  const retainedLeads=[...snapshots.values()].reduce((n,s)=>n+(s.rawLeads?.length||0),0),pendingLeadResolution=[...snapshots.values()].reduce((n,s)=>n+(s.rawLeads?.filter((r:Payload)=>r.resolution==='unresolved'||r.resolution==='pending').length||0),0);
  const summary=`${finalRows.length} new or changed jobs ready for agent review. ${incomplete} sources have incomplete coverage. ${retainedLeads} Jobright source leads retained temporarily, including ${pendingLeadResolution} awaiting employer-link resolution. Raw leads are not saved as discoveries.`;
  if(finishedRun.state==='active')await dispatch('search.run.finish',{runId:run.id,expectedVersion:finishedRun.version,state:incomplete?'partial':'completed',summary,eventKey:prefix+'finish'});

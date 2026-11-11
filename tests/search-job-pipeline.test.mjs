@@ -60,22 +60,45 @@ test('retry after run completion rebuilds the saved shortlist without recollecti
  const finish=await rpc('backend_worker',{operation:'finish',payload:{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,...retry}});assert.equal(finish.error,null);
 });
 
-test('changed settings block success instead of publishing a mixed-version shortlist',async()=>{
- const f=await fixture(),t=tasks();let contexts=0;
- const raced=async(name,args)=>{
-  if(args.operation==='dispatch'&&args.payload.operation==='search.context'&&++contexts===3)await db.query("update public.search_documents set version=version+1 where user_id=$1 and kind='profile'",[f.owner]);
-  return rpc(name,args);
- };
- await workOnce(raced,{execute:t.execute});const j=await result(f.job.id);assert.equal(j.status,'failed');assert.equal(j.result.shortlist,undefined);
-});
+test('interrupted search retries collection with its original profile and portal snapshots',async()=>{
+  const f=await fixture(),t=tasks(),claim=(await rpc('backend_worker',{operation:'claim',payload:{}})).data,controller=new AbortController();let edited=false,runId;
+  const fenced=async(operation,payload)=>{const r=await rpc('backend_worker',{operation:'dispatch',payload:{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,operation,payload}});if(r.error)throw r.error;return r.data;};
+  const originalContext=await fenced('search.context',{profileId:claim.job.input.profileId});
+  const dispatch=async(operation,payload)=>{
+   const data=await fenced(operation,payload);
+   if(operation==='search.run.start')runId=data.id;
+   if(operation==='search.progress'&&payload.state==='active'&&payload.counts.staged===0&&!edited){edited=true;await db.query("update public.search_documents set version=version+1,projection=jsonb_set(projection,'{filters,Employment}',to_jsonb('Internship'::text)) where user_id=$1 and kind='profile'",[f.owner]);await db.query('insert into private.agent_settings_versions(user_id,version) values($1,2) on conflict(user_id) do update set version=private.agent_settings_versions.version+1',[f.owner]);await db.query("update public.search_documents set version=version+1,projection=jsonb_set(projection,'{tracked_companies,0}',jsonb_build_object('id','example','name','Changed portal','careers_url','https://changed.example/careers','enabled',true)) where user_id=$1 and kind='portals'",[f.owner]);controller.abort(Error('Fixture worker interrupted'));}
+   return data;
+  };
+  await assert.rejects(()=>executeSearch(claim.job,dispatch,{execute:t.execute,signal:controller.signal}),/Fixture worker interrupted/);
+  const interrupted=await result(f.job.id);assert.equal(interrupted.search_run_id,runId);
+  t.calls.length=0;
+  const retry=await executeSearch({...claim.job,search_run_id:interrupted.search_run_id},dispatch,{execute:t.execute});
+  const filters=t.calls.filter(c=>c.task==='filter-discovery');
+  const discoveries=t.calls.filter(c=>c.task==='discovery');
+  assert(filters.length>0);assert(filters.every(c=>c.input.profile.filters.Employment==='Full-time'));
+  assert(discoveries.length>0);assert(discoveries.every(c=>c.input.target.name==='Example (fictional)'&&c.input.target.address==='https://job-boards.greenhouse.io/example'));
+  assert.equal(retry.status,'completed');assert.equal(retry.result.shortlist.evaluatedProfileVersion,1);assert.equal(retry.result.shortlist.personalVersion,originalContext.personalVersion);assert.equal(retry.result.shortlist.retainedListingIds.length,1);
+  const finish=await rpc('backend_worker',{operation:'finish',payload:{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,...retry}});
+  assert.equal(finish.error,null);assert.equal((await result(f.job.id)).status,'completed');
+ });
 
-test('final SQL job receipt rejects a settings change after the last JS version read',async()=>{
+test('final SQL job receipt accepts a settings edit after the pinned run completes',async()=>{
  const f=await fixture(),claim=(await rpc('backend_worker',{operation:'claim',payload:{}})).data,t=tasks();
  const fenced=async(operation,payload)=>{const r=await rpc('backend_worker',{operation:'dispatch',payload:{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,operation,payload}});if(r.error)throw r.error;return r.data;};
  const outcome=await executeSearch(claim.job,fenced,{execute:t.execute});
  await db.query("update public.search_documents set version=version+1 where user_id=$1 and kind='profile'",[f.owner]);
  const r=await rpc('backend_worker',{operation:'finish',payload:{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,...outcome}});
- assert.equal(r.error.code,'PT409');assert.equal((await result(f.job.id)).result.shortlist,undefined);
+  assert.equal(r.error,null);assert.equal((await result(f.job.id)).status,'completed');
+ });
+
+test('final SQL job receipt rejects shortlist versions that do not match its run snapshot',async()=>{
+ const f=await fixture(),claim=(await rpc('backend_worker',{operation:'claim',payload:{}})).data,t=tasks();
+ const fenced=async(operation,payload)=>{const r=await rpc('backend_worker',{operation:'dispatch',payload:{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,operation,payload}});if(r.error)throw r.error;return r.data;};
+ const outcome=await executeSearch(claim.job,fenced,{execute:t.execute});
+ outcome.result.shortlist.personalVersion++;
+ const r=await rpc('backend_worker',{operation:'finish',payload:{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,...outcome}});
+ assert.equal(r.error.code,'PT409');assert.equal((await result(f.job.id)).status,'running');
 });
 
 test('profile-only accounts start leased searches with built-in connected sources and matching context',async()=>{
@@ -269,7 +292,7 @@ for(const status of ['Submitted','Rejected'])test(`direct search excludes a trac
 test('a completed direct shortlist reaches private Discover only through agent-reviewed publication, with replay and website parity',async()=>{
  const {batchRoles}=await import('../lib/cloud-model.mjs');
  const {readGuide}=await import('../supabase/functions/agent-gateway/guides.mjs');
- const guide=readGuide('career-find-jobs');assert.equal(guide.version,22);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
+  const guide=readGuide('career-find-jobs');assert.equal(guide.version,23);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
  const f=await fixture(),t=tasks();await workOnce(rpc,{execute:t.execute});const j=await result(f.job.id);
  assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,0);
  const hash=f.owner.replaceAll('-','').repeat(2);

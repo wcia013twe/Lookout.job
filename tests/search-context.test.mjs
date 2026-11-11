@@ -28,7 +28,14 @@ test('MCP discovers the hosted sweep workflow and dispatches an agent state oper
  const discovery=await call('tools/call',{name:'discover_tools',arguments:{workflow:'search'}});const discovered=JSON.parse(discovery.result.content[0].text);assert(discovered.tools.some(t=>t.name==='start_search_run'));assert(!discovered.tools.some(t=>t.name==='save_search_document'));
  const r=await call('tools/call',{name:'start_search_run',arguments:{profileId:'general',eventKey:'run'}});assert(!r.error);assert(calls.some(([op])=>op==='search.run.start'));
 });
-test('fictional search memory is resettable and contains no real accounts or execution',async()=>{
- const {searchDemo}=await import('../lib/search/demo.mjs');const a=searchDemo(),b=searchDemo();a.documents[0].content='edited';assert.notEqual(b.documents[0].content,'edited');assert.equal(b.runs.find(r=>r.id==='demo-run').state,'partial');assert.equal(b.listings[0].screening.decision,'review-needed');assert.equal(b.listings[0].observation.employer_posted_at,null);assert(b.runs.find(r=>r.id==='demo-run').sources.some(s=>s.coverage==='inaccessible'));assert(b.runs.find(r=>r.id==='demo-run').sources.some(s=>s.source_id==='portal:demo-aggregate'&&s.blocker.includes('employer application link is unresolved')));const context=searchResponse('search.context',{documents:b.documents,profile:null});assert(context.sourceTemplates.some(s=>s.id==='hiringcafe'));assert(b.documents.find(d=>d.kind==='portals').projection.tracked_companies.every(s=>s.careers_url.startsWith('https://example.com/')));
+test('demo run snapshot survives edits to the same saved profile',async()=>{
+ const {searchDemo,synchronizeSearchDemo}=await import('../lib/search/demo.mjs');
+ const data=searchDemo(),run=data.runs.find(r=>r.id==='demo-run');
+ const pinned=structuredClone(run.context_snapshot);
+ synchronizeSearchDemo(data,{profiles:[{id:'demo-search',name:'Changed future targeting',active:true,version:2,filters:{Employment:'Internship'}}]});
+ assert.deepEqual(run.context_snapshot,pinned);
+ assert.equal(data.documents.find(d=>d.kind==='profile').projection.name,'Changed future targeting');
 });
-
+test('fictional search memory is resettable and contains no real accounts or execution',async()=>{
+  const {searchDemo,synchronizeSearchDemo}=await import('../lib/search/demo.mjs');const a=searchDemo(),b=searchDemo();a.documents[0].content='edited';assert.notEqual(b.documents[0].content,'edited');const run=b.runs.find(r=>r.id==='demo-run');assert.equal(run.state,'partial');assert.equal(run.context_snapshot.documents.find(d=>d.kind==='profile').id,run.profile_id);assert.equal(b.listings[0].screening.decision,'review-needed');assert.equal(b.listings[0].observation.employer_posted_at,null);assert(run.sources.some(s=>s.coverage==='inaccessible'));assert(run.sources.some(s=>s.source_id==='portal:demo-aggregate'&&s.blocker.includes('employer application link is unresolved')));const context=searchResponse('search.context',{documents:b.documents,profile:null});assert(context.sourceTemplates.some(s=>s.id==='hiringcafe'));assert(b.documents.find(d=>d.kind==='portals').projection.tracked_companies.every(s=>s.careers_url.startsWith('https://example.com/')));const pinned=structuredClone(run.context_snapshot);synchronizeSearchDemo(b,{profiles:[{id:'future-profile',name:'Future profile',active:true,version:1}]});assert.equal(run.profile_id,'demo-search');assert.deepEqual(run.context_snapshot,pinned);
+});
