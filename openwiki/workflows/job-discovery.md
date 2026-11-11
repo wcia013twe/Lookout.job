@@ -54,6 +54,10 @@ Job discovery is a controlled evidence pipeline, not a public-catalog import or 
 
 This page describes the backend `search_ats` path. For ownership and canonical writers, see [Data model, ownership, and consistency rules](../architecture/data-and-ownership.md); for credential/scoped-tool behavior, see [Agent credentials, gateway, MCP, and guide routing](../concepts/agent-access-and-mcp.md); for the guarded next step, see [Application drafting, authorization, and guarded submission](application-submission.md).
 
+## Discover board visibility
+
+The cumulative private board uses the latest batch date as its current drop. Unapplied roles from older drops appear under the collapsed Hidden section, except Apply Now and Strong Consider recommendations, which remain visible. An expired posting appears in Hidden. People can hide or restore other roles; those overrides are saved in the owned search preferences as `discoverVisibility`, and synchronized through the existing owned preferences writer. Restore keeps a role on the board until the person hides it again; an expired posting cannot be restored while its saved observation remains expired. Applied and rejected filtering continues to use the existing application state. Date, posting-age and search filters also apply to Hidden. First discovery dates remain intact; the cumulative projection additionally records the latest recommendation date. No new publication or background job is created. There is no dedicated MCP hide/restore action.
+
 ## What is public, private, and immutable
 
 Three records have intentionally different meanings:

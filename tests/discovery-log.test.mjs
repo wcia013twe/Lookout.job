@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {cumulativeDiscoverBatch} from '../lib/discovery-log.mjs';
-import {matchesDiscoveryStatus} from '../next-app/lib/discover-view.mjs';
+import {matchesDiscoveryStatus, discoveryIsHidden} from '../next-app/lib/discover-view.mjs';
 import {createBackend} from '../backend/client.mjs';
 const item=(id,note='',dismissed=false)=>({job_id:id,recommendation:{whyItFits:note},dismissed_at:dismissed?'2026-11-07T12:00:00Z':null,jobs:{canonical_url:`https://example.com/jobs/${id}`,employer:{company:'Fictional employer',title:'Software Engineer',employmentType:'FT'}}});
 const batch=(id,date,items)=>({batch:{id,batch_date:date,created_at:date+'T12:00:00Z',label:'Fictional batch'},items});
@@ -76,4 +76,18 @@ test('Discover refresh uses bulk reads and reuses evidence across repeated batch
  assert.deepEqual(calls,['job_batches','batch_items','search_observations']);
  assert.equal(first.length,5);assert.equal(first[0].items[0].position,0);
  calls.length=0;await createBackend(client,user).allBatches();assert.deepEqual(calls,['job_batches','batch_items']);
+});
+
+test('latest drop and priority determine default visibility, with personal overrides and expired postings',()=>{
+ const old={id:'old',discoveredDate:'2026-11-01',priority:'Skip Unless Team Fit'};
+ assert.equal(discoveryIsHidden(old,'2026-11-02'),true);
+ assert.equal(discoveryIsHidden({...old,lastRecommendedDate:'2026-11-02'},'2026-11-02'),false);
+ for(const priority of ['Apply Now','Strong Consider']) assert.equal(discoveryIsHidden({...old,priority},'2026-11-02'),false);
+ assert.equal(discoveryIsHidden(old,'2026-11-02',{old:'visible'}),false);
+ assert.equal(discoveryIsHidden({...old,priority:'Apply Now'},'2026-11-02',{old:'hidden'}),true);
+ assert.equal(discoveryIsHidden({...old,priority:'Apply Now',postingObservation:{liveness:'expired'}},'2026-11-02',{old:'visible'}),true);
+});
+test('deduplicated roles retain latest recommendation date alongside first discovery',()=>{
+ const log=cumulativeDiscoverBatch([batch('old','2026-11-01',[item('one')]),batch('new','2026-11-02',[item('one')])]);
+ assert.equal(log.roles[0].discoveredDate,'2026-11-01'); assert.equal(log.roles[0].lastRecommendedDate,'2026-11-02');
 });

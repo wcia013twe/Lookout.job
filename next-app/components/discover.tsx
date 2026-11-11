@@ -16,7 +16,7 @@ import ProfileIcon from "./profile-icon";
 import {savedOnboardingRole} from "../lib/onboarding-catalog.mjs";
 import {ApplicationProfileProvider, useApplicationProfile} from "./application-profile-context";
 import {ProfileSwitcher} from "./profile-settings";
-import {matchesProfileEmployment, showAgentEmptyState, matchesDiscoveryStatus} from "../lib/discover-view.mjs";
+import {matchesProfileEmployment, showAgentEmptyState, matchesDiscoveryStatus, discoveryIsHidden} from "../lib/discover-view.mjs";
 import { motion, useReducedMotion } from "framer-motion";
 import cardStyles from "./role-card.module.css";
 import type { Drop } from "../lib/drop-pack";
@@ -74,7 +74,14 @@ function DiscoverBoard() {
     requestAnimationFrame(() => board.current?.scrollIntoView({behavior: reduced ? "instant" : "smooth", block:"start"}));
   }
   const arriving = arrival?.owner === previewOwner ? arrival : null;
-  const roleGroups = [{key:a.profile.id,label:a.profile.name,roles}];
+  const boardUsesHidden = Boolean(w.discoveryLog && !publicView);
+  const visibility = w.state.workflow.searchPreferences?.discoverVisibility || {};
+  function setVisibility(role: Role, value: 'hidden' | 'visible') {
+    w.store.update('workflow.searchPreferences', (previous: Record<string, any> = {}) => ({...previous, discoverVisibility:{...(previous.discoverVisibility || {}), [role.id]: value}}));
+  }
+  const visibleRoles = boardUsesHidden ? roles.filter((role: Role) => !discoveryIsHidden(role, sourceDate, visibility)) : roles;
+  const hiddenRoles = boardUsesHidden ? roles.filter((role: Role) => discoveryIsHidden(role, sourceDate, visibility)) : [];
+  const roleGroups = [{key:a.profile.id,label:a.profile.name,roles:visibleRoles}];
   const header=<div className="discover-header mb-3 flex flex-wrap items-center justify-between gap-3 [&_.workspace-heading_p]:mt-1"><Heading title="Discover">{newArrival&&!publicView?"Your agent’s finds will appear here.":publicView?"Explore the public catalog.":w.batchLabel}</Heading><div className="w-full empty:hidden sm:w-64"><ProfileSwitcher manage={false}/></div></div>;
   if ((w.user || w.demo) && !imports.ready) return <>{header}<Notice>{imports.error ? `Application history could not load: ${imports.error}` : 'Checking application history before showing roles…'}{imports.error && <button type="button" className="ml-3 underline" onClick={()=>void imports.refresh()}>Retry</button>}</Notice></>;
   if(newArrival&&!publicView)return <>
@@ -114,8 +121,8 @@ function DiscoverBoard() {
       <div className="mt-1 flex min-h-11 flex-wrap items-center justify-between gap-x-4 gap-y-1">
       {w.discoveryLog&&!publicView&&<label className="flex min-h-11 items-center gap-2 text-sm text-board-muted"><input type="checkbox" checked={includeApplied} onChange={event=>setIncludeApplied(event.target.checked)}/>Include applied jobs</label>}
       <p role="status" className="text-sm text-board-muted">
-        {roles.length} to review ·{" "}
-        {roles.filter((r: Role) => r.priority === "Apply Now").length} apply now
+        {visibleRoles.length} to review ·{" "}
+        {visibleRoles.filter((r: Role) => r.priority === "Apply Now").length} apply now
       </p>
       </div>
       {/* Paused: card-pack widgets and reveal effects. */}
@@ -136,6 +143,7 @@ function DiscoverBoard() {
                 animate={{opacity:1,y:0,rotate:0,scale:1}}
                 transition={{duration:reduced ? 0.12 : 0.5,delay:reduced ? 0 : Math.min(index * 0.075,0.45),ease:[0.16,1,0.3,1]}}>
                 <RoleCard role={role} onPreview={setPreview}/>
+                {boardUsesHidden && <button type="button" className="mt-2 min-h-11 text-sm text-board-muted underline underline-offset-4" onClick={() => setVisibility(role, "hidden")}>Hide {role.title}</button>}
               </motion.div>;
             })}
           </div> : <div className="glass-inset rounded-xl px-5 py-7">
@@ -144,6 +152,11 @@ function DiscoverBoard() {
           </div>}
         </section>
       ))}
+      {boardUsesHidden && <details className="mt-8 border-t border-board-line pt-4">
+        <summary className="min-h-11 cursor-pointer text-sm font-semibold">Hidden <span className="text-board-muted">({hiddenRoles.length})</span></summary>
+        <p className="mb-4 text-sm text-board-muted">Earlier recommendations and roles you hid appear here.</p>
+        {hiddenRoles.length ? <div className="grid grid-cols-1 gap-4 md:grid-cols-3">{hiddenRoles.map((role: Role) => <div key={role.id}><RoleCard role={role} onPreview={setPreview}/>{role.postingObservation?.liveness === 'expired' ? <p className="mt-2 text-sm text-board-muted">Posting closed</p> : <button type="button" className="mt-2 min-h-11 text-sm text-board-accent underline underline-offset-4" onClick={() => setVisibility(role, 'visible')}>Restore {role.title}</button>}</div>)}</div> : <p className="text-sm text-board-muted">No hidden roles in this view.</p>}
+      </details>}
       </section>
       {preview && <DiscoverRolePanel key={preview.id} role={preview} onClose={() => setPreview(null)} />}
       <SearchSweeps />
