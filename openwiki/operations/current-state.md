@@ -1637,3 +1637,9 @@ The earlier source-only status above describes the pre-release checkpoint.
 ### Atomic preparation finalization (local source update, November 2026)
 
 The local source adds atomic final draft/blocker persistence and request outcome reporting, authoritative claim responses, and default MCP access to the essential preparation tools. Search context now identifies backend execution and the current search guide. See [application finalization](../workflows/application-submission.md#atomic-preparation-finalization-local-source-update-november-2026) for the transaction, retry and verification boundaries. No hosted deployment or real host/browser execution is established by this pass.
+
+### Local Circles readiness check (November 11, 2026)
+
+The isolated restoration checkout at `f9e86ef5` serves `/circles/` at `http://127.0.0.1:3002` when started with `PORT=3002 make frontend`. The returned route is HTTP 200, its live scripts use loopback Supabase configuration, and local Auth/REST health probes return HTTP 200. The local `private.knowledge_config` gate is enabled and prior Circle/feed/interview-intelligence migrations are present, but migration `20261111190200_restore_circle_service.sql` is not applied; `npm run validate:local-db` reports broader migration-ledger drift against this checkout. Do not reset or reconcile the shared local database as part of this checkpoint.
+
+The local Edge Runtime remains mounted from the shared main checkout rather than the restoration checkout. That mount has no `supabase/functions/agent-mcp/index.ts`, and local `/functions/v1/agent-mcp` returns 503 `BOOT_ERROR`; its worker log says `failed to bootstrap runtime: failed to determine entrypoint`. No shared runtime was rebound. Local agent-MCP readiness therefore remains blocked pending an owner-approved runtime source change. This is separate from the successful frontend route check and does not establish account sign-in or a live Circle write.
