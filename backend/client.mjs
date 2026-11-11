@@ -233,6 +233,12 @@ function createBackend(client, expectedUserId = null) {
       if(await owner()!==id)throw Error('Account changed');
       return data;
     },
+    async setDiscoverVisibility(jobId, visibility) {
+      const id = await owner();
+      const data = await result(client.rpc("set_discover_visibility", {job_id_arg:jobId, visibility_arg:visibility}));
+      if (await owner() !== id) throw Error('Account changed');
+      return data;
+    },
     async savePreferences({
       search = {}, tierLists = [], activeTierListId = null, theme = { pack: "base" },
     }) {
