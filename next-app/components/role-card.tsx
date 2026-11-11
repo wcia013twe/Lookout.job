@@ -16,6 +16,7 @@ export type Role = {
 import { useWorkspace } from "../lib/workspace";
 import ApplicationActions from "./application-actions";
 import RoleJobFacts from "./role-job-facts";
+import RoleMatchingSkills from "./role-matching-skills";
 import RoleMatchPreview, { type MatchPreview } from "./role-match-preview";
 import { primary, secondary } from "./ui";
 import { CompanyLogo } from "./company-logo";
@@ -71,7 +72,10 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
       </motion.div>
       <div className={styles.body}>
         <h3 className="break-words text-lg font-semibold leading-snug tracking-tight md:text-xl">{onPreview ? <button className="text-left" onClick={()=>onPreview(role)}>{role.title}</button> : role.title}</h3>
-        <RoleJobFacts role={role} compact />
+        <div className="space-y-3">
+          <RoleJobFacts role={role} compact />
+          <RoleMatchingSkills whyItFits={role.whyItFits} />
+        </div>
         <RoleMatchPreview sample={w.demo ? role.matchPreview : role.matchAssessment} demo={w.demo} />
         <ApplicationActions role={role} onPreview={onPreview}/>
       </div>

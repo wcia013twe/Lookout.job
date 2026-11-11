@@ -60,6 +60,9 @@ Application automation honors the strict account-wide `autoSubmitApproved` guard
 
 ### Product and persistence surfaces
 
+Discovery cards can show up to three explicitly identified matching skills from the saved fit brief beneath the job facts. The full assessment remains in Preview; historical briefs without a supported skills line show no list. New agent output depends on the updated search guide reaching the relevant runtime; existing batches are not rewritten.
+
+
 The production UI is a static Next.js export, while Supabase owns identity, private records, storage, and server-side authorization. The public catalog remains static data; signed-in private state—including profile facts, preferences, resumes, batches, applications, approvals, attempts, search records, and operational records—is modeled by migrations and protected by owner-aware services. A detached `?demo=1` workspace uses fictional in-memory fixtures, deliberately avoids the account store, auth client, cloud sync, and production MCP, and resets on refresh.
 
 The schema/reference documents a prepared hosted rollout (54 application tables and 49 recorded migrations as of 2026-10-23), but also calls out a separately developed workspace-reset migration as local-only. Treat migrations as the executable schema source, not the documentation or an older UI proposal.
