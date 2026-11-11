@@ -5,7 +5,7 @@ import {contextResponse} from '../supabase/functions/agent-gateway/context.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 test('context advertises small versioned index; guide reads are isolated',()=>{
  const index=contextResponse('context.developer',{}).guides;
- assert.deepEqual(index,guideIndex());assert.ok(index.length > 2);assert.ok(index.some(g=>g.id==='workspace-maintenance'));
+ assert.deepEqual(index,guideIndex());assert.ok(index.length > 2);assert.ok(index.some(g=>g.id==='workspace-maintenance'));assert.ok(index.some(g=>g.id==='circle-knowledge'));
  assert.ok(index.every(g=>g.version>0&&!Object.hasOwn(g,'instructions')));
  const guide=readGuide('resume-parse');assert.match(guide.instructions,/unverified/);assert.ok(guide.expectedOutput);
  guide.instructions='mutated';assert.notEqual(readGuide('resume-parse').instructions,'mutated');
@@ -17,6 +17,7 @@ test('guide reads fail closed through existing context authorization',async()=>{
  for(const code of ['28000','42501']) assert.deepEqual(await guideDispatch('resume-parse',async()=>({error:{code}})),{error:{code}});
  const authorize=async(op,args)=>{assert.equal(op,'context.developer');assert.deepEqual(args,{});return {data:{}};};
  assert.equal((await guideDispatch('cold-outreach',authorize)).data.id,'cold-outreach');
+ assert.equal((await guideDispatch('circle-knowledge',authorize)).data.id,'circle-knowledge');
  assert.equal((await guideDispatch('missing',authorize)).error.code,'P0002');
 });
 

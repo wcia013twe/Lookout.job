@@ -21,7 +21,7 @@ const harness=(scopes=allScopes,extra=[],reply={status:200,data:{ok:true}})=>{
  return {handler,calls,send,call,discover};
 };
 test('initial catalog and gated counts match hosted, Node and stdio plans',async()=>{
- for(const [extras,exposed,gated] of [[[],53,80],[[RESUME_PARSE_TOOL,...SUBMISSION_TOOLS],56,80],[LOCAL_TOOLS,54,88]]){
+ for(const [extras,exposed,gated] of [[[],53,94],[[RESUME_PARSE_TOOL,...SUBMISSION_TOOLS],56,94],[LOCAL_TOOLS,54,102]]){
   const h=harness(allScopes,extras),listed=(await h.send('tools/list')).result.tools,discovered=await h.discover();
   assert.equal(listed.length,exposed);assert.equal(discovered.filter(tool=>tool.gated).length,gated);
   assert.equal(discovered.length,active.length+extras.length);
@@ -84,7 +84,7 @@ test('dispatch preserves direct-call validation/results and never accepts operat
  }
  const invalids=[['discover_tools',{workflow:'bad'}],['discover_tools',{workflow:'all',userId:'other'}],['discover_tools',{workflow:'all',name:''}],['call_discovered_tool',{name:'read_user_brief',arguments:[]}],['call_discovered_tool',{name:'read_user_brief'}],['call_discovered_tool',{name:'read_personal_context',arguments:{userId:'other'}}]];
  for(const [name,args] of invalids)assert.equal((await h.call(name,args)).error.code,-32602);
- const scopes=harness(allScopes,[{name:'paused_local_extra',operation:'knowledge.read',scope:'workspace:read',inputSchema:{type:'object',properties:{}}}]);
+ const scopes=harness(allScopes,[{name:'paused_local_extra',operation:'preferences.theme.save',scope:'workspace:read',inputSchema:{type:'object',properties:{}}}]);
  assert.deepEqual(await scopes.discover('all','paused_local_extra'),[]);
  assert.equal((await scopes.call('call_discovered_tool',{name:'paused_local_extra',arguments:{}})).error.code,-32602);
  const unauth=await h.handler(request('tools/call',{name:'discover_tools',arguments:{workflow:'all'}},'invalid'));
@@ -109,12 +109,14 @@ test('fictional admin demo edits profile, discovers and reads a gated brief, rej
  const saved=await send('update_profile_fields',patch);assert.equal(saved.facts.headline,patch.fields.headline);
  const discovered=await send('discover_tools',{workflow:'all',name:'read_user_brief'});assert.equal(discovered.tools[0].gated,true);
  const brief=await send('call_discovered_tool',{name:'read_user_brief',arguments:{}});assert.equal(brief.fictional,true);assert.match(brief.items[0].summary,/Fictional MCP/);
+ const circleTools=await send('discover_tools',{workflow:'all',name:'list_circles'});assert.equal(circleTools.tools[0].gated,true);
+ const circles=await send('call_discovered_tool',{name:'list_circles',arguments:{}});assert.equal(circles.available,true);assert.ok(circles.circles.length);
  const stale=await send('call_discovered_tool',{name:'update_profile_fields',arguments:patch});assert.equal(stale.status,409);
  assert.notEqual(createDemoWorkspace('2026-11-06T12:00:00Z').workflow.profile.headline,patch.fields.headline);
 });
 test('startup explains executable discovery and preserves the small permanent contract',()=>{
  assert.match(bootstrapInstructions,/discover_tools/);assert.match(bootstrapInstructions,/call_discovered_tool/);
- assert.equal(contract.developerVersion,159);
+ assert.equal(contract.developerVersion,160);
  assert(Buffer.byteLength(JSON.stringify(contract))+Buffer.byteLength(bootstrapInstructions)<=6000);
  assert.equal(ACCESS_TOOLS.length,2);
 });

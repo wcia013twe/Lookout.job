@@ -109,7 +109,7 @@ function ProfileContent() {
         >
           <DiscoverySetup>
           <WritingStyles />
-          {EXTRA_FEATURES_ENABLED && <CircleAgentSettings />}
+          <CircleAgentSettings />
           <Preferences mode="agent" showDefaultResume={false} />
           </DiscoverySetup>
         </section>

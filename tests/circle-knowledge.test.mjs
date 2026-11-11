@@ -24,7 +24,9 @@ test('private Circles, exact sharing consent, retrieval and citation privacy',as
  async function rejects(fn,pattern=/required|unavailable|changed|Invalid|scope|denied|removed|immutable|argument|conflict|duplicate/i){await assert.rejects(fn,pattern);}
  let circleId,invite,post;
  try{
- await t.test('disabled until explicitly verified; legacy connections get no knowledge access',async()=>{
+ await t.test('service enabled by migration; disabled fallback and legacy scope boundaries remain',async()=>{
+  assert.equal((await human(A,'circles.list')).available,true);
+  await db.exec('update private.knowledge_config set enabled=false');
   assert.equal((await human(A,'circles.list')).available,false);
   await db.exec(await readFile(new URL('../backend/circle-knowledge-check.sql',import.meta.url),'utf8'));
   await db.exec("update private.knowledge_config set enabled=true; insert into auth.users values('33333333-3333-3333-3333-333333333333');");

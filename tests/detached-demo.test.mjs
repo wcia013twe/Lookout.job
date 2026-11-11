@@ -1,3 +1,4 @@
+import {pausedFrontendRoute} from '../lib/feature-scope.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -47,6 +48,7 @@ test('detached runtime edits, Circle reads, reset and briefs work without any ac
  assert.equal(updated.workflow.profile.headline,'Detached fictional analysis');
  assert.match((await first.services.readUserBrief()).items[0].summary,/Detached fictional analysis/);
  assert.notEqual(second.store.get('workflow.profile.headline'),'Detached fictional analysis');
+ for(const path of ['/circles/','/circles/demo-circle/'])assert.equal(pausedFrontendRoute(path),false);
  const circles=await first.services.knowledge.action('circles.list',{});assert.equal(circles.available,true);assert.ok(circles.circles.length);
  assert.equal(first.store.switchAccount,undefined);assert.equal(shared.auth,undefined);assert.equal(shared.cloud,undefined);
  const reset=createDetachedDemo({date:fixturesDate,models:shared,presets});

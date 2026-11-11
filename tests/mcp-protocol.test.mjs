@@ -115,21 +115,21 @@ test('every registered tool rejects missing scope before forwarding an action', 
 test('paused MCP tools are absent and reject direct calls, including local extras',async()=>{
  const calls=[];
  const paused=TOOLS.filter(tool=>!enabledMcpOperation(tool.operation));
- assert(paused.some(tool=>tool.name==='read_interview_intelligence'));
+ assert(!paused.some(tool=>tool.operation.startsWith('knowledge.')||tool.operation.startsWith('circles.')));
  assert(paused.some(tool=>tool.name==='save_theme_preferences'));
  assert(paused.some(tool=>tool.name==='read_leaderboard'));
  assert(paused.some(tool=>tool.name==='save_company_tiers'));
  const handle=createHandler(async(_token,operation,payload)=>{
   calls.push({operation,payload});
   return {status:200,data:{scopes:[...scopes,'knowledge:read','knowledge:write']}};
- },[],[{name:'local_circle_bypass',operation:'knowledge.read',scope:'workspace:read',inputSchema:{type:'object',properties:{}}}]);
+ },[],[{name:'local_theme_bypass',operation:'preferences.theme.save',scope:'workspace:read',inputSchema:{type:'object',properties:{}}}]);
  const catalog=await (await handle(request(rpc('tools/call',{name:'discover_tools',arguments:{workflow:'all'}})))).json();
  const discovered=JSON.parse(catalog.result.content[0].text).tools;
- for(const tool of [...paused,{name:'local_circle_bypass'}]){
+ for(const tool of [...paused,{name:'local_theme_bypass'}]){
   assert(!discovered.some(t=>t.name===tool.name),tool.name);
   const body=await (await handle(request(rpc('tools/call',{name:tool.name,arguments:{}})))).json();
   assert.equal(body.error.code,-32602,tool.name);
  }
  assert(calls.every(call=>call.operation==='credentials.verify'));
- for(const name of ['publish_batch','prepare_draft','list_contacts','save_contact','save_artifact','read_preparation_plan'])assert(discovered.some(t=>t.name===name),name);
+ for(const name of ['publish_batch','prepare_draft','list_contacts','save_contact','save_artifact','read_preparation_plan','list_circles','read_circle_feed','read_interview_intelligence'])assert(discovered.some(t=>t.name===name),name);
 });

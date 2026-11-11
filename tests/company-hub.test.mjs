@@ -1,4 +1,3 @@
-import {EXTRA_FEATURES_ENABLED} from '../lib/feature-scope.mjs';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createTestDatabase} from './helpers/database.mjs';
@@ -29,7 +28,7 @@ test('offline queue retains edits, recovers lost responses and isolates account 
  rows=[{...rows[0],record:{...rows[0].record,research:'local'},dirty:true}];remote=[{...remote[0],revision:3}];await sync.synchronize();assert.equal(rows[0].conflict,true);assert.equal(rows[0].record.research,'local');
  active=false;const previous=structuredClone(rows);await sync.synchronize();assert.deepEqual(rows,previous);
 });
-test('migration, website and MCP preserve research, revisions, ownership and Circle source permissions',{skip:!EXTRA_FEATURES_ENABLED && 'Community MCP is temporarily paused; rejection covered in mcp-protocol.test.mjs'},async()=>{
+test('migration, website and MCP preserve research, revisions, ownership and Circle source permissions',async()=>{
  const legacy={...emptyCompany('Databricks'),nextAction:'Ask about team',followUpDate:'2026-10-21',sources:[{title:'Role',url:'https://example.com/jobs?gh_jid=73',observedAt:'2026-10-20',summary:'Observed'}]};
  const db=await createTestDatabase({beforeMigration:async(db,name)=>{if(!name.endsWith('durable_company_hub.sql'))return;for(const [id,notes] of [['legacy-a',JSON.stringify(legacy)],['legacy-b',JSON.stringify(legacy)],['bad','{broken notes']])await db.query("insert into public.outreach_contacts(user_id,id,record,revision,updated_at) values($1,$2,$3::jsonb,4,'2026-10-20T12:00:00Z')",[owner,id,JSON.stringify({collection:'companies',company:'Databricks',notes})]);}});
  let event=0;const hash='d'.repeat(64);
