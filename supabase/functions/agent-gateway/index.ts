@@ -3,6 +3,7 @@ import {permissionHandoff} from './connection-permissions.mjs';
 import {pendingCountResponse} from './pending-count.mjs';
 import {withLatestPostingEvidence} from '../../../lib/batch-posting-evidence.mjs';
 import {prepareDraftWithPrefill} from '../../../lib/application-prefill-service.mjs';
+import {applicationHandoffFromSavedApplication} from '../../../lib/application-handoff.mjs';
 import {BACKEND_OPERATIONS} from './backend-jobs.mjs';
 import { clientStorage } from './client-storage.mjs';
 import runtimeVersion from './runtime-version.json' with {type:'json'};
@@ -116,6 +117,9 @@ Deno.serve(withGatewayCors(async request => {
     if(BACKEND_OPERATIONS.includes(operation)||APPLICATION_REQUEST_TOOLS.some(t=>t.operation===operation)) {
       const {data,error}=await admin.rpc('backend_job_dispatch',{credential_hash:await hashToken(bearer),operation,payload});
       if(error){const [status,message]=databaseFailure(error);return respond({error:message},status);}
+      if(operation==='applications.request.claim'&&data?.application&&data?.jobRecord){
+        data.handoff=applicationHandoffFromSavedApplication({application:data.application,jobRecord:data.jobRecord});
+      }
       return respond({data});
     }
     if(operation.startsWith('audit.')) {

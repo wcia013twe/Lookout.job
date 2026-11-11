@@ -125,10 +125,11 @@ test('a workspace generator discovers the recipe and saves/reads static HTML thr
 test('application guide requires saved, verified employer questions before notification',async()=>{
  const guide=JSON.parse(await (await import('node:fs/promises')).readFile(new URL('../supabase/functions/agent-gateway/skills/application-workspace.json',import.meta.url),'utf8'));
  assert.match(guide.instructions,/save each newly observed page of employer questions through prepare_draft/);
- assert.match(guide.instructions,/Only this inspected full response may replace the immediate read_application_record after that draft write/);
+ assert.match(guide.instructions,/claim response contains the saved application and preparation handoff; inspect that complete application to avoid an immediate duplicate application read/);
  assert.match(guide.instructions,/compact, incomplete, missing the exact saved application\/revision\/draft[\s\S]*call read_application_record/);
- assert.match(guide.instructions,/never replaces read_action_board before a human handoff or fresh authorization\/attempt reads before submission/);
- assert.match(guide.instructions,/claim\/report response and a subagent completion message do not verify complete saved draft content/);
+ assert.match(guide.instructions,/Inspect the returned saved draft and relevant card before presenting review or grouped input/);
+ assert.match(guide.instructions,/Compact counts, a handoff summary, a report receipt and a subagent completion message do not verify complete saved draft content/);
+ assert.match(guide.instructions,/none of these responses replaces fresh authorization\/attempt reads before submission/);
  assert.match(guide.instructions,/A chat bundle alone is not a saved handoff/);
  assert.match(guide.instructions,/inspectionComplete=false/);
 });
@@ -153,7 +154,7 @@ test('AI Apply conditionally prepares changed or incomplete work and reuses unch
 
 test('routine consent follows explicit saved instructions while login and host access remain separate from submission',()=>{
  const guide=readGuide('application-workspace');
- assert.equal(guide.version,41);
+ assert.equal(guide.version,42);
  for(const phrase of ['Application consent instructions','accept those routine required notices','Decline optional marketing','Do not infer this permission from AI Apply','save_search_profile','background/credit checks','review nonexistent answers','Recheck real host/employer access'])assert.ok(guide.instructions.includes(phrase),phrase);
 });
 

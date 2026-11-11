@@ -1633,3 +1633,7 @@ Authenticated-only execution and private pointer-table denial were verified.
 This establishes deployed source/read availability, not a real browser write or
 measured CPU/IO reduction. Existing open tabs must reload to adopt the new code.
 The earlier source-only status above describes the pre-release checkpoint.
+
+### Atomic preparation finalization (local source update, November 2026)
+
+The local source adds atomic final draft/blocker persistence and request outcome reporting, authoritative claim responses, and default MCP access to the essential preparation tools. Search context now identifies backend execution and the current search guide. See [application finalization](../workflows/application-submission.md#atomic-preparation-finalization-local-source-update-november-2026) for the transaction, retry and verification boundaries. No hosted deployment or real host/browser execution is established by this pass.

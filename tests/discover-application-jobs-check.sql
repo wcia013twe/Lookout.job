@@ -1,9 +1,11 @@
 begin;
 do $$
-declare u uuid:=gen_random_uuid();v uuid:=gen_random_uuid();conn uuid;h text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text);a uuid;b uuid;other_app uuid;lease uuid;version integer;claim jsonb;p jsonb;result jsonb;again jsonb;
+declare u uuid:=gen_random_uuid();v uuid:=gen_random_uuid();conn uuid;h text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text);a uuid;b uuid;other_app uuid;final_job uuid;final_app uuid;other_job uuid;other_final_app uuid;lease uuid;version integer;claim jsonb;p jsonb;result jsonb;again jsonb;final_payload jsonb;
 begin
  insert into auth.users(id) values(u),(v);
  insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Application jobs',h,array['workspace:read','preferences:write','drafts:write','approvals:read','resumes:read'],now()+interval '1 hour') returning id into conn;
+ insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Other connection',repeat('f',64),array['workspace:read','preferences:write','drafts:write','approvals:read','resumes:read'],now()+interval '1 hour'),(v,'Foreign owner',repeat('e',64),array['workspace:read','preferences:write','drafts:write','approvals:read','resumes:read'],now()+interval '1 hour');
+ insert into private.application_agent_preferences(user_id,connection_id) values(u,conn);
  p:='{"posting":{"id":"selected-public-job","url":"https://job-boards.greenhouse.io/fixture/jobs/2001","company":"Fictional Systems","title":"Fictional Backend Engineer","employmentType":"FT","location":"Remote"},"expectedRevision":0,"eventKey":"human-click:1"}';
  perform set_config('test.uid',u::text,true);execute 'set local role authenticated';
  result:=public.queue_application_job(p);a:=(result->'application'->>'id')::uuid;b:=(result->'job'->>'id')::uuid;
@@ -23,6 +25,57 @@ begin
  if public.agent_dispatch(h,'applications.submit_job',jsonb_set(jsonb_set(p,'{posting,id}','"fictional-workday"'),'{posting,url}','"https://fixture.wd5.myworkdayjobs.com/en-US/External/job/Remote/Associate-Software-Engineer_JR-026548"')||'{"eventKey":"workday-click"}')<>again then raise exception 'Workday MCP parity';end if;
  again:=public.queue_application_job(jsonb_set(jsonb_set(p,'{posting,id}','"fictional-other-provider"'),'{posting,url}','"https://careers.example.com/jobs/fictional-001"')||'{"eventKey":"other-provider-click"}');
  if again->'job'->>'status'<>'queued' then raise exception 'Muse intake still provider gated';end if;
+ -- Final draft and request outcome share one transaction and the canonical writer.
+ select j.id,(j.input->>'applicationId')::uuid into final_job,final_app from private.backend_jobs j join public.applications x on x.id=(j.input->>'applicationId')::uuid where x.user_id=u and x.job_id='fictional-other-provider';
+ claim:=public.backend_job_dispatch(h,'applications.request.claim',jsonb_build_object('jobId',final_job,'expectedVersion',1,'expectedRevision',0,'eventKey','final-claim'));
+ if claim->'application'->>'id'<>final_app::text or claim->'jobRecord' is null then raise exception 'Claim omitted authoritative application';end if;
+ final_payload:=jsonb_build_object('jobId',final_job,'expectedVersion',2,'expectedRevision',0,'eventKey','finalize:1','finalDraft',jsonb_build_object('questions',jsonb_build_array(jsonb_build_object('id','q1','required',true,'answer','Fictional answer'))),'browserInspected',true,'outcome','prepared','summary','Inspected fictional draft.');
+ begin perform public.backend_job_dispatch(repeat('f',64),'applications.request.finalize',final_payload);raise exception 'Other connection finalized request';exception when insufficient_privilege then null;end;
+ begin perform public.backend_job_dispatch(repeat('e',64),'applications.request.finalize',final_payload);raise exception 'Foreign owner finalized request';exception when insufficient_privilege then null;end;
+ begin perform public.backend_job_dispatch(h,'applications.request.finalize',final_payload||'{"outcome":null}');raise exception 'Null finalization outcome accepted';exception when invalid_parameter_value then null;end;
+ begin perform public.backend_job_dispatch(h,'applications.request.finalize',jsonb_set(final_payload,'{finalDraft,questions}','[null]'));raise exception 'Malformed question accepted';exception when invalid_parameter_value then null;end;
+ begin perform public.backend_job_dispatch(h,'applications.request.finalize',jsonb_set(final_payload,'{finalDraft,resumeId}',to_jsonb(gen_random_uuid()::text)));raise exception 'Foreign resume accepted';exception when insufficient_privilege then null;end;
+ begin perform public.backend_job_dispatch(h,'applications.request.finalize',final_payload||'{"expectedRevision":4}');raise exception 'Stale finalization accepted';exception when serialization_failure then null;end;
+ execute $ddl$create function private.test_reject_finalization() returns trigger language plpgsql set search_path='' as $fn$ begin if new.id::text=current_setting('test.reject_job_id',true) and new.status='completed' then raise exception 'test forced finalization failure';end if;return new;end $fn$ $ddl$;
+ execute 'create trigger test_reject_finalization before update of status on private.backend_jobs for each row execute function private.test_reject_finalization()';
+ perform set_config('test.reject_job_id',final_job::text,true);
+ begin perform public.backend_job_dispatch(h,'applications.request.finalize',final_payload);raise exception 'Injected journal failure did not occur';exception when raise_exception then if sqlerrm<>'test forced finalization failure' then raise;end if;end;
+ if (select revision from public.applications where id=final_app)<>0 or (select status from private.backend_jobs where id=final_job)<>'running' then raise exception 'Failed journal write did not roll back draft';end if;
+ execute 'drop trigger test_reject_finalization on private.backend_jobs';execute 'drop function private.test_reject_finalization()';
+ perform set_config('test.reject_job_id','',true);
+ result:=public.backend_job_dispatch(h,'applications.request.finalize',final_payload);
+ if result->'application'->>'revision'<>'1' or result->'application'->>'status'<>'Awaiting approval' or result->'application'->'draft'->>'questionsReviewed'<>'false' or result->'job'->'result'->>'outcome'<>'prepared' or result->>'approved'<>'false' or result->>'verifiedSubmission'<>'false' then raise exception 'Finalization misrepresented readiness or submission';end if;
+ if not exists(select 1 from jsonb_array_elements(result->'actionBoardItems') x where x->>'applicationId'=final_app::text and x->>'kind'='review_application') or exists(select 1 from jsonb_array_elements(result->'actionBoardItems') x where x->>'applicationId'<>final_app::text) then raise exception 'Prepared review card was missing or foreign board item leaked';end if;
+ if public.backend_job_dispatch(h,'applications.request.finalize',final_payload)<>result then raise exception 'Exact finalization replay changed';end if;
+ begin perform public.backend_job_dispatch(h,'applications.request.finalize',final_payload||'{"summary":"Changed replay"}');raise exception 'Changed finalization replay accepted';exception when serialization_failure then null;end;
+ perform public.agent_dispatch(h,'drafts.prepare',jsonb_build_object('jobId','fictional-other-provider','expectedRevision',1,'draft',jsonb_build_object('questions','[]'::jsonb,'notes','Changed after finalization')));
+ if public.backend_job_dispatch(h,'applications.request.finalize',final_payload)<>result then raise exception 'Exact replay reread the changed application revision';end if;
+ update private.agent_connections set revoked_at=now() where id=conn;
+ begin perform public.backend_job_dispatch(h,'applications.request.finalize',final_payload);raise exception 'Revoked exact finalization replay accepted';exception when insufficient_privilege or invalid_authorization_specification then null;end;
+ update private.agent_connections set revoked_at=null where id=conn;
+ if exists(select 1 from public.approvals where application_id=final_app) or exists(select 1 from public.submission_attempts where application_id=final_app) then raise exception 'Finalization minted approval or submission';end if;
+ -- Durable blocked and preparation-uncertain outcomes save their blocker and scoped board card.
+ again:=public.queue_application_job(jsonb_set(jsonb_set(p,'{posting,id}','"fictional-uncertain"'),'{posting,url}','"https://careers.example.com/jobs/fictional-uncertain"')||'{"eventKey":"uncertain-click"}');
+ select j.id,(j.input->>'applicationId')::uuid into other_job,other_final_app from private.backend_jobs j where j.user_id=u and j.input->>'applicationId'=(again->'application'->>'id');
+ perform public.backend_job_dispatch(h,'applications.request.claim',jsonb_build_object('jobId',other_job,'expectedVersion',1,'expectedRevision',0,'eventKey','uncertain-claim'));
+ result:=public.backend_job_dispatch(h,'applications.request.finalize',jsonb_build_object('jobId',other_job,'expectedVersion',2,'expectedRevision',0,'eventKey','uncertain-final','finalDraft',jsonb_build_object('questions','[]'::jsonb),'blocker','Browser inspection could not reach the required questions.','browserInspected',false,'outcome','uncertain','summary','Preparation could not confirm the employer questions.'));
+ if result->'job'->'result'->>'outcome'<>'uncertain' or result->'application'->>'blocker' is null or not exists(select 1 from jsonb_array_elements(result->'actionBoardItems') x where x->>'applicationId'=other_final_app::text and x->>'kind'='resolve_blocker') then raise exception 'Preparation uncertainty did not preserve its blocker card';end if;
+ again:=public.queue_application_job(jsonb_set(jsonb_set(p,'{posting,id}','"fictional-blocked"'),'{posting,url}','"https://careers.example.com/jobs/fictional-blocked"')||'{"eventKey":"blocked-click"}');
+ select j.id,(j.input->>'applicationId')::uuid into other_job,other_final_app from private.backend_jobs j where j.user_id=u and j.input->>'applicationId'=(again->'application'->>'id');
+ perform public.backend_job_dispatch(h,'applications.request.claim',jsonb_build_object('jobId',other_job,'expectedVersion',1,'expectedRevision',0,'eventKey','blocked-claim'));
+ result:=public.backend_job_dispatch(h,'applications.request.finalize',jsonb_build_object('jobId',other_job,'expectedVersion',2,'expectedRevision',0,'eventKey','blocked-final','finalDraft',jsonb_build_object('questions','[]'::jsonb,'resumeId',null,'searchProfileId',null),'blocker','Required field needs a verified answer.','browserInspected',true,'outcome','blocked','summary','Preparation found a required unanswered field.'));
+ if result->'job'->'result'->>'outcome'<>'blocked' or result->'application'->>'blocker' is null or not exists(select 1 from jsonb_array_elements(result->'actionBoardItems') x where x->>'applicationId'=other_final_app::text and x->>'kind'='resolve_blocker') then raise exception 'Blocked preparation did not preserve its blocker card';end if;
+ again:=public.queue_application_job(jsonb_set(jsonb_set(p,'{posting,id}','"fictional-stopped"'),'{posting,url}','"https://careers.example.com/jobs/fictional-stopped"')||'{"eventKey":"stopped-click"}');
+ select j.id,(j.input->>'applicationId')::uuid into other_job,other_final_app from private.backend_jobs j where j.user_id=u and j.input->>'applicationId'=(again->'application'->>'id');
+ perform public.backend_job_dispatch(h,'applications.request.claim',jsonb_build_object('jobId',other_job,'expectedVersion',1,'expectedRevision',0,'eventKey','stopped-claim'));
+ insert into public.application_work_holds(user_id,application_id) values(u,other_final_app);
+ begin perform public.backend_job_dispatch(h,'applications.request.finalize',jsonb_build_object('jobId',other_job,'expectedVersion',2,'expectedRevision',0,'eventKey','stopped-final','finalDraft',jsonb_build_object('questions','[]'::jsonb),'browserInspected',true,'outcome','prepared','summary','Should remain stopped.'));raise exception 'Stopped application finalized';exception when insufficient_privilege then null;end;
+ delete from public.application_work_holds where application_id=other_final_app;
+ again:=public.queue_application_job(jsonb_set(jsonb_set(p,'{posting,id}','"fictional-cancelled"'),'{posting,url}','"https://careers.example.com/jobs/fictional-cancelled"')||'{"eventKey":"cancelled-click"}');
+ select j.id,(j.input->>'applicationId')::uuid into other_job,other_final_app from private.backend_jobs j where j.user_id=u and j.input->>'applicationId'=(again->'application'->>'id');
+ perform public.backend_job_dispatch(h,'applications.request.claim',jsonb_build_object('jobId',other_job,'expectedVersion',1,'expectedRevision',0,'eventKey','cancelled-claim'));
+ update private.backend_jobs set status='cancelled',lease_token=null,lease_expires_at=null,finished_at=now() where id=other_job;
+ begin perform public.backend_job_dispatch(h,'applications.request.finalize',jsonb_build_object('jobId',other_job,'expectedVersion',2,'expectedRevision',0,'eventKey','cancelled-final','finalDraft',jsonb_build_object('questions','[]'::jsonb),'browserInspected',true,'outcome','prepared','summary','Should remain cancelled.'));raise exception 'Cancelled application finalized';exception when insufficient_privilege then null;end;
  if (select receipt from public.applications where id=a) is not null or (select status from public.applications where id=a)<>'Queued' or exists(select 1 from public.approvals where application_id=a) then raise exception 'Queue minted submission/approval';end if;
  begin perform public.backend_job_dispatch(h,'backend.jobs.submit',jsonb_build_object('kind','application_submit','input',jsonb_build_object('applicationId',a,'expectedRevision',0),'eventKey','generic-queue'));raise exception 'Generic queue bypass';exception when invalid_parameter_value then null;end;
  -- Search-only workers leave application work alone; no feature flag can claim it accidentally.
@@ -37,7 +90,6 @@ begin
  begin perform public.backend_worker('application_dispatch',jsonb_build_object('name','runner_submission_transition','args',jsonb_build_object('operation','claim')));raise exception 'Deterministic submission unpaused';exception when insufficient_privilege then null;end;
  if exists(select 1 from public.submission_attempts where application_id=a) then raise exception 'Pickup created submission attempt';end if;
  -- A second same-owner connection can read but cannot take/report this assigned request.
- insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Other agent',repeat('f',64),array['workspace:read','preferences:write','drafts:write','approvals:read','resumes:read'],now()+interval '1 hour');
  begin perform public.backend_job_dispatch(repeat('f',64),'applications.request.report',p||'{"expectedVersion":2,"outcome":"completed","summary":"Forged claim","eventKey":"other-report"}');raise exception 'Other connection reported';exception when insufficient_privilege then null;end;
  p:=p||'{"expectedVersion":2,"eventKey":"muse-result:1","outcome":"prepared","summary":"Saved draft checked; waiting for human review."}';
  begin perform public.backend_job_dispatch(h,'applications.request.report',p||'{"expectedRevision":4}');raise exception 'Stale draft reported';exception when serialization_failure then null;end;

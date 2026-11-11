@@ -135,7 +135,7 @@ test('Muse instruction lookup routes to a usable audit guide and its examples pe
    const result=await send('tools/call',{name,arguments:args});assert(!result.isError,JSON.stringify(result));return JSON.parse(result.content[0].text);
   };
   const startup=await send('initialize',{protocolVersion:'2025-11-25'});
-  assert.match(startup.instructions,/load agent-audit to record the run/);
+  assert.match(startup.instructions,/Agent-audit records authorized work/);
   const context=await invoke('read_developer_context');
   assert(context.instructions.some(s=>s.includes('Assignment data collection is enabled')&&s.includes('pause a logged test')));
   const entry=context.guides.find(g=>g.id==='agent-audit');assert.match(entry.whenToUse,/Required run logging/);

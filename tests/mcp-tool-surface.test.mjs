@@ -21,7 +21,7 @@ const harness=(scopes=allScopes,extra=[],reply={status:200,data:{ok:true}})=>{
  return {handler,calls,send,call,discover};
 };
 test('initial catalog and gated counts match hosted, Node and stdio plans',async()=>{
- for(const [extras,exposed,gated] of [[[],47,85],[[RESUME_PARSE_TOOL,...SUBMISSION_TOOLS],50,85],[LOCAL_TOOLS,48,93]]){
+ for(const [extras,exposed,gated] of [[[],53,80],[[RESUME_PARSE_TOOL,...SUBMISSION_TOOLS],56,80],[LOCAL_TOOLS,54,88]]){
   const h=harness(allScopes,extras),listed=(await h.send('tools/list')).result.tools,discovered=await h.discover();
   assert.equal(listed.length,exposed);assert.equal(discovered.filter(tool=>tool.gated).length,gated);
   assert.equal(discovered.length,active.length+extras.length);
@@ -36,10 +36,11 @@ test('initial catalog and gated counts match hosted, Node and stdio plans',async
 test('logs, outcome reports and bugs remain named; toolkit and manual components are gated',async()=>{
  const h=harness(),names=(await h.send('tools/list')).result.tools.map(t=>t.name);
  for(const name of ['start_agent_audit_run','append_agent_audit_events','read_agent_audit_run','append_activity','record_search_progress','report_agent_task_result','report_application_failure','report_submission_result','report_bug','get_bug_status'])assert(names.includes(name),name);
- for(const name of ['prepare_draft','start_search_run','claim_agent_task','read_toolkit_context','read_artifact','read_preparation_plan'])assert(!names.includes(name),name);
+ for(const name of ['read_search_discoveries','claim_application_request','prepare_draft','report_application_request','read_action_board','finalize_application_request'])assert(names.includes(name),name);
+ for(const name of ['start_search_run','claim_agent_task','read_toolkit_context','read_artifact','read_preparation_plan'])assert(!names.includes(name),name);
  const dispatch=(await h.send('tools/list')).result.tools.find(t=>t.name==='call_discovered_tool');
  assert.deepEqual(dispatch.annotations,{readOnlyHint:false,destructiveHint:true,openWorldHint:true});
- assert.equal(DEFAULT_TOOL_NAMES.size,49);
+ assert.equal(DEFAULT_TOOL_NAMES.size,55);
 });
 test('workflow groups cover the catalog once and exact-name lookup includes core and runtime tools',async()=>{
  const h=harness(allScopes,LOCAL_TOOLS),seen=[];
@@ -113,7 +114,7 @@ test('fictional admin demo edits profile, discovers and reads a gated brief, rej
 });
 test('startup explains executable discovery and preserves the small permanent contract',()=>{
  assert.match(bootstrapInstructions,/discover_tools/);assert.match(bootstrapInstructions,/call_discovered_tool/);
- assert.equal(contract.developerVersion,158);
+ assert.equal(contract.developerVersion,159);
  assert(Buffer.byteLength(JSON.stringify(contract))+Buffer.byteLength(bootstrapInstructions)<=6000);
  assert.equal(ACCESS_TOOLS.length,2);
 });

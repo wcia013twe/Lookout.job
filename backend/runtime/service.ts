@@ -1,6 +1,7 @@
 import {traceWork} from './tracing.ts';
 import {submitSearchLeads,readSearchSourceLeads,readSearchFilterPlan} from './search-intake.ts';
 import {screenSearchDiscoveries} from '../../lib/search-screening.mjs';
+import {applicationHandoffFromSavedApplication} from '../../lib/application-handoff.mjs';
 import {ResumeParseError} from './resume-parser.ts';
 import {createHash} from 'node:crypto';
 import {validateRequest} from '../../supabase/functions/agent-gateway/contract.mjs';
@@ -45,6 +46,9 @@ export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume}: {rpc
         const [status,error]=gatewayFailure(response.status,body);return {status,error};
       }
       if(result.error){const [status,error]=databaseFailure(result.error);return {status,error};}
+      if(operation==='applications.request.claim'&&result.data?.application&&result.data?.jobRecord){
+        result.data.handoff=applicationHandoffFromSavedApplication({application:result.data.application,jobRecord:result.data.jobRecord});
+      }
       return {status:200,data:result.data};
     }catch{return {status:503,error:'Backend unavailable; read current state before retrying a write'};}
   };

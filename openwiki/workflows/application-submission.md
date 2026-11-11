@@ -587,8 +587,8 @@ outcomes remain stopped for verification; rereading never authorizes another
 submission. Browser/session recovery still depends on the host and employer.
 
 This change reduces redundant draft reads through existing scoped writers. It
-introduces no atomic save/report/acknowledgement transaction or new workflow
-store. Source tests and detached demos do not establish deployed or real-host
+does not make event acknowledgement atomic with a draft save and introduces no new workflow
+store. The later finalization extension below combines only final draft persistence and request outcome. Source tests and detached demos do not establish deployed or real-host
 behavior.
 
 ### Conditional preparation on AI Apply
@@ -682,3 +682,11 @@ button; the user can record the actual outcome in Applications. Existing version
 prepare_draft/report and human progress writers provide MCP parity. No new store,
 approval or employer receipt is created. Local runtime activation is verified
 separately from source/tests and actual Muse host adoption.
+
+### Atomic preparation finalization (local source update, November 2026)
+
+`finalize_application_request` / `applications.request.finalize` saves a full final draft and blocker through the canonical `drafts.prepare` writer and records the running, connection-owned request outcome in one transaction. It returns the persisted application and only that application's `actionBoardItems`. Inspect those complete results to replace the immediate application and board reads; missing or inconsistent results still require reads. Incremental prefill remains `prepare_draft`. Claim responses now include the saved application and preparation handoff. Reports remain available for factual completion and recovery.
+
+Exact identical-payload retries for claim, finalization and report recover historical receipts after current credential/scope/connection checks. They are not current authorization. Finalization preserves version, stop, ownership and canonical draft guards; it does not synthesize human review, approval, employer evidence or event acknowledgement. Uncertain external actions stay stopped for verification. Default MCP exposure now includes discovery reads, claim, preparation, finalization, report and board reads. Search context identifies backend execution and the canonical search guide version; supplemental manual search tools remain supported.
+
+Source and detached demo coverage do not prove hosted migration/function deployment or real host/browser execution. This pass adds no workflow store or automatic executor.

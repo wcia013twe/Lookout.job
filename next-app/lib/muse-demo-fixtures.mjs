@@ -1,5 +1,6 @@
 import {createApplicationAgentDemo} from '../../lib/application-agent-demo.mjs';
 import {validateApplicationRequest} from '../../supabase/functions/agent-gateway/application-requests.mjs';
+import {applicationHandoffFromSavedApplication} from '../../lib/application-handoff.mjs';
 import {validateRoundMetadata} from '../../lib/application-rounds.mjs';
 import {validateApplicationJob} from '../../supabase/functions/agent-gateway/application-jobs.mjs';
 import {createMuseChangeFeedDemo,emitDemoMuseChange} from '../../lib/muse-change-feed-demo.mjs';
@@ -175,9 +176,17 @@ export function createDemoServices(store) {
    if(job.version!==payload.expectedVersion||(app.backendRevision||0)!==payload.expectedRevision)throw Error('Application request changed.');
    const claim=operation==='applications.request.claim';
    if(job.status!==(claim?'queued':'running')||!claim&&job.result?.executor!=='muse')throw Error('Request cannot continue.');
-   const next={...job,status:claim?'running':['blocked','uncertain'].includes(payload.outcome)?'partial':'completed',version:job.version+1,result:{fictional:true,executor:'muse',outcome:claim?'working':payload.outcome,applicationId:app.backendId,applicationRevision:app.backendRevision||0,verifiedSubmission:false,summary:claim?'Muse picked up the fictional request.':payload.summary}};
-   store.set('workflow.applications.'+app.id,{...app,executionJob:next});
-   const result={job:copy(next),applicationId:app.backendId};requestReceipts.set(payload.eventKey,{signature,result});
+   let saved=app;
+   if(operation==='applications.request.finalize'){
+    const changed=JSON.stringify(app.draft||{})!==JSON.stringify(payload.finalDraft)||String(app.blocker||'')!==String(payload.blocker||'');
+    saved={...app,draft:{...copy(payload.finalDraft),questionsReviewed:false},blocker:payload.blocker||null,backendRevision:(app.backendRevision||0)+(changed?1:0),status:payload.outcome==='prepared'?'Awaiting approval':'Blocked'};
+   }else if(claim){
+    saved={...app,draft:copy(app.draft||{questions:copy(app.questions||[])} )};
+   }
+   const next={...job,status:claim?'running':['blocked','uncertain'].includes(payload.outcome)?'partial':'completed',version:job.version+1,result:{fictional:true,executor:'muse',outcome:claim?'working':payload.outcome,applicationId:app.backendId,applicationRevision:saved.backendRevision||0,verifiedSubmission:false,summary:claim?'Muse picked up the fictional request.':payload.summary}};
+   store.set('workflow.applications.'+app.id,{...saved,executionJob:next});
+   const jobRecord={id:saved.jobId||saved.job_id||saved.job?.id,employer:{company:saved.company||saved.employer?.company,title:saved.title||saved.employer?.title},location:saved.location,canonical_url:saved.url||saved.canonical_url};
+   const result={job:copy(next),applicationId:app.backendId,...(claim?{application:copy(saved),jobRecord,handoff:applicationHandoffFromSavedApplication({application:saved,jobRecord})}:{}),...(operation==='applications.request.finalize'?{application:copy(saved),actionBoardItems:[{applicationId:app.backendId,kind:payload.outcome==='prepared'?'review_application':'resolve_blocker',reason:payload.blocker||'Your approval is required before this application can proceed.'}],verifiedSubmission:false,approved:false}:{})};requestReceipts.set(payload.eventKey,{signature,result});
    if(!claim)emitDemoMuseChange(store,{eventKey:'application-outcome:'+job.id,kind:'backend_job_finished',entity:'backend_job',recordId:job.id,version:next.version,status:next.status,summary:payload.summary});
    return copy(result);
   }
@@ -202,6 +211,7 @@ export function createDemoServices(store) {
       return {application:copy(app),job:copy(job)};
     },
     async claimApplicationRequest(payload){return applicationRequest('applications.request.claim',payload);},
+    async finalizeApplicationRequest(payload){return applicationRequest('applications.request.finalize',payload);},
     async reportApplicationRequest(payload){return applicationRequest('applications.request.report',payload);},
     async recordApplicationProgress(payload) {
       const {applicationId,expectedRevision,status,note,eventKey}=payload;

@@ -195,3 +195,7 @@ unavailable assignment remains visible with its actual reason so the person can
 remove or replace it. This is presentation filtering, not credential deletion or
 a permission change. Website/MCP schedule saves keep their existing version and
 ownership checks. The detached connection demo includes revoked and expired history.
+
+### Atomic preparation finalization (local source update, November 2026)
+
+Default MCP exposure includes `read_search_discoveries`, `claim_application_request`, `prepare_draft`, `report_application_request`, `read_action_board` and the new `finalize_application_request`. Scope and ownership validation remain server-side; visibility grants no authority. Finalization uses the existing queue RPC and canonical draft writer on both Node and Edge paths. See [application finalization](../workflows/application-submission.md#atomic-preparation-finalization-local-source-update-november-2026) for response verification and exact-retry semantics. These are local source contracts pending deployment verification.
