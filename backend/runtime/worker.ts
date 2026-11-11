@@ -91,6 +91,10 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
   await checkpoint('active','unknown','');
    const collected=await fetchSource(source.source_id,source.source,{execute,previous:[...seen,...history.filter(h=>h.tracked)],profile:pinnedProfile.projection,request,signal,prefilter:filterPlan.config||true,onLeads:async rows=>{snapshot!.retainedAt??=new Date().toISOString();snapshot!.rawLeads=[...new Map([...(snapshot!.rawLeads||[]),...rows].map((row:Payload)=>[row.url,row])).values()];await checkpoint('active','unknown','Jobright leads retained for resolution and triage.');},days:filterPlan.config?.max_posting_age_days||run.days||(run.mode==='backlog'?30:3),onBatch:async(result,progress)=>{
    signal?.throwIfAborted();
+   for(const batch of listingBatches(result.listings.filter(row=>row.description||row.liveness!=='active').map(row=>({url:row.url,company:row.company,title:row.title,location:row.location??null,checkedAt:row.checkedAt,liveness:row.liveness,employerPostedAt:row.employerPostedAt??null,description:row.description??null,employmentType:row.employmentType??null})))){
+    const digest=createHash('sha256').update(JSON.stringify(batch.listings)).digest('hex').slice(0,24);
+    await dispatch('search.pool.save',{runId:run.id,listings:batch.listings,eventKey:prefix+'pool:'+digest});
+   }
    const rows=result.listings.map(row=>({...row,id:row.url}));
     const evaluated=rows.length?await execute('filter-discovery',{profile:pinnedProfile.projection,portals:pinnedPortals,listings:rows.map(row=>({...row,canonical_url:row.url,employment_type:row.employmentType,observation:{description:row.description,employer_posted_at:row.employerPostedAt}})),now:Date.now()}):{results:[]};
    assertDiscoveryResults(evaluated.results,rows);

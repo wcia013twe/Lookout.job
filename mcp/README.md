@@ -1,5 +1,16 @@
 # Job Board remote MCP
 
+Ordinary Discover reuses the agent-only employer inventory through
+`subscribe_shared_jobs` / `read_shared_jobs`, scoped to an active owned profile.
+Subscription writes require `workspace:read` and `preferences:write`; reads require
+`workspace:read`. Read `read_search_context.sharedPool.subscription` first, use
+versioned retry-safe subscription updates, and acknowledge a page only after
+assessment and verified private batch publication. Never treat closed/uncertain
+updates as open jobs. The pool has a 72-hour freshness window and partial coverage;
+an empty pool does not automatically queue a worker. These tools require the
+shared-pool migration and matching gateway/worker deployment. No public board or
+recurring producer is introduced.
+
 Endpoint: `https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-mcp`
 
 `report_bug(title, description)` is scaffolded for the owner-configured Muse

@@ -36,6 +36,7 @@ test('one real SQL-leased job persists verified observations, screenings and a c
  const j=await result(f.job.id);assert.equal(j.status,'completed');assert.equal(j.result.pipelineVersion,2);
  assert.equal(j.result.shortlist.screenedCount,3);assert.equal(j.result.shortlist.excludedCount,2);assert.equal(j.result.shortlist.retainedListingIds.length,1);assert.equal(j.result.shortlist.reporting,'pending-muse');assert.equal(j.result.shortlist.applicantEligibility,'not-evaluated');
  assert(t.calls.some(c=>c.task==='prefilter-discovery'));assert(t.calls.some(c=>c.task==='filter-discovery'));
+ assert.equal((await db.query("select count(*)::int count from private.shared_job_pool where facts->>'company'='Example (fictional)' ")).rows[0].count,3);
  assert.equal((await db.query('select count(*)::int n from public.search_screenings where user_id=$1',[f.owner])).rows[0].n,1);
  assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,0);
  assert.equal((await db.query('select count(*)::int n from public.applications where user_id=$1',[f.owner])).rows[0].n,0);
@@ -292,7 +293,7 @@ for(const status of ['Submitted','Rejected'])test(`direct search excludes a trac
 test('a completed direct shortlist reaches private Discover only through agent-reviewed publication, with replay and website parity',async()=>{
  const {batchRoles}=await import('../lib/cloud-model.mjs');
  const {readGuide}=await import('../supabase/functions/agent-gateway/guides.mjs');
-  const guide=readGuide('career-find-jobs');assert.equal(guide.version,23);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
+  const guide=readGuide('career-find-jobs');assert.equal(guide.version,24);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
  const f=await fixture(),t=tasks();await workOnce(rpc,{execute:t.execute});const j=await result(f.job.id);
  assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,0);
  const hash=f.owner.replaceAll('-','').repeat(2);
