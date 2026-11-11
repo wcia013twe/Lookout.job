@@ -76,3 +76,5 @@ Do not advertise parity until the capability is deployed and verified.
 At the start of every new session working in this repository, read `openwiki/quickstart.md` and `openwiki/operations/current-state.md` before beginning repository work, even when OpenWiki retrieval tools are unavailable. Read the relevant linked pages for the task, then verify consequential details against current source and tests.
 
 When a change materially affects documented behavior, update the relevant OpenWiki pages as part of the same feature pass before landing. Prefer a focused source-grounded update; run the OpenWiki generator only when a broader refresh is needed or requested. Record any stale coverage or verification limits, and do not claim the generated wiki is current beyond its documented source revision. The manual updater must preserve this startup rule.
+
+@RTK.md
