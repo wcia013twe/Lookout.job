@@ -11,7 +11,7 @@ export type Role = {
   postingObservation?: {checkedAt:string;liveness:string;postedAt:string|null;description:string};
   compensation?: string; workSetting?: string; sponsorship?: string;
   reviewPreview?: { question: string; answer: string; reason: string }[];
-  discoveredDate: string; sourceFreshness: string; whyItFits: string; applicationUrl: string;
+  discoveredDate: string; lastRecommendedDate?: string; sourceFreshness: string; whyItFits: string; applicationUrl: string;
 };
 import { useWorkspace } from "../lib/workspace";
 import ApplicationActions from "./application-actions";

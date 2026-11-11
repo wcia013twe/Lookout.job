@@ -17,3 +17,14 @@ export function matchesProfileEmployment(role, profile) {
 export function matchesDiscoveryStatus(role,{applications={},trackerItems={},includeApplied=false}={}) {
  return !roleRejected(role,applications,trackerItems)&&(includeApplied||!roleApplied(role,applications,trackerItems));
 }
+
+// Visibility overrides are personal board preferences; absent overrides use the latest drop.
+export function discoveryIsHidden(role, latestDate, overrides={}) {
+ if (role.postingObservation?.liveness === 'expired') return true;
+ const override=overrides[role.id];
+ if (override === 'hidden') return true;
+ if (override === 'visible') return false;
+ if (role.priority === 'Apply Now' || role.priority === 'Strong Consider') return false;
+ const recommended=role.lastRecommendedDate || role.discoveredDate;
+ return Boolean(latestDate && recommended && recommended < latestDate);
+}

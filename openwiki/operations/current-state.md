@@ -1637,3 +1637,7 @@ The earlier source-only status above describes the pre-release checkpoint.
 ### Atomic preparation finalization (local source update, November 2026)
 
 The local source adds atomic final draft/blocker persistence and request outcome reporting, authoritative claim responses, and default MCP access to the essential preparation tools. Search context now identifies backend execution and the current search guide. See [application finalization](../workflows/application-submission.md#atomic-preparation-finalization-local-source-update-november-2026) for the transaction, retry and verification boundaries. No hosted deployment or real host/browser execution is established by this pass.
+
+### Discover visibility (local source)
+
+The cumulative private board keeps the latest drop and older Apply Now/Strong Consider roles visible, with older lower-priority and expired roles in Hidden. Website and `set_discover_visibility` use the same owned per-role action; the existing `remove_discover_job` remains a separate batch-item removal. Bulk preference sync preserves the server's visibility map so a different role's change is not replaced. These source changes require the visibility and earlier Discover removal migrations and updated gateway/MCP before they are available in a running deployment. Demo fixtures and local tests cover the Hidden view; production availability has not been established.
