@@ -36,7 +36,7 @@
 - Keep a concise change note for each feature pass in `changes/<unique-feature-branch>.md`, including validation and verification limits. The feature starter generates this file; complete it and remove its draft marker before committing. Reuse it for follow-ups instead of editing the shared `CHANGELOG.md` insertion point. See `.github/INTEGRATION.md` and `changes/README.md`.
 - Keep React page framing and interactions in `next-app/`; use Tailwind utilities and shared theme tokens in `next-app/app/globals.css`. Keep domain models and backend contracts independent of presentation.
 - The user authorized the complete Next.js/React/Tailwind migration. The production UI lives in `next-app/`, deployed as a static export by `.github/workflows/deploy.yml`. The retired static frontend has been removed; shared domain behavior belongs in `lib/`.
-- Avoid computer-use or browser-UI automation for repository work unless the task is visual and requires iterative on-screen inspection. Prefer file, shell and purpose-built test tools for non-visual work.
+- For visual tasks, record the relevant interface and interactions and show the recording to the user. Use T3 browser recording when available; for a visual PR, include the recording in the PR when possible. If recording is unavailable, report the limitation and the verification performed. Prefer file, shell and purpose-built test tools for non-visual work.
 
 ## Local startup
 
