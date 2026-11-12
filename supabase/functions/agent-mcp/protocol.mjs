@@ -129,12 +129,12 @@ function validArgs(tool, args, onFailure=()=>{}) {
   } catch (error) {onFailure(error);return false;}
 }
 const hasToolScopes=(tool,scopes,payload=undefined)=>requiredToolScopes(tool,payload).every(scope=>scopes.includes(scope));
-export function createHandler(forward, allowedOrigins = ['https://wcia013twe.github.io'], extraTools = [], diagnostic = event=>console.warn(JSON.stringify(event))) {
+export function createHandler(forward, allowedOrigins = ['https://wcia013twe.github.io'], extraTools = [], diagnostic = event=>console.warn(JSON.stringify(event)), events = null) {
   const availableTools = [...TOOLS, ...extraTools].filter(tool => enabledMcpOperation(tool.operation));
   return async request => {
     const origin = request.headers.get('Origin');
     if (origin && !allowedOrigins.includes(origin)) return error(null, -32000, 'Origin forbidden', 403);
-    const token = request.headers.get('Authorization')?.match(/^Bearer (jb_agent_[a-f0-9]{64})$/)?.[1];
+    const token = request.headers.get('Authorization')?.match(/^Bearer (jb_agent_[a-f0-9]{64}|[A-Za-z0-9_-]{43})$/)?.[1];
     if (!token) return error(null, -32000, 'Agent credential required', 401);
     // Discovery also validates expiry/revocation, without requiring workspace scope.
     let auth;
@@ -159,7 +159,11 @@ export function createHandler(forward, allowedOrigins = ['https://wcia013twe.git
     if (!hasId) return message.method.startsWith('notifications/') ? reply(null, 202) : error(null, -32600, 'Request id required', 400);
     if (message.method === 'initialize') {
       if (typeof message.params?.protocolVersion !== 'string') return error(id, -32602, 'protocolVersion required');
-      return result(id, { protocolVersion: VERSIONS.includes(message.params.protocolVersion) ? message.params.protocolVersion : VERSIONS[0], capabilities: { tools: {} }, serverInfo: { name: 'job-board', version: runtimeVersion.sourceCommit ?? 'development' }, instructions: bootstrapInstructions });
+      return result(id, { protocolVersion: VERSIONS.includes(message.params.protocolVersion) ? message.params.protocolVersion : VERSIONS[0], capabilities: { tools: {}, ...(events ? {events:{}} : {}) }, serverInfo: { name: 'job-board', version: runtimeVersion.sourceCommit ?? 'development' }, instructions: bootstrapInstructions });
+    }
+    if (events && message.method.startsWith('events/')) {
+      try { return result(id,await events(token,message.method,message.params)); }
+      catch(e) { return reply({jsonrpc:'2.0',id,error:{code:e.code??-32603,message:e.code?e.message:'Event service unavailable',...(e.reason?{data:{reason:e.reason}}:{})}}); }
     }
     if (message.method === 'ping') return result(id, {});
     if (message.method === 'tools/list') return result(id, {tools:[...availableTools.filter(tool=>DEFAULT_TOOL_NAMES.has(tool.name)&&hasToolScopes(tool,scopes)).map(publicTool),...ACCESS_TOOLS]});

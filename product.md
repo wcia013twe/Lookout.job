@@ -16,7 +16,9 @@ Lookout started as a personal tool: an agent can find jobs once, but reliable da
 
 ## Product thesis
 
-Lookout is a plug-and-play **career skill and workflow harness for personal agents**, initially Muse. The agent supplies memory, reasoning, and execution; Lookout supplies job discovery, fit assessment, durable state, application workflows, and personalized preparation. Its UI is optional for agent-native users.
+Lookout is a plug-and-play **career workspace and verification platform for personal agents**, initially Muse. The agent supplies memory, reasoning, execution, and personal task management; Lookout supplies durable career records, scoped workflows, evidence, and access to maintained recruiting intelligence. A job-search engine should also be useful independently of a managed assistant. Its UI is optional for agent-native users.
+
+**Your agent knows you. Lookout helps it understand what is happening in recruiting.** Let personal agents handle the searching, drafting, preparation, and coordination they can already perform. The proposed paid value is maintained information and participating relationships that an individual agent cannot reliably assemble from public searches, plus tools for career communities to coordinate and evaluate their support.
 
 The long-term bet is that personal agents become a common interface and users prefer installing maintained capabilities to assembling brittle recurring automations. Prioritize portability and user-controlled data over dependency on a single agent runtime.
 
@@ -156,9 +158,13 @@ Never sell or disclose individual decision histories, inferred motivations, or p
 
 **Scope boundary:** Do not build a second personal reasoning engine or a full career analytics platform. Collect only data naturally useful to Lookout's candidate workflow, and validate data quality before any commercial analysis.
 
-## Agentic Glassdoor — future product hypothesis
+## Maintained recruiting intelligence — future product hypothesis
 
-Lookout could turn voluntarily shared job-search experiences into useful company-specific interview intelligence. Personal agents prepare structured summaries; people review and approve contributions; other agents use the shared facts to personalize preparation.
+Lookout could maintain a continuously updated recruiting record for each opening, connected to its employer, team, role level, and recruiting cycle where known. Combine dated employer sources with voluntarily shared candidate experiences and observed progression. Personal agents prepare structured contributions; people review and approve sharing; other agents use permitted evidence to personalize preparation, networking, and search decisions. This develops the Agentic Glassdoor hypothesis into a maintained service, rather than another collection of static reviews.
+
+Keep the shared opening record distinct from the private candidate profile. Preserve source dates, evidence levels, conflicting reports, and coverage gaps. Updates could describe recruiting activity, interview formats, reported response times, preparation resources, and people who have opted in to help. An agent finding a public profile does not establish that the person is available or willing to help.
+
+Opinionated guidance should retain context and attribution: what candidates found useful, for which role or stage, when, and why. Evidence that someone interviewed does not verify every detail of their account or establish that their preparation caused success. Anonymized progression comparisons describe participating contributors, not the entire applicant pool or an individual candidate's probability of advancing. No recorded response is not evidence of rejection.
 
 **Scope:** Lookout organizes shared evidence. Muse handles individual reasoning. Do not rebuild Glassdoor reviews or LeetCode content.
 
@@ -186,18 +192,45 @@ Lookout could turn voluntarily shared job-search experiences into useful company
 
 ## Business model and distribution hypotheses
 
-Lookout is a **lifestyle business by default**, with upside if adoption unexpectedly accelerates. A free bring-your-own-agent skill can attract technical users; optional paid convenience may serve people who don't want setup or maintenance overhead. Churn is acceptable only when acquisition and servicing economics work.
+Lookout is a **lifestyle business by default**, with two primary revenue lanes to validate: student access to maintained recruiting intelligence, and institution-sponsored access with career-community management. These are product and commercial hypotheses, not shipped capabilities, signed partnerships, or established willingness to pay.
 
-Possible monetization, not commitments:
-- Voluntary sponsorships and donations.
-- Managed onboarding, scheduling, integrations, and support.
-- Maintained premium job intelligence/data services, subject to licensing and cost feasibility.
-- Relevant career-prep affiliate links and optional transition services.
-- Public job roundups, creator partnerships, and clearly labeled newsletter sponsorships.
+### Lane 1 — Recruiting intelligence for students and their agents
 
-**Trust boundary:** Never rank job matches or preparation resources higher because of affiliate commissions. Keep sponsored placements clearly separated and disclosed. Users control their preparation sources. Do not sell private career history or share agent memory with advertisers.
+**Buyer:** students and early-career candidates with active searches or upcoming interviews.
 
-Distribution begins with existing friend groups and Discord communities. Test whether circle invitations lead to activated users. Public job alerts and creator partnerships are later channels; upfront influencer payments without measured acquisition economics are risky. Broader occupations are a future possibility, not a reason to dilute the initial tech/early-career focus.
+**Free foundation:** connect a personal agent, discover jobs, maintain application records, review actions, and inspect evidence attached to the user's own work. Ordinary agent search, writing, preparation, and task management are not the main premium proposition.
+
+**Paid value:** follow target openings and companies, receive material recruiting updates, access contextual preparation recommendations, compare privacy-protected contributor timelines and progression, and find people who have explicitly opted in to help. Lookout maintains the information; the student's agent selects what matters and turns it into a preparation plan, follow-up, or networking step using the student's goals, background, and schedule. Students should not need another feed to monitor.
+
+**Reason to pay:** spend limited preparation time on relevant work, make better-informed search decisions, and reach willing, relevant people using information the agent could not reliably find alone. Updates must supply material new evidence; merely repackaging public search results is insufficient differentiation.
+
+Test monthly access and recruiting-season or company-specific passes. The earlier $35/month proposal is an unvalidated price, not a commitment. Bring-your-own-agent delivery may avoid much of the per-user assistant compute cost and permit a lower student price, but licensed source access, collection, verification, refresh, storage, privacy, and support still cost money. Validate pricing against demonstrated usefulness, retention during an active search, and servicing costs. Managed assistants and setup support remain optional convenience services, not the core upsell.
+
+### Lane 2 — Sponsored access and career-community management
+
+**Buyer:** university career services, departments, alumni programs, and affiliated student or professional organizations. Test cohort sponsorship early through a focused campus pilot; do not assume a campus-wide procurement agreement.
+
+**Paid value:** sponsor student access and manage a community workspace with membership, aggregate recruiting targets, shared resources, mentors or office hours, preparation events, and feedback on support. Career communities could understand which employers, roles, and stages their members are pursuing and organize assistance around that demand. Their resources and opted-in connections become available to students' agents for individualized follow-through.
+
+**Example:** a community sees shared interest in a set of employers and upcoming technical interviews, organizes relevant alumni office hours and preparation sessions, and publishes resources. Each student's agent can adapt that support to their preparation needs and schedule. This is a proposed workflow, not an existing institutional integration.
+
+**Measure whether support helps:** connect consented participation in advising, workshops, introductions, and resources with relevance feedback, reported preparation improvements, and subsequent assessments, interviews, offers, or accepted roles. Keep support offered, actual participation, student-reported progress, and externally evidenced outcomes distinct. Report sample size, observation period, missing updates, and evidence coverage. Associations can guide program improvement but do not establish that a service caused a hiring outcome.
+
+**Student control:** share aggregate demand by default; expose individual targets or progress only with explicit student permission or a request for individual support. Sponsorship does not grant access to private applications, messages, resumes, or agent memory. Removing names alone is insufficient anonymization: suppress sparse groups and combinations that could identify a student. Sharing controls, corrections, deletion, and community access boundaries are requirements to validate before offering this lane.
+
+Test a cohort or term license covering sponsored access and community management. Determine the price from a pilot's value and costs rather than inventing an institutional rate. Students may also buy access independently; avoid double-charging students whose access is already sponsored.
+
+### Distribution — Concentrate value in a recruiting community
+
+Start at UCF through existing student organizations, career communities, departments, and alumni relationships, alongside friend groups and Discord communities. Recruit a focused cohort with overlapping employers or recruiting programs so approved contributions can help multiple members. The initial 10-student prototype is a learning group, not proof of network density or either revenue lane.
+
+**Proposed growth loop:** a community brings students → students connect agents and voluntarily contribute experiences → relevant shared intelligence and support improve → students return for updates and invite peers → the community can evaluate and improve its services. Test each step; membership and invitations alone do not establish activation or value.
+
+Give community leaders a concrete pilot offer: help members pursue shared recruiting goals, coordinate relevant support, and learn which services students use and find helpful. Institution-funded access addresses the judges' student-affordability concern, while community participation supplies a focused way to test the differentiation and one measurable outcome. Prove usefulness and contribution quality before expanding across campuses. Public alerts and creator partnerships are later channels; broader occupations should not dilute the initial tech/early-career focus.
+
+### Secondary revenue and trust
+
+Voluntary sponsorships, donations, relevant preparation affiliate links, clearly labeled newsletter sponsorships, and optional transition or setup services remain secondary experiments. Never rank job matches or preparation resources higher because of commissions. Separate and disclose sponsored placements, preserve user control over preparation sources, and never sell private career history or share agent memory with advertisers. Institutional reporting is for consented community support and evaluation, not an automatic employer-data resale channel.
 
 ## Prioritized roadmap
 
@@ -205,9 +238,9 @@ Distribution begins with existing friend groups and Discord communities. Test wh
 
 **P1 — Circle MVP.** Invite-only circles, explicit sharing controls, interview/offer milestone cards, reactions, shared opportunities, and notification preferences. No XP or leaderboards. Private conversation threads can carry structured context.
 
-**P2 — Collective preparation.** Voluntary “what helped” insights, resource sharing, personal-agent interpretation of shared opportunities, and links to existing Discord practice sessions.
+**P2 — Collective preparation and focused community pilots.** Voluntary “what helped” insights, resource sharing, personal-agent interpretation of shared opportunities, and links to existing Discord practice sessions. Test maintained opening records and institution-sponsored cohorts with explicit sharing controls before broader rollout.
 
-**P3 — Expansion and monetization experiments.** Nontechnical onboarding, occupation-specific packs, creator distribution, contextual affiliate placements, and optional paid services based on proven value.
+**P3 — Validate and expand the two revenue lanes.** Test paid recruiting intelligence for individuals and sponsored access with community management for institutions. Expand only after useful information density, student outcomes, privacy controls, willingness to pay, and servicing costs are understood. Creator distribution and secondary revenue remain later experiments.
 
 ## Validate before expanding
 
@@ -216,7 +249,12 @@ Distribution begins with existing friend groups and Discord communities. Test wh
 - Do circle invitations activate new users?
 - Does shared progress encourage useful preparation rather than application spam?
 - Can users export their data and keep private agent context private?
-- Do nontechnical users pay for setup convenience or maintained services?
+- Do maintained recruiting updates change preparation, networking, or application decisions beyond what an agent can find independently?
+- Will students purchase intelligence access, and do monthly or recruiting-season passes fit their search patterns?
+- Will career communities sponsor access and use shared recruiting demand to organize relevant support?
+- Can participation, usefulness feedback, and subsequent outcomes help communities improve services without claiming causation or exposing individuals?
+- Do focused cohorts generate enough recent, permitted evidence to support useful comparisons?
+- Do collection, verification, refresh, and support costs leave viable margins at an affordable price?
 - Do resource recommendations remain useful without affiliate incentives?
 
 Measure reliable runs, relevant matches, preparation completion, circle participation, referrals, and trust—not raw application volume, manufactured FOMO, or affiliate clicks.
