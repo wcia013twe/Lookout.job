@@ -199,3 +199,48 @@ ownership checks. The detached connection demo includes revoked and expired hist
 ### Atomic preparation finalization (local source update, November 2026)
 
 Default MCP exposure includes `read_search_discoveries`, `claim_application_request`, `prepare_draft`, `report_application_request`, `read_action_board` and the new `finalize_application_request`. Scope and ownership validation remain server-side; visibility grants no authority. Finalization uses the existing queue RPC and canonical draft writer on both Node and Edge paths. See [application finalization](../workflows/application-submission.md#atomic-preparation-finalization-local-source-update-november-2026) for response verification and exact-retry semantics. These are local source contracts pending deployment verification.
+
+### MCP Events alternative to host polling (source update)
+
+The Node `/mcp` endpoint optionally enables `events/list`, `events/subscribe` and
+`events/unsubscribe`; the Edge endpoint does not advertise these methods. The
+`lookout.work_available` event requires existing `workspace:read` and `activity:write`
+scopes and exposes only a change ID and kind. Private subscriptions bind to the
+authenticated connection, with signed challenge verification and rotation-aware
+Standard Webhooks signatures. Delivery uses the existing workspace invalidation
+channel, a transactional private outbox, fenced leases and stable event IDs.
+The consumer still reads current records and acknowledges handled changes through
+the existing tools; event receipt grants no authority.
+
+See [the implementation and activation limits](../../docs/mcp-events.md) and
+[current verification state](../operations/current-state.md#mcp-events-source-support-not-activated).
+Code support does not establish a cloud connection: the existing opaque bearer
+authentication remains unchanged and requires a separately authorized compatible
+connection path before ChatGPT can subscribe.
+
+## Host OAuth preparation (inactive)
+
+[The host authentication decision](../../docs/mcp-oauth-boundary.md) records the
+remaining consent, token isolation and revocation requirements. Ordinary Supabase
+OAuth user tokens must not replace scoped agent credentials: OIDC scopes do not
+restrict database permissions. This is a source-only design, with no OAuth routes,
+clients, hooks, grants or subscription activated. The current runtime provider is
+`osyrlausutnqzlegxmnd`; older-project discovery is not evidence for its configuration.
+
+Offline preparation now includes an unconfigured SQL hook/immutable consent binding
+and a `jose` token verifier under `backend/oauth-preparation/`, with eighteen actual
+SQL/signature test scenarios. Neither is a runtime route or deployable migration.
+The documented provider resource-binding gap and older production account-isolation
+behavior prevent direct-token activation; the decision document describes a bounded
+`oidc-provider` alternative that keeps human tokens inside Lookout.
+
+### Selected host bridge (disabled pending activation)
+
+[The opaque-token bridge](../../docs/mcp-host-oauth.md) now uses the maintained
+`oidc-provider` package with private durable state and existing Supabase human
+sign-in only for Lookout consent. Its source adds a consent page and fixed-client
+PKCE endpoints, consolidates scoped connection lookup without copying credentials,
+and binds event subscriptions to revocable grants. Runtime configuration and the
+new database policy default to disabled; no cloud connection is implied. The
+research hook above is not the chosen production path. Database policy disablement
+is the full kill switch; disabling issuer routes alone does not revoke issued tokens.

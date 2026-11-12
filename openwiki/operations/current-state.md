@@ -1666,3 +1666,38 @@ The local Edge Runtime remains mounted from the shared main checkout rather than
 ### Discover visibility (local source)
 
 The cumulative private board keeps the latest drop and older Apply Now/Strong Consider roles visible, with older lower-priority and expired roles in Hidden. Website and `set_discover_visibility` use the same owned per-role action; the existing `remove_discover_job` remains a separate batch-item removal. Bulk preference sync preserves the server's visibility map so a different role's change is not replaced. These source changes require the visibility and earlier Discover removal migrations and updated gateway/MCP before they are available in a running deployment. Demo fixtures and local tests cover the Hidden view; production availability has not been established.
+### MCP Events source support (not activated)
+
+The existing Node API now advertises MCP Events and accepts scoped subscription
+create/refresh/remove requests for `lookout.work_available`. New system Muse feed
+rows enqueue private durable deliveries; the existing `workspace_changes` Realtime
+notification wakes the API without a new polling worker or publication change.
+Signed callback verification, public-address socket pinning, expiration/revocation
+checks, leases and bounded retries preserve the existing authority boundary.
+Webhook receipt does not acknowledge work or authorize submission. See
+[the protocol and activation contract](../../docs/mcp-events.md),
+[Node event implementation](../../backend/runtime/mcp-events.mjs),
+[outbox migration](../../supabase/migrations/20261110165522_mcp_events.sql), and
+[protocol/database tests](../../tests/mcp-events.test.mjs).
+
+Local aggregate validation passed 1,352 tests with five skipped and zero failures;
+the production static build, runtime/intelligence typechecks and catalog validation
+also passed. Draft [PR #91](https://github.com/wcia013twe/Lookout.job/pull/91) is open after
+explicit user approval resolved the initial PR-creation denial. Exact-commit CI,
+merge, deployment and a live dot subscription remain unverified. Production at
+`https://34-148-155-27.sslip.io/mcp` retains its opaque custom bearer authentication,
+which is not supported by the documented ChatGPT plugin authentication flow. A
+host-compatible authentication decision and a verified subscription/delivery/dot run
+are still required before retiring existing watchers. No credentials or permissions
+were changed.
+
+### Host OAuth bridge source (not activated)
+
+The selected source path now uses `oidc-provider` for fixed-client PKCE and opaque
+host tokens, with existing Supabase human sign-in confined to Lookout consent.
+Private durable grants bind one reviewed connection's owner, scopes and expiry;
+scoped dispatch and event delivery recheck that authority. Both runtime issuance
+and database policy default disabled. [Setup and rollback requirements](../../docs/mcp-host-oauth.md)
+name the keys, provided-client configuration and explicit persistent grant still
+requiring action-time approval. No host connection, grant or wakeup is established
+by source tests. The older direct-Supabase-hook experiment remains inactive research.

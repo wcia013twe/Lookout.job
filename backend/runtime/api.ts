@@ -8,13 +8,14 @@ import {agentPackageResponse} from './agent-package.ts';
 import type {Payload} from './types.ts';
 
 type Dispatch = (token: string, operation: string, payload: Payload) => Promise<Reply>;
-export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]'],allowedOrigins=['http://localhost:3000','http://127.0.0.1:3000'],parseHuman,readCount,readPackage=agentPackageResponse,executionTools=[]}: {dispatch: Dispatch; allowedHosts?: string[]; allowedOrigins?: string[]; parseHuman?: (token:string,payload:Payload)=>Promise<any>; readCount?: (watchId:string)=>Promise<any>; readPackage?: (request:Request)=>Promise<Response>; executionTools?: any[]}) {
-  const mcp=createHandler(dispatch,allowedOrigins,[RESUME_PARSE_TOOL,...executionTools]);
+export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]'],allowedOrigins=['http://localhost:3000','http://127.0.0.1:3000'],parseHuman,readCount,readPackage=agentPackageResponse,executionTools=[],events,oauth}: {dispatch: Dispatch; allowedHosts?: string[]; allowedOrigins?: string[]; parseHuman?: (token:string,payload:Payload)=>Promise<any>; readCount?: (watchId:string)=>Promise<any>; readPackage?: (request:Request)=>Promise<Response>; executionTools?: any[]; events?: (token:string,method:string,params:any)=>Promise<any>; oauth?: {handle:(req:any,res:any,path:string)=>Promise<boolean>;challenge:string}|null}) {
+  const mcp=createHandler(dispatch,allowedOrigins,[RESUME_PARSE_TOOL,...executionTools],undefined,events);
   const server=createServer(async (req,res)=>{
     const json=(status:number,data: unknown)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
     let url:URL;
     try{url=new URL(req.url||'/', 'http://'+req.headers.host);}catch{return json(400,{error:'Invalid request URL'});}
     if(!allowedHosts.includes(url.hostname))return json(403,{error:'Host forbidden'});
+    if(oauth && await oauth.handle(req,res,url.pathname))return;
     if(url.pathname==='/agent-gateway/pending-count'||url.pathname.startsWith('/agent-package/')){
       try{
         const request=new Request(url,{method:req.method||'GET'});
@@ -41,7 +42,7 @@ export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]
         const headers=new Headers();
         for(const [name,value] of Object.entries(req.headers))if(value!==undefined)headers.set(name,Array.isArray(value)?value.join(','):value);
         const response=await mcp(new Request(url,{method:'POST',headers,body:new Uint8Array(bytes)}));
-        response.headers.forEach((value:string,name:string)=>res.setHeader(name,value));res.statusCode=response.status;return res.end(Buffer.from(await response.arrayBuffer()));
+        response.headers.forEach((value:string,name:string)=>res.setHeader(name,value));if(response.status===401&&oauth)res.setHeader('WWW-Authenticate',oauth.challenge);res.statusCode=response.status;return res.end(Buffer.from(await response.arrayBuffer()));
       }
       if(url.pathname==='/v1/resume-import'){
         const token=req.headers.authorization?.match(/^Bearer ([^\s]+)$/)?.[1];
@@ -50,7 +51,7 @@ export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]
         if(!parseHuman)return json(503,{error:'Resume autofill is not configured yet.'});
         try{return json(200,{data:await parseHuman(token,payload)});}catch(e){return json(e instanceof ResumeParseError?e.status:503,{error:e instanceof ResumeParseError?e.message:'Resume parsing is unavailable. Your uploaded file is saved.'});}
       }
-      const token=req.headers.authorization?.match(/^Bearer (jb_agent_[a-f0-9]{64})$/)?.[1];
+      const token=req.headers.authorization?.match(/^Bearer (jb_agent_[a-f0-9]{64}|[A-Za-z0-9_-]{43})$/)?.[1];
       if(!token)return json(401,{error:'Agent credential required'});
       let body;try{body=JSON.parse(bytes.toString('utf8'));}catch{return json(400,{error:'Invalid JSON'});}
       if(!body || Array.isArray(body) || typeof body!=='object' || Object.keys(body).some(k=>!['operation','payload'].includes(k)) || typeof body.operation!=='string')return json(400,{error:'Operation and payload required'});

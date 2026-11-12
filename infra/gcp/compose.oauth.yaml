@@ -1,0 +1,10 @@
+# Included by deploy-remote only for explicitly enabled OAuth deployments.
+services:
+  api:
+    volumes:
+      - type: bind
+        source: /etc/lookout/oauth
+        target: /run/lookout-oauth
+        read_only: true
+        bind:
+          create_host_path: false

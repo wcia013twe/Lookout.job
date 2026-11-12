@@ -47,3 +47,24 @@ test('committed source archive covers every Docker build input', () => {
   assert.ok(inputs.length>0);
   for(const input of inputs) assert.ok(sourcePaths.some(path=>input===path||input.startsWith(path+'/')),`Missing archived Docker input: ${input}`);
 });
+
+test('OAuth deployment is opt-in and requires the dedicated approved config mount',()=>{
+ assert.deepEqual(validateRuntimeEnv(valid+'LOOKOUT_OAUTH_ENABLED=false\n'),{host:'api.lookout.test'});
+ assert.throws(()=>validateRuntimeEnv(valid+'LOOKOUT_OAUTH_ENABLED=true\n'),/private configuration mount/);
+ assert.throws(()=>validateRuntimeEnv(valid+'LOOKOUT_OAUTH_ENABLED=yes\n'),/true or false/);
+ assert.deepEqual(validateRuntimeEnv(valid+'LOOKOUT_OAUTH_ENABLED=true\nLOOKOUT_OAUTH_CONFIG_FILE=/run/lookout-oauth/config.json\n'),{host:'api.lookout.test'});
+ assert.ok(sourcePaths.includes('infra/gcp/compose.oauth.yaml'));
+});
+
+test('secret staging verifies complete bytes and preserves previous file on a truncated upload',async()=>{
+ const {stageSecretCommand}=await import('../scripts/deploy-gcp.mjs');
+ const {createHash}=await import('node:crypto');const {mkdtemp,readFile,readdir,rm}=await import('node:fs/promises');const {tmpdir}=await import('node:os');const {join}=await import('node:path');const {spawnSync}=await import('node:child_process');
+ const dir=await mkdtemp(join(tmpdir(),'lookout-stage-fixture-'));const text='fictional test config\n',digest=createHash('sha256').update(text).digest('hex');
+ try{
+ const command=stageSecretCommand('oauth',digest).replace(/^sudo /,'').replaceAll('/etc/lookout/staged',dir);
+ assert.equal(spawnSync('sh',['-c',command],{input:text,encoding:'utf8'}).status,0);
+ assert.notEqual(spawnSync('sh',['-c',command],{input:'truncated',encoding:'utf8'}).status,0);
+ assert.equal(await readFile(join(dir,'oauth-'+digest),'utf8'),text);assert.deepEqual(await readdir(dir),['oauth-'+digest]);
+ assert.throws(()=>stageSecretCommand('bad;command',digest));assert.throws(()=>stageSecretCommand('oauth','bad'));
+ }finally{await rm(dir,{recursive:true,force:true});}
+});

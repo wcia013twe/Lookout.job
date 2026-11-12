@@ -1,5 +1,7 @@
+import {createHash} from 'node:crypto';
+import {validateOAuthConfig} from '../backend/runtime/oauth.mjs';
 import {spawnSync} from 'node:child_process';
-import {mkdtempSync, readFileSync, rmSync, openSync, closeSync} from 'node:fs';
+import {mkdtempSync, readFileSync, rmSync, openSync, closeSync, statSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {resolve, join} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
@@ -8,7 +10,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const infra = join(root, 'infra/gcp');
 // Explicit committed paths exclude the downloaded SDK, credentials, account data,
 // Terraform state and unrelated local files from the upload and Docker context.
-export const sourcePaths = ['.dockerignore', 'package.json', 'package-lock.json', 'backend/runtime', 'agent-package', 'scripts/build-agent-package.mjs', 'supabase/functions', 'lib', 'runner', 'infra/gcp/compose.yaml', 'infra/gcp/Caddyfile', 'infra/gcp/deploy-remote.sh'];
+export const sourcePaths = ['.dockerignore', 'package.json', 'package-lock.json', 'backend/runtime', 'agent-package', 'scripts/build-agent-package.mjs', 'supabase/functions', 'lib', 'runner', 'infra/gcp/compose.yaml', 'infra/gcp/compose.oauth.yaml', 'infra/gcp/Caddyfile', 'infra/gcp/deploy-remote.sh'];
 
 export function validateRuntimeEnv(text) {
   const values = {};
@@ -30,7 +32,14 @@ export function validateRuntimeEnv(text) {
   if (!origins.length || origins.some(origin => { try { const u = new URL(origin); return u.protocol !== 'https:' || u.origin !== origin; } catch { return true; } })) throw Error('Allowed origins must be exact HTTPS website origins, without a path or trailing slash.');
   if (!['false', 'true'].includes(values.LOOKOUT_EXECUTION_ENABLED)) throw Error('Set LOOKOUT_EXECUTION_ENABLED explicitly to true or false.');
   if (values.LOOKOUT_SUBMISSION_ENABLED !== 'false') throw Error('This initial deployment requires LOOKOUT_SUBMISSION_ENABLED=false; browser submission needs separate verification.');
+  if(values.LOOKOUT_OAUTH_ENABLED!==undefined&&!['true','false'].includes(values.LOOKOUT_OAUTH_ENABLED))throw Error('Set LOOKOUT_OAUTH_ENABLED to true or false.');
+  if(values.LOOKOUT_OAUTH_ENABLED==='true'&&values.LOOKOUT_OAUTH_CONFIG_FILE!=='/run/lookout-oauth/config.json')throw Error('Enabled OAuth requires its approved private configuration mount.');
   return {host};
+}
+
+export function stageSecretCommand(kind,digest) {
+  if(!['runtime','oauth'].includes(kind)||!/^[a-f0-9]{64}$/.test(digest))throw Error('Invalid secret staging identity');
+  return `sudo sh -ceu 'umask 077; install -d -m 700 /etc/lookout/staged; staged_tmp=$(mktemp /etc/lookout/staged/.upload.XXXXXX); trap "rm -f $staged_tmp" EXIT; cat > "$staged_tmp"; echo "${digest}  $staged_tmp" | sha256sum --check --status; mv "$staged_tmp" /etc/lookout/staged/${kind}-${digest}; trap - EXIT'`;
 }
 
 function run(command, args, options = {}) {
@@ -40,10 +49,20 @@ function run(command, args, options = {}) {
   return result.stdout?.trim();
 }
 
-export function deploy(envPath) {
+export function deploy(envPath, oauthConfigPath) {
   if (!envPath) throw Error('Usage: node scripts/deploy-gcp.mjs /absolute/path/to/.env.gcp.local');
   const env = readFileSync(resolve(envPath), 'utf8');
   const {host} = validateRuntimeEnv(env);
+  let oauthConfig;
+  if(env.split(/\r?\n/).includes('LOOKOUT_OAUTH_ENABLED=true')){
+    if(!oauthConfigPath)throw Error('Enabled OAuth requires an explicitly supplied approved private config file.');
+    if(statSync(resolve(oauthConfigPath)).mode&0o077)throw Error('OAuth config file must be private (0600).');
+    oauthConfig=readFileSync(resolve(oauthConfigPath),'utf8');
+    const checked=validateOAuthConfig(JSON.parse(oauthConfig));
+    if(checked.issuer!==`https://${host}/oauth`)throw Error('OAuth issuer must match the existing API host.');
+    const origins=env.split(/\r?\n/).find(line=>line.startsWith('LOOKOUT_ALLOWED_ORIGINS=')).slice('LOOKOUT_ALLOWED_ORIGINS='.length).split(',');
+    if(!origins.includes(new URL(checked.consentUrl).origin))throw Error('OAuth consent must use an existing allowed website origin.');
+  }else if(oauthConfigPath)throw Error('Do not supply OAuth secrets for a disabled deployment.');
   if (run('git', ['branch', '--show-current']) !== 'main') throw Error('Deploy committed, landed local main.');
   run('git', ['diff', '--quiet', 'HEAD', '--', ...sourcePaths]);
   const revision = run('git', ['rev-parse', 'HEAD']);
@@ -64,12 +83,16 @@ export function deploy(envPath) {
     run(gcloud, ['compute', 'scp', archive, `${instance}:lookout-${revision}.tar`, ...common], {stdio: 'inherit'});
     // SSH carries secrets on stdin. No secret is placed in shell arguments,
     // Terraform state, metadata, the source archive or a Docker image layer.
-    ssh("sudo sh -c 'umask 077; cat > /etc/lookout/runtime.env'", {input: env});
-    ssh(`sudo install -d /opt/lookout/releases/${revision} && sudo tar -xf lookout-${revision}.tar -C /opt/lookout/releases/${revision} && sudo bash /opt/lookout/releases/${revision}/infra/gcp/deploy-remote.sh ${revision} ${host} && rm lookout-${revision}.tar`, {stdio: 'inherit'});
+    const runtimeText=env.replace(/\r\n/g,'\n');
+    const runtimeDigest=createHash('sha256').update(runtimeText).digest('hex');
+    const oauthDigest=oauthConfig?createHash('sha256').update(oauthConfig).digest('hex'):'-';
+    if(oauthConfig)ssh(stageSecretCommand('oauth',oauthDigest),{input:oauthConfig});
+    ssh(stageSecretCommand('runtime',runtimeDigest),{input:runtimeText});
+    ssh(`sudo install -d /opt/lookout/releases/${revision} && sudo tar -xf lookout-${revision}.tar -C /opt/lookout/releases/${revision} && sudo bash /opt/lookout/releases/${revision}/infra/gcp/deploy-remote.sh ${revision} ${host} ${runtimeDigest} ${oauthDigest} && rm lookout-${revision}.tar`, {stdio: 'inherit'});
     console.log(`Deployed ${revision}. Check https://${host}/healthz, then authenticated MCP and one bounded discovery job.`);
   } finally { rmSync(temporary, {recursive: true, force: true}); }
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  try { deploy(process.argv[2]); } catch (error) { console.error(error.message); process.exitCode = 1; }
+  try { deploy(process.argv[2],process.argv[3]); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
