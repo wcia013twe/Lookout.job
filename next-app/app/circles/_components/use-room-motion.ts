@@ -1,9 +1,9 @@
 'use client';
 
 import {useEffect, useRef, type RefObject} from 'react';
-import {routines,sampleRoutine,sampleTravel,type Point} from './room-motion';
+import {routines as defaultRoutines,sampleRoutine,sampleTravel,type Point,type Routine} from './room-motion';
 
-export function useRoomMotion(roomRef:RefObject<HTMLDivElement|null>,paused:boolean,membersKey:string,gathered=false){
+export function useRoomMotion(roomRef:RefObject<HTMLDivElement|null>,paused:boolean,membersKey:string,gathered=false,routines:Routine[]=defaultRoutines){
  const pauseRef=useRef(paused);
  const gatherRef=useRef(gathered);
  useEffect(()=>{gatherRef.current=gathered;},[gathered]);
@@ -35,6 +35,8 @@ export function useRoomMotion(roomRef:RefObject<HTMLDivElement|null>,paused:bool
    actor.style.setProperty('--move-x',`${sample.x}cqw`);
    actor.style.setProperty('--move-y',`${sample.y*2/3}cqw`);
    actor.style.setProperty('--direction',String(sample.direction));
+   actor.style.setProperty('--avatar-frame',String(preference.matches?0:Math.floor(clocks[index]*5)%4));
+   actor.style.setProperty('--avatar-row',sample.mode==='walking'?'1':'0');
 
    actor.style.zIndex=String(Math.round(sample.y));
    if(actor.dataset.mode!==sample.mode){actor.dataset.mode=sample.mode;const label=actor.querySelector('[data-journey]');if(label)label.textContent=sample.journey;}
@@ -75,5 +77,5 @@ export function useRoomMotion(roomRef:RefObject<HTMLDivElement|null>,paused:bool
   }
   actors.forEach(paint);raf=requestAnimationFrame(draw);
   return ()=>{cancelAnimationFrame(raf);observer.disconnect();resize.disconnect();document.removeEventListener('visibilitychange',wake);delete room.dataset.sleeping;};
- },[roomRef,membersKey]);
+ },[roomRef,membersKey,routines]);
 }

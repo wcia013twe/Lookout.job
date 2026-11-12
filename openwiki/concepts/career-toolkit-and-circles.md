@@ -40,6 +40,14 @@ generated: { by: "openwiki/0.7.2", at: "2026-11-07T02:52:01.830Z" }
 
 # Career Toolkit, artifacts, network, and Circle knowledge
 
+## Clubhouse appearance (focused source update)
+
+The Customize modal separates each person's avatar from the owner-selected Circle room. People choose a builtin or upload a bounded transparent PNG; optional 4×3 sprite sheets supply idle, walking and celebrating frames. A person's saved avatar follows them across Circles. Two initial catalog entries use the existing cottage with moon/warm lighting. This is not live presence, an avatar generator, room editor, or marketplace.
+
+Source: `lib/circle-appearance.mjs`, `next-app/app/circles/_components/appearance.tsx`, and migration `20261112045613_circle_appearance.sql`. Membership-scoped `circles.read` includes appearance revisions. Human-only `circles.avatar` and owner-only `circles.theme` use optimistic versions and idempotent event keys. Agents use the existing scoped `read_circle` and `request_circle_human_action` manage handoff, never an agent write or chat-based consent substitute.
+
+Images remain bounded inline private records, not public Storage objects; this makes large Circle reads heavier. The server validates PNG headers/geometry; browser upload additionally verifies decoded transparent artwork. Creator templates contain data and local assets only, with manual repository review before catalog inclusion and whole-cycle geometry review. See `backend/circle-knowledge.md` for limits and `tests/circle-appearance.test.mjs` for migrated SQL/demo evidence. This focused note does not refresh generated provenance elsewhere or claim production deployment.
+
 Career Toolkit is the private, durable-work surface for preparation material: research, interview briefs, practice, reusable application text, and ordered prep collections. It is backed by owner-scoped artifact revisions rather than an agent transcript or a generic document store. Its adjacent preparation planner turns confirmed interview and learning-goal tasks into a bounded weekly agenda; the network model keeps people and company research private and structured.
 
 Circles are deliberately different. They are invitation-only, membership-scoped knowledge spaces. The `20261111190200_restore_circle_service.sql` migration enables the existing backend gate; the frontend Community routes, Circle onboarding/settings, interview intelligence, scoped Circle/knowledge MCP tools and Circle guide are active independently of the remaining paused extras. Membership, scope and sharing checks still apply. A Circle post begins as an author's private revision. It is visible to other members only after an explicit sharing path; joining a Circle, recording an application event, saving an artifact, or retrieving a post never shares private application data implicitly.

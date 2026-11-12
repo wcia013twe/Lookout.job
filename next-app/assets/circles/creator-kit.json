@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "submission": "Submit assets and manifest in a repository pull request for maintainer review. This template does not install or publish a pack.",
+  "avatar": {
+    "format": "Transparent RGBA PNG, up to 131072 bytes. Only artwork you have permission to share.",
+    "still": {"maxWidth": 512, "maxHeight": 512},
+    "sheet": {"width": 768, "height": 624, "columns": 4, "rows": ["idle", "walking", "celebrating"], "cellWidth": 192, "cellHeight": 208},
+    "alignment": "All twelve animation cells must contain artwork and transparent margins. Align the feet and character scale across frames."
+  },
+  "theme": {
+    "id": "your-room-name",
+    "name": "Your room name",
+    "credit": "Creator name and asset license",
+    "background": "/circles/your-room/background.webp",
+    "thumbnail": "/circles/your-room/thumbnail.webp",
+    "ambience": "moon",
+    "palette": {"accent": "#9c8fd4"},
+    "positions": [
+      {"station": {"x": 25, "y": 40}, "aisle": {"x": 31, "y": 48}, "rest": {"x": 33, "y": 62}},
+      {"station": {"x": 85, "y": 67}, "aisle": {"x": 75, "y": 65}, "rest": {"x": 68, "y": 64}},
+      {"station": {"x": 73, "y": 41}, "aisle": {"x": 65, "y": 48}, "rest": {"x": 60, "y": 48}},
+      {"station": {"x": 22, "y": 64}, "aisle": {"x": 30, "y": 65}, "rest": {"x": 44, "y": 69}},
+      {"station": {"x": 50, "y": 54}, "aisle": {"x": 53, "y": 58}, "rest": {"x": 54, "y": 61}}
+    ]
+  },
+  "review": [
+    "Backgrounds use a 3:2 aspect ratio. Keep each asset under 2 MB; bake optional decoration into the background.",
+    "Positions are percentages from 0 to 100. Provide five collision-conscious station, aisle, and rest/gathering paths; preview the whole movement cycle.",
+    "Use local reviewed asset paths only. Installed packs contain no executable JavaScript, CSS, HTML, external URLs, or network requests.",
+    "Do not replace personal avatars. Include attribution, a license, and a thumbnail. Maintainers add approved manifests to the catalog and server theme allowlist."
+  ]
+}

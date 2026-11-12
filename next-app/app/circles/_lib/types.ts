@@ -8,7 +8,8 @@ export type FeedCursor={version:1;circleId:string;position:string;through?:strin
 export type FeedEvent={id:string;circleId:string;position:string;kind:'published'|'revision_published'|'withdrawn'|'hidden';postId:string;threadId:string;revision:number;createdAt:string;invalidateThread:boolean;sourceAvailable:boolean;post:Post|null};
 export type FeedPage={items:FeedEvent[];nextCursor:FeedCursor|null;checkpoint:FeedCursor};
 export type Circle = {id:string;name:string;owner:boolean};
-export type Detail = {circle:Circle;members:{id:string;alias:string;owner:boolean;self:boolean}[];policy:string[];invites:{id:string;token:string;expires_at:string}[];reports:{id:string;postId:string;reason:string}[]};
+export type Avatar = {kind:'builtin';id:string}|{kind:'image'|'sheet';dataUrl:string};
+export type Detail = {circle:Circle;appearance?:{themeId:string;revision:number};members:{id:string;alias:string;owner:boolean;self:boolean;avatar?:Avatar;avatarRevision?:number}[];policy:string[];invites:{id:string;token:string;expires_at:string}[];reports:{id:string;postId:string;reason:string}[]};
 export type Receipt = {id:string;post_id:string;revision:number;category:string;reference:string;created_at:string;retracted_at:string|null;source_available:boolean};
 export type Request = <T>(operation:string,payload?:Record<string,unknown>)=>Promise<T>;
 export const types:Record<string,string>={discussion:'Conversation',offer_comparison:'Offer comparison',interview_report:'Round insight',timeline:'Hiring timeline',resource:'Preparation resource',opportunity:'Opportunity',milestone:'Milestone',reply:'Reply'};

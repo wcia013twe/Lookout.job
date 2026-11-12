@@ -100,3 +100,5 @@
 .roomSection .bubble:after{border-top-color:#f8f1e5}
 .roomSection .character:hover .bubble,.roomSection .character:focus-visible .bubble,.roomSection .character[aria-pressed=true] .bubble{background:#fffaf1;color:#352e29}
 .roomSection .character:hover .bubble:after,.roomSection .character:focus-visible .bubble:after,.roomSection .character[aria-pressed=true] .bubble:after{border-top-color:#fffaf1}
+.sprite[data-avatar-kind=image]{background-size:contain!important;background-position:center!important}.sprite[data-avatar-kind=sheet]{background-size:400% 300%!important;background-position:calc(var(--avatar-frame,0)*100%/3) calc(var(--avatar-row,0)*50%)!important}.character[data-reaction=true] .sprite[data-avatar-kind=sheet]{background-position-y:100%!important}.roomPlaque{border-color:var(--room-accent)}
+.statusAvatar>span{width:38px;height:42px}

@@ -1,5 +1,18 @@
 # Circle Knowledge
 
+## Clubhouse appearance (local source)
+
+Customize offers a personal avatar and an owner-controlled complete room theme. An avatar follows its authenticated owner across Circles; selecting a room never replaces members' avatars. Movement remains decorative, not presence or inferred work. The beta catalog contains the existing cottage in moon and warm palettes, not two distinct room illustrations.
+
+- `circles.read` returns `appearance: {themeId, revision}` and each member's `avatar` and `avatarRevision` after the existing membership check. Missing avatars use Alfred.
+- Human `circles.avatar` accepts `circleId`, `expectedRevision`, `avatar`, and `eventKey`. It changes only the caller's avatar. Human `circles.theme` accepts `circleId`, `expectedRevision`, `themeId`, and `eventKey`; only the Circle owner can save a reviewed catalog theme. Both enforce active membership, revision checks, idempotency and the existing write limit.
+- The scoped MCP boundary is `read_circle` plus `request_circle_human_action` with `action: manage`. Agents receive a membership-checked website handoff and cannot execute either appearance mutation or claim a selection was saved.
+- Builtin avatars use catalog IDs. Custom images are inline PNG data URLs, limited to 128 KiB, with an alpha-channel header. Stills are at most 512×512; animation is a 768×624 sheet with four 192×208 frames per row: idle, walking, celebrating. The browser additionally decodes the image and checks artwork and transparency in every cell. Database validation checks encoding, header and geometry, not full pixel decoding; reduced-motion uses a still frame.
+- Private inline image storage avoids a public upload bucket or expiring image links. This data-model commitment keeps reads membership-scoped but increases Circle response size as memberships grow; it is not a general asset hosting system. Existing members can retain artwork they have already received.
+- `/circles/creator-kit.json` supplies a downloadable template and Customize supplies a copyable AI prompt. Creator rooms are submitted through repository review, with local assets, attribution, palette and five movement paths. Maintainers add approved catalog entries and server allowlist IDs. No executable pack code, arbitrary URLs, furniture editor or self-service marketplace is installed. Unsupported motion falls back to idle; room geometry requires whole-cycle visual review.
+
+`tests/circle-appearance.test.mjs` exercises real migrated database ownership, membership, revisions, replay, agent denial/handoff, image geometry and demo reset. The migration and agent contract require the normal production release flow; local checks do not establish hosted availability.
+
 Structured member activity now lives in optional `content.activity` on the same
 immutable contribution revision: `{highlights:string[],goal:string,help:string}`.
 See [Circles storage and agent design](../docs/schema.md#circles) for the
