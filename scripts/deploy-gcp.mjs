@@ -39,7 +39,7 @@ export function validateRuntimeEnv(text) {
 
 export function stageSecretCommand(kind,digest) {
   if(!['runtime','oauth'].includes(kind)||!/^[a-f0-9]{64}$/.test(digest))throw Error('Invalid secret staging identity');
-  return `sudo sh -ceu 'umask 077; install -d -m 700 /etc/lookout/staged; staged_tmp=$(mktemp /etc/lookout/staged/.upload.XXXXXX); trap "rm -f $staged_tmp" EXIT; cat > "$staged_tmp"; echo "${digest}  $staged_tmp" | sha256sum --check --status; mv "$staged_tmp" /etc/lookout/staged/${kind}-${digest}; trap - EXIT'`;
+  return `sudo sh -ceu 'umask 077; install -d -m 700 /etc/lookout/staged; staged_tmp=$(mktemp /etc/lookout/staged/.upload.XXXXXX); trap "rm -f $staged_tmp" EXIT; cat > "$staged_tmp"; actual=$(sha256sum "$staged_tmp"); [ "$actual" = "${digest}  $staged_tmp" ]; mv "$staged_tmp" /etc/lookout/staged/${kind}-${digest}; trap - EXIT'`;
 }
 
 function run(command, args, options = {}) {

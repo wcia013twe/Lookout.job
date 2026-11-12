@@ -1,6 +1,7 @@
 # Converge main and hide Community tab
 
-- Merge the incoming MCP Events and OAuth source changes with local main, preserving both sets of agent documentation and the newer developer contract version.
-- Comment out the Community navigation entry; Circle routes and existing content remain available.
-- Validation: catalog validation, frontend typecheck, and static production build passed. Full suite: 1,418 passed and one failed in the incoming secret-staging test on macOS; the focused test reproduces the failure.
+- Merge the incoming MCP Events and OAuth source changes with local main and retain both agent documentation updates.
+- Comment out the Community navigation entry. Preserve the newer live dependency removals alongside incoming OAuth dependencies and reconcile the lockfile.
+- Make secret staging checksum verification work with both Linux and macOS checksum utilities.
+- Validation: 1,426 tests passed; catalog validation, frontend typecheck, and production static build passed.
 - Limits: no hosted deployment or live integration verification; no interface recording was captured.
