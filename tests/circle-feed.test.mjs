@@ -1,4 +1,3 @@
-import {EXTRA_FEATURES_ENABLED} from '../lib/feature-scope.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createTestDatabase} from './helpers/database.mjs';
@@ -63,7 +62,7 @@ test('feed migration keeps historical knowledge without inventing publication ev
  }finally{await db.close();}
 });
 
-test('browser RPC and actual MCP share publication order, exact shared revisions, cursors and revocation',{skip:!EXTRA_FEATURES_ENABLED && 'Community MCP is temporarily paused; rejection covered in mcp-protocol.test.mjs'},async()=>{
+test('browser RPC and actual MCP share publication order, exact shared revisions, cursors and revocation',async()=>{
  const db=await createTestDatabase();let sequence=0;
  const hashes={owner:'a'.repeat(64),friend:'b'.repeat(64),readOnly:'c'.repeat(64),noRead:'d'.repeat(64),expired:'e'.repeat(64)};
  async function human(user,operation,payload={}){
@@ -89,6 +88,7 @@ test('browser RPC and actual MCP share publication order, exact shared revisions
   finally{await db.exec('reset role');}
  }
  try{
+  await db.exec('update private.knowledge_config set enabled=false');
   assert.equal((await human(owner,'knowledge.feed',{circleId:owner})).available,false);
   await db.exec('update private.knowledge_config set enabled=true');
   for(const [name,user,scopes] of [['owner',owner,['knowledge:read','knowledge:write']],['friend',friend,['knowledge:read']],['readOnly',owner,['knowledge:read']],['noRead',owner,['knowledge:write']],['expired',owner,['knowledge:read']]])await db.query("insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values($1,$2,$3,$4,now()+$5::interval)",[user,name,hashes[name],scopes,name==='expired'?'-1 day':'1 day']);

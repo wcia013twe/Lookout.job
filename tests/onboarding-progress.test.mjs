@@ -4,7 +4,7 @@ import {onboardingProgressKey as key, readOnboardingProgress as read, saveOnboar
 function storage(){const data=new Map();return {getItem:k=>data.get(k),setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)};}
 test('refresh resumes navigation, isolates accounts and demo, and reset clears it',()=>{
  const s=storage();save(s,key('alice'),'circles');
- assert.equal(read(s,key('alice')),'done');
+ assert.equal(read(s,key('alice')),'circles');
  assert.equal(read(s,key('bob')),'start');
  assert.equal(read(s,key('demo-1')),'start');
  clear(s,key('alice'));assert.equal(read(s,key('alice')),'start');

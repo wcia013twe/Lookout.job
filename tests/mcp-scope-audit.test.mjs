@@ -29,8 +29,12 @@ test('MCP advertised mandatory scopes pass the owning SQL authorization boundary
   const failures=[];
   try {
     await db.query("insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values($1,'Fictional scope audit',$2,array['workspace:read'],now()+interval '1 day')",[owner,hash]);
+    await db.query("select set_config('test.uid',$1,false)",[owner]);
+    await db.exec('set role authenticated');
+    const circle=(await db.query("select public.knowledge_action('circles.create',$1::jsonb) as result",[JSON.stringify({name:'Fictional scope audit',alias:'Audit',eventKey:'scope-audit-circle'})])).rows[0].result.circleId;
+    await db.exec('reset role');
     for(const tool of TOOLS) {
-      const variants=[{},...(CONDITIONAL_TOOL_SCOPES[tool.operation]||[]).map(rule=>({[rule.field]:rule.value}))];
+      const variants=[tool.operation==='knowledge.search'?{circleId:circle}:{},...(CONDITIONAL_TOOL_SCOPES[tool.operation]||[]).map(rule=>({[rule.field]:rule.value}))];
       for(const payload of variants) {
         await db.exec('begin');
         try {

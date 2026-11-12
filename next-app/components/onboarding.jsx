@@ -1,5 +1,4 @@
 "use client";
-import {EXTRA_FEATURES_ENABLED} from "../../lib/feature-scope.mjs";
 import LocationSelector from "./location-selector";
 import BrandMark from "./brand-mark";
 import {useEffect,useRef,useState} from "react";
@@ -61,7 +60,7 @@ function OnboardingFlow(){
  const file=useRef(null),heading=useRef(null),joinedOnce=useRef(false),uploadLock=useRef(false);
  const reduce=useReducedMotion();
  const resumes=(w.state.workflow.resumes||[]).filter(r=>!r.supersededBy),resume=resumes.find(r=>r.id===resumeId);
- const later=()=>go(EXTRA_FEATURES_ENABLED ? "circles" : "done");
+ const later=()=>go("circles");
  function go(next){setError("");setFeedback("");setScene(next);}
  async function chooseFile(selected){
   if(!selected||uploadLock.current||w.locked||w.demo)return;
@@ -138,7 +137,7 @@ function OnboardingFlow(){
  }
  if(scene==="connect")content=<OnboardingAgentConnection room={room} onFinish={later} onLater={later}/>;
 
- if(scene==="circles")content=EXTRA_FEATURES_ENABLED ? <OnboardingCircleStory onLater={()=>go("done")}/> : null;
+ if(scene==="circles")content=<OnboardingCircleStory onLater={()=>go("done")}/>;
  if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Button disabled={finishing||w.locked} onClick={()=>void finish()}>{finishing?"Saving setup…":"Open my workspace"}</Button><BrowserAppInstructions/></>;
  if(!w.demo&&!w.user)content=<><Dots/><Title sub="Create your Lookout account or return to your workspace before setting up your search and agent.">Sign up or sign in.</Title><div className="actions"><GoogleSignInButton disabled={!w.authReady} onClick={w.signIn} label={w.authReady?"Continue with Google":"Checking sign-in…"}/></div><p className="hint">New here? Continuing with Google creates your account. Already joined? Use the same Google account to sign in.</p></>;
  return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><BrandMark/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","first-role","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{progressReady&&(w.demo||w.user)&&<p className="hint" role="status">Step {step} of {setupSteps.length}{progressSaved?" · Saved in this browser":""}</p>}{content}{(error||w.error||w.syncError)&&<p className="error" role="alert">{error||w.error||w.syncError}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;

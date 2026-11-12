@@ -1,6 +1,7 @@
 // Only fixed product diagnostics may cross the Node forwarding boundary.
 const mockErrors=new Set(['Mock artifact and interviewer profile required','Mock kind required','Dated mock session in its local week required','New mocks start scheduled','Restore archived session first','Create a new session after a terminal mock','Resume the existing session','Complete an active mock with a saved debrief']);
-const gatewayErrors=new Set(['Credential expired, revoked, or invalid','Scope required: this operation needs a permission not granted to the connection.','Record or settings changed; read current state and retry with its version','Concurrent edit; read current state before retrying.','Owned record not found','Invalid arguments for this operation. Read the tool schema and current versions.','Invalid UUID, JSON or date format. Use the formats in the tool schema.',...mockErrors]);
+const accessDenied='Access denied: check required permissions, record access, and any required human approval.';
+const gatewayErrors=new Set(['Credential expired, revoked, or invalid','Scope required: this operation needs a permission not granted to the connection.',accessDenied,'Record or settings changed; read current state and retry with its version','Concurrent edit; read current state before retrying.','Owned record not found','Invalid arguments for this operation. Read the tool schema and current versions.','Invalid UUID, JSON or date format. Use the formats in the tool schema.',...mockErrors]);
 /** @returns {[number,string]} */
 export function gatewayFailure(status,body){
  const message=body?.error;
@@ -15,7 +16,7 @@ export function validationMessage(error) {
 }
 /** @returns {[number,string]} */
 export function databaseFailure(error) {
- const known={PT409:[409,'Record or settings changed; read current state and retry with its version'],28000:[401,'Credential expired, revoked, or invalid'],42501:[403,'Scope required: this operation needs a permission not granted to the connection.'],40001:[409,'Record or settings changed; read current state and retry with its version'],'40P01':[409,'Concurrent edit; read current state before retrying.'],P0002:[404,'Owned record not found']};
+ const known={PT409:[409,'Record or settings changed; read current state and retry with its version'],28000:[401,'Credential expired, revoked, or invalid'],42501:[403,accessDenied],40001:[409,'Record or settings changed; read current state and retry with its version'],'40P01':[409,'Concurrent edit; read current state before retrying.'],P0002:[404,'Owned record not found']};
  if(known[error.code])return known[error.code];
  if(error.code==='22023'&&mockErrors.has(error.message))return [400,error.message];
  if(error.code==='22023')return [400,/^(Invalid|Missing|Use|Choose|Active|Fresh|Incomplete|Revoke|Profile|Source|Document|Unknown|Owned|Default|Upload|Request|Current|Search)/.test(error.message||'') ? error.message.slice(0,240) : 'Invalid arguments for this operation. Read the tool schema and current versions.'];
