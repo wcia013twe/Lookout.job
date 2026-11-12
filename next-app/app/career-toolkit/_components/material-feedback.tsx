@@ -1,6 +1,8 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
 import {control,secondary} from '../../../components/ui';
+import {DecisionIcon} from '../../../components/decision-icon';
+import decisionStyles from '../../../components/action-decision-card.module.css';
 
 export type MaterialFeedbackValue={version:number;revision:number;useful:boolean;note:string;source:'user'|'agent_reported';updated_at:string};
 
@@ -20,9 +22,11 @@ export function MaterialFeedback({initial,onSave,locked=false}:{initial?:Materia
  return <section aria-label="Material usefulness" className="mt-8 border-t border-board-border pt-4 text-sm">
   <div className="flex flex-wrap items-center gap-3">
    <span>{saved?'Your feedback':'Was this useful?'}</span>
-   <button className={secondary} aria-pressed={saved?.useful===true} disabled={locked||busy} onClick={()=>save(true)}>Yes{saved?.useful===true?' ✓':''}</button>
-   <button className={secondary} aria-pressed={saved?.useful===false} disabled={locked||busy} onClick={()=>save(false)}>Not really{saved?.useful===false?' ✓':''}</button>
-   <span role="status" className="text-board-muted">{busy?'Saving…':saved?'Saved for this version':''}</span>
+   <div className={decisionStyles.decisions}>
+    <button type="button" className={decisionStyles.reject} aria-label="Not really" title="Not really" aria-pressed={saved?.useful===false} disabled={locked||busy} onClick={()=>save(false)}><DecisionIcon accept={false}/></button>
+    <button type="button" className={decisionStyles.accept} aria-label="Yes" title="Yes" aria-pressed={saved?.useful===true} disabled={locked||busy} onClick={()=>save(true)}><DecisionIcon accept/></button>
+   </div>
+   <span role="status" className="text-board-muted">{busy?'Saving…':saved?`${saved.useful?'Useful':'Not really useful'} · Saved for this version`:''}</span>
    {saved&&!editing&&<button className="text-board-accent underline underline-offset-4" onClick={()=>setEditing(true)}>{saved.note?'Edit note':'Add a note'}</button>}
   </div>
   {saved&&editing&&<form className="mt-3 max-w-xl" onSubmit={event=>{event.preventDefault();void save(saved.useful);}}>

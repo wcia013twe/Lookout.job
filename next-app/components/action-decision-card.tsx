@@ -11,6 +11,7 @@ import {importStatuses} from '../../lib/simplify-import.mjs';
 import type {Application} from './workflow-types';
 import {useWorkspace} from '../lib/workspace';
 import {SwipeDecision} from './decision-buttons';
+import {DecisionIcon} from './decision-icon';
 import type {BoardItem} from '../lib/use-action-board';
 import styles from './action-decision-card.module.css';
 import ActionAttention from './action-attention';
@@ -99,8 +100,8 @@ export default function ActionDecisionCard({item,busy,onRespond,onSaveMessage}:{
   {((native&&!taskAction&&(item.kind!=='review_application'||dirty))||outcome)&&<label className={styles.confirmation}><input type="checkbox" disabled={busy} checked={confirmed} onChange={e=>setConfirmed(e.target.checked)}/><span>{outcome?'I checked the employer portal or confirmation email.':reviewQuestions.length?'I have checked the answers shown above.':'I confirm this update for Muse.'}</span></label>}
   {item.requiresReview&&<label className={styles.confirmation}><input type="checkbox" checked={item.reviewed} disabled={busy||editingMessage||item.reviewed||(native&&(!complete||dirty))} onChange={()=>void onRespond(item,'review')}/><span>{outreach?'I reviewed this exact message.':'I reviewed this exact application revision.'}</span></label>}
   <footer className={`${styles.footer} ${taskAction?styles.taskFooter:''}`}><div className={styles.meaning}>{!taskAction&&<span>{acceptVerb}</span>}<small>{manualTask?'Afterward, update its status in Applications.':taskAction?'Saves your update so Muse can resume preparation.':null}{taskAction?null:item.kind==='check_submission'?'X verifies not submitted':outreach?'Nothing is sent automatically':item.kind==='resolve_blocker'?'Saves your answer without approving submission':native?'Rejection keeps it saved and stops agent work':item.kind==='imported_action'?'Approval is not completion · X stops agent work':item.kind==='submit_application'?'A user report, not an observed submission receipt':'X declines this proposal'}</small></div>{!manualTask&&<div className={styles.decisions}>
-   <button type="button" className={styles.reject} disabled={rejectDisabled} aria-label={`Reject: ${actionVerbs[1]}`} title={actionVerbs[1]} onClick={()=>void respond('reject')}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
-   {!manualTask&&<button type="button" className={`${styles.accept} ${taskAction?styles.taskAccept:''}`} disabled={acceptDisabled} aria-label={`Accept: ${acceptVerb}`} title={acceptVerb} onClick={()=>void respond('accept')}>{taskAction?<span>{acceptVerb}</span>:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>}</button>}
+   <button type="button" className={styles.reject} disabled={rejectDisabled} aria-label={`Reject: ${actionVerbs[1]}`} title={actionVerbs[1]} onClick={()=>void respond('reject')}><DecisionIcon accept={false}/></button>
+   {!manualTask&&<button type="button" className={`${styles.accept} ${taskAction?styles.taskAccept:''}`} disabled={acceptDisabled} aria-label={`Accept: ${acceptVerb}`} title={acceptVerb} onClick={()=>void respond('accept')}>{taskAction?<span>{acceptVerb}</span>:<DecisionIcon accept/>}</button>}
   </div>}</footer>
   {error&&<p role="alert" className={styles.error}>{error}</p>}
  </SwipeDecision></li>;
