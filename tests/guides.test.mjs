@@ -3,6 +3,18 @@ import assert from 'node:assert/strict';
 import {guideIndex, readGuide, guideDispatch} from '../supabase/functions/agent-gateway/guides.mjs';
 import {contextResponse} from '../supabase/functions/agent-gateway/context.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
+test('beta Circle invitations route from career work without bypassing review or refusals',()=>{
+ const context=contextResponse('context.developer',{});
+ assert.match(context.instructions.join('\n'),/load circle-knowledge for beta participation/);
+ const circle=readGuide('circle-knowledge');
+ assert.match(guideIndex().find(guide=>guide.id===circle.id).whenToUse,/beta invitations/);
+ for(const id of ['interview-preparation','career-find-jobs','toolkit-materials','notifications']){
+  assert.match(readGuide(id).instructions,/load circle-knowledge/);
+ }
+ for(const requirement of [/without asking permission to draft/,/exact proposed content and destination Circle/,/Native chat assent is not publication approval/,/If it already answers the question/,/separate share-safe version/,/Never invent peer activity/,/Do not manufacture a public commitment/,/explicit stop asking suppresses/,/do not promise cross-session suppression/])assert.match(circle.instructions,requirement);
+ assert.match(readGuide('notifications').instructions,/bounded exception to decision-only replies/);
+ assert.match(readGuide('notifications').instructions,/read_delivery_policy/);
+});
 test('context advertises small versioned index; guide reads are isolated',()=>{
  const index=contextResponse('context.developer',{}).guides;
  assert.deepEqual(index,guideIndex());assert.ok(index.length > 2);assert.ok(index.some(g=>g.id==='workspace-maintenance'));assert.ok(index.some(g=>g.id==='circle-knowledge'));

@@ -179,6 +179,25 @@ test('private Circles, exact sharing consent, retrieval and citation privacy',as
  }finally{await db.close();}
 });
 
+test('beta help and synthesis demos exercise private drafts, review and reset',async()=>{
+ const {createCircleKnowledgeDemo}=await import('../lib/circle-knowledge-demo.mjs');
+ const demo=createCircleKnowledgeDemo(),circleId='demo-circle';
+ for(const postId of ['demo-beta-help-draft','demo-beta-writeup-draft']){
+  const post=demo.action('knowledge.read',{circleId,postId}).post;
+  assert.equal(post.state,'draft');assert.equal(post.publishedRevision,null);
+  assert.equal(post.agentAuthored,true);assert.equal(post.approved,false);
+  assert.match(post.content.uncertainty,/Fictional/);
+  assert.throws(()=>demo.action('knowledge.publish',{circleId,postId,expectedRevision:2,eventKey:`stale-${postId}`}),/current revision/i);
+  assert(!demo.action('knowledge.feed',{circleId}).items.some(event=>event.postId===postId));
+  demo.action('knowledge.approve',{circleId,postId,expectedRevision:1,eventKey:`approve-${postId}`});
+  demo.action('knowledge.publish',{circleId,postId,expectedRevision:1,eventKey:`publish-${postId}`});
+  assert.equal(demo.action('knowledge.read',{circleId,postId}).post.state,'published');
+  assert.equal(createCircleKnowledgeDemo().action('knowledge.read',{circleId,postId}).post.state,'draft');
+ }
+ assert.equal(demo.action('knowledge.read',{circleId,postId:'demo-beta-help-draft'}).post.content.personalDisclosure,true);
+ assert.equal(demo.action('knowledge.read',{circleId,postId:'demo-beta-writeup-draft'}).post.content.body,'');
+});
+
 test('Circle demo exercises forum review and private citation retraction without external state',async()=>{
  const {createCircleKnowledgeDemo}=await import('../lib/circle-knowledge-demo.mjs');
  const demo=createCircleKnowledgeDemo(),circleId='demo-circle';
