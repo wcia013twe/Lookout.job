@@ -42,6 +42,23 @@ generated: { by: "openwiki/0.7.2", at: "2026-11-07T02:52:01.830Z" }
 
 # Current implementation state and operational limits
 
+## Private shadow recommendation logging — November 12, 2026
+
+The operator configured project `job-board-511516` with a seven-day `lookout-shadow`
+log bucket, matching sink, `onboarding-previews` view, operator view access and
+an exclusion from `_Default`. Only fictional advice and a synthetic routing
+probe were exported. The first fixture reached `_Default` during configuration
+propagation; the later probe was retrieved from the custom view, not `_Default`.
+See [private preview operations](../../docs/shadow-preview.md) for access,
+privacy limits, the bounded fixture importer and source-grounded activation steps.
+
+`backend/runtime/shadow-preview.mjs` is operator/server-only and is not wired
+into the deployed runtime. The backend retrieves evidence but external agents
+author recommendations: automatic onboarding authoring/capture and upstream
+delivery suppression remain unconnected and unverified. No real-user export,
+new model invocation, hosted application deploy or new product/MCP capability
+is established by this fixture. Unknown usage and cost stay null.
+
 This page separates **code present in this repository**, **behavior that a local operator can enable**, and **behavior evidenced as deployed**. It is not a promise that an agent host, external service, or employer system has completed an action. In particular, the product persists records and enforces scoped workflows; it does not itself supply a model runtime, recurring scheduler, SMS/notification transport, inbox monitor, remote browser, or general database/shell access.
 
 ## Status vocabulary

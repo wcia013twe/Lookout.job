@@ -1,0 +1,7 @@
+# shadow-cloud-preview
+
+- Added a dependency-free server/operator Cloud Logging adapter and fictional bounded-trace importer. Records are allowlisted, bounded, pseudonymous, credential/email masked, and explicitly nondelivering. No browser keys, model calls, sender or real-user listener added.
+- Configured `job-board-511516` custom `lookout-shadow` bucket (seven days), matching sink, `onboarding-previews` view, operator view access and `_Default` exclusion. Exported only fictional fixtures. A later routing probe was read from the custom view; the first setup fixture arrived in `_Default` during propagation, documented honestly.
+- Validation: 3 focused exporter tests; all 1,385 repository tests passed with none skipped; intelligence typecheck and catalog validation (158 roles) passed. Live Cloud Logging write/readback, sink/exclusion readback and IAM inspection performed.
+- Demo: existing fictional bounded interview advice and synthetic nondelivery routing probe; no real account reads/writes, frontend changes or user notifications. Infrastructure-only operator path, not a product service or new MCP capability.
+- Limits: automatic onboarding capture is not connected because recommendation authoring lives in an external agent. No hosted application deploy, push, real-user export, model usage measurement, independent grade or automatic delivery claim. See `docs/shadow-preview.md` for activation/privacy requirements.
