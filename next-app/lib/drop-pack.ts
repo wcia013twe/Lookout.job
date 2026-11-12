@@ -9,6 +9,15 @@ export type Drop = {
   note?: string | null; skipReason?: string | null; url?: string | null;
 };
 export type PackGroup = { key: string; drops: Drop[] };
+export type ApplyNowDrop = Drop & { packId: string };
+export const applyNowPackStamp = (roleId: string) => `apply-now:${roleId}`;
+export function applyNowDrops(roles: { id: string; priority: string; company: string; title: string; employmentType: string; discoveredDate: string; location: string; applicationUrl: string; whyItFits: string; searchProfileId?: string }[]): ApplyNowDrop[] {
+  return roles.filter(role => role.priority === "Apply Now").map(role => ({
+    packId: role.id, company: role.company, title: role.title, type: role.employmentType,
+    dateSeen: role.discoveredDate, location: role.location, url: role.applicationUrl,
+    note: role.whyItFits, searchProfileId: role.searchProfileId, status: "added",
+  }));
+}
 export const dropKey = (drop: Drop) => `${drop.packId?`${drop.packId}|`:""}${drop.dateSeen}|${drop.company}|${drop.title}`;
 export const tierOf = (drop: Drop): Tier => drop.displayTier || rarityOf(drop.company, drop.type, drop.title) as Tier;
 

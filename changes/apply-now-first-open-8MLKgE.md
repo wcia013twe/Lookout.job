@@ -1,0 +1,7 @@
+# apply-now-first-open
+
+- Attach eligible Apply Now cards to the existing animated pack on arrival and later recommendation updates; persist one activation per role ID instead of a global first-open flag. Dismissal consumes activation. Existing profile, application and hidden/expired eligibility stays intact.
+- Reuse the lazy-loaded, reduced-motion-aware pack UI and account-scoped browser drops store. No dependencies, backend services, MCP authority or application/tracker changes; other paused extras stay paused.
+- Demo coverage: fictional Query Labs role is visibly Apply Now. The browser check covers first arrival, newly tagged cards, navigation, reclassification, sealed dismissal and mobile interaction without real account writes.
+- Validation: `npm test` (1,379 passed), `npm run validate:data` (158 roles), frontend typecheck, production static build, focused store/pack tests (10 passed), `git diff --check`, design detector and `scripts/check-apply-now-pack-ui.mjs` all passed. Desktop interaction and mobile sealed-pack layout were inspected. Recorded a 39-second video from the production export (sped up 2.86×), showing initial reveal, navigation without replay and a later newly tagged card activating independently.
+- Limits: activation is once per role per account/browser cache, not cross-device. Resetting cache/demo resets it. Video uses the local production export and fictional demo, not a signed-in hosted account. Existing generated wiki coverage outside the focused update is not reverified.

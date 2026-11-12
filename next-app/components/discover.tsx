@@ -11,6 +11,7 @@ import RoleCard, { type Role } from "./role-card";
 import DiscoverRolePanel from "./discover-role-panel";
 import SearchSweeps from "./search-sweeps";
 import CardPackWidgets from "./card-pack-widgets";
+import ApplyNowPack from "./apply-now-pack";
 import DayFilter from "./day-filter";
 import ProfileIcon from "./profile-icon";
 import {savedOnboardingRole} from "../lib/onboarding-catalog.mjs";
@@ -19,7 +20,7 @@ import {ProfileSwitcher} from "./profile-settings";
 import {matchesProfileEmployment, showAgentEmptyState, matchesDiscoveryStatus, discoveryIsHidden} from "../lib/discover-view.mjs";
 import { motion, useReducedMotion } from "framer-motion";
 import cardStyles from "./role-card.module.css";
-import type { Drop } from "../lib/drop-pack";
+import { applyNowDrops, type Drop } from "../lib/drop-pack";
 export default function Discover() {
   const w = useWorkspace();
   return <ApplicationProfileProvider key={`${w.accountUser?.id || "guest"}:${w.demo}:${w.demoEpoch}`}><SelectedBoard/></ApplicationProfileProvider>;
@@ -81,11 +82,15 @@ function DiscoverBoard() {
   }
   const visibleRoles = boardUsesHidden ? roles.filter((role: Role) => !discoveryIsHidden(role, sourceDate, visibility)) : roles;
   const hiddenRoles = boardUsesHidden ? roles.filter((role: Role) => discoveryIsHidden(role, sourceDate, visibility)) : [];
+  const openingDrops = applyNowDrops((newArrival && !publicView ? (firstRole ? [firstRole] : []) : sourceRoles).filter((role: Role) =>
+    matchesDiscoveryStatus(role, { applications, trackerItems: w.state.tracker.items }) &&
+    !discoveryIsHidden(role, sourceDate, visibility)));
   const roleGroups = [{key:a.profile.id,label:a.profile.name,roles:visibleRoles}];
   const header=<div className="discover-header mb-3 flex flex-wrap items-center justify-between gap-3 [&_.workspace-heading_p]:mt-1"><Heading title="Discover">{newArrival&&!publicView?"Your agent’s finds will appear here.":publicView?"Explore the public catalog.":w.batchLabel}</Heading><div className="w-full empty:hidden sm:w-64"><ProfileSwitcher manage={false}/></div></div>;
   if ((w.user || w.demo) && !imports.ready) return <>{header}<Notice>{imports.error ? `Application history could not load: ${imports.error}` : 'Checking application history before showing roles…'}{imports.error && <button type="button" className="ml-3 underline" onClick={()=>void imports.refresh()}>Retry</button>}</Notice></>;
   if(newArrival&&!publicView)return <>
     {header}
+    {openingDrops.length > 0 && !w.locked && <ApplyNowPack key={previewOwner} drops={openingDrops} onOpened={populateBoard}/>}
     {firstRole ? <section className="mt-6 md:mt-9" aria-label="Your first role to explore">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         <RoleCard role={{...firstRole,whyItFits:"Saved from onboarding. Your agent will check availability and compare this role with your profile and résumé."}} onPreview={setPreview}/>
@@ -125,7 +130,7 @@ function DiscoverBoard() {
         {visibleRoles.filter((r: Role) => r.priority === "Apply Now").length} apply now
       </p>
       </div>
-      {/* Paused: card-pack widgets and reveal effects. */}
+      {openingDrops.length > 0 && !w.locked && <ApplyNowPack key={previewOwner} drops={openingDrops} onOpened={populateBoard}/>}
       {EXTRA_FEATURES_ENABLED && <CardPackWidgets key={previewOwner} onOpened={populateBoard}/>}
       <section ref={board} aria-label="Discover board" className="scroll-mt-6">
       {arriving && <p role="status" className="mt-4 text-sm text-board-muted">{arriving.ids.length} pack {arriving.ids.length === 1 ? "job" : "jobs"} on your board.</p>}
