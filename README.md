@@ -37,6 +37,14 @@ Press Ctrl-C to stop the frontend; `make down` stops local Supabase while preser
 
 ## Add your agent
 
+Ordinary agent-led Discover uses a shared, agent-only inventory of recent employer
+facts, with a separate versioned subscription for each owned search profile.
+Agents reassess and verify selected roles before publishing private recommendations;
+there is no human-facing shared board or automatic worker per new user. Explicit
+fresh-source scans contribute verified employer facts before personal filtering.
+This requires the shared-pool migration and gateway/worker release; no recurring
+producer is enabled automatically, and an empty pool remains a coverage gap.
+
 1. Open the [deployed website](https://wcia013twe.github.io/Lookout.job/) or your local account workspace and sign in.
 2. Under **My Profile**, add your background, resume, and job preferences.
 3. Open **My Agent → Your connections**, create a connection, and choose **Set up connection**.

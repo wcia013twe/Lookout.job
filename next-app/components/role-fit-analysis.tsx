@@ -1,4 +1,4 @@
-import {parseFitAnalysis, type FitAnalysisBullet} from '../lib/fit-analysis';
+import {parseFitAnalysis, readMatchingSkills, type FitAnalysisBullet} from '../lib/fit-analysis';
 
 const fitPanel = 'rounded-xl bg-[var(--role-preview-strength)] p-4';
 const cautionPanel = 'rounded-xl bg-[var(--role-preview-caution)] p-4';
@@ -15,7 +15,7 @@ export default function RoleFitAnalysis({whyItFits = '', materialGap = ''}: {why
    {analysis ? <>
     {analysis.intro && <p className="mb-3 max-w-prose whitespace-pre-line text-sm leading-relaxed">{analysis.intro}</p>}
     <AnalysisBullets bullets={analysis.bullets.slice(0,3)} label="Role fit analysis" />
-   </> : <p className="max-w-prose whitespace-pre-line text-sm leading-relaxed">{whyItFits || 'No fit research collected yet.'}</p>}
+   </> : <p className="max-w-prose whitespace-pre-line text-sm leading-relaxed">{readMatchingSkills(whyItFits).narrative || 'No fit research collected yet.'}</p>}
   </section>
   {(analysis || materialGap) && <section aria-label="What to watch out for" className={cautionPanel}>
    <h4 className="mb-2 text-sm font-semibold text-board-warning">What to watch out for</h4>

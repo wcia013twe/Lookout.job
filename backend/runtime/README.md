@@ -23,8 +23,16 @@ verification pipeline; only the existing fenced worker writes observations.
 The direct executor is `search_ats`: one leased job stages provider candidates on
 the worker volume, applies metadata gates, verifies official postings, applies
 full configured filters, and deduplicates against the pool and account history.
-Only the final new/changed shortlist is saved (`pipelineVersion: 2`). The agent
-reads every shortlist page and performs personal fit analysis. Automatic hosted
+Only the final new/changed personal shortlist is saved (`pipelineVersion: 2`).
+Before personal filtering, verified public employer facts also enter a separate
+agent-only shared inventory through the live leased `search.pool.save` dispatch.
+No candidate profile, screening, evidence notes or private recommendations enter
+that inventory. Source metadata gates still limit its recall. Ordinary Discover
+agents subscribe/read this inventory instead of queuing a job per new user;
+explicit fresh/portal scans remain available. There is no recurring producer or
+automatic empty-pool fallback. Deploy the shared-pool migration and matching
+gateway/worker together before using this path. For explicit fresh-source scans,
+the agent reads every shortlist page and performs personal fit analysis. Automatic hosted
 board collection/publication is disabled; application records are unchanged.
 Collection supports Greenhouse/Lever and the first-party HiringCafe aggregate adapter; liveness for each link uses the copied
 ATS API/browser ladder across upstream-supported sources. Full-description

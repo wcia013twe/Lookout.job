@@ -522,3 +522,5 @@ verification before reopening. Existing MCP read_muse_changes points to exact
 board/job records; record_tracker_action_progress records scoped agent pickup
 and outcome. The website has no agent impersonation control outside explicitly
 fictional demo simulation. Backend release and host wake verification are separate.
+
+Discovery cards optionally show up to three short matching skills from an explicit `Matching skills: ...` line at the start of the saved private fit brief. The agent includes only matches grounded in the candidate and posting; older briefs without that line show no list. Preview retains the full narrative and assessment. This requires updated search-guide instructions for newly published batches; no historical analyses are rewritten.

@@ -31,3 +31,7 @@ test('legacy gaps retain their boundary and empty gaps do not invent cautions',(
  assert.match(html,/First caveat.\nSecond caveat./);
  assert.doesNotMatch(render({whyItFits:'Legacy evidence.'}),/What to watch out for/);
 });
+test('explicit matching skills appear in the brief without disrupting the full fit preview',()=>{
+ const html=render({whyItFits:'Matching skills: Distributed systems; Backend services\nTeam: Systems. Your contribution: Your backend work fits. Your growth: Learn reliability.',materialGap:'Support: Unknown. Practical fit: Remote.'});
+ assert.doesNotMatch(html,/Matching skills:/);assert.equal((html.match(/<li\b/g)||[]).length,5);assert.match(html,/Your backend work fits/);
+});

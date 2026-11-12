@@ -23,9 +23,9 @@
 - Prefer the external SSD for task checkouts, dependencies, build artifacts and caches when available. Start features with `TMPDIR="/Volumes/External SSD/Lookout/tmp" npm run feature:start -- <name>` and set `npm_config_cache="/Volumes/External SSD/Lookout/npm-cache"` for installs. Keep the shared main checkout in its existing location. If the SSD is unavailable, use internal storage for task checkouts, dependencies, caches and builds without asking; use a writable temporary directory for task checkouts and the default npm cache.
 
 - One writing task, one isolated checkout and one `codex/` branch. This applies to code, documentation, catalog updates and dependency changes. Reuse the same checkout and branch for follow-ups; do not let two sessions write in it concurrently. A PR is optional and should be created only when the user requests GitHub review/publication or the change needs protected-branch CI before release.
-- Keep the shared `main` checkout for inspection and local landing. Make edits and install dependencies in the task checkout. Preserve unfamiliar edits; never reset, restore or stash another session's work to make a checkout clean.
+- Keep the shared `main` checkout for inspection and local landing. Make edits and install dependencies in the task checkout.
 - Commit intentional progress before handing off or ending unfinished work. Completed routine work must be landed into local `main` so the user's local app sees it immediately. Report the checkout path, branch, local-main commit, checks run, whether anything was pushed or published, and any remaining uncommitted work. Remove the task checkout only when its work is committed and landed or deliberately backed up.
-- Give a brief, specific nudge when work risks crossing these boundaries: name the observed issue and the smallest correction, then continue safe independent work. For example: "This checkout is already being edited by another session; I'll start an isolated checkout for this task." Do not add approval rituals, new workflow tooling or recurring reminders for hypothetical problems. When ownership is unclear and proceeding could overwrite work, ask a focused question.
+- Give a brief, specific nudge when work risks crossing these boundaries: name the observed issue and the smallest correction, then continue safe independent work. For example: "This checkout is already being edited by another session; I'll start an isolated checkout for this task." Do not add approval rituals, new workflow tooling or recurring reminders for hypothetical problems.
 
 ## Development and delivery
 
@@ -36,7 +36,7 @@
 - Keep a concise change note for each feature pass in `changes/<unique-feature-branch>.md`, including validation and verification limits. The feature starter generates this file; complete it and remove its draft marker before committing. Reuse it for follow-ups instead of editing the shared `CHANGELOG.md` insertion point. See `.github/INTEGRATION.md` and `changes/README.md`.
 - Keep React page framing and interactions in `next-app/`; use Tailwind utilities and shared theme tokens in `next-app/app/globals.css`. Keep domain models and backend contracts independent of presentation.
 - The user authorized the complete Next.js/React/Tailwind migration. The production UI lives in `next-app/`, deployed as a static export by `.github/workflows/deploy.yml`. The retired static frontend has been removed; shared domain behavior belongs in `lib/`.
-- Avoid computer-use or browser-UI automation for repository work unless the task is visual and requires iterative on-screen inspection. Prefer file, shell and purpose-built test tools for non-visual work.
+- For visual tasks, record the relevant interface and interactions and show the recording to the user. Use T3 browser recording when available; for a visual PR, include the recording in the PR when possible. If recording is unavailable, report the limitation and the verification performed. Prefer file, shell and purpose-built test tools for non-visual work.
 
 ## Local startup
 

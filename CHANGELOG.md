@@ -583,3 +583,5 @@ fictional resettable full-time/internship strategies and separate company rankin
   TypeScript, 76-role catalog validation and production export; mobile/desktop
   palette, pack/profile controls, saved preference reload and System checks.
   Live cross-tab and OS-change events remain unverified in the browser.
+
+- Discover visibility: the website and scoped agent action share owner-checked, per-role hide/restore writes; ordinary preference sync preserves the saved visibility map. Fictional demo coverage includes current and hidden roles. Local verification is recorded with the implementation; hosted deployment is separate.

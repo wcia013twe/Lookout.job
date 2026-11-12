@@ -1,6 +1,7 @@
 > Current direct path: pipeline 2 stages candidates on the Docker worker volume,
 > applies metadata gates before verification and full filters before permanent
-> storage, and saves only the deduplicated new/changed shortlist for agent analysis.
+> owned storage, and saves only the deduplicated new/changed shortlist for agent analysis.
+> Verified public employer facts also enter the agent-only shared inventory described below.
 > Hosted-board collection and automatic publication are disabled. The receipt's
 > first 100 IDs are a preview; page the run for all results. SQL leases/checkpoints
 > remain durable; temporary snapshot references are fenced. Missing files trigger
@@ -53,6 +54,10 @@ generated: { by: "openwiki/0.7.2", at: "2026-11-07T02:52:01.830Z" }
 Job discovery is a controlled evidence pipeline, not a public-catalog import or an application workflow. It starts from an owned search profile and portal configuration, persists employer-posting observations privately, screens and deduplicates them against the pinned configuration, and leaves candidate-specific assessment and publication to Muse. A resulting shortlist is **not** an application, proof of applicant eligibility, an AI-generated candidate report, or a guarantee that all relevant jobs were searched.
 
 This page describes the backend `search_ats` path. For ownership and canonical writers, see [Data model, ownership, and consistency rules](../architecture/data-and-ownership.md); for credential/scoped-tool behavior, see [Agent credentials, gateway, MCP, and guide routing](../concepts/agent-access-and-mcp.md); for the guarded next step, see [Application drafting, authorization, and guarded submission](application-submission.md).
+
+## Discover board visibility
+
+The cumulative private board uses the latest batch date as its current drop. Unapplied roles from older drops appear under the collapsed Hidden section, except Apply Now and Strong Consider recommendations, which remain visible. An expired posting appears in Hidden. People can hide or restore other roles; those overrides are saved in the owned search preferences as `discoverVisibility`, and synchronized through the existing owned preferences writer. Restore keeps a role on the board until the person hides it again; an expired posting cannot be restored while its saved observation remains expired. Applied and rejected filtering continues to use the existing application state. Date, posting-age and search filters also apply to Hidden. First discovery dates remain intact; the cumulative projection additionally records the latest recommendation date. No new publication or background job is created. There is no dedicated MCP hide/restore action.
 
 ## What is public, private, and immutable
 
@@ -387,3 +392,10 @@ replays and ID references remain readable. Search guide22/developer157 make the
 schema discoverable after context refresh. Tests cover gateway/MCP, direct SQL,
 queue compatibility, upgrade preservation and detached fictional card facts;
 hosted rollout and real Muse schema refresh require separate verification.
+## Shared agent-only discovery inventory (manual source update, November 11, 2026)
+
+Ordinary agent-led Discover pulls recent employer facts through `subscribe_shared_jobs` and `read_shared_jobs`, rather than starting one worker for each new account. Subscriptions belong to an active owned profile, carry a version and acknowledged revision cursor, and do not install schedules. Read pages do not advance the cursor. Selected jobs still require current employer verification, private four-dimension assessment, deduplication against owned history, `publish_batch`, and `read_batch` verification before acknowledging a page. Reset the cursor for changed targeting or candidate evidence.
+
+Only live leased search workers can write the public-fact allowlist into `private.shared_job_pool`, before personal screening. Profiles, source identifiers, provenance notes, screening and recommendations remain private. Reads include active and closed/uncertain updates checked within 72 hours; closed/uncertain entries are tombstones, never recommendations. Browser table/RPC access is denied. Explicit fresh-source/portal scans still work and contribute facts; source prefilters mean coverage remains partial. No recurring producer, inventory backfill or automatic empty-pool fallback is configured by this change.
+
+Sources: `supabase/migrations/20261111150000_shared_discovery_pool.sql`, `backend/runtime/worker.ts`, `supabase/functions/agent-gateway/search.mjs`, canonical `career-find-jobs.json`, and `tests/shared-discovery-pool.test.mjs`. This section describes local source only, not a verified hosted release; older generated sections retain their original verification limits.

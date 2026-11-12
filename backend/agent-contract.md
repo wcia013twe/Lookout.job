@@ -12,6 +12,17 @@ Muse's local secrets. Service-role credentials stay exclusively inside the funct
 
 ## Connect a human-owned agent
 
+Shared discovery is an agent-only boundary: `subscribe_shared_jobs` maps to
+`search.pool.subscribe` (`workspace:read` plus `preferences:write`) and
+`read_shared_jobs` maps to `search.pool.read` (`workspace:read`). Both require an
+active owned search profile. Subscriptions use `expectedVersion`, a stable
+`eventKey`, and an optional acknowledged revision cursor; reads never advance it.
+Pages contain employer facts checked within 72 hours, including closed/uncertain
+tombstones, not private fit analysis. Agents recheck selected postings, assess fit,
+publish via existing private `publish_batch`, verify `read_batch`, then acknowledge
+the cursor. No browser RPC/table access, job enqueue, application or scheduler is
+created. A fenced search worker alone contributes allowlisted employer facts.
+
 Management uses the person's current Supabase Auth JWT, verified with `getUser`.
 Use the existing client `functions.invoke('agent-gateway', {body})`.
 
