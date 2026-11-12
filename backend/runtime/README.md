@@ -516,4 +516,9 @@ The Node API serves the existing scalar-only `GET /agent-gateway/pending-count?w
 
 ## Optional Langfuse observability
 
+Private Google Cloud request/response telemetry for existing interview and
+Circle-search tools is separately opt-in; see [capture setup and coverage
+limits](../../docs/shadow-preview.md). It observes normal replies without
+generating advice or changing delivery, and is not yet enabled on the live API.
+
 See [local tracing setup](../../docs/langfuse-tracing.md) for Node API/worker tracing, the opt-in Docker overlay and the independent Codex benchmark importer. Backend credentials stay server-only; traces default to structural metadata.

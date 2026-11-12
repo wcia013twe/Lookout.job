@@ -1,4 +1,94 @@
-# Private recommendation previews
+# Private backend request/response telemetry
+
+## Current scope: observe existing agent interactions
+
+The requested feature records **what an agent asked the backend and what the
+backend returned**, not AI-authored advice. No additional agent, model call,
+relevance score, sender or delivery-suppression workflow is involved. Normal
+agent replies remain unchanged.
+
+The optional Node API recorder captures `knowledge.interview`
+(`read_interview_intelligence`) and `knowledge.search`
+(`search_circle_knowledge`) through both `/mcp` and `/v1/operations`.
+Credential verification, profile/resume reads and writes are excluded. This is
+observability of existing scoped tools, not a new product action or MCP tool.
+Direct Supabase Edge MCP/gateway calls and other backend operations are **not**
+covered by this Node seam.
+
+In the private `lookout-shadow / onboarding-previews` view, use:
+
+```text
+logName="projects/job-board-511516/logs/lookout-shadow"
+jsonPayload.event="agent.recommendation_exchange"
+```
+
+Expand `jsonPayload.request` and `jsonPayload.response`. Each paired record
+includes a generated `requestId`, operation, timestamp, status, elapsed backend
+time and keyed `connectionKey`. The pseudonym identifies an agent connection,
+**not an account**; different connections or secret rotation produce different
+keys. Empty/no-evidence responses are recorded as returned. Failed requests log
+status only, without request/response bodies or provider diagnostics. Capturing
+an entry is not a usefulness assessment.
+
+A verification-only replay of the previously saved fictional MCP retrieval is
+visible with `insertId="5bf34c3f-9fb1-4b6d-ba2e-247469770136"`. It is explicitly
+marked `verificationFixture=true` and `captureMode="fictional_trace_replay"`;
+the actual saved request and returned evidence were used, not newly authored
+advice. Readback confirmed it in the private view and absent from `_Default`.
+This operator export verifies the payload and destination, **not** automatic
+capture, the VM token path or a real-user interaction.
+
+The recorder removes credential/identity fields, masks known server secrets,
+credential patterns and emails, and strips URL credentials/query/fragment.
+Bodies are bounded to approximately 60 KB, with per-string, depth, collection
+and key limits; `truncated` flags omitted content. It does not mutate replies.
+Free text may still contain personal information: redaction is **not** complete
+anonymization. The restricted seven-day log bucket remains required.
+
+### Activation and limits
+
+The source is opt-in and **not deployed or enabled on the live API yet**.
+The running VM was inspected at release
+`afc36372aefab33257bbbe37d84c77c8f5d6cf2b`; its API entrypoint and dispatcher
+differ from local main. Do not replace that release or dirty shared source just
+to enable a logger without reconciling the release boundary. No hosted Edge
+deployment or real-account export was performed in this pass.
+
+After an approved committed-main API release, set server-only runtime values:
+
+```text
+LOOKOUT_RECOMMENDATION_LOG_ENABLED=true
+LOOKOUT_RECOMMENDATION_LOG_PROJECT=job-board-511516
+LOOKOUT_RECOMMENDATION_LOG_SECRET=<persistent random secret of at least 32 characters>
+```
+
+Keep the secret in `/etc/lookout/runtime.env`, never browser config, Git or
+command arguments. The recorder obtains short-lived credentials from the fixed
+Compute metadata endpoint, then writes only to the fixed Cloud Logging API and
+`lookout-shadow` log. The inspected VM has the cloud-platform OAuth scope and
+an existing project-editor service account; no new IAM grant was added. Prefer
+least-privilege logging credentials when the existing broad VM role is revised.
+
+Logging runs asynchronously with at most 32 in-flight writes, three-second
+network deadlines, cached metadata credentials and a fixed sanitized warning.
+Outages, saturation or process shutdown can drop records; this is best-effort
+telemetry, not a durable audit ledger. Neither logging failure nor the feature
+switch changes authorization or normal responses. Verify actual authorized
+Node traffic and private-bucket routing after deployment before claiming live
+coverage. No dependency was added.
+
+Tests exercise the existing fictional interview fixture through both Node
+transports, its published revision, empty results and authorization failures;
+unit checks cover sanitizer bounds, metadata-token caching, saturation and
+failure isolation. Existing fictional demo interactions remain the product
+fixture; this feature adds no browser behavior or real-account fixture writes.
+
+## Historical advice-preview setup
+
+The sections below document the earlier, superseded advice-authoring
+interpretation and fictional setup fixtures. They are not automatic backend
+request/response capture and do not require an advice-writing agent for the
+current scope.
 
 ## Live Google Cloud destination
 

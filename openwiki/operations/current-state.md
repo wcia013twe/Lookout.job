@@ -1684,6 +1684,25 @@ The local Edge Runtime remains mounted from the shared main checkout rather than
 
 The cumulative private board keeps the latest drop and older Apply Now/Strong Consider roles visible, with older lower-priority and expired roles in Hidden. Website and `set_discover_visibility` use the same owned per-role action; the existing `remove_discover_job` remains a separate batch-item removal. Bulk preference sync preserves the server's visibility map so a different role's change is not replaced. These source changes require the visibility and earlier Discover removal migrations and updated gateway/MCP before they are available in a running deployment. Demo fixtures and local tests cover the Hidden view; production availability has not been established.
 
+## Private request/response capture (local source, not live)
+
+The earlier Google Cloud advice-preview scope is superseded by recording actual
+agent requests and existing backend results. The optional Node API recorder
+observes `knowledge.interview` / `read_interview_intelligence` and
+`knowledge.search` / `search_circle_knowledge` on `/mcp` and `/v1/operations`;
+it does not author advice, suppress delivery, add model calls or grade results.
+Records pair sanitized bounded request/response bodies, a generated request ID,
+status, timing and keyed per-connection pseudonym. Failures omit bodies;
+credential/profile/resume/write operations are excluded. Direct Edge traffic
+and other operations are not covered. The logger is asynchronous, bounded and
+best-effort, so outages or shutdown can lose telemetry without affecting agent
+responses. See `docs/shadow-preview.md` for privacy, private-view query and
+server-only activation settings. The VM still runs
+`afc36372aefab33257bbbe37d84c77c8f5d6cf2b`, with different API source; this
+follow-up does not deploy it or enable real-user capture. Its existing
+cloud-platform metadata scope was verified. Local tests cover fictional
+authorized MCP/operation replies and access denials, not deployed coverage.
+
 ## One-second watcher polling
 
 Package 0.2.2 defaults to one-second count polling with up to 10% jitter; the wake cooldown remains 10 seconds. Existing explicit configuration must be updated and the host service restarted. This source change does not establish remote installation or activation.

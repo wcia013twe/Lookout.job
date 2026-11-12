@@ -7,6 +7,7 @@ import {createApi} from './api.ts';
 // import {createSubmissionService} from './submission.ts';
 // import {SUBMISSION_TOOLS} from '../../supabase/functions/agent-gateway/submission-batches.mjs';
 import {createDispatch} from './service.ts';
+import {createRecommendationLogger} from './recommendation-log.mjs';
 // import {createApplicationExecutor} from './application-worker.ts';
 import {runWorker} from './worker.ts';
 import type {Rpc} from './types.ts';
@@ -36,7 +37,7 @@ if(mode==='worker'){
   const allowedHosts=(process.env.LOOKOUT_ALLOWED_HOSTS||'localhost,127.0.0.1,[::1]').split(',').map(s=>s.trim()).filter(Boolean);
   const allowedOrigins=(process.env.LOOKOUT_ALLOWED_ORIGINS||'http://localhost:3000,http://127.0.0.1:3000').split(',').map(s=>s.trim()).filter(Boolean);
   const parser=createResumeParser({client});
-  const dataDispatch=createDispatch({rpc,supabaseUrl:url,parseResume:parser.agent});
+  const dataDispatch=createDispatch({rpc,supabaseUrl:url,parseResume:parser.agent,recordExchange:createRecommendationLogger()??undefined});
   // Deterministic submission remains implemented in submission.ts; registration is paused.
   // const dispatch=createSubmissionService({dispatch:dataDispatch,projectUrl:url});
   // const executionTools=SUBMISSION_TOOLS;

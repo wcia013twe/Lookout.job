@@ -12,7 +12,7 @@ import type {Rpc, Payload} from './types.ts';
 
 export type Reply = {status: number; data?: any; error?: string};
 export const credentialHash = (token: string) => createHash('sha256').update(token).digest('hex');
-export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume}: {rpc: Rpc; supabaseUrl: string; request?: typeof fetch;parseResume?:(token:string,payload:Payload)=>Promise<any>}) {
+export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume,recordExchange}: {rpc: Rpc; supabaseUrl: string; request?: typeof fetch;parseResume?:(token:string,payload:Payload)=>Promise<any>;recordExchange?:(exchange:{token:string;operation:string;payload:Payload;reply:Reply;durationMs:number})=>void}) {
   const gateway=new URL('/functions/v1/agent-gateway',supabaseUrl);
   if(!['https:','http:'].includes(gateway.protocol) || (gateway.protocol==='http:' && !['127.0.0.1','localhost','kong','host.docker.internal'].includes(gateway.hostname))) throw Error('Use HTTPS Supabase or an explicit local development host');
   const dispatch = async (token: string, operation: string, payload: Payload): Promise<Reply> => {
@@ -54,5 +54,10 @@ export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume}: {rpc
   };
   return (token: string, operation: string, payload: Payload): Promise<Reply> => traceWork(
     'execute-agent-tool', {operation: operationService(operation) ? operation : 'unknown'},
-    () => dispatch(token, operation, payload), {type: 'tool', summarize: reply => ({status: reply.status})});
+    async () => {
+      const started=performance.now();
+      const reply=await dispatch(token, operation, payload);
+      try{recordExchange?.({token,operation,payload,reply,durationMs:Math.round(performance.now()-started)});}catch{}
+      return reply;
+    }, {type: 'tool', summarize: reply => ({status: reply.status})});
 }
