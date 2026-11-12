@@ -1,6 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {advanceStage, canClaimPack, demoDrops, MEGA_DROP_MAX, dropKey, groupPack, packComplete, tierOf} from '../next-app/lib/drop-pack.ts';
+import {advanceStage, applyNowDrops, applyNowPackStamp, canClaimPack, demoDrops, MEGA_DROP_MAX, dropKey, groupPack, packComplete, tierOf} from '../next-app/lib/drop-pack.ts';
+
+test('the first-open pack maps only Apply Now recommendations without inventing job facts', () => {
+ const role={id:'job-one',priority:'Apply Now',company:'Example Systems',title:'Backend Engineer',employmentType:'FT',discoveredDate:'2026-11-10',location:'Remote',applicationUrl:'https://example.com/jobs/one',whyItFits:'Saved recommendation',searchProfileId:'general'};
+ assert.deepEqual(applyNowDrops([role,{...role,id:'consider',priority:'Strong Consider'},{...role,id:'skip',priority:'Skip Unless Team Fit'}]),[{
+  packId:'job-one',company:role.company,title:role.title,type:'FT',dateSeen:role.discoveredDate,location:role.location,url:role.applicationUrl,note:role.whyItFits,searchProfileId:'general',status:'added',
+ }]);
+ assert.deepEqual(applyNowDrops([]),[]);
+ const duplicates=applyNowDrops([role,{...role,id:'job-two'}]);
+ assert.notEqual(dropKey(duplicates[0]),dropKey(duplicates[1]));
+ assert.equal(applyNowPackStamp(role.id),'apply-now:job-one');
+ assert.notEqual(applyNowPackStamp(role.id),applyNowPackStamp('job-two'));
+});
 
 test('Mega drops group same-company same-day roles up to the cap without losing overflow', () => {
  const base=demoDrops('2026-10-14')[0];

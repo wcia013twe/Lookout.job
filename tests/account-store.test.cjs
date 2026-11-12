@@ -3,11 +3,20 @@ const assert=require('node:assert/strict');
 const vm=require('node:vm');
 const fs=require('node:fs');
 const one='11111111-1111-4111-8111-111111111111',two='22222222-2222-4222-8222-222222222222';
-function store() {
- const data=new Map();
+function store(data=new Map()) {
  const context={window:{addEventListener(){}},document:{addEventListener(){},dispatchEvent(){}},CustomEvent:function(){},setTimeout:()=>1,clearTimeout(){},localStorage:{getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k),length:0}};
  vm.runInNewContext(fs.readFileSync('lib/store.js','utf8'),context);return context.window.JB.store;
 }
+test('per-card Apply Now activation survives immediate reload and stays account-scoped',()=>{
+ const data=new Map(),s=store(data),stamp='drops.packStamps.apply-now:job-one';
+ s.switchAccount(one);assert.equal(s.get(stamp),undefined);
+ s.set(stamp,true);s._flush();
+ const reloaded=store(data);reloaded.switchAccount(one);assert.equal(reloaded.get(stamp),true);
+ assert.equal(reloaded.get('drops.packStamps.apply-now:job-two'),undefined);
+ reloaded.switchAccount(two);assert.equal(reloaded.get(stamp),undefined);
+ reloaded.switchAccount(null);assert.equal(reloaded.get(stamp),undefined);
+ reloaded.switchAccount(one);assert.equal(reloaded.get(stamp),true);
+});
 test('account workspaces isolate profile, answers and drafts and preserve the guest workspace',()=>{
  const s=store();s.set('workflow.profile',{name:'Guest'});
  s.switchAccount(one); assert.equal(s.get('workflow.profile').name,'');

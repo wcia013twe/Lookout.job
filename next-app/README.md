@@ -339,6 +339,14 @@ Detached demo checks: open `/career-toolkit/?demo=1&demoApi=empty` or `/circles/
 
 `scripts/check-api-errors-ui.mjs` checks mobile demo empty/error/recovery, account-mode failures and empty responses, preserved Circle input, explicit guest demo entry and absence of account writes, using intercepted fictional API responses. Serve `next-app/out` and set `LOOKOUT_UI_URL`, `LOOKOUT_PLAYWRIGHT_MODULE`, and `LOOKOUT_UI_ARTIFACTS` as needed; defaults use localhost:3047 and the runner's Playwright installation. No production credentials are needed.
 
+### Apply Now card activation
+
+Discover automatically opens the existing animated pack for eligible `Apply Now` cards that have not activated it before. Activation is tracked per stable role ID in `drops.packStamps` (`apply-now:<roleId>`), not by a global first-visit flag or discovery date. New Apply Now cards can activate later; closing, returning to Discover, refreshing, or changing the same card out of and back into Apply Now does not replay it. Dismissing the sealed pack also consumes that card's activation.
+
+The selected profile, application-status and hidden/expired-posting rules still determine eligibility. Search/date filters do not consume a different set of cards. Existing job facts and discovery dates are preserved. Opening this animation does not create an application, update a tracker status, or authorize submission. The animation preference uses the existing account-scoped browser store and immediate flush; it is not synchronized between devices or exposed as a backend/MCP action. Other paused pack customization features remain paused.
+
+The detached demo includes a fictional Apply Now role and keeps activation in memory until demo reset/reload. `LOOKOUT_UI_URL=http://localhost:3055 node scripts/check-apply-now-pack-ui.mjs` tests first arrival, later priority changes, navigation, dismissal, mobile layout and unchanged application/tracker records against the running app without intercepted APIs.
+
 ### Task-linked card packs
 
 My Profile → My Agent now contains the complete discovery setup: connection management,
