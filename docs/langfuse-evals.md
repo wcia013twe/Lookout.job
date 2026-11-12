@@ -1,4 +1,8 @@
-> Current dashboard: **Eval Case & Run**. Use exactly two Tags filters:
+> Current dashboard: **Eval Case & Run** (`cmwdy2se4005mad0fzd5yldxp`),
+> restored and verified on 2026-11-12 from the Git-tracked
+> `scripts/evals/config.mjs`. Re-run `npm run evals:langfuse -- --setup` to
+> restore its seven widget placements; the command reuses named objects.
+> Use exactly two Tags filters:
 > `eval-case:<scenarioId>` and `eval-run:<repeat>` (defaults COM1 / 1).
 > Both conditions appear in the same selected view. Native hosted Langfuse labels
 > these dropdowns Tags; custom field labels are not configured. Widget environment
@@ -19,7 +23,7 @@
 3. Preview: `npm run evals:langfuse -- --record /absolute/result.json --dry-run`.
 4. Publish: `npm run evals:langfuse -- --record /absolute/result.json`.
 5. Read back after ingestion: add `--verify` to the same command. An upload failure never reruns a participant.
-6. Open **Eval Overview v1** for aggregate views, or **Experiments** to compare conditions/repetitions item by item.
+6. Open **Eval Case & Run** for one case and repeat, or **Experiments** to compare individual attempts.
 
 The exporter reads configuration from root `.env.local`. It uses the installed `langfuse` CLI (validated API snapshot 4.71.0); override `LANGFUSE_CLI` with an executable path if needed. No LLM calls or API model tokens are used by setup/export.
 
@@ -29,11 +33,11 @@ The exporter reads configuration from root `.env.local`. It uses the installed `
 npm run evals:langfuse -- --setup
 ```
 
-This creates/reuses seven score configurations, one dashboard and eight comparison-table widgets. It uploads configuration only: no private profile, historical run, sample result or synthetic performance. It discovers objects by versioned names to avoid duplicates. Existing score definitions must match. Existing dashboard/widget edits are preserved; create a new config version for incompatible changes. Dashboard APIs are marked unstable by Langfuse; fail explicitly if the API changes.
+This creates/reuses the score configurations in `scripts/evals/config.mjs`, one dashboard and seven comparison-table widgets. It uploads configuration only: no private profile, historical run, sample result or synthetic performance. It discovers objects by versioned names to avoid duplicates. Existing score definitions must match. Existing dashboard/widget edits are preserved; create a new config version for incompatible changes. Dashboard APIs are marked unstable by Langfuse; fail explicitly if the API changes.
 
-The dashboard excludes `verification` and `benchmark-pilot`. Filter **traceRelease** to one campaign. Most tables group by **traceVersion** (scenario ID/version/grader version) and **traceName** (condition), avoiding pooled quality across incompatible scenarios. The attempt-outcome table groups by condition and execution outcome. Select a scenario/grader version when narrowing that table.
+The dashboard excludes `verification` and `benchmark-pilot`. Its two Tags filters select a case and run number; baseline and Lookout remain together. Tables retain trace version and name where applicable so reused run numbers do not merge.
 
-Widgets: attempts by outcome; evaluated-attempt denominator; task success rate; reviewed quality; median active seconds; median tool calls; median wakes; review coverage. Time/effort include all outcomes, not only successes. The dashboard does not interpret a short failed attempt as fast successful completion. Missing judgments are omitted; review coverage makes that missingness visible.
+Widgets: completion status, task success, quality, active seconds, tool calls, wakes used and reviewed. Missing judgments are omitted, not counted as failures.
 
 ## Version 1 record contract
 
