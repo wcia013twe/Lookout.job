@@ -14,10 +14,10 @@ const watchUrl='https://example.test/functions/v1/agent-gateway/pending-count?wa
 const fixture=()=>({watchUrl,wake:{command:process.execPath,args:['-e','process.exit(0)']}});
 const config=()=>validateConfig(fixture());
 test('config accepts count-only HTTPS URLs and literal command args, rejects credential fields',()=>{
- assert.equal(config().pollIntervalSeconds,10);assert.equal(config().wakeCooldownSeconds,10);
- assert.equal(pollDelay(config(),1,()=>0),20000);assert.equal(pollDelay(config(),2,()=>0),40000);assert.equal(pollDelay(config(),9,()=>0),300000);
- for(const patch of [{token:'secret'},{wake:{command:'wake',args:['jb_agent_'+'a'.repeat(64)]}},{watchUrl:watchUrl.replace('https:','http:')},{watchUrl:watchUrl+'&token=secret'},{watchUrl:watchUrl+'&watchId=bad'},{watchUrl:watchUrl.replace('https://','https://user:pass@')},{watchUrl:watchUrl+'#fragment'},{wake:{command:'echo',args:'bad'}},{wake:{command:'echo',args:[],env:{TOKEN:'secret'}}},{pollIntervalSeconds:1},{requestTimeoutSeconds:61},{wakeCooldownSeconds:0}])assert.throws(()=>validateConfig({...fixture(),...patch}));
- assert.ok(pollDelay(config(),0,()=>0)>=10000);assert.ok(pollDelay(config(),9,()=>0)<=300000);
+ assert.equal(config().pollIntervalSeconds,1);assert.equal(config().wakeCooldownSeconds,10);
+ assert.equal(pollDelay(config(),1,()=>0),2000);assert.equal(pollDelay(config(),2,()=>0),4000);assert.equal(pollDelay(config(),9,()=>0),32000);
+ for(const patch of [{token:'secret'},{wake:{command:'wake',args:['jb_agent_'+'a'.repeat(64)]}},{watchUrl:watchUrl.replace('https:','http:')},{watchUrl:watchUrl+'&token=secret'},{watchUrl:watchUrl+'&watchId=bad'},{watchUrl:watchUrl.replace('https://','https://user:pass@')},{watchUrl:watchUrl+'#fragment'},{wake:{command:'echo',args:'bad'}},{wake:{command:'echo',args:[],env:{TOKEN:'secret'}}},{pollIntervalSeconds:0},{requestTimeoutSeconds:61},{wakeCooldownSeconds:0}])assert.throws(()=>validateConfig({...fixture(),...patch}));
+ assert.ok(pollDelay(config(),0,()=>0)>=1000);assert.ok(pollDelay(config(),9,()=>0)<=300000);
  assert.ok(pollDelay(config(),1,()=>0)>pollDelay(config(),0,()=>0));
 });
 test('poller sends no credentials, rejects errors/redirects/large or malformed responses',async()=>{
@@ -80,7 +80,7 @@ test('existing scoped guide/MCP boundary discovers agent package and preserves h
  assert.deepEqual(await guideDispatch('agent-package',async()=>({error:{code:'42501'}})),{error:{code:'42501'}});
  const handler=createHandler(async(_token,operation,payload)=>operation==='credentials.verify'?{status:200,data:{scopes:['workspace:read']}}:{status:200,data:(await guideDispatch(payload.id,async()=>({data:{}}))).data});
  const response=await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'read_guide',arguments:{id:'agent-package'}}})}));
- const result=await response.json();assert.ok(!result.result.isError);assert.equal(JSON.parse(result.result.content[0].text).distribution.archive,'lookout-agent-0.2.1.tgz');
+ const result=await response.json();assert.ok(!result.result.isError);assert.equal(JSON.parse(result.result.content[0].text).distribution.archive,'lookout-agent-0.2.2.tgz');
 });
 
 test('failed wake retries after ten seconds without acknowledging or requiring a version change',async()=>{

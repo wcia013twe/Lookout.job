@@ -1,6 +1,6 @@
 on_http_request:
   - expressions:
-      - "!(req.url.path in ['/mcp', '/agent-gateway/pending-count', '/agent-package/manifest.json', '/agent-package/lookout-agent-0.2.1.tgz'])"
+      - "!(req.url.path in ['/mcp', '/agent-gateway/pending-count', '/agent-package/manifest.json', '/agent-package/lookout-agent-0.2.2.tgz'])"
     actions:
       - type: deny
   - actions:

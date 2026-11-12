@@ -1666,3 +1666,7 @@ The local Edge Runtime remains mounted from the shared main checkout rather than
 ### Discover visibility (local source)
 
 The cumulative private board keeps the latest drop and older Apply Now/Strong Consider roles visible, with older lower-priority and expired roles in Hidden. Website and `set_discover_visibility` use the same owned per-role action; the existing `remove_discover_job` remains a separate batch-item removal. Bulk preference sync preserves the server's visibility map so a different role's change is not replaced. These source changes require the visibility and earlier Discover removal migrations and updated gateway/MCP before they are available in a running deployment. Demo fixtures and local tests cover the Hidden view; production availability has not been established.
+
+## One-second watcher polling
+
+Package 0.2.2 defaults to one-second count polling with up to 10% jitter; the wake cooldown remains 10 seconds. Existing explicit configuration must be updated and the host service restarted. This source change does not establish remote installation or activation.
