@@ -14,6 +14,8 @@
 > interpreted as one result. This view has no cross-case success-rate summary.
 > Earlier campaign overview instructions below describe the superseded layout.
 
+The separate [Evaluation — All Runs dashboard](https://us.cloud.langfuse.com/project/cmw9iduxp04vuad0eejom498l/dashboards/cmwabuljz05nhad0gfb1304ej?dateRange=7d) combines measured and pilot trajectories. Its bare URL opens with Langfuse's **Past 1 day** default, which excludes the November 10, 2026 evaluations. Use the linked `dateRange=7d` URL or select a longer range in Langfuse. On November 12, the seven-day view rendered 92 execution-status scores; the underlying dashboard has six placed widgets and no saved filters. This dashboard's layout is live-only; `scripts/evals/config.mjs` tracks **Eval Case & Run**, a separate dashboard.
+
 # Reusable Langfuse evaluation setup
 
 ## Daily use
