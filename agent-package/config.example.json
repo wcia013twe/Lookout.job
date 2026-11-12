@@ -6,7 +6,7 @@
       "lookout-changes"
     ]
   },
-  "pollIntervalSeconds": 10,
+  "pollIntervalSeconds": 1,
   "wakeCooldownSeconds": 10,
   "requestTimeoutSeconds": 15,
   "wakeTimeoutSeconds": 60

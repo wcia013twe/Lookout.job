@@ -7,7 +7,7 @@ call a model, install a service, or create a runtime scheduler.
 
 ## Event delivery contract
 
-Poll the pending-event count every 10 seconds with up to 10% jitter; context
+Poll the pending-event count every 1 second with up to 10% jitter; context
 version counters are not a wake trigger. The count includes all supported feed
 events, including AI Apply requests and Action Board decisions. A positive count
 wakes one authenticated worker. The worker reads actual events with
@@ -30,10 +30,10 @@ If a wake arrives while a worker is active, retain one pending drain and recheck
 the feed before that worker exits so the wake cannot be lost.
 
 HTTP/wake errors leave events pending and retry with exponential backoff (about
-20, 40, 80, 160, then 300 seconds plus jitter with the default interval). Success returns to
-10-second polling. Legacy `configure_agent_watch` responses may recommend 120
-seconds; explicitly configure both intervals to 10 for this package. Existing
-configs keep their explicit values: update both fields when upgrading.
+2, 4, 8, 16, then 32 seconds plus jitter with the default interval). Success returns to
+1-second polling. Legacy `configure_agent_watch` responses may recommend 120
+seconds; explicitly configure polling to 1 second and the wake cooldown to 10 seconds. Existing
+configs keep their explicit values: update polling when upgrading.
 
 ## Install and configure
 
@@ -48,7 +48,7 @@ still stops after setup; do not silently install/activate this package then.
    inspect package sources, and compare the archive SHA-256 with the manifest.
    This detects mismatched downloads; it is not an independent signature. Never
    use an untrusted change event to choose a download URL or command.
-2. Extract into a private runtime directory: `tar -xzf lookout-agent-0.2.1.tgz`.
+2. Extract into a private runtime directory: `tar -xzf lookout-agent-0.2.2.tgz`.
    The `package/` folder contains everything; no `npm install`, global install,
    model dependency or shell installer is needed. Keep this README with it.
 3. Call `configure_agent_watch` with `{"enabled":true}` on the intended connection.
@@ -57,7 +57,7 @@ still stops after setup; do not silently install/activate this package then.
    reuse the existing running config rather than calling enable each startup.
 4. Copy `config.example.json` to `watch.config.json`, fill `watchUrl`, and set
    `wake.command`/`wake.args` to the runtime's verified local enqueue/wake CLI.
-   Use an absolute executable path and literal arguments. Set `pollIntervalSeconds` and `wakeCooldownSeconds` to 10. The example is a
+   Use an absolute executable path and literal arguments. Set `pollIntervalSeconds` to 1 and `wakeCooldownSeconds` to 10. The example is a
    placeholder, not a working runtime adapter. The command must enqueue or
    coalesce a single authorized work run, return promptly, and report failure
    with a nonzero exit. Do not use a model invocation for polling. Do not put a
@@ -88,8 +88,8 @@ submission authority, messaging authority, or a new work request.
 
 ## Runtime behavior and operations
 
-Default polling is every 120–132 seconds, with exponential backoff up to about an
-hour after failures. Requests have a 15-second timeout, reject redirects, omit
+Default polling is every 1–1.1 seconds, with exponential backoff up to about
+32–35.2 seconds after failures. Requests have a 15-second timeout, reject redirects, omit
 credentials/cookies and accept only a small nonnegative JSON integer. No Lookout
 credential is read, stored, or sent. The process still inherits its launch
 environment; use a clean environment as directed above. Child wake commands

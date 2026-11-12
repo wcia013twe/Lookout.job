@@ -15,8 +15,8 @@ export function validateConfig(input){
  if(url.protocol!=='https:'||url.username||url.password||url.hash||!url.pathname.endsWith('/agent-gateway/pending-count')||url.searchParams.getAll('watchId').length!==1||[...url.searchParams.keys()].some(key=>key!=='watchId')||! /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(url.searchParams.get('watchId')||''))throw Error('Use an HTTPS count-only watch URL without credentials or extra parameters');
  const wake=input.wake;
  if(!wake||typeof wake!=='object'||Array.isArray(wake)||Object.keys(wake).some(key=>!['command','args'].includes(key))||typeof wake.command!=='string'||!wake.command.trim()||wake.command.includes('\0')||!Array.isArray(wake.args)||wake.args.length>100||wake.args.some(arg=>typeof arg!=='string'||arg.includes('\0')||arg.length>4096))throw Error('Wake requires command and an array of literal arguments');
- const config={...input,watchUrl:url.href,pollIntervalSeconds:input.pollIntervalSeconds??10,wakeCooldownSeconds:input.wakeCooldownSeconds??10,requestTimeoutSeconds:input.requestTimeoutSeconds??15,wakeTimeoutSeconds:input.wakeTimeoutSeconds??60};
- for(const [key,min,max]of [['pollIntervalSeconds',10,3600],['wakeCooldownSeconds',10,86400],['requestTimeoutSeconds',1,60],['wakeTimeoutSeconds',1,300]])if(!Number.isInteger(config[key])||config[key]<min||config[key]>max)throw Error(`Invalid ${key}: choose ${min}–${max}`);
+ const config={...input,watchUrl:url.href,pollIntervalSeconds:input.pollIntervalSeconds??1,wakeCooldownSeconds:input.wakeCooldownSeconds??10,requestTimeoutSeconds:input.requestTimeoutSeconds??15,wakeTimeoutSeconds:input.wakeTimeoutSeconds??60};
+ for(const [key,min,max]of [['pollIntervalSeconds',1,3600],['wakeCooldownSeconds',10,86400],['requestTimeoutSeconds',1,60],['wakeTimeoutSeconds',1,300]])if(!Number.isInteger(config[key])||config[key]<min||config[key]>max)throw Error(`Invalid ${key}: choose ${min}–${max}`);
  return config;
 }
 export async function readPendingCount(config,{fetchImpl=fetch,signal}={}){
