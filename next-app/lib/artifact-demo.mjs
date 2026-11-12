@@ -67,6 +67,7 @@ export function createArtifactDemo(store){
  for(const [id,days] of [[demoArtifactIds.company,1],['aaaaaaaa-2222-4000-8000-222222222222',2]]){const row=seed.find(r=>r.id===id);if(row){const date=new Date(row.content.weekOf+'T12:00:00Z');date.setUTCDate(date.getUTCDate()+days);row.content.prepOn=date.toISOString().slice(0,10);}}
  const rows=()=>store.get('demo.artifacts')??seed;
  const history=()=>store.get('demo.artifactHistory')??Object.fromEntries(seed.map(r=>[r.id,[r]]));
+ const feedbackRows=()=>store.get('demo.artifactFeedback')??{[`${demoArtifactIds.company}:1`]:{version:1,revision:1,useful:true,note:'Fictional feedback: the team questions helped; keep the next brief concise.',source:'user',updated_at:today}};
  function saveRows(row){store.set('demo.artifacts',[row,...rows().filter(r=>r.id!==row.id)]);store.set('demo.artifactHistory',{...history(),[row.id]:[row,...(history()[row.id]||[])]});return artifactResponse(clone(row));}
  return {
   artifactSnapshot(){return {calendarArtifacts:rows().filter(r=>!r.archived&&(r.content.kind==='mock_interview'||r.content.prepOn)).map(r=>({id:r.id,content:clone(r.content)})),learningGoals:clone(goals()),artifacts:rows().filter(r=>!r.archived).map(r=>({id:r.id,version:r.version,title:r.content.title,links:clone(r.content.links),path:artifactResponse(r).path}))};},
@@ -88,9 +89,19 @@ export function createArtifactDemo(store){
     const off=payload.offset||0;return {items:filtered.slice(off,off+25).map(r=>artifactMetadata(artifactResponse(clone(r)))),nextOffset:filtered.length>off+25?off+25:null};
    }
    const current=rows().find(r=>r.id===payload.id);
+   if(operation==='artifacts.feedback.save'){
+    if(!(history()[payload.id]||[]).some(row=>row.version===payload.version))throw Error('Artifact not found');
+    const all=feedbackRows(),key=`${payload.id}:${payload.version}`,previous=all[key];
+    if(previous?.revision===payload.expectedRevision+1&&previous.useful===payload.useful&&previous.note===payload.note)return clone(previous);
+    if((previous?.revision||0)!==payload.expectedRevision)throw Error('Feedback changed; read the material again');
+    const saved={version:payload.version,revision:payload.expectedRevision+1,useful:payload.useful,note:payload.note,source:'user',updated_at:new Date().toISOString()};
+    store.set('demo.artifactFeedback',{...all,[key]:saved});return clone(saved);
+   }
    if(operation==='artifacts.read'){
     const row=payload.version?(history()[payload.id]||[]).find(r=>r.version===payload.version):current;
-    if(!row)throw Error('Artifact not found');return {...artifactResponse(clone(row)),history:(history()[payload.id]||[]).map(r=>({version:r.version,title:r.content.title,created_at:r.updated_at}))};
+    if(!row)throw Error('Artifact not found');
+    const feedback=feedbackRows();
+    return {...artifactResponse(clone(row)),feedback:clone(feedback[`${row.id}:${row.version}`]||null),feedbackHistory:Object.entries(feedback).filter(([key])=>key.startsWith(`${row.id}:`)).map(([,value])=>clone(value)).sort((left,right)=>right.version-left.version),history:(history()[payload.id]||[]).map(r=>({version:r.version,title:r.content.title,created_at:r.updated_at}))};
    }
    if(operation==='artifacts.archive'){
     if(current?.version===payload.expectedVersion+1&&current.archived===payload.archived)return artifactResponse(clone(current));

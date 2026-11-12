@@ -78,11 +78,18 @@ function Workspace({w,owner,artifactId,revision}:{w:ReturnType<typeof useWorkspa
   finally{if(stillOwner())setBusy(false);}
  }
  const readMaterial=useCallback((id:string,version:number)=>services!.artifactAction('artifacts.read',{id,version}),[services]);
+ async function saveMaterialFeedback(value:{expectedRevision:number;useful:boolean;note:string}){
+  if(!artifact||!services||w.locked)throw Error('Sign in to save feedback.');
+  const epoch=generation.current;
+  const result=await services.artifactAction('artifacts.feedback.save',{id:artifact.id,version:artifact.version,...value});
+  if(epoch!==generation.current||!stillOwner())throw Error('The selected material changed.');
+  return result;
+ }
  return <div className="min-w-0">
   {feedback&&<p role="status" className="mb-3 text-sm text-board-muted">{feedback}</p>}
   <ApiError message={error} onRetry={()=>setReload(n=>n+1)}/>
   {!owner&&<Notice><Link className="text-board-accent underline" href="/profile/">Sign in through Profile</Link> to see the materials your agent has prepared.</Notice>}
-  {artifactId?<>{!artifact&&<Link className={styles.backLink} href="/career-toolkit/#workspace">Back to workspace</Link>}{artifact&&!loading&&<ArtifactViewer key={`${artifact.id}:${artifact.version}`} artifact={artifact} demo={!!w.demo} historical={!!revision} onVersion={v=>router.push(artifactPath(artifact.id,v==='latest'?undefined:Number(v)))} onArchive={archive} onPrepDate={savePrepDate} locked={w.locked} busy={busy}/>} {artifact&&!loading&&!!artifact.content.materials?.length&&<ArtifactCollection key={`collection:${artifact.id}:${artifact.version}`} materials={artifact.content.materials} read={readMaterial}/>}</>:<>
+  {artifactId?<>{!artifact&&<Link className={styles.backLink} href="/career-toolkit/#workspace">Back to workspace</Link>}{artifact&&!loading&&<ArtifactViewer key={`${artifact.id}:${artifact.version}`} artifact={artifact} demo={!!w.demo} historical={!!revision} onVersion={v=>router.push(artifactPath(artifact.id,v==='latest'?undefined:Number(v)))} onArchive={archive} onPrepDate={savePrepDate} onFeedback={saveMaterialFeedback} locked={w.locked} busy={busy}/>} {artifact&&!loading&&!!artifact.content.materials?.length&&<ArtifactCollection key={`collection:${artifact.id}:${artifact.version}`} materials={artifact.content.materials} read={readMaterial}/>}</>:<>
    <div className={styles.weekToolbar} aria-label="Preparation week">
     <div className={styles.weekNavigation}>
      <button className={styles.quietAction} aria-label="Previous week" disabled={allWeeks} onClick={()=>changeWeek(shiftWeek(week,-1))}><span className={styles.previousChevron}><ToolkitIcon name="chevron" size={16}/></span></button>

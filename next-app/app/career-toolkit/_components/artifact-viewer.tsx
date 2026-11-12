@@ -7,9 +7,10 @@ import {artifactDiscussion,artifactHtml,httpsSource,artifactLabels,artifactPurpo
 import {secondary,control} from '../../../components/ui';
 import {ToolkitIcon} from './toolkit-icon';
 import styles from '../toolkit.module.css';
+import {MaterialFeedback,type MaterialFeedbackValue} from './material-feedback';
 export type ArtifactContent={title:string;purpose:string;kind:string;format:'markdown'|'html';body:string;weekOf?:string;resourceUrl?:string;scheduledAt?:string;timeZone?:string;durationMinutes?:number;sessionStatus?:string;debriefId?:string;company?:string;preparedFor?:string;prepOn?:string;materials?:{id:string;version:number}[];sources:{title:string;url:string;observedAt:string}[];links:{applicationId?:string;goalId?:string;taskId:string}[]};
-export type Artifact={id:string;version:number;archived:boolean;content:ArtifactContent;updated_at:string;path:string;versionPath:string;history?:{version:number;title:string;created_at:string}[]};
-export default function ArtifactViewer({artifact,demo,onVersion,onArchive,onPrepDate,locked=false,busy=false,historical=false}:{artifact:Artifact;demo:boolean;onVersion:(v:string)=>void;onArchive:()=>void;onPrepDate?:(date:string)=>Promise<void>;locked?:boolean;busy?:boolean;historical?:boolean}){
+export type Artifact={id:string;version:number;archived:boolean;content:ArtifactContent;updated_at:string;path:string;versionPath:string;feedback?:MaterialFeedbackValue|null;history?:{version:number;title:string;created_at:string}[]};
+export default function ArtifactViewer({artifact,demo,onVersion,onArchive,onPrepDate,onFeedback,locked=false,busy=false,historical=false}:{artifact:Artifact;demo:boolean;onVersion:(v:string)=>void;onArchive:()=>void;onPrepDate?:(date:string)=>Promise<void>;onFeedback?:(value:{expectedRevision:number;useful:boolean;note:string})=>Promise<MaterialFeedbackValue>;locked?:boolean;busy?:boolean;historical?:boolean}){
  const [discussion,setDiscussion]=useState(false),[message,setMessage]=useState('');
  const [prepOn,setPrepOn]=useState(artifact.content.prepOn||'');
  useEffect(()=>setPrepOn(artifact.content.prepOn||''),[artifact.id,artifact.version,artifact.content.prepOn]);
@@ -32,6 +33,7 @@ export default function ArtifactViewer({artifact,demo,onVersion,onArchive,onPrep
   {content.kind==='mock_interview'&&<p className="my-5 text-sm leading-relaxed">{new Date(content.scheduledAt!).toLocaleString(undefined,{timeZone:content.timeZone})} ({content.timeZone}) · {content.durationMinutes} minutes · {content.sessionStatus}. Call your agent in its app when you are ready. Starting here only gives you the session reference.</p>}
   {content.debriefId&&<Link className="text-board-accent underline" href={artifactPath(content.debriefId)}>Read mock interview feedback</Link>}
   <ArtifactBody artifact={artifact} readOnly={demo}/>
+  {onFeedback&&<MaterialFeedback initial={artifact.feedback} onSave={onFeedback} locked={locked||busy}/>}
 
  </article>;
 }
