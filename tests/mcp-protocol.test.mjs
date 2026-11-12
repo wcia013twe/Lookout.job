@@ -87,6 +87,23 @@ test('gateway conflicts become MCP tool errors, infrastructure errors never echo
   assert.equal(failed.status, 502); assert.ok(!(await failed.text()).includes(token));
 });
 
+test('transient gateway failures remain explicit tool errors and are never retried', async () => {
+  let calls = 0;
+  const failing = createHandler(async (_token, operation) => {
+    calls += 1;
+    if (operation === 'credentials.verify') return { status: 200, data: { scopes } };
+    throw new Error('temporary gateway failure');
+  });
+  const response = await failing(request(rpc('tools/call', {
+    name: 'publish_circle_contribution',
+    arguments: { circleId: 'circle', postId: 'post', expectedRevision: 1, eventKey: 'publish-once' },
+  })));
+  const body = await response.json();
+  assert.equal(body.result.isError, true);
+  assert.equal(body.result.content[0].text, 'Gateway unavailable; check current state before retrying writes.');
+  assert.equal(calls, 2, 'One credential verification and one write forward; no replay');
+});
+
 test('product and compatibility tools register once with distinct variant operations', () => {
   for (const tool of PLATFORM_TOOLS) {
     assert.equal(TOOLS.filter(t => t.operation === tool.operation).length, 1, tool.name);

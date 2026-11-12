@@ -43,3 +43,17 @@ test('gateway forwarding preserves fixed actionable diagnostics without reflecti
  const result=await dispatch('jb_agent_'+ 'a'.repeat(64),'mock.read',{id:'cccccccc-1111-4000-8000-111111111111'});
  assert.equal(result.status,400);assert.match(result.error,/matching backend migration/);
 });
+
+test('authorization denials do not misdiagnose membership or human review as missing scope',async()=>{
+ const {gatewayFailure}=await import('../supabase/functions/agent-gateway/request-errors.mjs');
+ const diagnostic='Access denied: check required permissions, record access, and any required human approval.';
+ for(const message of ['Scope required','Circle unavailable','Human action required','PRIVATE CIRCLE CONTENT',undefined]){
+  const failure=databaseFailure({code:'42501',message});
+  assert.deepEqual(failure,[403,diagnostic]);
+  assert.deepEqual(gatewayFailure(failure[0],{error:failure[1]}),failure);
+ }
+ const {createDispatch}=await import('../backend/runtime/service.ts');
+ const dispatch=createDispatch({rpc:async()=>assert.fail('retain Edge authorization boundary'),supabaseUrl:'http://127.0.0.1:54321',request:async()=>Response.json({error:diagnostic},{status:403})});
+ const result=await dispatch('jb_agent_'+ 'a'.repeat(64),'mock.read',{id:'cccccccc-1111-4000-8000-111111111111'});
+ assert.deepEqual(result,{status:403,error:diagnostic});
+});

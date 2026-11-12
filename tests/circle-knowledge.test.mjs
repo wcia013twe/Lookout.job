@@ -6,6 +6,27 @@ import {validateRequest,SCOPES} from '../supabase/functions/agent-gateway/contra
 import {TOOLS} from '../supabase/functions/agent-mcp/protocol.mjs';
 const A='11111111-1111-1111-1111-111111111111',B='22222222-2222-2222-2222-222222222222',C='33333333-3333-3333-3333-333333333333';
 const content=(overrides={})=>({title:'Preparing for a systems interview',body:'Read about query plans and discuss tradeoffs.',type:'resource',sources:[{url:'https://www.postgresql.org/docs/current/using-explain.html',label:'Postgres documentation'}],provenance:'agent_observed',personalDisclosure:false,...overrides});
+test('reply citation availability follows the published parent without row-variable shadowing',async()=>{
+ const db=await createTestDatabase();let sequence=0;
+ const action=async(actor,operation,payload={})=>(await db.query('select private.knowledge_action($1,$2,$3::jsonb,$4::uuid) result',[actor,operation,JSON.stringify(operation==='knowledge.citations'?payload:{...payload,eventKey:`reply-availability-${++sequence}`}),operation==='knowledge.cite'?connectionId:null])).rows[0].result;
+ let connectionId;
+ try{
+  connectionId=(await db.query("insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values($1,'Citation reader',$2,$3,now()+interval '1 day') returning id",[B,'f'.repeat(64),['knowledge:read','knowledge:write']])).rows[0].id;
+  const {circleId}=await action(A,'circles.create',{name:'Reply availability',alias:'Author'});
+  const invite=await action(A,'circles.invite',{circleId});await action(B,'circles.join',{token:invite.token,alias:'Reader'});
+  const parent=await action(A,'knowledge.propose',{circleId,expectedRevision:0,content:content()});
+  await action(A,'knowledge.publish',{circleId,postId:parent.postId,expectedRevision:1});
+  const reply=await action(A,'knowledge.propose',{circleId,parentId:parent.postId,expectedRevision:0,content:content({type:'reply'})});
+  await action(A,'knowledge.publish',{circleId,postId:reply.postId,expectedRevision:1});
+  await action(B,'knowledge.cite',{circleId,postId:reply.postId,revision:1,category:'preparation_plan',reference:'reply-plan'});
+  const available=async()=>(await action(B,'knowledge.citations',{circleId})).items.find(receipt=>receipt.post_id===reply.postId).source_available;
+  assert.equal(await available(),true);
+  await action(A,'knowledge.propose',{circleId,postId:parent.postId,expectedRevision:1,content:content({body:'Private parent revision'})});
+  assert.equal(await available(),true);
+  await action(A,'knowledge.withdraw',{circleId,postId:parent.postId,expectedRevision:2});
+  assert.equal(await available(),false);
+ }finally{await db.close();}
+});
 test('Circle tools are scoped; approvals and sharing grants remain human-only',()=>{
  assert(SCOPES.includes('knowledge:read'));assert(SCOPES.includes('knowledge:write'));
  assert(TOOLS.some(t=>t.operation==='knowledge.cite'));assert(TOOLS.some(t=>t.operation==='knowledge.handoff'));
@@ -70,7 +91,12 @@ test('private Circles, exact sharing consent, retrieval and citation privacy',as
   await rejects(()=>human(A,'knowledge.propose',{circleId,expectedRevision:0,content:content({userId:B}),eventKey:key()}));
   await rejects(()=>agent('a','knowledge.propose',{circleId,expectedRevision:0,content:content({sources:[{url:'https://example.supabase.co/storage/v1/object/sign/resumes/private.pdf?token=fake',label:'Private file'}]}),eventKey:key()}),/Private sources/);
   await human(A,'knowledge.approve',{circleId,postId:post.postId,expectedRevision:1,eventKey:key()});
-  const request={circleId,postId:post.postId,expectedRevision:1,eventKey:key()};await agent('a','knowledge.publish',request);await agent('a','knowledge.publish',request);
+  const request={circleId,postId:post.postId,expectedRevision:1,eventKey:key()};
+  const published=await agent('a','knowledge.publish',request);
+  assert.deepEqual(await agent('a','knowledge.publish',request),published);
+  await assert.rejects(()=>agent('a','knowledge.publish',{...request,expectedRevision:2}),/Idempotency key changed/);
+  assert.equal((await db.query("select count(*)::integer as count from private.knowledge_requests where user_id=$1 and event_key=$2",[A,request.eventKey])).rows[0].count,1);
+  assert.equal((await db.query("select count(*)::integer as count from private.circle_events where post_id=$1 and kind='published'",[post.postId])).rows[0].count,1);
   assert.equal((await agent('b','knowledge.search',{circleId})).items.length,1);
   assert.equal((await agent('b','knowledge.read',{circleId,postId:post.postId})).post.helpfulPeople,0);
   const link=await agent('a','knowledge.handoff',{circleId,postId:post.postId,action:'approve'});assert(link.humanActionRequired);
