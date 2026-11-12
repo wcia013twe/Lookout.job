@@ -1,6 +1,6 @@
 {
   "name": "lookout-agent",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Credential-free Lookout Agent Watch and runtime setup instructions",
   "type": "module",
   "engines": {

@@ -42,6 +42,23 @@ generated: { by: "openwiki/0.7.2", at: "2026-11-07T02:52:01.830Z" }
 
 # Current implementation state and operational limits
 
+## Private shadow recommendation logging — November 12, 2026
+
+The operator configured project `job-board-511516` with a seven-day `lookout-shadow`
+log bucket, matching sink, `onboarding-previews` view, operator view access and
+an exclusion from `_Default`. Only fictional advice and a synthetic routing
+probe were exported. The first fixture reached `_Default` during configuration
+propagation; the later probe was retrieved from the custom view, not `_Default`.
+See [private preview operations](../../docs/shadow-preview.md) for access,
+privacy limits, the bounded fixture importer and source-grounded activation steps.
+
+`backend/runtime/shadow-preview.mjs` is operator/server-only and is not wired
+into the deployed runtime. The backend retrieves evidence but external agents
+author recommendations: automatic onboarding authoring/capture and upstream
+delivery suppression remain unconnected and unverified. No real-user export,
+new model invocation, hosted application deploy or new product/MCP capability
+is established by this fixture. Unknown usage and cost stay null.
+
 This page separates **code present in this repository**, **behavior that a local operator can enable**, and **behavior evidenced as deployed**. It is not a promise that an agent host, external service, or employer system has completed an action. In particular, the product persists records and enforces scoped workflows; it does not itself supply a model runtime, recurring scheduler, SMS/notification transport, inbox monitor, remote browser, or general database/shell access.
 
 ## Status vocabulary
@@ -1701,3 +1718,26 @@ and database policy default disabled. [Setup and rollback requirements](../../do
 name the keys, provided-client configuration and explicit persistent grant still
 requiring action-time approval. No host connection, grant or wakeup is established
 by source tests. The older direct-Supabase-hook experiment remains inactive research.
+
+## Private request/response capture (local source, not live)
+
+The earlier Google Cloud advice-preview scope is superseded by recording actual
+agent requests and existing backend results. The optional Node API recorder
+observes `knowledge.interview` / `read_interview_intelligence` and
+`knowledge.search` / `search_circle_knowledge` on `/mcp` and `/v1/operations`;
+it does not author advice, suppress delivery, add model calls or grade results.
+Records pair sanitized bounded request/response bodies, a generated request ID,
+status, timing and keyed per-connection pseudonym. Failures omit bodies;
+credential/profile/resume/write operations are excluded. Direct Edge traffic
+and other operations are not covered. The logger is asynchronous, bounded and
+best-effort, so outages or shutdown can lose telemetry without affecting agent
+responses. See `docs/shadow-preview.md` for privacy, private-view query and
+server-only activation settings. The VM still runs
+`afc36372aefab33257bbbe37d84c77c8f5d6cf2b`, with different API source; this
+follow-up does not deploy it or enable real-user capture. Its existing
+cloud-platform metadata scope was verified. Local tests cover fictional
+authorized MCP/operation replies and access denials, not deployed coverage.
+
+## One-second watcher polling
+
+Package 0.2.2 defaults to one-second count polling with up to 10% jitter; the wake cooldown remains 10 seconds. Existing explicit configuration must be updated and the host service restarted. This source change does not establish remote installation or activation.

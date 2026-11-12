@@ -7,6 +7,7 @@ import {createApi} from '../backend/runtime/api.ts';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 import {TOOLS} from '../supabase/functions/agent-mcp/protocol.mjs';
 import {createCircleKnowledgeDemo} from '../lib/circle-knowledge-demo.mjs';
+import {recommendationExchange} from '../backend/runtime/recommendation-log.mjs';
 const A='11111111-1111-1111-1111-111111111111',B='22222222-2222-2222-2222-222222222222';
 const appA='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',appB='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const jobId='catalog-bloomberg-ny-2026',url='https://example.com/bloomberg/new-grad/2026';
@@ -45,12 +46,19 @@ test('posting intelligence shares human/Node MCP authorization, published eviden
   const token='jb_agent_'+'f'.repeat(64),hash=credentialHash(token);
   await db.query("insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values($1,'Intel test',$2,array['workspace:read','knowledge:read'],now()+interval '1 day')",[A,hash]);
   const rpc=async(name,args)=>{try{const result=await db.query('select public.agent_dispatch($1,$2,$3::jsonb) result',[args.credential_hash,args.operation,JSON.stringify(args.payload)]);return {data:result.rows[0].result,error:null};}catch(error){return {data:null,error:{code:error.code,message:error.message}};}};
-  const dispatch=createDispatch({rpc,supabaseUrl:'http://localhost:54321',request:async()=>{throw Error('Must use Node credential RPC, not Edge forwarding');}});
+  const captured=[];
+  const dispatch=createDispatch({rpc,supabaseUrl:'http://localhost:54321',recordExchange:exchange=>{const entry=recommendationExchange(exchange,'fictional-32-character-capture-secret');if(entry)captured.push(entry.jsonPayload);},request:async()=>{throw Error('Must use Node credential RPC, not Edge forwarding');}});
   assert.deepEqual((await dispatch(token,'knowledge.interview',payload)).data,packet);
   server=createApi({dispatch});server.listen(0,'127.0.0.1');await once(server,'listening');
   const response=await fetch(`http://127.0.0.1:${server.address().port}/mcp`,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'read_interview_intelligence',arguments:payload}})});
   const body=await response.json();assert.equal(response.status,200);assert.deepEqual(JSON.parse(body.result.content[0].text),packet,'restored MCP returns the same authorized evidence');
+  assert.equal(captured.length,2,'credential verification is not a recommendation exchange');
+  for(const capture of captured){assert.deepEqual(capture.request,payload);assert.deepEqual(capture.response,packet);assert.equal(capture.operation,'knowledge.interview');}
+  const operationResponse=await fetch(`http://127.0.0.1:${server.address().port}/v1/operations`,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({operation:'knowledge.interview',payload})});
+  assert.equal(operationResponse.status,200);assert.deepEqual((await operationResponse.json()).data,packet);
+  assert.deepEqual(captured.at(-1).response,packet,'both Node transports capture the authorized response');
   await db.query("update private.agent_connections set scopes=array['workspace:read'] where token_hash=$1",[hash]);assert.equal((await dispatch(token,'knowledge.interview',payload)).status,403);
+  assert.equal(captured.at(-1).status,403);assert.equal(captured.at(-1).response,null);assert.equal(captured.at(-1).request,null);
   await db.query("update private.agent_connections set scopes=array['knowledge:read'] where token_hash=$1",[hash]);assert.equal((await dispatch(token,'knowledge.interview',payload)).status,403);
   await db.query("update private.agent_connections set scopes=array['workspace:read','knowledge:read'] where token_hash=$1",[hash]);
   await human(B,'knowledge.propose',{circleId:circle,postId:expected,expectedRevision:1,content:{...content,insight:'Unpublished changed wording'},eventKey:`edit${++event}`});

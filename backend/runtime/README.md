@@ -512,8 +512,13 @@ verified empty results. No automatic publication or applications.
 
 ## Muse dev watcher transport
 
-The Node API serves the existing scalar-only `GET /agent-gateway/pending-count?watchId=...` via `agent_pending_count`. It shares Edge validation and never reads event bodies or acknowledges work. Unknown handles return zero; malformed requests return 400 and database failures 503. The dev tunnel additionally allows only `/agent-package/manifest.json` and the pinned 0.2.0 archive, generated into the API image with SHA-256 metadata. Obtain these assets from the same HTTPS origin as `/mcp` when the hosted website has an older release. `/v1`, health and all other paths remain denied by the tunnel. Package reads grant no account access. Existing scoped configure/read/ack MCP tools remain the writer boundaries.
+The Node API serves the existing scalar-only `GET /agent-gateway/pending-count?watchId=...` via `agent_pending_count`. It shares Edge validation and never reads event bodies or acknowledges work. Unknown handles return zero; malformed requests return 400 and database failures 503. The dev tunnel additionally allows only `/agent-package/manifest.json` and the pinned 0.2.2 archive, generated into the API image with SHA-256 metadata. Obtain these assets from the same HTTPS origin as `/mcp` when the hosted website has an older release. `/v1`, health and all other paths remain denied by the tunnel. Package reads grant no account access. Existing scoped configure/read/ack MCP tools remain the writer boundaries.
 
 ## Optional Langfuse observability
+
+Private Google Cloud request/response telemetry for existing interview and
+Circle-search tools is separately opt-in; see [capture setup and coverage
+limits](../../docs/shadow-preview.md). It observes normal replies without
+generating advice or changing delivery, and is not yet enabled on the live API.
 
 See [local tracing setup](../../docs/langfuse-tracing.md) for Node API/worker tracing, the opt-in Docker overlay and the independent Codex benchmark importer. Backend credentials stay server-only; traces default to structural metadata.
