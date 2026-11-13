@@ -111,10 +111,9 @@ export async function startTunnel({cwd,run=runCommand,read=readFile,log=console.
  try{await run('docker',['info','--format','{{.ServerVersion}}'],{cwd,timeout:3000});await run('docker',['compose','--env-file',envFile,'-f','backend/runtime/compose.muse-dev.yaml','--profile','muse-dev','up','-d','tunnel'],{cwd,timeout:30000});}
  catch{log('MCP tunnel could not start; continuing locally. Use make muse-dev to retry or make muse-dev-logs for details.');}
 }
-export async function launchFrontend(cwd,run=runCommand,config=null) {
- const branch=(await run('git',['branch','--show-current'],{cwd,timeout:5000})).trim();
+export async function launchFrontend(cwd,run=runCommand,config=null,spawnProcess=spawn) {
  return new Promise((yes,no)=>{
-  const child=spawn(process.execPath,[branch==='main'?'scripts/live-main.mjs':'scripts/local-frontend.mjs'],{cwd,stdio:'inherit',env:{...process.env,...(config?{NEXT_PUBLIC_SUPABASE_URL:config.API_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY:config.ANON_KEY,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:config.ANON_KEY}:{})}});
+  const child=spawnProcess(process.execPath,['scripts/local-frontend.mjs'],{cwd,stdio:'inherit',env:{...process.env,...(config?{NEXT_PUBLIC_SUPABASE_URL:config.API_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY:config.ANON_KEY,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:config.ANON_KEY}:{})}});
   const interrupt=signal=>child.kill(signal);
   const onInt=()=>interrupt('SIGINT'),onTerm=()=>interrupt('SIGTERM');
   process.on('SIGINT',onInt);process.on('SIGTERM',onTerm);

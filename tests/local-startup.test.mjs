@@ -1,15 +1,23 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,readFile,rm} from 'node:fs/promises';
+import {EventEmitter} from 'node:events';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {createServer} from 'node:http';
-import {runCommand,startLocal,startServices,startTunnel,savedLocalConfig,probeFrontend,devPort} from '../scripts/local-startup.mjs';
+import {runCommand,startLocal,startServices,startTunnel,savedLocalConfig,probeFrontend,devPort,launchFrontend} from '../scripts/local-startup.mjs';
 import {claimPreviewLock,liveRoot} from '../scripts/live-main.mjs';
 const missing=()=>{throw Object.assign(Error('missing'),{code:'ENOENT'});};
 const publicKey='e30.'+Buffer.from(JSON.stringify({role:'anon'})).toString('base64url')+'.fictional';
 const config={API_URL:'http://127.0.0.1:54321',ANON_KEY:publicKey};
 const log=()=>{};
+test('make dev launches the current checkout frontend for hot reload',async()=>{
+ const child=new EventEmitter();child.kill=()=>{};
+ await launchFrontend('/fictional',()=>assert.fail('Frontend launch must not route through live-main'),config,(file,args,options)=>{
+  assert.equal(file,process.execPath);assert.deepEqual(args,['scripts/local-frontend.mjs']);assert.equal(options.cwd,'/fictional');
+  assert.equal(options.env.NEXT_PUBLIC_SUPABASE_URL,config.API_URL);setImmediate(()=>child.emit('exit',0,null));return child;
+ });
+});
 test('dependency commands terminate on deadline and do not print captured secrets',async()=>{
  const started=Date.now();
  await assert.rejects(runCommand(process.execPath,['-e','setInterval(()=>{},1000)'],{timeout:80}),error=>error.timedOut&&!error.message.includes('secret'));

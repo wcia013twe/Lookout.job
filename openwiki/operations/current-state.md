@@ -289,8 +289,9 @@ The local startup helper bounds Docker/CLI checks, starts Docker Desktop on macO
 when its daemon is down, clears the selected frontend port by stopping its
 listener, can reuse verified running local APIs with saved public loopback
 configuration, treats the configured MCP tunnel as optional, and recognizes an
-existing Lookout frontend. Main preview locks track process ownership and recover
-stopped owners; unknown owners are preserved.
+current-checkout hot-reload frontend. The separate `make live` preview syncs
+committed main changes and tracks its process-owned lock; dead owners can be
+recovered while unknown owners are preserved.
 See [local runtime details](local-and-release-runtime.md#focused-startup-reliability-update)
 and the startup feature change note for checks and live-verification limits.
 

@@ -232,7 +232,10 @@ down Docker daemon opens Docker Desktop and startup waits up to three minutes fo
 it to become ready. Saved public loopback configuration is reused only after Auth
 and REST health checks and Docker readiness. Docker/CLI checks have 10-second
 deadlines and cold Supabase startup has a three-minute limit. Configured tunnel
-startup is best effort and does not block the frontend.
+startup is best effort and does not block the frontend. `make dev` runs
+`scripts/local-frontend.mjs` from the current checkout so local edits hot-reload;
+`make live` remains the separate committed-main preview that syncs landed commits
+into its managed clone.
 
 Preview locks now record a process owner; dead owners can be recovered, while
 live owners and unowned legacy locks require review. The preview falls back to
