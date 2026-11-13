@@ -730,12 +730,12 @@ function isPass(result, minScore) {
 
 export {
   extractVisibleText,
-  extractHeadings,
+  
   auditAts,
-  gradeFor,
-  isPass,
-  normalizeKeywords,
-  DEFAULT_MIN_SCORE,
+  
+  
+  
+  
 };
 
 // ── Self-test ────────────────────────────────────────────────────────

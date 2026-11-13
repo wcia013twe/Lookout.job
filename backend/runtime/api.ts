@@ -8,13 +8,20 @@ import {agentPackageResponse} from './agent-package.ts';
 import type {Payload} from './types.ts';
 
 type Dispatch = (token: string, operation: string, payload: Payload) => Promise<Reply>;
-export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]'],allowedOrigins=['http://localhost:3000','http://127.0.0.1:3000'],parseHuman,readCount,readPackage=agentPackageResponse,executionTools=[],events,oauth}: {dispatch: Dispatch; allowedHosts?: string[]; allowedOrigins?: string[]; parseHuman?: (token:string,payload:Payload)=>Promise<any>; readCount?: (watchId:string)=>Promise<any>; readPackage?: (request:Request)=>Promise<Response>; executionTools?: any[]; events?: (token:string,method:string,params:any)=>Promise<any>; oauth?: {handle:(req:any,res:any,path:string)=>Promise<boolean>;challenge:string}|null}) {
+export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]'],allowedOrigins=['http://localhost:3000','http://127.0.0.1:3000'],parseHuman,readCount,readPackage=agentPackageResponse,executionTools=[],events,oauth,maintenance}: {dispatch: Dispatch; allowedHosts?: string[]; allowedOrigins?: string[]; parseHuman?: (token:string,payload:Payload)=>Promise<any>; readCount?: (watchId:string)=>Promise<any>; readPackage?: (request:Request)=>Promise<Response>; executionTools?: any[]; events?: (token:string,method:string,params:any)=>Promise<any>; oauth?: {handle:(req:any,res:any,path:string)=>Promise<boolean>;challenge:string}|null;maintenance?:{authorize:(header:string|undefined)=>Promise<boolean>;run:()=>Promise<unknown>}}) {
   const mcp=createHandler(dispatch,allowedOrigins,[RESUME_PARSE_TOOL,...executionTools],undefined,events);
   const server=createServer(async (req,res)=>{
     const json=(status:number,data: unknown)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
     let url:URL;
     try{url=new URL(req.url||'/', 'http://'+req.headers.host);}catch{return json(400,{error:'Invalid request URL'});}
     if(!allowedHosts.includes(url.hostname))return json(403,{error:'Host forbidden'});
+    if(url.pathname==='/internal/maintenance'&&maintenance){
+      if(req.method!=='POST')return json(405,{error:'Use POST'});
+      try{
+        if(req.headers.origin||!await maintenance.authorize(req.headers.authorization))return json(401,{error:'Scheduler identity required'});
+        return json(200,await maintenance.run());
+      }catch{return json(503,{error:'Maintenance unavailable; durable work retained'});}
+    }
     if(oauth && await oauth.handle(req,res,url.pathname))return;
     if(url.pathname==='/agent-gateway/pending-count'||url.pathname.startsWith('/agent-package/')){
       try{

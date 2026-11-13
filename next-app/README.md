@@ -25,8 +25,8 @@ The retired static frontend has been removed. React components own presentation 
 ### Profile navigation
 
 My Profile uses a vertical desktop sidebar and retains the compact mobile section
-selector. Saved Preferences sits after My Agent and before Appearance (when that
-existing feature is enabled). Its single Muse summary card is an honest empty
+selector. Saved Preferences sits after My Agent and before Appearance.
+Its single Muse summary card is an honest empty
 state: summary storage, editing, and agent synchronization are not connected yet.
 Existing answers, writing settings, deep links, and preference storage are unchanged.
 
@@ -382,9 +382,11 @@ Detached demo checks: open `/career-toolkit/?demo=1&demoApi=empty` or `/circles/
 
 Discover automatically opens the existing animated pack for eligible `Apply Now` cards that have not activated it before. Activation is tracked per stable role ID in `drops.packStamps` (`apply-now:<roleId>`), not by a global first-visit flag or discovery date. New Apply Now cards can activate later; closing, returning to Discover, refreshing, or changing the same card out of and back into Apply Now does not replay it. Dismissing the sealed pack also consumes that card's activation.
 
+Discover enforces a rolling **24-hour cooldown** between Apply Now pack activations, starting when a pack appears (including one dismissed unopened). `drops.applyNowLastActivatedAt` persists with the per-card stamps and survives account/browser reloads. Newly eligible cards wait without being marked activated; if Discover stays open, a cleaned-up timer checks again at expiry. The same cards never replay, even after 24 hours. This cooldown does not hide or expire the cards themselves.
+
 The selected profile, application-status and hidden/expired-posting rules still determine eligibility. Search/date filters do not consume a different set of cards. Existing job facts and discovery dates are preserved. Opening this animation does not create an application, update a tracker status, or authorize submission. The animation preference uses the existing account-scoped browser store and immediate flush; it is not synchronized between devices or exposed as a backend/MCP action. Other paused pack customization features remain paused.
 
-The detached demo includes a fictional Apply Now role and keeps activation in memory until demo reset/reload. `LOOKOUT_UI_URL=http://localhost:3055 node scripts/check-apply-now-pack-ui.mjs` tests first arrival, later priority changes, navigation, dismissal, mobile layout and unchanged application/tracker records against the running app without intercepted APIs.
+The detached demo includes a fictional Apply Now role and keeps activation in memory until demo reset/reload. `LOOKOUT_UI_URL=http://localhost:3055 node scripts/check-apply-now-pack-ui.mjs` tests first arrival, later priority changes, navigation, dismissal, mobile layout and unchanged application/tracker records against the running app without intercepted APIs. Its controlled browser clock verifies suppression through 24 hours minus one millisecond and automatic activation at the exact boundary, without consuming waiting cards.
 
 ### Task-linked card packs
 
@@ -498,6 +500,13 @@ MCP boundary: agent selection is a human setup preference; agents should request
 user choose it in My Profile → My Agent. Existing scoped connection tools continue to
 manage credentials, and workspace reads expose saved preferences. No new connection
 or deployed MCP capability is implied by selecting a companion.
+
+Application pickup is selectable during connection setup and in My Agent. It defaults
+to manual, syncs through the same owned search preferences, and reaches an agent on
+its next feed check. It does not establish a running scheduler or consent to install
+a watcher. The existing `open_agent_permissions` handoff directs the human to settings;
+the agent reads the saved choice through personal context. The fictional demo keeps
+changes isolated and restores its pickup example on reset.
 
 
 ### Catalog role during setup

@@ -1,6 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {advanceStage, applyNowDrops, applyNowPackStamp, canClaimPack, demoDrops, MEGA_DROP_MAX, dropKey, groupPack, packComplete, tierOf} from '../next-app/lib/drop-pack.ts';
+import {advanceStage, APPLY_NOW_COOLDOWN_MS, applyNowCooldownRemaining, applyNowDrops, applyNowPackStamp, canClaimPack, demoDrops, MEGA_DROP_MAX, dropKey, groupPack, packComplete, tierOf} from '../next-app/lib/drop-pack.ts';
+
+test('Apply Now animation cooldown lasts exactly 24 hours, not until midnight', () => {
+ const last=Date.parse('2026-11-12T23:59:00Z');
+ assert.equal(APPLY_NOW_COOLDOWN_MS,86400000);
+ assert.equal(applyNowCooldownRemaining(undefined,last),0);
+ assert.equal(applyNowCooldownRemaining(null,last),0);
+ assert.equal(applyNowCooldownRemaining(last,last),86400000);
+ assert.equal(applyNowCooldownRemaining(last,last+60000),86340000);
+ assert.equal(applyNowCooldownRemaining(last,last+86400000-1),1);
+ assert.equal(applyNowCooldownRemaining(last,last+86400000),0);
+ assert.equal(applyNowCooldownRemaining(last,last+86400001),0);
+});
 
 test('the first-open pack maps only Apply Now recommendations without inventing job facts', () => {
  const role={id:'job-one',priority:'Apply Now',company:'Example Systems',title:'Backend Engineer',employmentType:'FT',discoveredDate:'2026-11-10',location:'Remote',applicationUrl:'https://example.com/jobs/one',whyItFits:'Saved recommendation',searchProfileId:'general'};

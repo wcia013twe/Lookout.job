@@ -35,7 +35,7 @@
 </section>
 </div>
 </div>
-<p class="preview-note">Layout preview · Switch between Saved Preferences and Appearance. Other sections are unchanged. Appearance retains its existing feature gate in the app.</p>
+<p class="preview-note">Layout preview · Switch between Saved Preferences and Appearance. Other sections are unchanged.</p>
 </div>
 <script>
 function selectSection(sectionId){document.querySelectorAll('[data-section]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.section===sectionId)));document.querySelectorAll('.profileContent > section').forEach(section=>section.hidden=section.id!==sectionId);document.querySelector('select').value=sectionId;}

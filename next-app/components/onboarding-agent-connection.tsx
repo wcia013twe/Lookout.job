@@ -9,6 +9,7 @@ import { checkOnboardingConnection } from "../lib/onboarding-search-handoff.mjs"
 import { onboardingConnectionReady } from "../lib/onboarding-connection.mjs";
 import { Iphone } from "./iphone";
 import AgentConnections, { AgentPluginSteps } from "./agent-connections";
+import ApplicationPickup from "./application-pickup";
 import { Button, Dots, Icon, Quiet, Title } from "./onboarding-ui";
 
 type Props = { room: ReactNode; onFinish: () => void; onLater: () => void };
@@ -84,6 +85,7 @@ export default function OnboardingAgentConnection({ room, onFinish, onLater }: P
     <Title sub="Choose who’s joining your search.">Meet your agent.</Title>
     {room}
     <div className="agent-connect-heading"><h2>Add a connector in your agent.</h2></div>
+    <ApplicationPickup />
     {w.demo ? <div className="agent-connect">
       <AgentPluginSteps />
       <p className="hint">Demo preview · no connector is created.</p>

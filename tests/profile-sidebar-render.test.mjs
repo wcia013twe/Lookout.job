@@ -21,11 +21,11 @@ test('profile sidebar places Saved Preferences between My Agent and Appearance',
   assert.match(html, /<option value="saved-preferences">Saved Preferences<\/option>/);
 });
 
-test('Saved Preferences remains reachable without enabling paused Appearance features', () => {
+test('Saved Preferences preserves main’s restored Appearance navigation', () => {
   const Component = component({extraFeatures: false});
   const html = renderToStaticMarkup(React.createElement(Component));
   assert.match(html, /Saved Preferences/);
-  assert.doesNotMatch(html, />Appearance</);
+  assert.match(html, />Appearance</);
 });
 
 test('profile sidebar provides responsive layout and keyboard focus styles', async () => {

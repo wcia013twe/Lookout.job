@@ -32,6 +32,6 @@ test('evening feedback review reuses the existing routine and preserves custom s
 
 test('evening feedback guidance is bounded, incremental and owned by the external host',()=>{
  const guide=readGuide('connection-schedules');
- assert.equal(guide.version,3);
+ assert.equal(guide.version,4);
  for(const phrase of ['list_recommendation_feedback','at most one page per evening run','With no new changes, skip feedback inference','explicit user directions win','a clear withdraws','Advance the cursor only after','durably saved','do not silently rewrite or reactivate'])assert.ok(guide.instructions.includes(phrase),phrase);
 });

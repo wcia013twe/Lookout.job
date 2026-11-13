@@ -21,7 +21,7 @@ const harness=(scopes=allScopes,extra=[],reply={status:200,data:{ok:true}})=>{
  return {handler,calls,send,call,discover};
 };
 test('initial catalog and gated counts match hosted, Node and stdio plans',async()=>{
- for(const [extras,exposed,gated] of [[[],56,97],[[RESUME_PARSE_TOOL,...SUBMISSION_TOOLS],59,97],[LOCAL_TOOLS,57,105]]){
+ for(const [extras,exposed,gated] of [[[],56,98],[[RESUME_PARSE_TOOL,...SUBMISSION_TOOLS],59,98],[LOCAL_TOOLS,57,106]]){
   const h=harness(allScopes,extras),listed=(await h.send('tools/list')).result.tools,discovered=await h.discover();
   assert.equal(listed.length,exposed);assert.equal(discovered.filter(tool=>tool.gated).length,gated);
   assert.equal(discovered.length,active.length+extras.length);
@@ -84,7 +84,7 @@ test('dispatch preserves direct-call validation/results and never accepts operat
  }
  const invalids=[['discover_tools',{workflow:'bad'}],['discover_tools',{workflow:'all',userId:'other'}],['discover_tools',{workflow:'all',name:''}],['call_discovered_tool',{name:'read_user_brief',arguments:[]}],['call_discovered_tool',{name:'read_user_brief'}],['call_discovered_tool',{name:'read_personal_context',arguments:{userId:'other'}}]];
  for(const [name,args] of invalids)assert.equal((await h.call(name,args)).error.code,-32602);
- const scopes=harness(allScopes,[{name:'paused_local_extra',operation:'preferences.theme.save',scope:'workspace:read',inputSchema:{type:'object',properties:{}}}]);
+ const scopes=harness(allScopes,[{name:'paused_local_extra',operation:'leaderboard.read',scope:'workspace:read',inputSchema:{type:'object',properties:{}}}]);
  assert.deepEqual(await scopes.discover('all','paused_local_extra'),[]);
  assert.equal((await scopes.call('call_discovered_tool',{name:'paused_local_extra',arguments:{}})).error.code,-32602);
  const unauth=await h.handler(request('tools/call',{name:'discover_tools',arguments:{workflow:'all'}},'invalid'));
@@ -116,7 +116,7 @@ test('fictional admin demo edits profile, discovers and reads a gated brief, rej
 });
 test('startup explains executable discovery and preserves the small permanent contract',()=>{
  assert.match(bootstrapInstructions,/discover_tools/);assert.match(bootstrapInstructions,/call_discovered_tool/);
-assert.equal(contract.developerVersion,168);
+assert.equal(contract.developerVersion,169);
  assert(Buffer.byteLength(JSON.stringify(contract))+Buffer.byteLength(bootstrapInstructions)<=6000);
  assert.equal(ACCESS_TOOLS.length,2);
 });

@@ -71,6 +71,13 @@ both paths. Human-only actions still need an explicit tool boundary that explain
 or requests the human action; agents must never forge approvals or bypass consent.
 Do not advertise parity until the capability is deployed and verified.
 
+## Live testing with Muse
+
+- For live Muse pickup, drafting, reporting, or heartbeat debugging, load `.agents/skills/muse-live-testing/SKILL.md` before interacting with Muse or queueing work.
+- Keep the user's acceptance path fixed. Test one hypothesis, verify persisted results independently, and fix only demonstrated failures; do not expand into search, worker gates, or watcher architecture without evidence that they block that path.
+- After 60 seconds without pickup or meaningful progress, message Muse directly to check its feed and report its current step. Do not make the user relay messages; request intervention only for a concrete blocker you cannot resolve, subject to required approval and consent boundaries.
+
+
 ## OpenWiki session startup
 
 At the start of every new session working in this repository, read `openwiki/quickstart.md` and `openwiki/operations/current-state.md` before beginning repository work, even when OpenWiki retrieval tools are unavailable. Read the relevant linked pages for the task, then verify consequential details against current source and tests.

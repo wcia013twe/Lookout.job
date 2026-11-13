@@ -2241,4 +2241,4 @@ if (isMain) {
   });
 }
 
-export { normalizeTextForATS, sectionKey };
+;

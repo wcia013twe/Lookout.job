@@ -86,7 +86,7 @@ const DEFAULT_PORTALS_PATH = process.env.CAREER_OPS_PORTALS || join(ROOT, 'porta
 export const PROVIDERS_DIR = join(CODE_ROOT, 'providers');
 
 // Shared with discover-ats.mjs so the two tools agree on what a small board is.
-export { DEFAULT_SMALL_THRESHOLD };
+;
 
 /**
  * A board that loses this fraction of its postings since the baseline is

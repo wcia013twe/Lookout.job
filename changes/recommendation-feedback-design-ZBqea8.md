@@ -48,13 +48,25 @@ Historical proposal: the implementation follow-up below supersedes its learning 
 ## Profile sidebar follow-up
 
 Changed My Profile to a desktop vertical sidebar, retaining its mobile selector,
-lazy-mounted sections, and existing feature gates. Added Saved Preferences between
+lazy-mounted sections, and main's restored Appearance navigation. Added Saved Preferences between
 My Agent and Appearance with one explicitly unconnected Muse-summary empty state.
 No preference memory, saved answers, or external-agent state is modified.
-Focused render tests cover ordering, mobile option, gated Appearance, and focus styles.
+Focused render tests cover ordering, mobile option, Appearance, and focus styles.
 The self-contained layout preview uses the product's existing layout and tokens;
 it is not evidence of a hosted deployment or authenticated Muse synchronization.
 Validation: 15 focused/adjacent tests, frontend typecheck, static build (441 offline
 assets), and catalog validation (158 roles) pass. Desktop/mobile HTML previews
 report no console errors; mechanical design scan reports no findings. No hosted
 or authenticated browser interaction was tested.
+
+## Local main integration
+
+Before integration, the full suite passes 1,443 tests. Preserved main's restored
+Appearance section, application-pickup setup instructions, and workspace-maintenance
+guide version. Combined connection-schedules guidance is version 4; the developer
+contract is version 169. No external schedule, memory, push, or deployment is implied.
+Integrated typecheck/build (442 offline assets), catalog validation, and 55 focused
+checks pass. The first integrated full run reports 1,403 passes and 55 failures in
+the imported Career Ops paths, including a missing MACOS_BROWSER_LIKE_USER_AGENT
+export and vendor-manifest mismatches. Newer local main contains a related export
+repair and will be integrated before final landing; no unrelated repair is added here.

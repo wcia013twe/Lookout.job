@@ -12,7 +12,7 @@ import type {Rpc, Payload} from './types.ts';
 
 export type Reply = {status: number; data?: any; error?: string};
 export const credentialHash = (token: string) => createHash('sha256').update(token).digest('hex');
-export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume,recordExchange}: {rpc: Rpc; supabaseUrl: string; request?: typeof fetch;parseResume?:(token:string,payload:Payload)=>Promise<any>;recordExchange?:(exchange:{token:string;operation:string;payload:Payload;reply:Reply;durationMs:number})=>void}) {
+export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume,recordExchange,wakeWorker}: {rpc: Rpc; supabaseUrl: string; request?: typeof fetch;parseResume?:(token:string,payload:Payload)=>Promise<any>;recordExchange?:(exchange:{token:string;operation:string;payload:Payload;reply:Reply;durationMs:number})=>void;wakeWorker?:()=>Promise<void>}) {
   const gateway=new URL('/functions/v1/agent-gateway',supabaseUrl);
   if(!['https:','http:'].includes(gateway.protocol) || (gateway.protocol==='http:' && !['127.0.0.1','localhost','kong','host.docker.internal'].includes(gateway.hostname))) throw Error('Use HTTPS Supabase or an explicit local development host');
   const dispatch = async (token: string, operation: string, payload: Payload): Promise<Reply> => {
@@ -57,6 +57,9 @@ export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume,record
     async () => {
       const started=performance.now();
       const reply=await dispatch(token, operation, payload);
+      if(reply.status===200&&['backend.jobs.submit','backend.jobs.portal.submit'].includes(operation)&&payload.kind==='search_ats'&&wakeWorker){
+        try{await wakeWorker();}catch{console.warn('Discovery queued; wakeup deferred to authenticated maintenance.');}
+      }
       try{recordExchange?.({token,operation,payload,reply,durationMs:Math.round(performance.now()-started)});}catch{}
       return reply;
     }, {type: 'tool', summarize: reply => ({status: reply.status})});

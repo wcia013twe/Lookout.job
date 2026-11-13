@@ -518,7 +518,7 @@ export function parseFollowups(content) {
 // `parseFollowups` is the disk-agnostic content parser upstream/main and its
 // callers use internally (analyzeFromContent, external scripts); the branch's
 // test-all.mjs imports it as `parseFollowupsContent`. Same function, two names.
-export { parseFollowups as parseFollowupsContent };
+;
 
 // --- Next-date overrides (pins) ---
 // A user can PIN an application's next follow-up date, taking precedence over

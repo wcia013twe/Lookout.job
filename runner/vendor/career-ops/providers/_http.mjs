@@ -24,7 +24,7 @@ import { normalizeUrl, aggregatorPostingId } from '../url-key.mjs';
  * @typedef {Error & { status?: number, body?: string, retryAfter?: (string | null), location?: (string | null), attempts?: number }} HttpError
  */
 
-export { BROWSER_LIKE_USER_AGENT, MACOS_BROWSER_LIKE_USER_AGENT };
+export { BROWSER_LIKE_USER_AGENT,  };
 
 const MAX_TIMER_MS = 2_147_483_647; // setTimeout rewrites anything above this to 1ms
 

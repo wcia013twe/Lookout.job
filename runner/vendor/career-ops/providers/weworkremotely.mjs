@@ -39,21 +39,6 @@ function fallbackCompany(entry) {
 }
 
 /** @type {Provider} */
-export default {
-  id: 'weworkremotely',
-
-  detect(entry) {
-    return entry?.provider === 'weworkremotely' ? { url: FEED_URL } : null;
-  },
-
-  async fetch(entry, ctx) {
-    const feedUrl = assertWwrUrl(FEED_URL);
-    // redirect:'error' prevents SSRF via server-side redirects; combined with
-    // assertWwrUrl above it keeps the request pinned to weworkremotely.com.
-    const text = await ctx.fetchText(feedUrl, { redirect: 'error' });
-    return parseWwrFeed(text, fallbackCompany(entry));
-  },
-};
 
 // Resolve a tag's inner text: unwrap a CDATA section, else decode entities.
 function extractText(inner) {

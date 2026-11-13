@@ -55,7 +55,7 @@ const DEFAULT_TIMEOUT_MS = 8_000;
 // Re-exported rather than redeclared: the floor is applied inside
 // lockRecoveryVerdict now, so a local copy of the number would be a constant
 // this file no longer enforces — free to drift from the one that decides.
-export { OWNERLESS_GRACE_MS } from './pipeline-lock.mjs';
+;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
