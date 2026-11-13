@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import {websiteOnboardingComplete,websiteOnboardingDestination,finishWebsiteOnboarding} from '../next-app/lib/website-onboarding.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 const completed={revision:3,step:'connection_pending',data:{websiteCompletedAt:'2026-10-23T12:00:00Z'}};
-test('routing waits for auth and server completion, preserves privacy/reset and skips returning-user setup',()=>{
+test('routing waits for auth and server completion and allows returning-user setup',()=>{
  const base={path:'/',demo:false,authReady:true,signedIn:true,status:'incomplete'};
  const route=extra=>websiteOnboardingDestination({...base,...extra});
  assert.equal(route({}),'/onboarding/');assert.equal(route({signedIn:false}),null);
- assert.equal(route({path:'/onboarding/'}),null);assert.equal(route({path:'/onboarding/',status:'complete'}),'/?tour=dashboard');
+ assert.equal(route({path:'/onboarding/'}),null);assert.equal(route({path:'/onboarding/',status:'complete'}),null);
  for(const status of ['loading','error','complete'])assert.equal(route({status}),null);
  for(const extra of [{demo:true},{authReady:false},{path:'/privacy/'},{path:'/workspace-reset/'},{path:'/reset-password/'},{path:'/career-toolkit/prepare-resume/'}])assert.equal(route(extra),null);
  for(const path of ['/login/','/signup/']){assert.equal(route({path,status:'complete'}),'/discover/');assert.equal(route({path,status:'incomplete'}),'/onboarding/');}

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {connectionClipboardText,AGENT_MCP_URL} from '../next-app/lib/agent-connection-handoff.mjs';
+import {saveApplicationPickup,readApplicationPickup} from '../lib/agent-selection.mjs';
 test('default chat handoff never contains the connection token or bearer configuration',()=>{
  const secret='jb_agent_'+'a'.repeat(64);
  for(const token of [secret,'another-private-value','']){
@@ -25,7 +26,16 @@ test('setup instructions configure saved automations and stop without doing thei
  for(const phrase of ['connection_test','automationSetup.schedule','Do not run the tasks now','actual scheduler receipts','then stop','avoiding duplicates','MCP initialize','read_muse_changes','refresh tool/arguments','acknowledge handled event IDs'])assert.ok(text.includes(phrase),phrase);
  assert.match(readGuide('connection-schedules').instructions,/connection_test/);
  assert.match(readGuide('connection-schedules').instructions,/execute searches now/);
+ assert.match(readGuide('connection-schedules').instructions,/settings\.preferences\.search\.applicationPickup/);
+ assert.match(readGuide('workspace-maintenance').instructions,/preferences_changed/);
+ assert.match(readGuide('workspace-maintenance').instructions,/applicationPickup/);
  assert.ok(contract.instructions.some(text=>text.includes('do not execute tasks now')||text.includes('execute searches now')));
+});
+test('pickup preference stays inside the fictional demo and resets',()=>{
+ const first=createMemoryStore(demoFixtures('2026-10-23').state,()=>{});
+ const initial=readApplicationPickup(first.get('workflow.searchPreferences'));
+ saveApplicationPickup(first,'periodic');assert.equal(readApplicationPickup(first.get('workflow.searchPreferences')),'periodic');
+ assert.equal(readApplicationPickup(demoFixtures('2026-10-23').state.workflow.searchPreferences),initial);
 });
 test('fictional connection setup exposes only its isolated schedule and never queues discovery',async()=>{
  const store=createMemoryStore(demoFixtures('2026-10-23').state,()=>{}),api=createDemoServices(store);
