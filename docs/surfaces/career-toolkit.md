@@ -35,3 +35,7 @@ The local SVG family uses a consistent 24-unit outline, rounded strokes and inhe
 Manuals and editable agent requests no longer expose upstream branding or source URLs; repository attribution remains the provenance boundary. The earlier recorded palette/navigation documentation drift remains unchanged. `DESIGN.md` and `.impeccable/design.json` are preserved because this is a local refinement of the incumbent system.
 
 “View all” category links move keyboard focus to the results heading and scroll it into view with a 24px margin, preserving orientation after the overview changes to a full category list.
+
+## Interview pipeline projection
+
+`lib/interview-prep.mjs` exports the pure `buildInterviewPipelines(items, applications, now?)` projection for grouping saved preparation artifacts by an explicit `content.links[].applicationId`. Materials without a matching explicit application link remain in `unassigned`; company names and dates are never used to guess an association. Each application includes separate upcoming, active-undated and previous material lists, material classifications, and the application's actual recorded rounds. This is a read-only projection over existing records: it introduces no persistence, API, or live deployment behavior. Employer rounds remain distinct from preparation tasks and mock practice.

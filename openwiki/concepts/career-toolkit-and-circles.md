@@ -56,6 +56,8 @@ For the cross-cutting ownership and revision conventions, see [Data model, owner
 
 ## Private preparation and durable artifacts
 
+The interview-preparation pipeline is a pure client-side projection over saved artifacts and application records. It associates materials only through an explicit `content.links[].applicationId`; unmatched materials remain unassigned rather than being guessed from company or date. It presents dated upcoming, undated active and previous materials separately, while employer rounds remain the application's recorded round model and practice/mock artifacts do not become interview rounds. The projection does not add persistence or an API.
+
 ### What is stored
 
 `career_artifacts` stores the current owner-scoped document plus an incrementing version and archive flag; `career_artifact_revisions` preserves each saved content/archive snapshot. Artifact content is structured around `title`, `purpose`, `kind`, `format`, `body`, dated public sources, and typed links. The supported kinds distinguish preparation and research from cover letters and reusable application templates. This is intentional: an artifact is useful work, not evidence of completing a task, approving an application, reusing an answer, or submitting anything.
