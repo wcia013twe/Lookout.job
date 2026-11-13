@@ -73,6 +73,8 @@ This page separates **code present in this repository**, **behavior that a local
 
 ## What is implemented
 
+The workspace navigation exposes Community and My Profile exposes Appearance. The existing scoped theme preference action is available in source; hosted MCP availability requires the normal backend deployment. The theme marketplace shows concepts for preview only. Progress and leaderboard remain paused.
+
 Application automation honors the strict account-wide `autoSubmitApproved` guard even for explicit profile modes. Profile controls show the account block and remain disabled while it is off or missing; profile saves cannot grant global consent. Policy reads and runner authorization explain the block and direct the user to exact-draft approval in Applications. This is locally verified behavior; hosted availability requires the frontend and gateway release.
 
 ### Product and persistence surfaces
