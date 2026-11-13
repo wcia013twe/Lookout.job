@@ -18,6 +18,20 @@ export function devPort(value=process.env.PORT||'3000') {
  if(!Number.isInteger(port)||port<1||port>65535)throw Error('PORT must be an integer between 1 and 65535.');
  return port;
 }
+export async function clearPort(port,{run=runCommand,cwd=process.cwd(),wait=ms=>new Promise(yes=>setTimeout(yes,ms))}={}) {
+ let output;
+ try{output=await run('lsof',['-tiTCP:'+port,'-sTCP:LISTEN'],{cwd,timeout:5000});}
+ catch(error){if(error.code===1)return 0;if(error.code==='ENOENT')throw Error('Install lsof to clear the frontend port automatically.');throw error;}
+ const pids=[...new Set(output.split(/\s+/).map(Number).filter(pid=>Number.isInteger(pid)&&pid>1&&pid!==process.pid))];
+ for(const pid of pids){
+  try{process.kill(pid,'SIGTERM');}catch(error){if(error.code!=='ESRCH')throw error;}
+ }
+ if(pids.length)await wait(500);
+ for(const pid of pids){
+  try{process.kill(pid,0);process.kill(pid,'SIGKILL');}catch(error){if(error.code!=='ESRCH')throw error;}
+ }
+ return pids.length;
+}
 export async function probeFrontend(port,request=fetch) {
  const busy=await new Promise(yes=>{
   const socket=createConnection({host:'127.0.0.1',port});
@@ -56,12 +70,23 @@ export async function savedLocalConfig({cwd,read=readFile,request=fetch,env=proc
   return ready?{API_URL:url.origin,ANON_KEY:key}:null;
  }catch{return null;}
 }
-export async function startServices({cwd,run=runCommand,log=console.log,saved=()=>savedLocalConfig({cwd})}) {
+export async function startServices({cwd,run=runCommand,log=console.log,saved=()=>savedLocalConfig({cwd}),wait=ms=>new Promise(yes=>setTimeout(yes,ms)),platform=process.platform}) {
  const existing=await saved();
- if(existing){log('Local Supabase Auth and REST are responding; reusing saved public configuration without restarting services.');return existing;}
  log('Checking Docker (10-second limit)…');
  try{await run('docker',['info','--format','{{.ServerVersion}}'],{cwd,timeout:10000});}
- catch(error){throw Error(error.timedOut?'Docker did not respond within 10 seconds. Restart Docker Desktop, then retry. Existing services were left unchanged.':'Docker is unavailable. Start Docker Desktop, then retry.');}
+ catch(error){
+  if(error.code==='ENOENT')throw Error('Install Docker Desktop and its CLI, then retry.');
+  if(platform!=='darwin')throw Error(error.timedOut?'Docker did not respond within 10 seconds. Start Docker, then retry. Existing services were left unchanged.':'Docker is unavailable. Start Docker, then retry.');
+  log('Docker is down; opening Docker Desktop and waiting for it to start…');
+  try{await run('open',['-a','Docker'],{cwd,timeout:10000});}catch{throw Error('Docker Desktop could not be opened automatically. Start it, then retry.');}
+  const deadline=Date.now()+180000;
+  while(Date.now()<deadline){
+   await wait(3000);
+   try{await run('docker',['info','--format','{{.ServerVersion}}'],{cwd,timeout:10000});break;}
+   catch{if(Date.now()>=deadline)throw Error('Docker Desktop did not become ready within 3 minutes.');}
+  }
+ }
+ if(existing){log('Local Supabase Auth and REST are responding; reusing saved public configuration.');return existing;}
  const status=async()=>{
   const data=JSON.parse(await run('supabase',['status','-o','json'],{cwd,timeout:10000}));
   if(!data.API_URL||!data.ANON_KEY||!['localhost','127.0.0.1','[::1]'].includes(new URL(data.API_URL).hostname))throw Error('Invalid local service configuration');
@@ -86,10 +111,9 @@ export async function startTunnel({cwd,run=runCommand,read=readFile,log=console.
  try{await run('docker',['info','--format','{{.ServerVersion}}'],{cwd,timeout:3000});await run('docker',['compose','--env-file',envFile,'-f','backend/runtime/compose.muse-dev.yaml','--profile','muse-dev','up','-d','tunnel'],{cwd,timeout:30000});}
  catch{log('MCP tunnel could not start; continuing locally. Use make muse-dev to retry or make muse-dev-logs for details.');}
 }
-export async function launchFrontend(cwd,run=runCommand,config=null) {
- const branch=(await run('git',['branch','--show-current'],{cwd,timeout:5000})).trim();
+export async function launchFrontend(cwd,run=runCommand,config=null,spawnProcess=spawn) {
  return new Promise((yes,no)=>{
-  const child=spawn(process.execPath,[branch==='main'?'scripts/live-main.mjs':'scripts/local-frontend.mjs'],{cwd,stdio:'inherit',env:{...process.env,...(config?{NEXT_PUBLIC_SUPABASE_URL:config.API_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY:config.ANON_KEY,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:config.ANON_KEY}:{})}});
+  const child=spawnProcess(process.execPath,['scripts/local-frontend.mjs'],{cwd,stdio:'inherit',env:{...process.env,...(config?{NEXT_PUBLIC_SUPABASE_URL:config.API_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY:config.ANON_KEY,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:config.ANON_KEY}:{})}});
   const interrupt=signal=>child.kill(signal);
   const onInt=()=>interrupt('SIGINT'),onTerm=()=>interrupt('SIGTERM');
   process.on('SIGINT',onInt);process.on('SIGTERM',onTerm);
@@ -98,14 +122,16 @@ export async function launchFrontend(cwd,run=runCommand,config=null) {
   child.once('exit',(code,signal)=>{cleanup();if(code===0||signal==='SIGINT'||signal==='SIGTERM')yes();else no(Error('Frontend stopped. See the startup message above.'));});
  });
 }
-export async function startLocal({mode='dev',cwd=process.cwd(),port=devPort(),probe=probeFrontend,run=runCommand,read=readFile,log=console.log,launch=launchFrontend,saved=()=>savedLocalConfig({cwd,read})}={}) {
+export async function startLocal({mode='dev',cwd=process.cwd(),port=devPort(),probe=probeFrontend,run=runCommand,read=readFile,log=console.log,launch=launchFrontend,saved=()=>savedLocalConfig({cwd,read}),platform=process.platform}={}) {
  if(!['dev','services','frontend'].includes(mode))throw Error('Use local-startup.mjs dev, services or frontend.');
  if(mode!=='services'){
   const state=await probe(port);
-  if(state==='lookout'){log(`Lookout is already running at http://localhost:${port}. Existing frontend and backend were left unchanged. Use make services to check the backend separately.`);return;}
-  if(state==='busy')throw Error(`Port ${port} is already in use. No process was stopped. Use the existing server or choose another port, for example PORT=3001 make dev.`);
+  if(state!=='free'){
+   const stopped=await clearPort(port,{run,cwd});
+   log(stopped?`Stopped ${stopped} process(es) using port ${port}.`:`Port ${port} still appears occupied; retrying startup.`);
+  }
  }
- const config=mode==='frontend'?await saved():await startServices({cwd,run,log,saved});
+ const config=mode==='frontend'?await saved():await startServices({cwd,run,log,saved,platform});
  if(mode==='services')return;
  if(mode==='dev')await startTunnel({cwd,run,read,log});
  log(`Starting frontend at http://localhost:${port} (Ctrl-C stops this frontend only)…`);

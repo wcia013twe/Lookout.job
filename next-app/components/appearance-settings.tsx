@@ -4,7 +4,6 @@ import Link from "next/link";
 import { asset, useWorkspace } from "../lib/workspace";
 import { PACK_TEXTURES, resolvePackTexture } from "../styles/templates/pack-styles";
 import ColorModeControl from "./color-mode";
-import ThemeMarketplace from "../app/themes/theme-marketplace";
 
 const original = "radial-gradient(ellipse at 16% 22%,#7edff84f,transparent 42%),radial-gradient(ellipse at 82% 74%,#ffd98f4a,transparent 44%),radial-gradient(ellipse at 64% 18%,#d9b7ff45,transparent 38%),linear-gradient(145deg,#111827,#080a12 64%,#171024)";
 const background = (image: string | null) => image ? `linear-gradient(#07101e22,#07101e5c),url("${asset(image)}")` : original;
@@ -45,8 +44,6 @@ export default function AppearanceSettings() {
         </fieldset>
       </div>
     </section>
-    <ThemeMarketplace embedded/>
-
     {(w.accountUser || w.demo) && <section className="border-t border-board-line pt-6" aria-label="Workspace reset">
       <Link href={w.demo ? "/workspace-reset/?demo=1" : "/workspace-reset/"} className="inline-flex min-h-11 items-center text-sm text-board-muted underline underline-offset-4 hover:text-board-text">Reset workspace</Link>
     </section>}
