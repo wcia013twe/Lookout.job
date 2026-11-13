@@ -227,17 +227,17 @@ demo fixtures and MCP actions are unchanged; no new product action is introduced
 ## Focused startup reliability update
 
 `make dev`/`up`, `services` and `frontend` now use `scripts/local-startup.mjs`.
-An identified existing Lookout frontend is reused; an unrelated occupied port is
-reported without stopping its owner. Saved public loopback configuration is reused
-only after Auth and REST health checks. This avoids waiting on Docker's control
-API when the local backend is still serving requests. Otherwise Docker/CLI checks
-have 10-second deadlines and cold Supabase startup has a three-minute limit.
-Configured tunnel startup is best effort and does not block the frontend.
+Any listener on the selected frontend port is stopped before startup. On macOS, a
+down Docker daemon opens Docker Desktop and startup waits up to three minutes for
+it to become ready. Saved public loopback configuration is reused only after Auth
+and REST health checks and Docker readiness. Docker/CLI checks have 10-second
+deadlines and cold Supabase startup has a three-minute limit. Configured tunnel
+startup is best effort and does not block the frontend.
 
 Preview locks now record a process owner; dead owners can be recovered, while
 live owners and unowned legacy locks require review. The preview falls back to
-internal temporary storage if the external SSD is absent. No automatic Docker
-restart, container removal, database reset or takeover of another server is added.
+internal temporary storage if the external SSD is absent. Supabase containers are
+not removed and local data is not reset during startup.
 Tests cover timeout termination, fallback credential restrictions, tunnel failures,
 occupied ports and lock recovery. Local live verification is recorded in the
 startup feature change note; it does not establish cold Docker or hosted behavior.

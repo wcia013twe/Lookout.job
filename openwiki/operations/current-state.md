@@ -283,10 +283,12 @@ execution remain outside this check. See the feature change note for details.
 
 ## Local startup reliability
 
-The local startup helper bounds Docker/CLI checks, can reuse verified running local
-APIs with saved public loopback configuration, treats the configured MCP tunnel
-as optional, and recognizes an existing Lookout frontend. Main preview locks
-track process ownership and recover stopped owners; unknown owners are preserved.
+The local startup helper bounds Docker/CLI checks, starts Docker Desktop on macOS
+when its daemon is down, clears the selected frontend port by stopping its
+listener, can reuse verified running local APIs with saved public loopback
+configuration, treats the configured MCP tunnel as optional, and recognizes an
+existing Lookout frontend. Main preview locks track process ownership and recover
+stopped owners; unknown owners are preserved.
 See [local runtime details](local-and-release-runtime.md#focused-startup-reliability-update)
 and the startup feature change note for checks and live-verification limits.
 

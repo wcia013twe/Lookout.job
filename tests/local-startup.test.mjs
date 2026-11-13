@@ -16,14 +16,24 @@ test('dependency commands terminate on deadline and do not print captured secret
  assert(Date.now()-started<2000);
  await assert.rejects(runCommand(process.execPath,['-e','console.error("fictional-secret");process.exit(1)']),error=>!error.message.includes('fictional-secret'));
 });
-test('repeated startup reuses an identified Lookout and refuses an unrelated occupied port',async()=>{
- const run=()=>assert.fail('Existing frontend must not start dependency commands');
- await startLocal({probe:async()=> 'lookout',run,log});
- await assert.rejects(startLocal({probe:async()=> 'busy',run,log}),/Port 3000.*already in use/);
+test('occupied frontend ports are cleared before startup',async()=>{
+ let cleared=false,launched=false;
+ await startLocal({probe:async()=> 'busy',run:async(file,args)=>{if(file==='lsof'){cleared=true;return '';}if(file==='docker')return 'version';assert.fail(`Unexpected ${file} command`);},log,saved:async()=>config,launch:async()=>{launched=true;},platform:'linux'});
+ assert(cleared);assert(launched);
  for(const port of ['0','-1','65536','abc'])assert.throws(()=>devPort(port),/PORT/);
 });
-test('healthy saved local services avoid the stalled Docker control API',async()=>{
- assert.deepEqual(await startServices({cwd:'/fictional',saved:async()=>config,run:()=>assert.fail('No Docker restart'),log}),config);
+test('healthy saved local services still verify Docker is running',async()=>{
+ assert.deepEqual(await startServices({cwd:'/fictional',saved:async()=>config,run:async file=>{assert.equal(file,'docker');return 'version';},log}),config);
+});
+test('Docker Desktop starts automatically when its daemon is down',async()=>{
+ const calls=[];
+ const result=await startServices({cwd:'/fictional',saved:async()=>null,wait:async()=>{},log,run:async(file,args)=>{
+  calls.push([file,args]);
+  if(file==='docker'&&calls.filter(([name])=>name==='docker').length===1)throw Error('daemon unavailable');
+  if(file==='supabase'&&args[0]==='status'){if(calls.filter(([name,argv])=>name==='supabase'&&argv[0]==='status').length===1)throw Error('not running');return JSON.stringify(config);}
+  return 'ok';
+ }});
+ assert.deepEqual(result,config);assert(calls.some(([file,args])=>file==='open'&&args[0]==='-a'));
 });
 test('unresponsive Docker and CLI status stop before any restart or frontend launch',async()=>{
  for(const stage of ['docker','supabase']){
@@ -31,7 +41,7 @@ test('unresponsive Docker and CLI status stop before any restart or frontend lau
   await assert.rejects(startLocal({cwd:'/fictional',probe:async()=> 'free',saved:async()=>null,log,launch:()=>assert.fail('Frontend should not start'),run:async(file,args,options)=>{
    calls.push([file,args]);assert.equal(options.timeout,10000);
    if(file===stage)throw Object.assign(Error('deadline'),{timedOut:true});return 'ok';
-  }}),/10 seconds/);
+  },platform:'linux'}),/10 seconds/);
   assert(!calls.some(([,args])=>args[0]==='start'));
  }
 });
@@ -48,7 +58,7 @@ test('existing Supabase reuses CLI configuration; cold startup is bounded and ch
 });
 test('optional tunnel configuration and failure never block frontend startup',async()=>{
  let launched=false;const messages=[];
- await startLocal({cwd:'/fictional',probe:async()=> 'free',saved:async()=>config,read:async()=> 'NGROK_URL=https://fictional.ngrok.app\nNGROK_AUTHTOKEN=fictional-token\n',run:async()=>{throw Object.assign(Error('timeout'),{timedOut:true});},log:m=>messages.push(m),launch:async(_cwd,_run,c)=>{launched=true;assert.deepEqual(c,config);}});
+ await startLocal({cwd:'/fictional',probe:async()=> 'free',saved:async()=>config,read:async()=> 'NGROK_URL=https://fictional.ngrok.app\nNGROK_AUTHTOKEN=fictional-token\n',run:async(file,args)=>{if(file==='docker'&&args[0]==='info')return 'version';throw Object.assign(Error('timeout'),{timedOut:true});},log:m=>messages.push(m),launch:async(_cwd,_run,c)=>{launched=true;assert.deepEqual(c,config);},platform:'linux'});
  assert(launched);assert(messages.some(m=>m.includes('continuing locally')));
  await startTunnel({cwd:'/fictional',env:{},read:missing,run:()=>assert.fail('Unconfigured tunnel should not run Docker'),log});
 });
