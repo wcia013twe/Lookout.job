@@ -105,7 +105,7 @@ const LOW_FIT_SCORE = 4.0;
 // exported here so existing importers of extractSkills keep working unchanged.
 import { extractSkills } from './skill-extract.mjs';
 import { isMainModule } from './lib/is-main-module.mjs';
-export { extractSkills };
+;
 
 // --- Known-skills text assembly ---
 // The known-skills set is built by running extractSkills() over cv.md and

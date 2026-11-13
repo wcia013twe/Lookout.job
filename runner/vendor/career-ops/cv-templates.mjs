@@ -19,7 +19,7 @@ import {
 // so build-cv-html.mjs can share them without importing this module (and the
 // js-yaml it pulls in for profile defaults). Re-exported here because this is
 // where callers have always found parseMeta.
-export { parseMeta, PARTIAL_SECTIONS, declaredSections, checkDeclaredSections };
+;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // templates/ is System Layer (code root); config/profile.yml is User Layer and

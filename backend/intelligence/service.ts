@@ -9,7 +9,7 @@ import {databaseStore, lockedIngest} from './store.ts';
 import {clean} from './clean.ts';
 import {ingest,validVector} from './pipeline.ts';
 import {INGEST_TOOL, SEARCH_TOOL, MIN_SEARCH_SIMILARITY, validateDemoCall, type DemoCall} from './contract.ts';
-export {INGEST_TOOL, LIST_TOOL} from './contract.ts';
+;
 
 // Internal backend API: no fixture imports, MCP names or demo storage defaults.
 export function intelligenceProcessor(pool: pg.Pool, provider: EmbeddingProvider|undefined, loadSources: SourceLoader, target:StoreTarget) {

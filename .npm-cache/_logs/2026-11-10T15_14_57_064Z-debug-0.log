@@ -1,0 +1,784 @@
+0 verbose cli /opt/homebrew/Cellar/node/24.10.0_1/bin/node /opt/homebrew/bin/npm
+1 info using npm@11.6.0
+2 info using node@v24.10.0
+3 silly config load:file:/opt/homebrew/lib/node_modules/npm/npmrc
+4 silly config load:file:/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/.npmrc
+5 silly config load:file:/Users/wes/.npmrc
+6 silly config load:file:/opt/homebrew/etc/npmrc
+7 verbose title npm ci
+8 verbose argv "ci" "--ignore-scripts" "--cache" "/Volumes/External SSD/Lookout/app/.npm-cache"
+9 verbose logfile logs-max:10 dir:/Volumes/External SSD/Lookout/app/.npm-cache/_logs/2026-11-10T15_14_57_064Z-
+10 verbose logfile /Volumes/External SSD/Lookout/app/.npm-cache/_logs/2026-11-10T15_14_57_064Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 http fetch GET https://registry.npmjs.org/npm attempt 1 failed with ENOTFOUND
+14 silly idealTree buildDeps
+15 silly reify moves {}
+16 silly audit bulk request {
+16 silly audit   '@ecies/ciphers': [ '0.2.6' ],
+16 silly audit   '@electric-sql/pglite': [ '0.4.6' ],
+16 silly audit   '@esbuild/aix-ppc64': [ '0.25.12' ],
+16 silly audit   '@esbuild/android-arm': [ '0.25.12' ],
+16 silly audit   '@esbuild/android-arm64': [ '0.25.12' ],
+16 silly audit   '@esbuild/android-x64': [ '0.25.12' ],
+16 silly audit   '@esbuild/darwin-arm64': [ '0.25.12' ],
+16 silly audit   '@esbuild/darwin-x64': [ '0.25.12' ],
+16 silly audit   '@esbuild/freebsd-arm64': [ '0.25.12' ],
+16 silly audit   '@esbuild/freebsd-x64': [ '0.25.12' ],
+16 silly audit   '@esbuild/linux-arm': [ '0.25.12' ],
+16 silly audit   '@esbuild/linux-arm64': [ '0.25.12' ],
+16 silly audit   '@esbuild/linux-ia32': [ '0.25.12' ],
+16 silly audit   '@esbuild/linux-loong64': [ '0.25.12' ],
+16 silly audit   '@esbuild/linux-mips64el': [ '0.25.12' ],
+16 silly audit   '@esbuild/linux-ppc64': [ '0.25.12' ],
+16 silly audit   '@esbuild/linux-riscv64': [ '0.25.12' ],
+16 silly audit   '@esbuild/linux-s390x': [ '0.25.12' ],
+16 silly audit   '@esbuild/linux-x64': [ '0.25.12' ],
+16 silly audit   '@esbuild/netbsd-arm64': [ '0.25.12' ],
+16 silly audit   '@esbuild/netbsd-x64': [ '0.25.12' ],
+16 silly audit   '@esbuild/openbsd-arm64': [ '0.25.12' ],
+16 silly audit   '@esbuild/openbsd-x64': [ '0.25.12' ],
+16 silly audit   '@esbuild/openharmony-arm64': [ '0.25.12' ],
+16 silly audit   '@esbuild/sunos-x64': [ '0.25.12' ],
+16 silly audit   '@esbuild/win32-arm64': [ '0.25.12' ],
+16 silly audit   '@esbuild/win32-ia32': [ '0.25.12' ],
+16 silly audit   '@esbuild/win32-x64': [ '0.25.12' ],
+16 silly audit   '@google/generative-ai': [ '0.24.1' ],
+16 silly audit   '@grpc/grpc-js': [ '1.14.7' ],
+16 silly audit   '@grpc/proto-loader': [ '0.8.1' ],
+16 silly audit   '@js-sdsl/ordered-map': [ '4.4.2' ],
+16 silly audit   '@langfuse/core': [ '6.1.1' ],
+16 silly audit   '@langfuse/otel': [ '6.1.1' ],
+16 silly audit   '@langfuse/tracing': [ '6.1.1' ],
+16 silly audit   '@noble/ciphers': [ '1.3.0' ],
+16 silly audit   '@noble/curves': [ '1.9.7' ],
+16 silly audit   '@noble/hashes': [ '1.8.0' ],
+16 silly audit   '@opentelemetry/api': [ '1.9.0' ],
+16 silly audit   '@opentelemetry/api-logs': [ '0.223.0', '0.223.1' ],
+16 silly audit   '@opentelemetry/configuration': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/core': [ '2.12.0', '2.12.1' ],
+16 silly audit   '@opentelemetry/context-async-hooks': [ '2.12.0' ],
+16 silly audit   '@opentelemetry/exporter-logs-otlp-grpc': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/otlp-exporter-base': [ '0.223.0', '0.223.1' ],
+16 silly audit   '@opentelemetry/exporter-logs-otlp-http': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/exporter-logs-otlp-proto': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/exporter-metrics-otlp-grpc': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/exporter-metrics-otlp-http': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/exporter-metrics-otlp-proto': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/exporter-prometheus': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/exporter-trace-otlp-grpc': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/exporter-trace-otlp-http': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/exporter-trace-otlp-proto': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/exporter-zipkin': [ '2.12.0' ],
+16 silly audit   '@opentelemetry/instrumentation': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/otlp-transformer': [ '0.223.1', '0.223.0' ],
+16 silly audit   '@opentelemetry/resources': [ '2.12.1', '2.12.0' ],
+16 silly audit   '@opentelemetry/sdk-logs': [ '0.223.1', '0.223.0' ],
+16 silly audit   '@opentelemetry/sdk-metrics': [ '2.12.1', '2.12.0' ],
+16 silly audit   '@opentelemetry/sdk-trace': [ '2.12.1', '2.12.0' ],
+16 silly audit   '@opentelemetry/otlp-grpc-exporter-base': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/propagator-b3': [ '2.12.0' ],
+16 silly audit   '@opentelemetry/propagator-jaeger': [ '2.12.0' ],
+16 silly audit   '@opentelemetry/sdk-node': [ '0.223.0' ],
+16 silly audit   '@opentelemetry/sdk-trace-base': [ '2.12.0', '2.12.1' ],
+16 silly audit   '@opentelemetry/sdk-trace-node': [ '2.12.0' ],
+16 silly audit   '@opentelemetry/semantic-conventions': [ '1.45.0' ],
+16 silly audit   '@orama/orama': [ '3.1.18' ],
+16 silly audit   '@orama/stopwords': [ '3.1.18' ],
+16 silly audit   '@protobufjs/aspromise': [ '1.1.2' ],
+16 silly audit   '@protobufjs/base64': [ '1.1.2' ],
+16 silly audit   '@protobufjs/codegen': [ '2.0.5' ],
+16 silly audit   '@protobufjs/eventemitter': [ '1.1.1' ],
+16 silly audit   '@protobufjs/fetch': [ '1.1.1' ],
+16 silly audit   '@protobufjs/float': [ '1.0.2' ],
+16 silly audit   '@protobufjs/path': [ '1.1.2' ],
+16 silly audit   '@protobufjs/pool': [ '1.1.0' ],
+16 silly audit   '@protobufjs/utf8': [ '1.1.2' ],
+16 silly audit   '@supabase/auth-js': [ '2.117.3' ],
+16 silly audit   '@supabase/cli-darwin-arm64': [ '2.122.0' ],
+16 silly audit   '@supabase/cli-darwin-x64': [ '2.122.0' ],
+16 silly audit   '@supabase/cli-linux-arm64': [ '2.122.0' ],
+16 silly audit   '@supabase/cli-linux-arm64-musl': [ '2.122.0' ],
+16 silly audit   '@supabase/cli-linux-x64': [ '2.122.0' ],
+16 silly audit   '@supabase/cli-linux-x64-musl': [ '2.122.0' ],
+16 silly audit   '@supabase/cli-windows-arm64': [ '2.122.0' ],
+16 silly audit   '@supabase/cli-windows-x64': [ '2.122.0' ],
+16 silly audit   '@supabase/functions-js': [ '2.117.3' ],
+16 silly audit   '@supabase/phoenix': [ '0.4.5' ],
+16 silly audit   '@supabase/postgrest-js': [ '2.117.3' ],
+16 silly audit   '@supabase/realtime-js': [ '2.117.3' ],
+16 silly audit   '@supabase/storage-js': [ '2.117.3' ],
+16 silly audit   '@supabase/supabase-js': [ '2.117.3' ],
+16 silly audit   '@types/node': [ '26.6.5' ],
+16 silly audit   '@types/pg': [ '8.15.5' ],
+16 silly audit   '@typescript/typescript-aix-ppc64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-darwin-arm64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-darwin-x64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-freebsd-arm64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-freebsd-x64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-linux-arm': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-linux-arm64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-linux-loong64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-linux-mips64el': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-linux-ppc64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-linux-riscv64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-linux-s390x': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-linux-x64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-netbsd-arm64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-netbsd-x64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-openbsd-arm64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-openbsd-x64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-sunos-x64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-win32-arm64': [ '7.0.2' ],
+16 silly audit   '@typescript/typescript-win32-x64': [ '7.0.2' ],
+16 silly audit   'ansi-regex': [ '5.0.1' ],
+16 silly audit   'ansi-styles': [ '4.3.0' ],
+16 silly audit   argparse: [ '2.0.1' ],
+16 silly audit   'cjs-module-lexer': [ '2.3.0' ],
+16 silly audit   cliui: [ '8.0.1' ],
+16 silly audit   'color-convert': [ '2.0.1' ],
+16 silly audit   'color-name': [ '1.1.4' ],
+16 silly audit   debug: [ '4.4.3' ],
+16 silly audit   eciesjs: [ '0.5.0' ],
+16 silly audit   'emoji-regex': [ '8.0.0' ],
+16 silly audit   'es-module-lexer': [ '3.0.4' ],
+16 silly audit   esbuild: [ '0.25.12' ],
+16 silly audit   escalade: [ '3.2.0' ],
+16 silly audit   'get-caller-file': [ '2.0.5' ],
+16 silly audit   'iceberg-js': [ '0.8.1' ],
+16 silly audit   'import-in-the-middle': [ '3.6.0' ],
+16 silly audit   'is-fullwidth-code-point': [ '3.0.0' ],
+16 silly audit   jose: [ '6.2.13' ],
+16 silly audit   'js-yaml': [ '5.3.0' ],
+16 silly audit   'lodash.camelcase': [ '4.3.0' ],
+16 silly audit   long: [ '5.3.2' ],
+16 silly audit   'module-details-from-path': [ '1.0.4' ],
+16 silly audit   ms: [ '2.1.3' ],
+16 silly audit   pg: [ '8.16.3' ],
+16 silly audit   'pg-cloudflare': [ '1.4.1' ],
+16 silly audit   'pg-connection-string': [ '2.14.1' ],
+16 silly audit   'pg-int8': [ '1.0.1' ],
+16 silly audit   'pg-pool': [ '3.14.0' ],
+16 silly audit   'pg-protocol': [ '1.16.1' ],
+16 silly audit   'pg-types': [ '2.2.0' ],
+16 silly audit   pgpass: [ '1.0.5' ],
+16 silly audit   playwright: [ '1.64.0' ],
+16 silly audit   'playwright-core': [ '1.64.0' ],
+16 silly audit   'postgres-array': [ '2.0.0' ],
+16 silly audit   'postgres-bytea': [ '1.0.1' ],
+16 silly audit   'postgres-date': [ '1.0.7' ],
+16 silly audit   'postgres-interval': [ '1.2.0' ],
+16 silly audit   protobufjs: [ '7.6.6' ],
+16 silly audit   'require-directory': [ '2.1.1' ],
+16 silly audit   'require-in-the-middle': [ '8.0.1' ],
+16 silly audit   split2: [ '4.2.0' ],
+16 silly audit   'string-width': [ '4.2.3' ],
+16 silly audit   'strip-ansi': [ '6.0.1' ],
+16 silly audit   supabase: [ '2.122.0' ],
+16 silly audit   tslib: [ '2.8.1' ],
+16 silly audit   typescript: [ '7.0.2' ],
+16 silly audit   undici: [ '6.28.1' ],
+16 silly audit   'undici-types': [ '8.9.0' ],
+16 silly audit   'wrap-ansi': [ '7.0.0' ],
+16 silly audit   xtend: [ '4.0.2' ],
+16 silly audit   y18n: [ '5.0.8' ],
+16 silly audit   yaml: [ '2.9.1' ],
+16 silly audit   yargs: [ '17.7.3' ],
+16 silly audit   'yargs-parser': [ '21.1.1' ]
+16 silly audit }
+17 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-win32-x64
+18 silly reify mark deleted [
+18 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-win32-x64'
+18 silly reify ]
+19 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-win32-arm64
+20 silly reify mark deleted [
+20 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-win32-arm64'
+20 silly reify ]
+21 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-sunos-x64
+22 silly reify mark deleted [
+22 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-sunos-x64'
+22 silly reify ]
+23 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-openbsd-x64
+24 silly reify mark deleted [
+24 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-openbsd-x64'
+24 silly reify ]
+25 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-openbsd-arm64
+26 silly reify mark deleted [
+26 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-openbsd-arm64'
+26 silly reify ]
+27 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-netbsd-x64
+28 silly reify mark deleted [
+28 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-netbsd-x64'
+28 silly reify ]
+29 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-netbsd-arm64
+30 silly reify mark deleted [
+30 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-netbsd-arm64'
+30 silly reify ]
+31 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-x64
+32 silly reify mark deleted [
+32 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-x64'
+32 silly reify ]
+33 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-s390x
+34 silly reify mark deleted [
+34 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-s390x'
+34 silly reify ]
+35 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-riscv64
+36 silly reify mark deleted [
+36 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-riscv64'
+36 silly reify ]
+37 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-ppc64
+38 silly reify mark deleted [
+38 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-ppc64'
+38 silly reify ]
+39 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-mips64el
+40 silly reify mark deleted [
+40 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-mips64el'
+40 silly reify ]
+41 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-loong64
+42 silly reify mark deleted [
+42 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-loong64'
+42 silly reify ]
+43 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-arm64
+44 silly reify mark deleted [
+44 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-arm64'
+44 silly reify ]
+45 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-arm
+46 silly reify mark deleted [
+46 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-linux-arm'
+46 silly reify ]
+47 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-freebsd-x64
+48 silly reify mark deleted [
+48 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-freebsd-x64'
+48 silly reify ]
+49 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-freebsd-arm64
+50 silly reify mark deleted [
+50 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-freebsd-arm64'
+50 silly reify ]
+51 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-darwin-x64
+52 silly reify mark deleted [
+52 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-darwin-x64'
+52 silly reify ]
+53 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-aix-ppc64
+54 silly reify mark deleted [
+54 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@typescript/typescript-aix-ppc64'
+54 silly reify ]
+55 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-windows-x64
+56 silly reify mark deleted [
+56 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-windows-x64'
+56 silly reify ]
+57 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-windows-arm64
+58 silly reify mark deleted [
+58 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-windows-arm64'
+58 silly reify ]
+59 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-linux-x64-musl
+60 silly reify mark deleted [
+60 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-linux-x64-musl'
+60 silly reify ]
+61 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-linux-x64
+62 silly reify mark deleted [
+62 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-linux-x64'
+62 silly reify ]
+63 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-linux-arm64-musl
+64 silly reify mark deleted [
+64 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-linux-arm64-musl'
+64 silly reify ]
+65 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-linux-arm64
+66 silly reify mark deleted [
+66 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-linux-arm64'
+66 silly reify ]
+67 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-darwin-x64
+68 silly reify mark deleted [
+68 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@supabase/cli-darwin-x64'
+68 silly reify ]
+69 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/win32-x64
+70 silly reify mark deleted [
+70 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/win32-x64'
+70 silly reify ]
+71 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/win32-ia32
+72 silly reify mark deleted [
+72 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/win32-ia32'
+72 silly reify ]
+73 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/win32-arm64
+74 silly reify mark deleted [
+74 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/win32-arm64'
+74 silly reify ]
+75 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/sunos-x64
+76 silly reify mark deleted [
+76 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/sunos-x64'
+76 silly reify ]
+77 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/openharmony-arm64
+78 silly reify mark deleted [
+78 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/openharmony-arm64'
+78 silly reify ]
+79 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/openbsd-x64
+80 silly reify mark deleted [
+80 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/openbsd-x64'
+80 silly reify ]
+81 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/openbsd-arm64
+82 silly reify mark deleted [
+82 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/openbsd-arm64'
+82 silly reify ]
+83 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/netbsd-x64
+84 silly reify mark deleted [
+84 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/netbsd-x64'
+84 silly reify ]
+85 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/netbsd-arm64
+86 silly reify mark deleted [
+86 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/netbsd-arm64'
+86 silly reify ]
+87 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-x64
+88 silly reify mark deleted [
+88 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-x64'
+88 silly reify ]
+89 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-s390x
+90 silly reify mark deleted [
+90 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-s390x'
+90 silly reify ]
+91 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-riscv64
+92 silly reify mark deleted [
+92 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-riscv64'
+92 silly reify ]
+93 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-ppc64
+94 silly reify mark deleted [
+94 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-ppc64'
+94 silly reify ]
+95 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-mips64el
+96 silly reify mark deleted [
+96 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-mips64el'
+96 silly reify ]
+97 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-loong64
+98 silly reify mark deleted [
+98 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-loong64'
+98 silly reify ]
+99 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-ia32
+100 silly reify mark deleted [
+100 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-ia32'
+100 silly reify ]
+101 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-arm64
+102 silly reify mark deleted [
+102 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-arm64'
+102 silly reify ]
+103 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-arm
+104 silly reify mark deleted [
+104 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/linux-arm'
+104 silly reify ]
+105 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/freebsd-x64
+106 silly reify mark deleted [
+106 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/freebsd-x64'
+106 silly reify ]
+107 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/freebsd-arm64
+108 silly reify mark deleted [
+108 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/freebsd-arm64'
+108 silly reify ]
+109 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/darwin-x64
+110 silly reify mark deleted [
+110 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/darwin-x64'
+110 silly reify ]
+111 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/android-x64
+112 silly reify mark deleted [
+112 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/android-x64'
+112 silly reify ]
+113 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/android-arm64
+114 silly reify mark deleted [
+114 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/android-arm64'
+114 silly reify ]
+115 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/android-arm
+116 silly reify mark deleted [
+116 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/android-arm'
+116 silly reify ]
+117 verbose reify failed optional dependency /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/aix-ppc64
+118 silly reify mark deleted [
+118 silly reify   '/private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo/node_modules/@esbuild/aix-ppc64'
+118 silly reify ]
+119 verbose audit error FetchError: request to https://registry.npmjs.org/-/npm/v1/security/advisories/bulk failed, reason: getaddrinfo ENOTFOUND registry.npmjs.org
+119 verbose audit error     at ClientRequest.<anonymous> (/opt/homebrew/lib/node_modules/npm/node_modules/minipass-fetch/lib/index.js:130:14)
+119 verbose audit error     at ClientRequest.emit (node:events:508:28)
+119 verbose audit error     at emitErrorEvent (node:_http_client:107:11)
+119 verbose audit error     at _destroy (node:_http_client:954:9)
+119 verbose audit error     at onSocketNT (node:_http_client:974:5)
+119 verbose audit error     at process.processTicksAndRejections (node:internal/process/task_queues:91:21) {
+119 verbose audit error   code: 'ENOTFOUND',
+119 verbose audit error   errno: 'ENOTFOUND',
+119 verbose audit error   syscall: 'getaddrinfo',
+119 verbose audit error   hostname: 'registry.npmjs.org',
+119 verbose audit error   type: 'system'
+119 verbose audit error }
+120 silly audit error undefined
+121 silly audit report null
+122 http cache yargs@https://registry.npmjs.org/yargs/-/yargs-17.7.3.tgz 0ms (cache hit)
+123 http cache yargs-parser@https://registry.npmjs.org/yargs-parser/-/yargs-parser-21.1.1.tgz 0ms (cache hit)
+124 http cache yaml@https://registry.npmjs.org/yaml/-/yaml-2.9.1.tgz 0ms (cache hit)
+125 http cache y18n@https://registry.npmjs.org/y18n/-/y18n-5.0.8.tgz 0ms (cache hit)
+126 http cache xtend@https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz 0ms (cache hit)
+127 http cache wrap-ansi@https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz 0ms (cache hit)
+128 http cache undici-types@https://registry.npmjs.org/undici-types/-/undici-types-8.9.0.tgz 0ms (cache hit)
+129 http cache undici@https://registry.npmjs.org/undici/-/undici-6.28.1.tgz 0ms (cache hit)
+130 http cache tslib@https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz 0ms (cache hit)
+131 http cache supabase@https://registry.npmjs.org/supabase/-/supabase-2.122.0.tgz 0ms (cache hit)
+132 http cache typescript@https://registry.npmjs.org/typescript/-/typescript-7.0.2.tgz 0ms (cache hit)
+133 http cache strip-ansi@https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz 0ms (cache hit)
+134 http cache split2@https://registry.npmjs.org/split2/-/split2-4.2.0.tgz 0ms (cache hit)
+135 http cache require-in-the-middle@https://registry.npmjs.org/require-in-the-middle/-/require-in-the-middle-8.0.1.tgz 0ms (cache hit)
+136 http cache protobufjs@https://registry.npmjs.org/protobufjs/-/protobufjs-7.6.6.tgz 0ms (cache hit)
+137 http cache require-directory@https://registry.npmjs.org/require-directory/-/require-directory-2.1.1.tgz 0ms (cache hit)
+138 http cache postgres-interval@https://registry.npmjs.org/postgres-interval/-/postgres-interval-1.2.0.tgz 0ms (cache hit)
+139 http cache string-width@https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz 0ms (cache hit)
+140 http cache postgres-date@https://registry.npmjs.org/postgres-date/-/postgres-date-1.0.7.tgz 0ms (cache hit)
+141 http cache postgres-bytea@https://registry.npmjs.org/postgres-bytea/-/postgres-bytea-1.0.1.tgz 0ms (cache hit)
+142 http cache postgres-array@https://registry.npmjs.org/postgres-array/-/postgres-array-2.0.0.tgz 0ms (cache hit)
+143 http cache playwright-core@https://registry.npmjs.org/playwright-core/-/playwright-core-1.64.0.tgz 0ms (cache hit)
+144 http cache playwright@https://registry.npmjs.org/playwright/-/playwright-1.64.0.tgz 0ms (cache hit)
+145 http cache pgpass@https://registry.npmjs.org/pgpass/-/pgpass-1.0.5.tgz 0ms (cache hit)
+146 http cache pg-types@https://registry.npmjs.org/pg-types/-/pg-types-2.2.0.tgz 0ms (cache hit)
+147 http cache pg-protocol@https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.16.1.tgz 0ms (cache hit)
+148 http cache pg-int8@https://registry.npmjs.org/pg-int8/-/pg-int8-1.0.1.tgz 0ms (cache hit)
+149 http cache pg-connection-string@https://registry.npmjs.org/pg-connection-string/-/pg-connection-string-2.14.1.tgz 0ms (cache hit)
+150 http cache pg-cloudflare@https://registry.npmjs.org/pg-cloudflare/-/pg-cloudflare-1.4.1.tgz 0ms (cache hit)
+151 http cache pg@https://registry.npmjs.org/pg/-/pg-8.16.3.tgz 0ms (cache hit)
+152 http cache ms@https://registry.npmjs.org/ms/-/ms-2.1.3.tgz 0ms (cache hit)
+153 http cache module-details-from-path@https://registry.npmjs.org/module-details-from-path/-/module-details-from-path-1.0.4.tgz 0ms (cache hit)
+154 http cache long@https://registry.npmjs.org/long/-/long-5.3.2.tgz 0ms (cache hit)
+155 http cache js-yaml@https://registry.npmjs.org/js-yaml/-/js-yaml-5.3.0.tgz 0ms (cache hit)
+156 http cache jose@https://registry.npmjs.org/jose/-/jose-6.2.13.tgz 0ms (cache hit)
+157 http cache lodash.camelcase@https://registry.npmjs.org/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz 0ms (cache hit)
+158 http cache is-fullwidth-code-point@https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz 0ms (cache hit)
+159 http cache import-in-the-middle@https://registry.npmjs.org/import-in-the-middle/-/import-in-the-middle-3.6.0.tgz 0ms (cache hit)
+160 http cache iceberg-js@https://registry.npmjs.org/iceberg-js/-/iceberg-js-0.8.1.tgz 0ms (cache hit)
+161 http cache get-caller-file@https://registry.npmjs.org/get-caller-file/-/get-caller-file-2.0.5.tgz 0ms (cache hit)
+162 http cache escalade@https://registry.npmjs.org/escalade/-/escalade-3.2.0.tgz 0ms (cache hit)
+163 http cache esbuild@https://registry.npmjs.org/esbuild/-/esbuild-0.25.12.tgz 0ms (cache hit)
+164 http cache es-module-lexer@https://registry.npmjs.org/es-module-lexer/-/es-module-lexer-3.0.4.tgz 0ms (cache hit)
+165 http cache emoji-regex@https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz 0ms (cache hit)
+166 http cache eciesjs@https://registry.npmjs.org/eciesjs/-/eciesjs-0.5.0.tgz 0ms (cache hit)
+167 http cache debug@https://registry.npmjs.org/debug/-/debug-4.4.3.tgz 0ms (cache hit)
+168 http cache color-name@https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz 0ms (cache hit)
+169 http cache color-convert@https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz 0ms (cache hit)
+170 http cache cliui@https://registry.npmjs.org/cliui/-/cliui-8.0.1.tgz 0ms (cache hit)
+171 http cache cjs-module-lexer@https://registry.npmjs.org/cjs-module-lexer/-/cjs-module-lexer-2.3.0.tgz 0ms (cache hit)
+172 http cache argparse@https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz 0ms (cache hit)
+173 http cache ansi-styles@https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.3.0.tgz 0ms (cache hit)
+174 http cache ansi-regex@https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.1.tgz 0ms (cache hit)
+175 http cache @typescript/typescript-darwin-arm64@https://registry.npmjs.org/@typescript/typescript-darwin-arm64/-/typescript-darwin-arm64-7.0.2.tgz 0ms (cache hit)
+176 http cache @types/pg@https://registry.npmjs.org/@types/pg/-/pg-8.15.5.tgz 0ms (cache hit)
+177 http cache @types/node@https://registry.npmjs.org/@types/node/-/node-26.6.5.tgz 0ms (cache hit)
+178 http cache @supabase/storage-js@https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.117.3.tgz 0ms (cache hit)
+179 http cache @supabase/supabase-js@https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.117.3.tgz 0ms (cache hit)
+180 http cache @supabase/realtime-js@https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.117.3.tgz 0ms (cache hit)
+181 http cache @supabase/postgrest-js@https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-2.117.3.tgz 0ms (cache hit)
+182 http cache @supabase/functions-js@https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.117.3.tgz 0ms (cache hit)
+183 http cache @supabase/cli-darwin-arm64@https://registry.npmjs.org/@supabase/cli-darwin-arm64/-/cli-darwin-arm64-2.122.0.tgz 0ms (cache hit)
+184 http cache @supabase/phoenix@https://registry.npmjs.org/@supabase/phoenix/-/phoenix-0.4.5.tgz 0ms (cache hit)
+185 http cache @supabase/auth-js@https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.117.3.tgz 0ms (cache hit)
+186 http cache @protobufjs/utf8@https://registry.npmjs.org/@protobufjs/utf8/-/utf8-1.1.2.tgz 0ms (cache hit)
+187 http cache @protobufjs/pool@https://registry.npmjs.org/@protobufjs/pool/-/pool-1.1.0.tgz 0ms (cache hit)
+188 http cache pg-pool@https://registry.npmjs.org/pg-pool/-/pg-pool-3.14.0.tgz 0ms (cache hit)
+189 http cache @protobufjs/path@https://registry.npmjs.org/@protobufjs/path/-/path-1.1.2.tgz 0ms (cache hit)
+190 http cache @protobufjs/float@https://registry.npmjs.org/@protobufjs/float/-/float-1.0.2.tgz 0ms (cache hit)
+191 http cache @protobufjs/fetch@https://registry.npmjs.org/@protobufjs/fetch/-/fetch-1.1.1.tgz 0ms (cache hit)
+192 http cache @protobufjs/codegen@https://registry.npmjs.org/@protobufjs/codegen/-/codegen-2.0.5.tgz 0ms (cache hit)
+193 http cache @protobufjs/base64@https://registry.npmjs.org/@protobufjs/base64/-/base64-1.1.2.tgz 0ms (cache hit)
+194 http cache @protobufjs/aspromise@https://registry.npmjs.org/@protobufjs/aspromise/-/aspromise-1.1.2.tgz 0ms (cache hit)
+195 http cache @orama/orama@https://registry.npmjs.org/@orama/orama/-/orama-3.1.18.tgz 0ms (cache hit)
+196 http cache @orama/stopwords@https://registry.npmjs.org/@orama/stopwords/-/stopwords-3.1.18.tgz 0ms (cache hit)
+197 http cache @opentelemetry/semantic-conventions@https://registry.npmjs.org/@opentelemetry/semantic-conventions/-/semantic-conventions-1.45.0.tgz 0ms (cache hit)
+198 http cache @protobufjs/eventemitter@https://registry.npmjs.org/@protobufjs/eventemitter/-/eventemitter-1.1.1.tgz 0ms (cache hit)
+199 http cache @opentelemetry/sdk-trace-node@https://registry.npmjs.org/@opentelemetry/sdk-trace-node/-/sdk-trace-node-2.12.0.tgz 0ms (cache hit)
+200 http cache @opentelemetry/sdk-trace-base@https://registry.npmjs.org/@opentelemetry/sdk-trace-base/-/sdk-trace-base-2.12.1.tgz 0ms (cache hit)
+201 http cache @opentelemetry/sdk-trace@https://registry.npmjs.org/@opentelemetry/sdk-trace/-/sdk-trace-2.12.0.tgz 0ms (cache hit)
+202 http cache @opentelemetry/sdk-logs@https://registry.npmjs.org/@opentelemetry/sdk-logs/-/sdk-logs-0.223.0.tgz 0ms (cache hit)
+203 http cache @opentelemetry/sdk-metrics@https://registry.npmjs.org/@opentelemetry/sdk-metrics/-/sdk-metrics-2.12.0.tgz 0ms (cache hit)
+204 http cache @opentelemetry/resources@https://registry.npmjs.org/@opentelemetry/resources/-/resources-2.12.0.tgz 0ms (cache hit)
+205 http cache @opentelemetry/propagator-jaeger@https://registry.npmjs.org/@opentelemetry/propagator-jaeger/-/propagator-jaeger-2.12.0.tgz 0ms (cache hit)
+206 http cache @opentelemetry/propagator-b3@https://registry.npmjs.org/@opentelemetry/propagator-b3/-/propagator-b3-2.12.0.tgz 0ms (cache hit)
+207 http cache @opentelemetry/sdk-node@https://registry.npmjs.org/@opentelemetry/sdk-node/-/sdk-node-0.223.0.tgz 0ms (cache hit)
+208 http cache @opentelemetry/otlp-transformer@https://registry.npmjs.org/@opentelemetry/otlp-transformer/-/otlp-transformer-0.223.0.tgz 0ms (cache hit)
+209 http cache @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.1.tgz 0ms (cache hit)
+210 http cache @opentelemetry/otlp-grpc-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-grpc-exporter-base/-/otlp-grpc-exporter-base-0.223.0.tgz 0ms (cache hit)
+211 http cache @opentelemetry/exporter-zipkin@https://registry.npmjs.org/@opentelemetry/exporter-zipkin/-/exporter-zipkin-2.12.0.tgz 0ms (cache hit)
+212 http cache @opentelemetry/exporter-trace-otlp-proto@https://registry.npmjs.org/@opentelemetry/exporter-trace-otlp-proto/-/exporter-trace-otlp-proto-0.223.0.tgz 0ms (cache hit)
+213 http cache @opentelemetry/exporter-trace-otlp-http@https://registry.npmjs.org/@opentelemetry/exporter-trace-otlp-http/-/exporter-trace-otlp-http-0.223.0.tgz 0ms (cache hit)
+214 http cache @opentelemetry/exporter-trace-otlp-grpc@https://registry.npmjs.org/@opentelemetry/exporter-trace-otlp-grpc/-/exporter-trace-otlp-grpc-0.223.0.tgz 0ms (cache hit)
+215 http cache @opentelemetry/exporter-prometheus@https://registry.npmjs.org/@opentelemetry/exporter-prometheus/-/exporter-prometheus-0.223.0.tgz 0ms (cache hit)
+216 http cache @opentelemetry/instrumentation@https://registry.npmjs.org/@opentelemetry/instrumentation/-/instrumentation-0.223.0.tgz 0ms (cache hit)
+217 http cache @opentelemetry/exporter-metrics-otlp-proto@https://registry.npmjs.org/@opentelemetry/exporter-metrics-otlp-proto/-/exporter-metrics-otlp-proto-0.223.0.tgz 0ms (cache hit)
+218 http cache @opentelemetry/exporter-metrics-otlp-http@https://registry.npmjs.org/@opentelemetry/exporter-metrics-otlp-http/-/exporter-metrics-otlp-http-0.223.0.tgz 0ms (cache hit)
+219 http cache @opentelemetry/exporter-metrics-otlp-grpc@https://registry.npmjs.org/@opentelemetry/exporter-metrics-otlp-grpc/-/exporter-metrics-otlp-grpc-0.223.0.tgz 0ms (cache hit)
+220 http cache @opentelemetry/exporter-logs-otlp-http@https://registry.npmjs.org/@opentelemetry/exporter-logs-otlp-http/-/exporter-logs-otlp-http-0.223.0.tgz 0ms (cache hit)
+221 http cache @opentelemetry/exporter-logs-otlp-grpc@https://registry.npmjs.org/@opentelemetry/exporter-logs-otlp-grpc/-/exporter-logs-otlp-grpc-0.223.0.tgz 0ms (cache hit)
+222 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.1.tgz 0ms (cache hit)
+223 http cache @opentelemetry/context-async-hooks@https://registry.npmjs.org/@opentelemetry/context-async-hooks/-/context-async-hooks-2.12.0.tgz 0ms (cache hit)
+224 http cache @opentelemetry/configuration@https://registry.npmjs.org/@opentelemetry/configuration/-/configuration-0.223.0.tgz 0ms (cache hit)
+225 http cache @opentelemetry/api-logs@https://registry.npmjs.org/@opentelemetry/api-logs/-/api-logs-0.223.0.tgz 0ms (cache hit)
+226 http cache @opentelemetry/api@https://registry.npmjs.org/@opentelemetry/api/-/api-1.9.0.tgz 0ms (cache hit)
+227 http cache @opentelemetry/exporter-logs-otlp-proto@https://registry.npmjs.org/@opentelemetry/exporter-logs-otlp-proto/-/exporter-logs-otlp-proto-0.223.0.tgz 0ms (cache hit)
+228 http cache @noble/hashes@https://registry.npmjs.org/@noble/hashes/-/hashes-1.8.0.tgz 0ms (cache hit)
+229 http cache @noble/ciphers@https://registry.npmjs.org/@noble/ciphers/-/ciphers-1.3.0.tgz 0ms (cache hit)
+230 http cache @langfuse/otel@https://registry.npmjs.org/@langfuse/otel/-/otel-6.1.1.tgz 0ms (cache hit)
+231 http cache @noble/curves@https://registry.npmjs.org/@noble/curves/-/curves-1.9.7.tgz 0ms (cache hit)
+232 http cache @langfuse/core@https://registry.npmjs.org/@langfuse/core/-/core-6.1.1.tgz 0ms (cache hit)
+233 http cache @js-sdsl/ordered-map@https://registry.npmjs.org/@js-sdsl/ordered-map/-/ordered-map-4.4.2.tgz 0ms (cache hit)
+234 http cache @grpc/proto-loader@https://registry.npmjs.org/@grpc/proto-loader/-/proto-loader-0.8.1.tgz 0ms (cache hit)
+235 http cache @grpc/grpc-js@https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.14.7.tgz 0ms (cache hit)
+236 http cache @langfuse/tracing@https://registry.npmjs.org/@langfuse/tracing/-/tracing-6.1.1.tgz 0ms (cache hit)
+237 http cache @google/generative-ai@https://registry.npmjs.org/@google/generative-ai/-/generative-ai-0.24.1.tgz 0ms (cache hit)
+238 http cache @esbuild/darwin-arm64@https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.25.12.tgz 0ms (cache hit)
+239 http cache @electric-sql/pglite@https://registry.npmjs.org/@electric-sql/pglite/-/pglite-0.4.6.tgz 0ms (cache hit)
+240 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+241 http cache @opentelemetry/sdk-trace-base@https://registry.npmjs.org/@opentelemetry/sdk-trace-base/-/sdk-trace-base-2.12.0.tgz 0ms (cache hit)
+242 http cache @opentelemetry/sdk-trace@https://registry.npmjs.org/@opentelemetry/sdk-trace/-/sdk-trace-2.12.1.tgz 0ms (cache hit)
+243 http cache @opentelemetry/resources@https://registry.npmjs.org/@opentelemetry/resources/-/resources-2.12.1.tgz 0ms (cache hit)
+244 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+245 http cache @ecies/ciphers@https://registry.npmjs.org/@ecies/ciphers/-/ciphers-0.2.6.tgz 0ms (cache hit)
+246 http cache @opentelemetry/sdk-trace-base@https://registry.npmjs.org/@opentelemetry/sdk-trace-base/-/sdk-trace-base-2.12.0.tgz 0ms (cache hit)
+247 http cache @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz 0ms (cache hit)
+248 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+249 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+250 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+251 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+252 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+253 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+254 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+255 http cache @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz 0ms (cache hit)
+256 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+257 http cache @opentelemetry/sdk-trace@https://registry.npmjs.org/@opentelemetry/sdk-trace/-/sdk-trace-2.12.1.tgz 0ms (cache hit)
+258 http cache @opentelemetry/sdk-logs@https://registry.npmjs.org/@opentelemetry/sdk-logs/-/sdk-logs-0.223.1.tgz 0ms (cache hit)
+259 http cache @opentelemetry/resources@https://registry.npmjs.org/@opentelemetry/resources/-/resources-2.12.1.tgz 0ms (cache hit)
+260 http cache @opentelemetry/otlp-transformer@https://registry.npmjs.org/@opentelemetry/otlp-transformer/-/otlp-transformer-0.223.1.tgz 0ms (cache hit)
+261 http cache @opentelemetry/api-logs@https://registry.npmjs.org/@opentelemetry/api-logs/-/api-logs-0.223.1.tgz 0ms (cache hit)
+262 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+263 http cache @opentelemetry/sdk-metrics@https://registry.npmjs.org/@opentelemetry/sdk-metrics/-/sdk-metrics-2.12.1.tgz 0ms (cache hit)
+264 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+265 http cache @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz 0ms (cache hit)
+266 http cache @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz 0ms (cache hit)
+267 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+268 http cache @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz 0ms (cache hit)
+269 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+270 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+271 http cache @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz 0ms (cache hit)
+272 http cache @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz 0ms (cache hit)
+273 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+274 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+275 http cache @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz 0ms (cache hit)
+276 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+277 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+278 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+279 http cache @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz 0ms (cache hit)
+280 http cache @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz 0ms (cache hit)
+281 http cache @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz 0ms (cache hit)
+282 silly tarball no local data for yargs@https://registry.npmjs.org/yargs/-/yargs-17.7.3.tgz. Extracting by manifest.
+283 silly tarball no local data for yargs-parser@https://registry.npmjs.org/yargs-parser/-/yargs-parser-21.1.1.tgz. Extracting by manifest.
+284 silly tarball no local data for yaml@https://registry.npmjs.org/yaml/-/yaml-2.9.1.tgz. Extracting by manifest.
+285 silly tarball no local data for y18n@https://registry.npmjs.org/y18n/-/y18n-5.0.8.tgz. Extracting by manifest.
+286 silly tarball no local data for xtend@https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz. Extracting by manifest.
+287 silly tarball no local data for wrap-ansi@https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz. Extracting by manifest.
+288 silly tarball no local data for undici-types@https://registry.npmjs.org/undici-types/-/undici-types-8.9.0.tgz. Extracting by manifest.
+289 silly tarball no local data for undici@https://registry.npmjs.org/undici/-/undici-6.28.1.tgz. Extracting by manifest.
+290 silly tarball no local data for tslib@https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz. Extracting by manifest.
+291 silly tarball no local data for supabase@https://registry.npmjs.org/supabase/-/supabase-2.122.0.tgz. Extracting by manifest.
+292 silly tarball no local data for typescript@https://registry.npmjs.org/typescript/-/typescript-7.0.2.tgz. Extracting by manifest.
+293 silly tarball no local data for strip-ansi@https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz. Extracting by manifest.
+294 silly tarball no local data for split2@https://registry.npmjs.org/split2/-/split2-4.2.0.tgz. Extracting by manifest.
+295 silly tarball no local data for require-in-the-middle@https://registry.npmjs.org/require-in-the-middle/-/require-in-the-middle-8.0.1.tgz. Extracting by manifest.
+296 silly tarball no local data for protobufjs@https://registry.npmjs.org/protobufjs/-/protobufjs-7.6.6.tgz. Extracting by manifest.
+297 silly tarball no local data for require-directory@https://registry.npmjs.org/require-directory/-/require-directory-2.1.1.tgz. Extracting by manifest.
+298 silly tarball no local data for postgres-interval@https://registry.npmjs.org/postgres-interval/-/postgres-interval-1.2.0.tgz. Extracting by manifest.
+299 silly tarball no local data for string-width@https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz. Extracting by manifest.
+300 silly tarball no local data for postgres-date@https://registry.npmjs.org/postgres-date/-/postgres-date-1.0.7.tgz. Extracting by manifest.
+301 silly tarball no local data for postgres-bytea@https://registry.npmjs.org/postgres-bytea/-/postgres-bytea-1.0.1.tgz. Extracting by manifest.
+302 silly tarball no local data for postgres-array@https://registry.npmjs.org/postgres-array/-/postgres-array-2.0.0.tgz. Extracting by manifest.
+303 silly tarball no local data for playwright-core@https://registry.npmjs.org/playwright-core/-/playwright-core-1.64.0.tgz. Extracting by manifest.
+304 silly tarball no local data for playwright@https://registry.npmjs.org/playwright/-/playwright-1.64.0.tgz. Extracting by manifest.
+305 silly tarball no local data for pgpass@https://registry.npmjs.org/pgpass/-/pgpass-1.0.5.tgz. Extracting by manifest.
+306 silly tarball no local data for pg-types@https://registry.npmjs.org/pg-types/-/pg-types-2.2.0.tgz. Extracting by manifest.
+307 silly tarball no local data for pg-protocol@https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.16.1.tgz. Extracting by manifest.
+308 silly tarball no local data for pg-int8@https://registry.npmjs.org/pg-int8/-/pg-int8-1.0.1.tgz. Extracting by manifest.
+309 silly tarball no local data for pg-connection-string@https://registry.npmjs.org/pg-connection-string/-/pg-connection-string-2.14.1.tgz. Extracting by manifest.
+310 silly tarball no local data for pg-cloudflare@https://registry.npmjs.org/pg-cloudflare/-/pg-cloudflare-1.4.1.tgz. Extracting by manifest.
+311 silly tarball no local data for pg@https://registry.npmjs.org/pg/-/pg-8.16.3.tgz. Extracting by manifest.
+312 silly tarball no local data for ms@https://registry.npmjs.org/ms/-/ms-2.1.3.tgz. Extracting by manifest.
+313 silly tarball no local data for module-details-from-path@https://registry.npmjs.org/module-details-from-path/-/module-details-from-path-1.0.4.tgz. Extracting by manifest.
+314 silly tarball no local data for long@https://registry.npmjs.org/long/-/long-5.3.2.tgz. Extracting by manifest.
+315 silly tarball no local data for js-yaml@https://registry.npmjs.org/js-yaml/-/js-yaml-5.3.0.tgz. Extracting by manifest.
+316 silly tarball no local data for jose@https://registry.npmjs.org/jose/-/jose-6.2.13.tgz. Extracting by manifest.
+317 silly tarball no local data for lodash.camelcase@https://registry.npmjs.org/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz. Extracting by manifest.
+318 silly tarball no local data for is-fullwidth-code-point@https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz. Extracting by manifest.
+319 silly tarball no local data for import-in-the-middle@https://registry.npmjs.org/import-in-the-middle/-/import-in-the-middle-3.6.0.tgz. Extracting by manifest.
+320 silly tarball no local data for iceberg-js@https://registry.npmjs.org/iceberg-js/-/iceberg-js-0.8.1.tgz. Extracting by manifest.
+321 silly tarball no local data for get-caller-file@https://registry.npmjs.org/get-caller-file/-/get-caller-file-2.0.5.tgz. Extracting by manifest.
+322 silly tarball no local data for escalade@https://registry.npmjs.org/escalade/-/escalade-3.2.0.tgz. Extracting by manifest.
+323 silly tarball no local data for esbuild@https://registry.npmjs.org/esbuild/-/esbuild-0.25.12.tgz. Extracting by manifest.
+324 silly tarball no local data for es-module-lexer@https://registry.npmjs.org/es-module-lexer/-/es-module-lexer-3.0.4.tgz. Extracting by manifest.
+325 silly tarball no local data for emoji-regex@https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz. Extracting by manifest.
+326 silly tarball no local data for eciesjs@https://registry.npmjs.org/eciesjs/-/eciesjs-0.5.0.tgz. Extracting by manifest.
+327 silly tarball no local data for debug@https://registry.npmjs.org/debug/-/debug-4.4.3.tgz. Extracting by manifest.
+328 silly tarball no local data for color-name@https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz. Extracting by manifest.
+329 silly tarball no local data for color-convert@https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz. Extracting by manifest.
+330 silly tarball no local data for cliui@https://registry.npmjs.org/cliui/-/cliui-8.0.1.tgz. Extracting by manifest.
+331 silly tarball no local data for cjs-module-lexer@https://registry.npmjs.org/cjs-module-lexer/-/cjs-module-lexer-2.3.0.tgz. Extracting by manifest.
+332 silly tarball no local data for argparse@https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz. Extracting by manifest.
+333 silly tarball no local data for ansi-styles@https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.3.0.tgz. Extracting by manifest.
+334 silly tarball no local data for ansi-regex@https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.1.tgz. Extracting by manifest.
+335 silly tarball no local data for @typescript/typescript-darwin-arm64@https://registry.npmjs.org/@typescript/typescript-darwin-arm64/-/typescript-darwin-arm64-7.0.2.tgz. Extracting by manifest.
+336 silly tarball no local data for @types/pg@https://registry.npmjs.org/@types/pg/-/pg-8.15.5.tgz. Extracting by manifest.
+337 silly tarball no local data for @types/node@https://registry.npmjs.org/@types/node/-/node-26.6.5.tgz. Extracting by manifest.
+338 silly tarball no local data for @supabase/storage-js@https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.117.3.tgz. Extracting by manifest.
+339 silly tarball no local data for @supabase/supabase-js@https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.117.3.tgz. Extracting by manifest.
+340 silly tarball no local data for @supabase/realtime-js@https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.117.3.tgz. Extracting by manifest.
+341 silly tarball no local data for @supabase/postgrest-js@https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-2.117.3.tgz. Extracting by manifest.
+342 silly tarball no local data for @supabase/functions-js@https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.117.3.tgz. Extracting by manifest.
+343 silly tarball no local data for @supabase/cli-darwin-arm64@https://registry.npmjs.org/@supabase/cli-darwin-arm64/-/cli-darwin-arm64-2.122.0.tgz. Extracting by manifest.
+344 silly tarball no local data for @supabase/phoenix@https://registry.npmjs.org/@supabase/phoenix/-/phoenix-0.4.5.tgz. Extracting by manifest.
+345 silly tarball no local data for @supabase/auth-js@https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.117.3.tgz. Extracting by manifest.
+346 silly tarball no local data for @protobufjs/utf8@https://registry.npmjs.org/@protobufjs/utf8/-/utf8-1.1.2.tgz. Extracting by manifest.
+347 silly tarball no local data for @protobufjs/pool@https://registry.npmjs.org/@protobufjs/pool/-/pool-1.1.0.tgz. Extracting by manifest.
+348 silly tarball no local data for pg-pool@https://registry.npmjs.org/pg-pool/-/pg-pool-3.14.0.tgz. Extracting by manifest.
+349 silly tarball no local data for @protobufjs/path@https://registry.npmjs.org/@protobufjs/path/-/path-1.1.2.tgz. Extracting by manifest.
+350 silly tarball no local data for @protobufjs/float@https://registry.npmjs.org/@protobufjs/float/-/float-1.0.2.tgz. Extracting by manifest.
+351 silly tarball no local data for @protobufjs/fetch@https://registry.npmjs.org/@protobufjs/fetch/-/fetch-1.1.1.tgz. Extracting by manifest.
+352 silly tarball no local data for @protobufjs/codegen@https://registry.npmjs.org/@protobufjs/codegen/-/codegen-2.0.5.tgz. Extracting by manifest.
+353 silly tarball no local data for @protobufjs/base64@https://registry.npmjs.org/@protobufjs/base64/-/base64-1.1.2.tgz. Extracting by manifest.
+354 silly tarball no local data for @protobufjs/aspromise@https://registry.npmjs.org/@protobufjs/aspromise/-/aspromise-1.1.2.tgz. Extracting by manifest.
+355 silly tarball no local data for @orama/orama@https://registry.npmjs.org/@orama/orama/-/orama-3.1.18.tgz. Extracting by manifest.
+356 silly tarball no local data for @orama/stopwords@https://registry.npmjs.org/@orama/stopwords/-/stopwords-3.1.18.tgz. Extracting by manifest.
+357 silly tarball no local data for @opentelemetry/semantic-conventions@https://registry.npmjs.org/@opentelemetry/semantic-conventions/-/semantic-conventions-1.45.0.tgz. Extracting by manifest.
+358 silly tarball no local data for @protobufjs/eventemitter@https://registry.npmjs.org/@protobufjs/eventemitter/-/eventemitter-1.1.1.tgz. Extracting by manifest.
+359 silly tarball no local data for @opentelemetry/sdk-trace-node@https://registry.npmjs.org/@opentelemetry/sdk-trace-node/-/sdk-trace-node-2.12.0.tgz. Extracting by manifest.
+360 silly tarball no local data for @opentelemetry/sdk-trace-base@https://registry.npmjs.org/@opentelemetry/sdk-trace-base/-/sdk-trace-base-2.12.1.tgz. Extracting by manifest.
+361 silly tarball no local data for @opentelemetry/sdk-trace@https://registry.npmjs.org/@opentelemetry/sdk-trace/-/sdk-trace-2.12.0.tgz. Extracting by manifest.
+362 silly tarball no local data for @opentelemetry/sdk-logs@https://registry.npmjs.org/@opentelemetry/sdk-logs/-/sdk-logs-0.223.0.tgz. Extracting by manifest.
+363 silly tarball no local data for @opentelemetry/sdk-metrics@https://registry.npmjs.org/@opentelemetry/sdk-metrics/-/sdk-metrics-2.12.0.tgz. Extracting by manifest.
+364 silly tarball no local data for @opentelemetry/resources@https://registry.npmjs.org/@opentelemetry/resources/-/resources-2.12.0.tgz. Extracting by manifest.
+365 silly tarball no local data for @opentelemetry/propagator-jaeger@https://registry.npmjs.org/@opentelemetry/propagator-jaeger/-/propagator-jaeger-2.12.0.tgz. Extracting by manifest.
+366 silly tarball no local data for @opentelemetry/propagator-b3@https://registry.npmjs.org/@opentelemetry/propagator-b3/-/propagator-b3-2.12.0.tgz. Extracting by manifest.
+367 silly tarball no local data for @opentelemetry/sdk-node@https://registry.npmjs.org/@opentelemetry/sdk-node/-/sdk-node-0.223.0.tgz. Extracting by manifest.
+368 silly tarball no local data for @opentelemetry/otlp-transformer@https://registry.npmjs.org/@opentelemetry/otlp-transformer/-/otlp-transformer-0.223.0.tgz. Extracting by manifest.
+369 silly tarball no local data for @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.1.tgz. Extracting by manifest.
+370 silly tarball no local data for @opentelemetry/otlp-grpc-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-grpc-exporter-base/-/otlp-grpc-exporter-base-0.223.0.tgz. Extracting by manifest.
+371 silly tarball no local data for @opentelemetry/exporter-zipkin@https://registry.npmjs.org/@opentelemetry/exporter-zipkin/-/exporter-zipkin-2.12.0.tgz. Extracting by manifest.
+372 silly tarball no local data for @opentelemetry/exporter-trace-otlp-proto@https://registry.npmjs.org/@opentelemetry/exporter-trace-otlp-proto/-/exporter-trace-otlp-proto-0.223.0.tgz. Extracting by manifest.
+373 silly tarball no local data for @opentelemetry/exporter-trace-otlp-http@https://registry.npmjs.org/@opentelemetry/exporter-trace-otlp-http/-/exporter-trace-otlp-http-0.223.0.tgz. Extracting by manifest.
+374 silly tarball no local data for @opentelemetry/exporter-trace-otlp-grpc@https://registry.npmjs.org/@opentelemetry/exporter-trace-otlp-grpc/-/exporter-trace-otlp-grpc-0.223.0.tgz. Extracting by manifest.
+375 silly tarball no local data for @opentelemetry/exporter-prometheus@https://registry.npmjs.org/@opentelemetry/exporter-prometheus/-/exporter-prometheus-0.223.0.tgz. Extracting by manifest.
+376 silly tarball no local data for @opentelemetry/instrumentation@https://registry.npmjs.org/@opentelemetry/instrumentation/-/instrumentation-0.223.0.tgz. Extracting by manifest.
+377 silly tarball no local data for @opentelemetry/exporter-metrics-otlp-proto@https://registry.npmjs.org/@opentelemetry/exporter-metrics-otlp-proto/-/exporter-metrics-otlp-proto-0.223.0.tgz. Extracting by manifest.
+378 silly tarball no local data for @opentelemetry/exporter-metrics-otlp-http@https://registry.npmjs.org/@opentelemetry/exporter-metrics-otlp-http/-/exporter-metrics-otlp-http-0.223.0.tgz. Extracting by manifest.
+379 silly tarball no local data for @opentelemetry/exporter-metrics-otlp-grpc@https://registry.npmjs.org/@opentelemetry/exporter-metrics-otlp-grpc/-/exporter-metrics-otlp-grpc-0.223.0.tgz. Extracting by manifest.
+380 silly tarball no local data for @opentelemetry/exporter-logs-otlp-http@https://registry.npmjs.org/@opentelemetry/exporter-logs-otlp-http/-/exporter-logs-otlp-http-0.223.0.tgz. Extracting by manifest.
+381 silly tarball no local data for @opentelemetry/exporter-logs-otlp-grpc@https://registry.npmjs.org/@opentelemetry/exporter-logs-otlp-grpc/-/exporter-logs-otlp-grpc-0.223.0.tgz. Extracting by manifest.
+382 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.1.tgz. Extracting by manifest.
+383 silly tarball no local data for @opentelemetry/context-async-hooks@https://registry.npmjs.org/@opentelemetry/context-async-hooks/-/context-async-hooks-2.12.0.tgz. Extracting by manifest.
+384 silly tarball no local data for @opentelemetry/configuration@https://registry.npmjs.org/@opentelemetry/configuration/-/configuration-0.223.0.tgz. Extracting by manifest.
+385 silly tarball no local data for @opentelemetry/api-logs@https://registry.npmjs.org/@opentelemetry/api-logs/-/api-logs-0.223.0.tgz. Extracting by manifest.
+386 silly tarball no local data for @opentelemetry/api@https://registry.npmjs.org/@opentelemetry/api/-/api-1.9.0.tgz. Extracting by manifest.
+387 silly tarball no local data for @opentelemetry/exporter-logs-otlp-proto@https://registry.npmjs.org/@opentelemetry/exporter-logs-otlp-proto/-/exporter-logs-otlp-proto-0.223.0.tgz. Extracting by manifest.
+388 silly tarball no local data for @noble/hashes@https://registry.npmjs.org/@noble/hashes/-/hashes-1.8.0.tgz. Extracting by manifest.
+389 silly tarball no local data for @noble/ciphers@https://registry.npmjs.org/@noble/ciphers/-/ciphers-1.3.0.tgz. Extracting by manifest.
+390 silly tarball no local data for @langfuse/otel@https://registry.npmjs.org/@langfuse/otel/-/otel-6.1.1.tgz. Extracting by manifest.
+391 silly tarball no local data for @noble/curves@https://registry.npmjs.org/@noble/curves/-/curves-1.9.7.tgz. Extracting by manifest.
+392 silly tarball no local data for @langfuse/core@https://registry.npmjs.org/@langfuse/core/-/core-6.1.1.tgz. Extracting by manifest.
+393 silly tarball no local data for @js-sdsl/ordered-map@https://registry.npmjs.org/@js-sdsl/ordered-map/-/ordered-map-4.4.2.tgz. Extracting by manifest.
+394 silly tarball no local data for @grpc/proto-loader@https://registry.npmjs.org/@grpc/proto-loader/-/proto-loader-0.8.1.tgz. Extracting by manifest.
+395 silly tarball no local data for @grpc/grpc-js@https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.14.7.tgz. Extracting by manifest.
+396 silly tarball no local data for @langfuse/tracing@https://registry.npmjs.org/@langfuse/tracing/-/tracing-6.1.1.tgz. Extracting by manifest.
+397 silly tarball no local data for @google/generative-ai@https://registry.npmjs.org/@google/generative-ai/-/generative-ai-0.24.1.tgz. Extracting by manifest.
+398 silly tarball no local data for @esbuild/darwin-arm64@https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.25.12.tgz. Extracting by manifest.
+399 silly tarball no local data for @electric-sql/pglite@https://registry.npmjs.org/@electric-sql/pglite/-/pglite-0.4.6.tgz. Extracting by manifest.
+400 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+401 silly tarball no local data for @opentelemetry/sdk-trace-base@https://registry.npmjs.org/@opentelemetry/sdk-trace-base/-/sdk-trace-base-2.12.0.tgz. Extracting by manifest.
+402 silly tarball no local data for @opentelemetry/sdk-trace@https://registry.npmjs.org/@opentelemetry/sdk-trace/-/sdk-trace-2.12.1.tgz. Extracting by manifest.
+403 silly tarball no local data for @opentelemetry/resources@https://registry.npmjs.org/@opentelemetry/resources/-/resources-2.12.1.tgz. Extracting by manifest.
+404 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+405 silly tarball no local data for @ecies/ciphers@https://registry.npmjs.org/@ecies/ciphers/-/ciphers-0.2.6.tgz. Extracting by manifest.
+406 silly tarball no local data for @opentelemetry/sdk-trace-base@https://registry.npmjs.org/@opentelemetry/sdk-trace-base/-/sdk-trace-base-2.12.0.tgz. Extracting by manifest.
+407 silly tarball no local data for @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz. Extracting by manifest.
+408 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+409 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+410 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+411 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+412 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+413 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+414 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+415 silly tarball no local data for @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz. Extracting by manifest.
+416 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+417 silly tarball no local data for @opentelemetry/sdk-trace@https://registry.npmjs.org/@opentelemetry/sdk-trace/-/sdk-trace-2.12.1.tgz. Extracting by manifest.
+418 silly tarball no local data for @opentelemetry/sdk-logs@https://registry.npmjs.org/@opentelemetry/sdk-logs/-/sdk-logs-0.223.1.tgz. Extracting by manifest.
+419 silly tarball no local data for @opentelemetry/resources@https://registry.npmjs.org/@opentelemetry/resources/-/resources-2.12.1.tgz. Extracting by manifest.
+420 silly tarball no local data for @opentelemetry/otlp-transformer@https://registry.npmjs.org/@opentelemetry/otlp-transformer/-/otlp-transformer-0.223.1.tgz. Extracting by manifest.
+421 silly tarball no local data for @opentelemetry/api-logs@https://registry.npmjs.org/@opentelemetry/api-logs/-/api-logs-0.223.1.tgz. Extracting by manifest.
+422 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+423 silly tarball no local data for @opentelemetry/sdk-metrics@https://registry.npmjs.org/@opentelemetry/sdk-metrics/-/sdk-metrics-2.12.1.tgz. Extracting by manifest.
+424 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+425 silly tarball no local data for @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz. Extracting by manifest.
+426 silly tarball no local data for @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz. Extracting by manifest.
+427 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+428 silly tarball no local data for @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz. Extracting by manifest.
+429 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+430 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+431 silly tarball no local data for @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz. Extracting by manifest.
+432 silly tarball no local data for @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz. Extracting by manifest.
+433 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+434 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+435 silly tarball no local data for @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz. Extracting by manifest.
+436 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+437 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+438 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+439 silly tarball no local data for @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz. Extracting by manifest.
+440 silly tarball no local data for @opentelemetry/core@https://registry.npmjs.org/@opentelemetry/core/-/core-2.12.0.tgz. Extracting by manifest.
+441 silly tarball no local data for @opentelemetry/otlp-exporter-base@https://registry.npmjs.org/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.223.0.tgz. Extracting by manifest.
+442 http fetch GET https://registry.npmjs.org/yargs/-/yargs-17.7.3.tgz attempt 1 failed with ENOTFOUND
+443 http fetch GET https://registry.npmjs.org/yargs-parser/-/yargs-parser-21.1.1.tgz attempt 1 failed with ENOTFOUND
+444 http fetch GET https://registry.npmjs.org/yaml/-/yaml-2.9.1.tgz attempt 1 failed with ENOTFOUND
+445 http fetch GET https://registry.npmjs.org/y18n/-/y18n-5.0.8.tgz attempt 1 failed with ENOTFOUND
+446 http fetch GET https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz attempt 1 failed with ENOTFOUND
+447 http fetch GET https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz attempt 1 failed with ENOTFOUND
+448 http fetch GET https://registry.npmjs.org/undici-types/-/undici-types-8.9.0.tgz attempt 1 failed with ENOTFOUND
+449 http fetch GET https://registry.npmjs.org/undici/-/undici-6.28.1.tgz attempt 1 failed with ENOTFOUND
+450 http fetch GET https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz attempt 1 failed with ENOTFOUND
+451 http fetch GET https://registry.npmjs.org/supabase/-/supabase-2.122.0.tgz attempt 1 failed with ENOTFOUND
+452 http fetch GET https://registry.npmjs.org/typescript/-/typescript-7.0.2.tgz attempt 1 failed with ENOTFOUND
+453 http fetch GET https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz attempt 1 failed with ENOTFOUND
+454 http fetch GET https://registry.npmjs.org/split2/-/split2-4.2.0.tgz attempt 1 failed with ENOTFOUND
+455 http fetch GET https://registry.npmjs.org/require-in-the-middle/-/require-in-the-middle-8.0.1.tgz attempt 1 failed with ENOTFOUND
+456 http fetch GET https://registry.npmjs.org/protobufjs/-/protobufjs-7.6.6.tgz attempt 1 failed with ENOTFOUND
+457 http fetch GET https://registry.npmjs.org/npm attempt 2 failed with ENOTFOUND
+458 http fetch GET https://registry.npmjs.org/yargs/-/yargs-17.7.3.tgz attempt 2 failed with ENOTFOUND
+459 http fetch GET https://registry.npmjs.org/yargs-parser/-/yargs-parser-21.1.1.tgz attempt 2 failed with ENOTFOUND
+460 http fetch GET https://registry.npmjs.org/yaml/-/yaml-2.9.1.tgz attempt 2 failed with ENOTFOUND
+461 http fetch GET https://registry.npmjs.org/y18n/-/y18n-5.0.8.tgz attempt 2 failed with ENOTFOUND
+462 http fetch GET https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz attempt 2 failed with ENOTFOUND
+463 http fetch GET https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz attempt 2 failed with ENOTFOUND
+464 http fetch GET https://registry.npmjs.org/undici-types/-/undici-types-8.9.0.tgz attempt 2 failed with ENOTFOUND
+465 http fetch GET https://registry.npmjs.org/undici/-/undici-6.28.1.tgz attempt 2 failed with ENOTFOUND
+466 http fetch GET https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz attempt 2 failed with ENOTFOUND
+467 http fetch GET https://registry.npmjs.org/supabase/-/supabase-2.122.0.tgz attempt 2 failed with ENOTFOUND
+468 http fetch GET https://registry.npmjs.org/typescript/-/typescript-7.0.2.tgz attempt 2 failed with ENOTFOUND
+469 http fetch GET https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz attempt 2 failed with ENOTFOUND
+470 http fetch GET https://registry.npmjs.org/split2/-/split2-4.2.0.tgz attempt 2 failed with ENOTFOUND
+471 http fetch GET https://registry.npmjs.org/require-in-the-middle/-/require-in-the-middle-8.0.1.tgz attempt 2 failed with ENOTFOUND
+472 http fetch GET https://registry.npmjs.org/protobufjs/-/protobufjs-7.6.6.tgz attempt 2 failed with ENOTFOUND
+473 http fetch GET https://registry.npmjs.org/npm attempt 3 failed with ENOTFOUND
+474 http fetch GET https://registry.npmjs.org/yargs/-/yargs-17.7.3.tgz attempt 3 failed with ENOTFOUND
+475 http fetch GET https://registry.npmjs.org/yargs-parser/-/yargs-parser-21.1.1.tgz attempt 3 failed with ENOTFOUND
+476 http fetch GET https://registry.npmjs.org/yaml/-/yaml-2.9.1.tgz attempt 3 failed with ENOTFOUND
+477 http fetch GET https://registry.npmjs.org/y18n/-/y18n-5.0.8.tgz attempt 3 failed with ENOTFOUND
+478 http fetch GET https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz attempt 3 failed with ENOTFOUND
+479 http fetch GET https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz attempt 3 failed with ENOTFOUND
+480 http fetch GET https://registry.npmjs.org/undici-types/-/undici-types-8.9.0.tgz attempt 3 failed with ENOTFOUND
+481 http fetch GET https://registry.npmjs.org/undici/-/undici-6.28.1.tgz attempt 3 failed with ENOTFOUND
+482 http fetch GET https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz attempt 3 failed with ENOTFOUND
+483 http fetch GET https://registry.npmjs.org/supabase/-/supabase-2.122.0.tgz attempt 3 failed with ENOTFOUND
+484 http fetch GET https://registry.npmjs.org/typescript/-/typescript-7.0.2.tgz attempt 3 failed with ENOTFOUND
+485 http fetch GET https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz attempt 3 failed with ENOTFOUND
+486 http fetch GET https://registry.npmjs.org/split2/-/split2-4.2.0.tgz attempt 3 failed with ENOTFOUND
+487 http fetch GET https://registry.npmjs.org/require-in-the-middle/-/require-in-the-middle-8.0.1.tgz attempt 3 failed with ENOTFOUND
+488 http fetch GET https://registry.npmjs.org/protobufjs/-/protobufjs-7.6.6.tgz attempt 3 failed with ENOTFOUND
+489 verbose cwd /private/tmp/lookout-features/lightweight-evidence-cache-do17Yd/repo
+490 verbose os Darwin 24.6.0
+491 verbose node v24.10.0
+492 verbose npm  v11.6.0
+493 error Exit handler never called!
+494 error This is an error with npm itself. Please report this error at:
+495 error   <https://github.com/npm/cli/issues>
+496 verbose exit 1
+497 verbose code 1
+498 error A complete log of this run can be found in: /Volumes/External SSD/Lookout/app/.npm-cache/_logs/2026-11-10T15_14_57_064Z-debug-0.log

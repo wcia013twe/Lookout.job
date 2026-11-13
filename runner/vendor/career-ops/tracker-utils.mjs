@@ -32,7 +32,7 @@ import { normalizeTextKey } from './tracker-parse.mjs';
  * now, so a local copy would be a constant this file no longer enforces — free
  * to drift from the one that actually decides.
  */
-export { OWNERLESS_GRACE_MS } from './pipeline-lock.mjs';
+;
 
 /**
  * Rebuild a markdown table row from the cells produced by `line.split('|')`.
@@ -260,7 +260,7 @@ export function resolvePdfIndexPath(trackerPath) {
  * @returns {string} Absolute canonical path when the file exists, else resolved path.
  */
 import { canonicalizeTrackerPath, rawTrackerPath } from './path-resolver.mjs';
-export { canonicalizeTrackerPath };
+;
 
 /**
  * Check whether one absolute path stays inside another directory.
