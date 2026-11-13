@@ -11,6 +11,7 @@ import RoleApplicationPreview from "./role-application-preview";
 import ProfileIcon from "./profile-icon";
 import { companyRanking } from "../lib/role-display";
 import ApplicationActions from "./application-actions";
+import RecommendationFeedback from "./recommendation-feedback";
 import JobDescription from "./job-description";
 import styles from "./discover-role-panel.module.css";
 export default function DiscoverRolePanel({ role, onClose, assessmentPending=false }: { role: Role; onClose: () => void; assessmentPending?:boolean }) {
@@ -47,6 +48,7 @@ export default function DiscoverRolePanel({ role, onClose, assessmentPending=fal
         <div className="mb-4 flex items-center gap-2 text-board-accent"><ProfileIcon name="sliders" /><h3 id="fit-reasoning" className="text-lg font-semibold">{assessmentPending?"Agent review pending":"AI fit analysis"}</h3></div>
         {assessmentPending ? <p className="max-w-prose text-sm leading-relaxed">Saved from your onboarding preferences. Your agent still needs to verify the employer posting and compare it with your profile and résumé.</p> : <RoleFitAnalysis whyItFits={role.whyItFits} materialGap={role.materialGap} />}
         <p className="mt-3 text-xs text-board-muted">{w.demo ? "Fictional example · no live AI evaluation" : "Collected research · no new AI evaluation"}</p>
+        <RecommendationFeedback targetId={role.id} target={`${role.company} · ${role.title}`} context={{searchProfileId:role.searchProfileId,evaluatedProfileVersion:role.evaluatedProfileVersion}}/>
       </section>
       <RoleApplicationPreview role={role} />
       <details className="border-t border-board-line pt-3">

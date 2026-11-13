@@ -1,4 +1,5 @@
 import {validateApplicationAgent} from '../lib/application-agent.mjs';
+import {validateRecommendationFeedback} from '../supabase/functions/agent-gateway/recommendation-feedback.mjs';
 import {actionBoardMessageFields} from '../lib/action-board.mjs';
 import {withLatestPostingEvidence,withLatestPostingEvidenceForBatches} from '../lib/batch-posting-evidence.mjs';
 import {validateWorkExperience} from '../supabase/functions/agent-gateway/work-experience.mjs';
@@ -60,6 +61,21 @@ function createBackend(client, expectedUserId = null) {
     return data.data;
   }
   return {
+    async readRecommendationFeedback(payload) {
+      validateRecommendationFeedback('recommendation.feedback.read',payload);
+      const id=await owner();const data=await result(client.rpc('recommendation_feedback_action',{operation:'recommendation.feedback.read',payload}));
+      if(await owner()!==id)throw Error('Account changed');return data;
+    },
+    async saveRecommendationFeedback(payload) {
+      validateRecommendationFeedback('recommendation.feedback.save',payload);
+      const id=await owner();const data=await result(client.rpc('recommendation_feedback_action',{operation:'recommendation.feedback.save',payload}));
+      if(await owner()!==id)throw Error('Account changed');return data;
+    },
+    async listRecommendationFeedback(payload={}) {
+      validateRecommendationFeedback('recommendation.feedback.list',payload);
+      const id=await owner();const data=await result(client.rpc('recommendation_feedback_action',{operation:'recommendation.feedback.list',payload}));
+      if(await owner()!==id)throw Error('Account changed');return data;
+    },
     async readActionBoard() {
       const id=await owner(); const data=await result(client.rpc('read_action_board'));
       if(await owner()!==id)throw Error('Account changed'); return data;
