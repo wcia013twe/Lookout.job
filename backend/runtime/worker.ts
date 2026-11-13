@@ -4,10 +4,8 @@ import {deduplicateDiscoveryRows} from '../../lib/search-dedup.mjs';
 import {executeCareerTask} from '../../runner/career-tools.mjs';
 import {createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
-import {SearchStaging,pruneSearchStaging,observationHash} from './search-staging.ts';
+import {SearchStaging,pruneSearchStaging,observationHash,searchStagingRoot} from './search-staging.ts';
 import {assertDiscoveryResults} from '../../lib/discovery-filter-contract.mjs';
-import {tmpdir} from 'node:os';
-import path from 'node:path';
 import {fetchSource} from './ats.ts';
 import type {Rpc,Payload,Claim,Dispatch} from './types.ts';
 
@@ -43,7 +41,7 @@ export async function scanAllSources<T>(sources:T[],visit:(source:T)=>Promise<vo
   if(failure?.status==='rejected')throw failure.reason;
 }
 
-export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=executeCareerTask,request,signal,onFailure,stagingRoot=process.env.LOOKOUT_SEARCH_STAGING_DIR||path.join(tmpdir(),'lookout-search-staging')}: {execute?:import('./ats.ts').Execute;request?:typeof fetch;signal?:AbortSignal;onFailure?:(error:unknown)=>void;stagingRoot?:string}={}) {
+export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=executeCareerTask,request,signal,onFailure,stagingRoot=searchStagingRoot()}: {execute?:import('./ats.ts').Execute;request?:typeof fetch;signal?:AbortSignal;onFailure?:(error:unknown)=>void;stagingRoot?:string}={}) {
  const prefix=`job:${job.id}:`;
  let run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):null;
  const profileId=run?.profile_id||job.input.profileId;
@@ -184,7 +182,7 @@ export async function workOnce(rpc:Rpc,{execute,applicationExecutor,signal,heart
     if(claim.job.kind==='search_ats')renew();
     const outcome=await traceWork('execute-backend-job',{kind:claim.job.kind},async()=>claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute:runTask,stagingRoot,signal:controller.signal,onFailure:error=>controller.abort(error),request:(url,init={})=>fetch(url,{...init,signal:AbortSignal.any([controller.signal,...(init.signal?[init.signal]:[])])})}),{sessionId:'job-'+claim.job.id,summarize:outcome=>({status:outcome.status,saved:outcome.result?.saved??null})});
     await stop();controller.signal.throwIfAborted();await call('finish',{...fence,...outcome});
-    if(claim.job.kind==='search_ats'&&outcome.result?.pipelineVersion===2&&!outcome.result?.retainedLeads)await new SearchStaging(stagingRoot||process.env.LOOKOUT_SEARCH_STAGING_DIR||path.join(tmpdir(),'lookout-search-staging'),claim.job.id,outcome.result.runId).clear();
+    if(claim.job.kind==='search_ats'&&outcome.result?.pipelineVersion===2&&!outcome.result?.retainedLeads)await new SearchStaging(stagingRoot||searchStagingRoot(),claim.job.id,outcome.result.runId).clear().catch(()=>console.warn('Finished search staging cleanup deferred to retention policy.'));
   }catch(error){
     const failure=error as Error & {code?:string;operation?:string};
     console.error(JSON.stringify({service:'lookout-worker',event:'execution-interrupted',kind:claim.job.kind,operation:failure.operation||'pipeline',code:failure.code||'execution',reason:['Backend lease changed','Search lease changed','Source changed','Invalid observed listing','Invalid source progress','Invalid worker payload','Run is closed','Discovery observation exceeds bounded transaction size'].includes(failure.message)?failure.message:'Execution interrupted'}));
@@ -209,4 +207,14 @@ export async function runWorker(rpc:Rpc,signal:AbortSignal,options:Parameters<ty
     try{await workOnce(rpc,{...options,signal});diagnostics.recovered();}catch{diagnostics.unavailable();}
     try{await delay(5000,undefined,{signal});}catch{break;}
   }
+}
+
+export async function drainWorker(rpc:Rpc,signal:AbortSignal){
+ let processed=0;
+ while(!signal.aborted){
+  if(!await workOnce(rpc,{signal}))return processed;
+  processed++;
+ }
+ signal.throwIfAborted();
+ return processed;
 }

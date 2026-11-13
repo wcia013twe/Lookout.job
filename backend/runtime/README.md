@@ -499,7 +499,7 @@ validates at queue/claim/dispatch, pins exactly one source, excludes web queries
 and fences run creation against widening the queued portal. Retry keys include
 the unchanged selected portal payload. Existing full searches remain unchanged.
 
-The same leased volume staging, live verification, profile screening, history
+The same leased snapshot staging, live verification, profile screening, history
 deduplication and final shortlist persistence run for that source. The receipt
 adds `scope:{kind:"portal",portalId}` or `{kind:"all-enabled"}`. Top-two selection
 is the connected agent's fit-analysis step after the complete bounded shortlist;
@@ -513,6 +513,23 @@ verified empty results. No automatic publication or applications.
 ## Muse dev watcher transport
 
 The Node API serves the existing scalar-only `GET /agent-gateway/pending-count?watchId=...` via `agent_pending_count`. It shares Edge validation and never reads event bodies or acknowledges work. Unknown handles return zero; malformed requests return 400 and database failures 503. The dev tunnel additionally allows only `/agent-package/manifest.json` and the pinned 0.2.2 archive, generated into the API image with SHA-256 metadata. Obtain these assets from the same HTTPS origin as `/mcp` when the hosted website has an older release. `/v1`, health and all other paths remain denied by the tunnel. Package reads grant no account access. Existing scoped configure/read/ack MCP tools remain the writer boundaries.
+
+## Cloud Run execution
+
+The independently managed [Cloud Run root](../../infra/cloud-run/README.md)
+reuses this image for a request-billed API and finite `LOOKOUT_PROCESS=worker-once`
+discovery Job. `LOOKOUT_EVENT_DELIVERY_MODE=request` disables the permanent
+Realtime delivery loop. Enqueue replies await a best-effort Job wake; authenticated
+Scheduler maintenance recovers claimable searches and drains one bounded outbox
+batch before responding. Leases, scopes and submission consent remain unchanged.
+
+`LOOKOUT_SEARCH_STAGING_BUCKET` selects private GCS immutable snapshots for both
+API reads and worker writes. Without it, existing local staging/polling is
+unchanged. Secret Manager can supply the existing validated OAuth configuration
+through server-only `LOOKOUT_OAUTH_CONFIG_JSON`; private-file configuration still
+works. Never migrate an issuer or existing connection implicitly. The release
+guide keeps Scheduler paused during alongside-VM smoke and documents cutover,
+OAuth and rollback checks. Source support does not establish hosted deployment.
 
 ## Optional Langfuse observability
 

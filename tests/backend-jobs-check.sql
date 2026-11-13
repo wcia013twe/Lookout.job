@@ -11,6 +11,7 @@ begin
  (u,'portals','shared',1,'{}','{"tracked_companies":[{"id":"test","name":"Fictional","enabled":true}],"search_queries":[]}');
  payload:='{"kind":"search_ats","input":{"profileId":"test-profile"},"eventKey":"queue-one"}';
  j:=public.backend_job_dispatch(h,'backend.jobs.submit',payload);id:=(j->>'id')::uuid;
+ if not public.backend_worker_pending() then raise exception 'Queued search missing recovery signal';end if;
  if j->>'status'<>'queued' or j->>'version'<>'1' or j ?| array['lease_token','lease_expires_at','credentialHash','token_hash'] then raise exception 'Invalid public job shape';end if;
  again:=public.backend_job_dispatch(h,'backend.jobs.submit',payload);if again<>j then raise exception 'Submit replay changed';end if;
  begin perform public.backend_job_dispatch(h,'backend.jobs.submit',payload||'{"input":{"profileId":"missing"}}');raise exception 'Changed replay accepted';exception when invalid_parameter_value then null;end;
@@ -29,6 +30,8 @@ begin
  again:=public.backend_job_action('backend.jobs.read',jsonb_build_object('jobId',id));if again->'jobs'->0<>j then raise exception 'Browser/agent read parity';end if;
  -- Claim, fenced dispatch, pinned search run and terminal completion.
  claim:=public.backend_worker('claim','{}');if claim->'job'->>'id'<>id::text or claim->'job'->>'attempts'<>'1' then raise exception 'Claim failed';end if;
+ if public.backend_worker_pending() then raise exception 'Live lease caused duplicate recovery';end if;
+ if public.backend_worker('claim','{}') is not null then raise exception 'Duplicate execution claimed live lease';end if;
  finish:=jsonb_build_object('jobId',id,'leaseToken',claim->>'leaseToken','expectedVersion',claim->'job'->'version');
  begin perform public.backend_worker('dispatch',finish||jsonb_build_object('operation','search.run.start','payload',jsonb_build_object('profileId','wrong','eventKey','job:'||id||':start')));raise exception 'Foreign profile dispatched';exception when insufficient_privilege then null;end;
  run:=public.backend_worker('dispatch',finish||jsonb_build_object('operation','search.run.start','payload',jsonb_build_object('profileId','test-profile','eventKey','job:'||id||':start')));
@@ -55,6 +58,7 @@ begin
  claim:=public.backend_worker('claim','{}');finish:=jsonb_build_object('jobId',id,'leaseToken',claim->>'leaseToken','expectedVersion',claim->'job'->'version');
  run:=public.backend_worker('dispatch',finish||jsonb_build_object('operation','search.run.start','payload',jsonb_build_object('profileId','test-profile','eventKey','job:'||id||':start')));
  update private.backend_jobs set lease_expires_at=now()-interval '1 second' where backend_jobs.id=id;
+ if not public.backend_worker_pending() then raise exception 'Expired lease missing recovery signal';end if;
  begin perform public.backend_worker('finish',finish||'{"status":"completed","result":{}}');raise exception 'Expired lease completed';exception when sqlstate 'PT409' then null;end;
  claim:=public.backend_worker('claim','{}');if claim->'job'->>'attempts'<>'2' then raise exception 'Lease not reclaimed';end if;
  begin perform public.backend_worker('finish',finish||'{"status":"completed","result":{}}');raise exception 'Old lease completed';exception when sqlstate 'PT409' then null;end;
@@ -81,6 +85,7 @@ begin
  update private.agent_connections set revoked_at=now() where agent_connections.id=c;
  if public.backend_worker('claim','{}') is not null then raise exception 'Revoked queued job claimed';end if;
  if has_function_privilege('authenticated','public.backend_worker(text,jsonb)','execute') or has_function_privilege('anon','public.backend_job_dispatch(text,text,jsonb)','execute') or has_function_privilege('authenticated','private.backend_action(uuid,uuid,text,jsonb)','execute') then raise exception 'Private execution boundary exposed';end if;
+ if has_function_privilege('authenticated','public.backend_worker_pending()','execute') or has_function_privilege('anon','public.backend_worker_pending()','execute') or not has_function_privilege('service_role','public.backend_worker_pending()','execute') then raise exception 'Recovery signal boundary exposed';end if;
  -- Existing workspace reset must remove queued work and history while keeping Auth.
  preview:=public.workspace_reset_service(u,'preview');reset_id:=gen_random_uuid();
  if not (preview->'counts' ?& array['private.backend_jobs','private.backend_requests']) then raise exception 'Reset omits execution records';end if;
