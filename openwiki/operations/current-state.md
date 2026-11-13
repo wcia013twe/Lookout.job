@@ -4,8 +4,8 @@ title: Current implementation state and operational limits
 description: Evidence-qualified snapshot of implemented Job Signal Board surfaces, release boundaries, local-only execution paths, and the verification needed before release-readiness claims.
 tags: [operations, implementation-status, deployment, verification, limits]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-07T02:52:01.830Z
+  - by: openwiki/0.9.0
+    at: 2026-11-13T05:44:24.520Z
 sources:
   - id: openwiki-source-164e2da859b5277df81c7d94
     resource: repo://.github/workflows/ci.yml
@@ -27,20 +27,50 @@ sources:
     resource: repo://Makefile
   - id: openwiki-source-70a16c09a9eb6e620cf00513
     resource: repo://mcp/README.md
+  - id: openwiki-source-4e54ff255a1a78c3c7a5256a
+    resource: repo://next-app/app/themes/page.tsx
+  - id: openwiki-source-772292b8604c1bdb82fdf033
+    resource: repo://next-app/components/appearance-settings.tsx
+  - id: openwiki-source-70edbb94f068146a752dd992
+    resource: repo://next-app/lib/demo-runtime.mjs
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
   - id: openwiki-source-d1a22cc381bbd73a73205d18
     resource: repo://runner/README.md
+  - id: openwiki-source-ebbea053bcf629bc5ea8601a
+    resource: repo://scripts/check-appearance-ui.mjs
   - id: openwiki-source-5e0e032552d77cb40052782b
     resource: repo://supabase/functions/agent-gateway/instructions.json
   - id: openwiki-source-3cae6e3f5eeea02db512314f
     resource: repo://supabase/functions/agent-mcp/index.ts
-generated: { by: "openwiki/0.7.2", at: "2026-11-07T02:52:01.830Z" }
+generated: { by: "codex", at: "2026-11-13T05:44:24.520Z" }
 ---
 
 # Current implementation state and operational limits
+
+## Cloud Run source support — November 13, 2026
+
+Focused manual update: `infra/cloud-run/` is an independent deployment root,
+not a replacement for the VM Terraform state. The Node runtime supports finite
+discovery execution, private shared immutable staging, awaited best-effort
+enqueue wakes, and Google-identity-only request-bound maintenance for queue
+recovery and finite MCP-event delivery. Website SQL enqueues recover through
+maintenance; scoped MCP/operations enqueues also request an immediate wake.
+Submission remains disabled; leases and existing consent boundaries are unchanged.
+
+See `infra/cloud-run/README.md` for the clean-main image build, pinned secret
+references, paused Scheduler smoke, issuer migration and disk-preserving rollback.
+Local source/container checks are not evidence of Google IAM, GCS, Scheduler,
+OAuth host reconnects or a production cutover. The VM and production endpoint
+remain unchanged. Broader generated wiki coverage retains its recorded revision.
+
+The Career Ops HTTP helper's missing macOS user-agent export is restored to its
+existing pinned manifest checksum. A regression test and rebuilt Docker image
+verify Feishu import and real discovery configuration validation. Separate vendor
+checksum mismatches and skipped Workday/We Work Remotely providers remain; this
+repair does not establish a successful live search or release readiness.
 
 ## Private shadow recommendation logging — November 12, 2026
 
@@ -72,6 +102,8 @@ This page separates **code present in this repository**, **behavior that a local
 | **Unverified** | No end-to-end evidence should be inferred. It remains a release blocker for claims that depend on it. |
 
 ## What is implemented
+
+The workspace navigation exposes Community and My Profile exposes Appearance. Community opens directly to Circles; the Companies view is hidden. Appearance keeps its color-theme and pack-texture controls without embedding the theme Marketplace; the standalone `/themes` route remains available and shows concepts for preview only. The existing scoped theme preference action is available in source; hosted MCP availability requires the normal backend deployment. Progress and leaderboard remain paused.
 
 Application automation honors the strict account-wide `autoSubmitApproved` guard even for explicit profile modes. Profile controls show the account block and remain disabled while it is off or missing; profile saves cannot grant global consent. Policy reads and runner authorization explain the block and direct the user to exact-draft approval in Applications. This is locally verified behavior; hosted availability requires the frontend and gateway release.
 
@@ -267,10 +299,13 @@ execution remain outside this check. See the feature change note for details.
 
 ## Local startup reliability
 
-The local startup helper bounds Docker/CLI checks, can reuse verified running local
-APIs with saved public loopback configuration, treats the configured MCP tunnel
-as optional, and recognizes an existing Lookout frontend. Main preview locks
-track process ownership and recover stopped owners; unknown owners are preserved.
+The local startup helper bounds Docker/CLI checks, starts Docker Desktop on macOS
+when its daemon is down, clears the selected frontend port by stopping its
+listener, can reuse verified running local APIs with saved public loopback
+configuration, treats the configured MCP tunnel as optional, and recognizes an
+current-checkout hot-reload frontend. The separate `make live` preview syncs
+committed main changes and tracks its process-owned lock; dead owners can be
+recovered while unknown owners are preserved.
 See [local runtime details](local-and-release-runtime.md#focused-startup-reliability-update)
 and the startup feature change note for checks and live-verification limits.
 

@@ -3,6 +3,7 @@ const {chromium}=await import(process.env.LOOKOUT_PLAYWRIGHT_MODULE||'playwright
 const browser=await chromium.launch({executablePath:process.env.LOOKOUT_CHROMIUM_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
 try {
  const page=await browser.newPage({viewport:{width:1280,height:850},reducedMotion:'reduce'});
+ await page.clock.install();
  const errors=[];
  page.on('pageerror',error=>errors.push(error.message));
  await page.goto((process.env.LOOKOUT_UI_URL||'http://localhost:3054')+'/discover/?demo=1');
@@ -20,7 +21,15 @@ try {
  await page.getByRole('link',{name:'Discover',exact:true}).click();
  await page.getByRole('heading',{name:'Discover',exact:true}).waitFor();
  assert.equal(await pack.count(),0,'Returning to Discover must not reactivate the same card');
+ await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now()+1000)));
  await page.evaluate(()=>window.JB.store.update('demo.roles',roles=>roles.map(role=>role.id==='demo-discover-unknown'?{...role,priority:'Apply Now'}:role)));
+ await page.getByLabel('Search roles or companies').fill('Example');
+ assert.equal(await pack.count(),0,'New Apply Now cards must not animate during the cooldown');
+ assert.equal(await page.evaluate(()=>window.JB.store.get('drops.packStamps')['apply-now:demo-discover-unknown']),undefined,'Waiting cards must not consume activation');
+ const remaining=await page.evaluate(()=>window.JB.store.get('drops.applyNowLastActivatedAt')+86400000-Date.now());
+ await page.clock.fastForward(remaining-1);
+ assert.equal(await pack.count(),0,'No second animation even one millisecond before 24 hours');
+ await page.clock.fastForward(1);
  await pack.getByRole('heading',{name:'Your Apply Now pack',exact:true}).waitFor();
  assert.equal(await page.evaluate(()=>window.JB.store.get('drops.packStamps')['apply-now:demo-discover-unknown']),true);
  await pack.locator('.pack-tear-button').click();
@@ -35,6 +44,7 @@ try {
   assert.equal(await pack.count(),0,'Reclassification must not replay an activated card');
  }
  assert.deepEqual(await page.evaluate(()=>({applications:window.JB.store.get('workflow.applications'),tracker:window.JB.store.get('tracker.items')})),before,'Pack activation must not apply or track jobs');
+ await page.clock.resume();
  await page.reload();
  await pack.getByRole('heading',{name:'Your Apply Now pack',exact:true}).waitFor();
  await pack.getByRole('button',{name:'Close pack',exact:true}).click();
@@ -43,5 +53,5 @@ try {
  await page.getByLabel('Search roles or companies').fill('Example');
  assert.equal(await pack.count(),0,'Dismissing a sealed pack also consumes its activation');
  assert.deepEqual(errors,[]);
- console.log('Apply Now pack: first arrival, per-card updates, once-only dismissal/navigation, mobile, and application isolation passed.');
+ console.log('Apply Now pack: first arrival, strict 24-hour cooldown, unconsumed waiting cards, automatic expiry, once-only navigation/dismissal, mobile, and application isolation passed.');
 } finally { await browser.close(); }

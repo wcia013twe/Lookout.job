@@ -1,6 +1,4 @@
-import {SearchStaging} from './search-staging.ts';
-import path from 'node:path';
-import {tmpdir} from 'node:os';
+import {SearchStaging,searchStagingRoot} from './search-staging.ts';
 import {jobrightFeed} from './jobright.ts';
 import {assertDiscoveryResults} from '../../lib/discovery-filter-contract.mjs';
 import {executeCareerTask} from '../../runner/career-tools.mjs';
@@ -21,7 +19,7 @@ export async function submitSearchLeads(call:Call,payload:Payload,{verify=verify
  return call('search.leads.commit',{request:payload,observations:verified.listings,diagnostics});
 }
 
-export async function readSearchSourceLeads(call:Call,payload:Payload,{stagingRoot=process.env.LOOKOUT_SEARCH_STAGING_DIR||path.join(tmpdir(),'lookout-search-staging'),readJob=(args:Payload)=>call('backend.jobs.read',args)}={}){
+export async function readSearchSourceLeads(call:Call,payload:Payload,{stagingRoot=searchStagingRoot(),readJob=(args:Payload)=>call('backend.jobs.read',args)}={}){
  const result=await call('search.run.read',{runId:payload.runId});if(result.error)return result;
  const source=result.data?.sources?.find((s:Payload)=>s.source_id===payload.sourceId);
  if(!source)return {error:{code:'P0002',message:'Owned run source not found'}};

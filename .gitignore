@@ -8,6 +8,7 @@ node_modules/
 **/*.tfstate
 **/*.tfstate.*
 /infra/gcp/terraform.tfvars
+/infra/cloud-run/terraform.tfvars
 /infra/gcp/*.tfplan
 /infra/gcp/crash.log
 
