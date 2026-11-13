@@ -9,7 +9,7 @@ export const dynamicParams = false;
 export function generateStaticParams() { return skills.map(skill => ({skill:skill.id})); }
 export async function generateMetadata({params}: {params:Promise<{skill:string}>}) {
   const skill = skillById((await params).skill);
-  return {title:`${skill?.title || 'Skill'} · Career Toolkit · Lookout`,description:skill?.summary};
+  return {title:`${skill?.title || 'Skill'} · Prep · Lookout`,description:skill?.summary};
 }
 export default async function SkillManual({params}: {params:Promise<{skill:string}>}) {
   const skill = skillById((await params).skill);
@@ -17,7 +17,7 @@ export default async function SkillManual({params}: {params:Promise<{skill:strin
   const document = skillDocument(skill);
   const category = categories.find(item => item.id === skill.category)!;
   return <div className={styles.surface}>
-    <nav className={styles.breadcrumbs} aria-label="Breadcrumb"><Link href="/career-toolkit/">Career Toolkit</Link></nav>
+    <nav className={styles.breadcrumbs} aria-label="Breadcrumb"><Link href="/career-toolkit/">Prep</Link></nav>
     <header className={styles.skillOverview}><div className={styles.skillIntro}><div className={styles.manualTitle}><ToolkitIcon name={category.id} size={28}/><h1>{skill.title}</h1></div><p>{skill.summary}</p></div><AgentRequest key={skill.id} skillId={skill.id}/></header>
     <section className={styles.skillDocument} aria-label="Skill document"><h2>Skill.md</h2><iframe title={`${skill.title} — Skill.md`} srcDoc={document} sandbox="" /></section>
   </div>;

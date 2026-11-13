@@ -38,7 +38,7 @@ export default function ApplicationDocumentLibrary({kind}:{kind:Kind}){
  }
  async function archive(row:Document){
   if(!services||busy||w.locked)return;setBusy(true);setFeedback("");
-  try{await services.artifactAction("artifacts.archive",{id:row.id,expectedVersion:row.version,archived:true});if(stillOwner()){setItems(old=>old.filter(r=>r.id!==row.id));setFeedback("Document archived. Earlier versions remain in Career Toolkit.");}}
+  try{await services.artifactAction("artifacts.archive",{id:row.id,expectedVersion:row.version,archived:true});if(stillOwner()){setItems(old=>old.filter(r=>r.id!==row.id));setFeedback("Document archived. Earlier versions remain in Prep.");}}
   catch(e){if(stillOwner())setFeedback(errorMessage(e));}finally{if(stillOwner())setBusy(false);}
  }
  return <ProfileCard title={title} icon="file">
