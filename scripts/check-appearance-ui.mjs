@@ -19,22 +19,12 @@ try{
   if(name==='desktop')await page.getByRole('button',{name:'Appearance',exact:true}).click();
   else await page.getByRole('combobox',{name:'Profile section',exact:true}).selectOption('appearance');
   const appearance=page.getByRole('region',{name:'Appearance',exact:true});
-  const market=appearance.getByRole('region',{name:'Marketplace',exact:true});
-  await market.getByRole('heading',{name:'Marketplace',exact:true}).waitFor();
-  const pack=await appearance.getByRole('heading',{name:'Pack texture',exact:true}).boundingBox();
-  const heading=await market.getByRole('heading',{name:'Marketplace',exact:true}).boundingBox();
-  assert(heading.y>pack.y,'Marketplace follows the appearance controls');
-  const save=market.getByRole('button',{name:'Save for this visit',exact:true});
-  if(await save.count())await save.click();
-  await market.getByRole('button',{name:/^Saved \(/}).click();
-  await market.getByText('1 theme concepts for Dashboard',{exact:true}).waitFor();
-  await market.getByRole('button',{name:'Browse',exact:true}).click();
-  await market.getByRole('button',{name:'Circles',exact:true}).click();
-  await market.getByRole('region',{name:'Circles theme preview',exact:true}).waitFor();
-  await market.getByRole('button',{name:'Dashboard',exact:true}).click();
-  await market.scrollIntoViewIfNeeded();
+  assert.equal(await appearance.getByRole('region',{name:'Marketplace',exact:true}).count(),0);
+  assert.equal(await appearance.getByRole('heading',{name:'Marketplace',exact:true}).count(),0);
+  await appearance.getByRole('heading',{name:'Pack texture',exact:true}).waitFor();
+  await appearance.scrollIntoViewIfNeeded();
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-  await market.screenshot({path:`${dir}/${name}-marketplace.png`});
+  await appearance.screenshot({path:`${dir}/${name}-appearance.png`});
   await page.getByRole('button',{name:'Open profile navigation'}).click();
   assert.equal(await page.getByRole('link',{name:'Browse Marketplace',exact:true}).count(),0);
   assert.equal(await page.getByRole('navigation',{name:'Profile navigation'}).getByRole('link',{name:'Appearance',exact:true}).count(),0);
@@ -42,5 +32,5 @@ try{
  }
  assert.equal(cloud.length,before,'Preview interactions must not write to the account');
  assert.deepEqual(errors,[]);
- console.log('PASS: Marketplace under Appearance, removed menu shortcut, browse/save/surface previews, desktop/mobile, no overflow or account writes');
+ console.log('PASS: Marketplace hidden in Appearance, removed menu shortcut, desktop/mobile, no overflow or account writes');
 }finally{await browser.close();}
