@@ -212,4 +212,6 @@ state. This is a frontend display rule; no backend or MCP approval boundary chan
 
 Connection setup and My Agent expose `workflow.searchPreferences.applicationPickup`: `manual` (default), `periodic`, or `prompt`. Existing account preference sync carries it to `settings.preferences.search` and emits an owner-scoped `preferences_changed` feed pointer. An agent reads personal context on its next check; no push or running scheduler is guaranteed. `open_agent_permissions` directs the human to settings but cannot change the choice. Background watcher installation requires separate consent, and application approval remains unchanged. The fictional demo resets its preference independently. Live runtime setup and signed-in propagation require separate verification.
 
+The connection-check screen places pickup and optional update frequency beside the phone. Frequency saves through the owned quiet-mode API, preserving the other delivery preferences and using the current personal version; it is agent guidance, not proof of a scheduled notification. Demo changes remain isolated.
+
 My Agent links signed-in users back to onboarding, including after completion; completion is not reset. The Community navigation tab links to the existing Circles workspace. Demo mode deliberately does not offer the onboarding link because entering onboarding exits the detached demo.

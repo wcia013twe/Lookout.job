@@ -71,11 +71,14 @@ test('quiet mode demo service preserves preference extras, increments versions a
  const changed=await service.saveQuietMode({...initial.settings,cadence:'daily'},1);
  assert.equal(changed.personalVersion,2);
  assert.equal(changed.settings.cadence,'daily');
+ assert.deepEqual(changed.settings,{...initial.settings,cadence:'daily'});
+ assert.deepEqual((await service.readQuietMode()).settings,changed.settings);
  assert.deepEqual(store.get('workflow.searchPreferences.reviewPolicy'),extras);
  await assert.rejects(()=>service.saveQuietMode(initial.settings,1),/Reload/);
  await assert.rejects(()=>service.saveQuietMode({...changed.settings,digestHour:30},2),/valid/);
  assert.equal((await service.readQuietMode()).personalVersion,2);
  assert.equal(createDemoWorkspace(now).demo.personalVersion,1);
+ assert.equal((await createDemoServices(createDemoStore(createDemoWorkspace(now))).readQuietMode()).settings.cadence,initial.settings.cadence);
 });
 test('demo memory store notifies subscribers and never touches real browser storage or accounts', async () => {
  const prior=Object.getOwnPropertyDescriptor(globalThis,'localStorage');
