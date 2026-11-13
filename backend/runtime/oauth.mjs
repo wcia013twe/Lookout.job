@@ -18,6 +18,7 @@ export function durableAdapter(store){return class Adapter{
 };}
 export async function loadOAuthConfig(env=process.env){
  if(env.LOOKOUT_OAUTH_ENABLED!=='true')return null;
+ if(env.LOOKOUT_OAUTH_CONFIG_JSON){const config=JSON.parse(env.LOOKOUT_OAUTH_CONFIG_JSON);validateOAuthConfig(config);return config;}
  if(!env.LOOKOUT_OAUTH_CONFIG_FILE)throw Error('OAuth configuration file is required');
  if((await stat(env.LOOKOUT_OAUTH_CONFIG_FILE)).mode&0o077)throw Error('OAuth config file must be private (0600)');
  const config=JSON.parse(await readFile(env.LOOKOUT_OAUTH_CONFIG_FILE,'utf8'));

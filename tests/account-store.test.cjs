@@ -10,10 +10,12 @@ function store(data=new Map()) {
 test('per-card Apply Now activation survives immediate reload and stays account-scoped',()=>{
  const data=new Map(),s=store(data),stamp='drops.packStamps.apply-now:job-one';
  s.switchAccount(one);assert.equal(s.get(stamp),undefined);
- s.set(stamp,true);s._flush();
+ s.set(stamp,true);s.set('drops.applyNowLastActivatedAt',123456789);s._flush();
  const reloaded=store(data);reloaded.switchAccount(one);assert.equal(reloaded.get(stamp),true);
+ assert.equal(reloaded.get('drops.applyNowLastActivatedAt'),123456789);
  assert.equal(reloaded.get('drops.packStamps.apply-now:job-two'),undefined);
  reloaded.switchAccount(two);assert.equal(reloaded.get(stamp),undefined);
+ assert.equal(reloaded.get('drops.applyNowLastActivatedAt'),null);
  reloaded.switchAccount(null);assert.equal(reloaded.get(stamp),undefined);
  reloaded.switchAccount(one);assert.equal(reloaded.get(stamp),true);
 });

@@ -42,6 +42,22 @@ generated: { by: "openwiki/0.7.2", at: "2026-11-07T02:52:01.830Z" }
 
 # Current implementation state and operational limits
 
+## Cloud Run source support — November 13, 2026
+
+Focused manual update: `infra/cloud-run/` is an independent deployment root,
+not a replacement for the VM Terraform state. The Node runtime supports finite
+discovery execution, private shared immutable staging, awaited best-effort
+enqueue wakes, and Google-identity-only request-bound maintenance for queue
+recovery and finite MCP-event delivery. Website SQL enqueues recover through
+maintenance; scoped MCP/operations enqueues also request an immediate wake.
+Submission remains disabled; leases and existing consent boundaries are unchanged.
+
+See `infra/cloud-run/README.md` for the clean-main image build, pinned secret
+references, paused Scheduler smoke, issuer migration and disk-preserving rollback.
+Local source/container checks are not evidence of Google IAM, GCS, Scheduler,
+OAuth host reconnects or a production cutover. The VM and production endpoint
+remain unchanged. Broader generated wiki coverage retains its recorded revision.
+
 ## Private shadow recommendation logging — November 12, 2026
 
 The operator configured project `job-board-511516` with a seven-day `lookout-shadow`

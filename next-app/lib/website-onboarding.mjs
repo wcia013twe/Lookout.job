@@ -8,7 +8,6 @@ export function websiteOnboardingDestination({path,demo,authReady,signedIn,statu
  if(!signedIn)return null; // The existing signed-out sign-in screen owns guest access.
  if(status==='incomplete')return onboarding?null:'/onboarding/';
  if(status==='complete'&&/^\/(login|signup)\/?$/.test(path))return '/discover/';
- if(status==='complete'&&onboarding)return '/?tour=dashboard';
  return null;
 }
 export async function finishWebsiteOnboarding(api){
