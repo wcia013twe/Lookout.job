@@ -95,7 +95,7 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
         <button type="submit" className={secondary} disabled={busy || locked || minutes === String(agenda.dailyMinutes)}>Save budget</button>
       </form>
       {!!(agenda.dormantCount || agenda.uncertainCount || agenda.expiredCount) && <p className="mt-4">Outside this week: {agenda.dormantCount} later interviews · {agenda.uncertainCount} dates to confirm · {agenda.expiredCount} past deadlines.</p>}
-      <p className="mt-3 leading-relaxed">Shared practice counts once. Dates come from Applications and Career Toolkit. The plan prioritizes interviews, then learning goals, within your daily budget.</p>
+      <p className="mt-3 leading-relaxed">Shared practice counts once. Dates come from Applications and Prep. The plan prioritizes interviews, then learning goals, within your daily budget.</p>
     </details>
   </>;
 }

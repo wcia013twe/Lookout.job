@@ -49,7 +49,7 @@ try{
  assert.equal(await companies.getByRole('button',{name:'Fintech',exact:true}).count(),0);
  assert.match(await companies.getByRole('list',{name:'Selected industries'}).innerText(),/Fintech/);
  // Leave/remount the provider: state must come from saved demo records.
- await page.getByRole('link',{name:'Career Toolkit',exact:true}).click();await page.waitForURL('**/career-toolkit/');
+ await page.getByRole('link',{name:'Prep',exact:true}).click();await page.waitForURL('**/career-toolkit/');
  await page.getByRole('button',{name:'Open profile navigation',exact:true}).click();await page.getByRole('link',{name:'My Profile',exact:true}).click();
  await nav.getByRole('button',{name:'Job preferences',exact:true}).click();
  assert.match(await companies.getByRole('list',{name:'Selected industries'}).innerText(),/Robotics & Automation/);

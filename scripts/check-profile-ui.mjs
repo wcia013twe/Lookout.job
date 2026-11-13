@@ -220,7 +220,7 @@ try{
  assert.equal(await agent.getByRole('combobox',{name:'Employer questions tone',exact:true}).inputValue(),'Confident & understated');
  // Leaving the page remounts the profile provider: these values must come from
  // saved demo state, not its local draft map.
- await page.getByRole('link',{name:'Career Toolkit',exact:true}).click();
+ await page.getByRole('link',{name:'Prep',exact:true}).click();
  await page.waitForURL('**/career-toolkit/');
  await page.getByRole('button',{name:'Open profile navigation'}).click();
  await page.getByRole('link',{name:'My Profile',exact:true}).click();
