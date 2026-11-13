@@ -6,10 +6,12 @@ verified. Source availability is not evidence of a hosted migration.
 
 November 13 source verification: the Docker runtime, isolated real database
 enqueue/lease recovery, types, frontend build and Terraform validation passed.
-The full suite still has 55 unchanged baseline failures in pinned Career Ops
-imports/filtering/search execution (`MACOS_BROWSER_LIKE_USER_AGENT` missing from
-`_http.mjs`). Repair that execution blocker before activating discovery or
-cutting over. No Cloud Run/GCS/Scheduler deployment has been verified.
+The missing `MACOS_BROWSER_LIKE_USER_AGENT` export has been restored to its pinned
+checksum. Docker configuration validation now succeeds. Separate vendor-integrity
+and provider-count failures remain: Workday and We Work Remotely are skipped by
+the provider registry. Discovery release readiness still requires resolving those
+failures and a bounded live search. No Cloud Run/GCS/Scheduler deployment has been
+verified.
 
 ## Runtime and limits
 
