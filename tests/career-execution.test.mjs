@@ -10,6 +10,14 @@ import {toolkitFileResponse} from '../supabase/functions/agent-gateway/toolkit.m
 import {createLocalRuntime,LOCAL_TOOLS} from '../runner/runtime.mjs';
 const app='11111111-1111-1111-1111-111111111111';
 test('vendored executable files match the pinned import manifest',async()=>{const m=JSON.parse(await readFile(new URL('../runner/vendor/career-ops/manifest.json',import.meta.url)));for(const f of m.files){const b=await readFile(new URL('../runner/vendor/career-ops/'+f.path,import.meta.url));assert.equal(createHash('sha256').update(b).digest('hex'),f.sha256,f.path);}});
+test('HTTP helpers expose the pinned macOS user agent required by the Feishu provider',async()=>{
+ const transport=await import('../runner/vendor/career-ops/providers/_http.mjs');
+ const agents=await import('../runner/vendor/career-ops/user-agent.mjs');
+ const provider=await import('../runner/vendor/career-ops/providers/feishu-jobs.mjs');
+ assert.equal(typeof transport.MACOS_BROWSER_LIKE_USER_AGENT,'string');
+ assert.equal(transport.MACOS_BROWSER_LIKE_USER_AGENT,agents.MACOS_BROWSER_LIKE_USER_AGENT);
+ assert.equal(provider.default.id,'feishu-jobs');
+});
 test('all 108 network providers load in the credential-free worker',async()=>{const providers=await executeCareerTask('catalog',{});assert.equal(providers.length,108);assert(!providers.some(p=>p.id==='local-parser'));assert(CAREER_TOOLS.every(t=>LOCAL_TOOLS.includes(t)));});
 test('actual Greenhouse scanner preserves posting identity and applies explicit filters',async()=>{let api;const result=await scanSource({target:{id:'example',name:'Example',address:'https://job-boards.greenhouse.io/example'},keywords:['typescript']},{providers:new Map([['greenhouse',greenhouse]]),ctx:{fetchJson:async u=>{api=u;return {jobs:[{id:12,title:'Engineer',absolute_url:'https://job-boards.greenhouse.io/example/jobs/12',location:{name:'New York'},content:'&lt;p&gt;TypeScript&lt;/p&gt;'}]};}}});assert.match(api,/content=true/);assert.equal(result.jobs[0].externalId,'12');assert.equal(result.jobs[0].verification,'discovered');assert.equal(result.jobs[0].description,'TypeScript');assert.equal(result.jobs[0].sourceTargetId,'example');});
 test('scanner rejects local addresses and never resolves arbitrary parser commands',async()=>{for(const url of ['http://example.com','https://127.0.0.1','https://localhost','https://[::1]','https://x.internal'])assert.throws(()=>publicUrl(url));const r=await scanSource({target:{id:'a',name:'A',address:'https://example.com'},config:{provider:'local-parser'}},{providers:new Map()});assert.equal(r.status,'unsupported');});

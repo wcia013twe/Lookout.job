@@ -507,6 +507,9 @@ its next feed check. It does not establish a running scheduler or consent to ins
 a watcher. The existing `open_agent_permissions` handoff directs the human to settings;
 the agent reads the saved choice through personal context. The fictional demo keeps
 changes isolated and restores its pickup example on reset.
+The connection-check screen also offers an optional update frequency, saved to the
+account's quiet-mode settings without changing its other delivery preferences. It
+does not itself schedule or send notifications.
 
 
 ### Catalog role during setup

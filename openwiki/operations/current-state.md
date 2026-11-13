@@ -66,6 +66,12 @@ Local source/container checks are not evidence of Google IAM, GCS, Scheduler,
 OAuth host reconnects or a production cutover. The VM and production endpoint
 remain unchanged. Broader generated wiki coverage retains its recorded revision.
 
+The Career Ops HTTP helper's missing macOS user-agent export is restored to its
+existing pinned manifest checksum. A regression test and rebuilt Docker image
+verify Feishu import and real discovery configuration validation. Separate vendor
+checksum mismatches and skipped Workday/We Work Remotely providers remain; this
+repair does not establish a successful live search or release readiness.
+
 ## Private shadow recommendation logging — November 12, 2026
 
 The operator configured project `job-board-511516` with a seven-day `lookout-shadow`

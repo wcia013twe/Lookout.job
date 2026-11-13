@@ -18,3 +18,11 @@
 - No cloud resources, hosted migration, image push, endpoint/OAuth switch, GitHub publication or VM shutdown occurred. Cloud Run API was disabled in the project during inspection. Terraform was validated locally, not applied/planned against real resources. The main-only image-push path has not been executed.
 - Repair the existing Career Ops baseline first, then verify real Google IAM/OIDC, GCS cross-instance staging, Scheduler/outbox recovery and one bounded full search alongside the VM. Scheduler remains paused by default. Account for the OAuth issuer, client reconnect and human consent before cutover. Keep the VM disk for rollback; do not claim production parity or migration completion from source/container support alone.
 - This is a focused manual OpenWiki update; broader generated coverage retains its documented revision. Current client usage and a complete cost estimate remain unverified.
+
+## Follow-up — Career Ops import repair, November 13, 2026
+
+- Restore `MACOS_BROWSER_LIKE_USER_AGENT` in the HTTP helper's export list. The repaired file exactly matches its existing pinned SHA-256; no upstream upgrade, checksum rewrite, dependency, filtering change or consent change.
+- Add a direct export/provider-import regression test. Existing fictional search/demo coverage remains applicable; no new user-facing state or demo fixture is needed.
+- Focused execution/filter/wiring tests: 53 passed, two existing vendor-integrity/provider-count failures. Full `npm test`: 1,440 tests, 1,437 passed, three failed. Remaining failures also appear in the earlier baseline logs: vendor checksum mismatch, 106 rather than 108 loadable network providers, and stale generated search-document codec. Workday and We Work Remotely lack valid provider export shapes. Those separate defects are not changed here.
+- Runtime and Next TypeScript checks, `npm run validate:data` (158 roles), Docker image build and real in-container discovery configuration validation passed. The container also verifies the pinned HTTP checksum and Feishu import. No Google credentials, hosted writes, live source fetch, image push or deployment occurred.
+- The missing-export blocker is repaired, but the remaining failures and bounded live-search verification still gate discovery release. The earlier migration validation above is a historical record, not the current test outcome.
