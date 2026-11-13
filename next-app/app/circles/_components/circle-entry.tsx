@@ -13,8 +13,7 @@ export default function CircleEntry({busy, demo, submit}: {
         <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-1.2a5.5 5.5 0 0 1 11 0V19M17 7v6m-3-3h6"/></svg>
       </div>
       <h2 id="circle-entry-title" className="text-2xl font-semibold tracking-tight">{join ? "Join a Circle" : "Create a Circle"}</h2>
-      <p id="circle-entry-description" className="mt-2 max-w-sm text-sm leading-6 text-board-muted">{join ? "Enter the invite code shared with you." : "Bring your people together in a private Circle."}</p>
-      <form aria-labelledby="circle-entry-title" aria-describedby="circle-entry-description" onSubmit={event => void submit(event, join)} className="mt-7">
+      <form aria-labelledby="circle-entry-title" onSubmit={event => void submit(event, join)} className="mt-7">
         <fieldset disabled={busy} className="min-w-0 space-y-5">
           {join ? <Field label="Invite code"><input key="invite" name="token" className={`${control} font-mono tracking-wide`} required maxLength={100} placeholder={demo ? "demo-invite" : "Paste your invite code"} autoCapitalize="none" autoCorrect="off" spellCheck={false}/></Field>
             : <Field label="Circle name"><input key="circle-name" name="name" className={control} required maxLength={100} placeholder="Give your Circle a name"/></Field>}
