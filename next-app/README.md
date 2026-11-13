@@ -460,6 +460,13 @@ user choose it in My Profile → My Agent. Existing scoped connection tools cont
 manage credentials, and workspace reads expose saved preferences. No new connection
 or deployed MCP capability is implied by selecting a companion.
 
+Application pickup is selectable during connection setup and in My Agent. It defaults
+to manual, syncs through the same owned search preferences, and reaches an agent on
+its next feed check. It does not establish a running scheduler or consent to install
+a watcher. The existing `open_agent_permissions` handoff directs the human to settings;
+the agent reads the saved choice through personal context. The fictional demo keeps
+changes isolated and restores its pickup example on reset.
+
 
 ### Catalog role during setup
 

@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readAgentSelection, saveAgentSelection, agentOptions} from '../lib/agent-selection.mjs';
+import {readAgentSelection, saveAgentSelection, agentOptions,readApplicationPickup,saveApplicationPickup,applicationPickupOptions} from '../lib/agent-selection.mjs';
 import {fromCloud} from '../lib/cloud-model.mjs';
 function store(){const data={"workflow.profile":{name:"Candidate",setupAgentProvider:"claude",setupAgentName:"Claude"},"workflow.searchPreferences":{targets:[{id:"source"}]}};return {get:key=>data[key],set:(key,value)=>data[key]=value,update:(key,fn)=>data[key]=fn(data[key])};}
 test('selection survives cloud hydration and both surfaces read the saved choice',()=>{
@@ -20,4 +20,9 @@ test('all selector choices and custom names use the same preference contract',()
  const s=store();for(const option of agentOptions){saveAgentSelection(s,option.id,option.name);assert.equal(readAgentSelection(s.get('workflow.searchPreferences')).provider,option.id);}
  saveAgentSelection(s,'custom','My runtime');assert.equal(readAgentSelection(s.get('workflow.searchPreferences')).name,'My runtime');
  assert.throws(()=>saveAgentSelection(s,'unknown','Unknown'));
+});
+test('application pickup survives account hydration without replacing other preferences',()=>{
+ const s=store();assert.equal(readApplicationPickup(s.get('workflow.searchPreferences')),'manual');
+ for(const option of applicationPickupOptions){saveApplicationPickup(s,option.id);const restored=fromCloud({profiles:[],preferences:[{search:structuredClone(s.get('workflow.searchPreferences'))}],resumes:[],answer_library:[],applications:[]});assert.equal(readApplicationPickup(restored.searchPreferences),option.id);assert.deepEqual(restored.searchPreferences.targets,[{id:'source'}]);}
+ assert.throws(()=>saveApplicationPickup(s,'unsupported'));assert.equal(readApplicationPickup({applicationPickup:'unsupported'}),'manual');
 });
