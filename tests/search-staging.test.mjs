@@ -31,7 +31,9 @@ test('expired staging is removed while recent resumable work remains',async()=>{
 test('fictional direct-search demo distinguishes staged candidates from permanent shortlist rows',async()=>{
  const {searchDemo}=await import('../lib/search/demo.mjs');
  const {backendJobsDemoFixtures}=await import('../lib/backend-jobs-demo.mjs');
- const source=searchDemo().runs.find(run=>run.id==='demo-run-resuming').sources[0];
+ const resumed=searchDemo().runs.find(run=>run.id==='demo-run-resuming');
+ assert.match(resumed.summary,/Fictional.*shared immutable snapshot after finite-worker interruption/);
+ const source=resumed.sources[0];
  assert.equal(source.counts.staged,25);assert.equal(source.counts.saved,0);assert.equal(source.checkpoint.stage,'temporary-staging');
  const job=backendJobsDemoFixtures().jobs.find(job=>job.kind==='search_ats'&&job.status==='completed');
  assert.equal(job.result.pipelineVersion,2);assert.equal(job.result.shortlist.totalRetained,1);
