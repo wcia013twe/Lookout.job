@@ -12,7 +12,6 @@ export default function ApplyNowPack({ drops, onOpened }: { drops: ApplyNowDrop[
   const [pack, setPack] = useState<ApplyNowDrop[] | null>(null);
   const [now, setNow] = useState(Date.now);
   useEffect(() => {
-    if (w.demo && new URLSearchParams(window.location.search).get("feedbackDesign") === "1") return;
     if (pack) return;
     const stamps = w.store.get("drops.packStamps") || {};
     const unopened = drops.filter(drop => !stamps[applyNowPackStamp(drop.packId)]);

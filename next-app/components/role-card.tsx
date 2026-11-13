@@ -18,7 +18,7 @@ import ApplicationActions from "./application-actions";
 import RoleJobFacts from "./role-job-facts";
 import RoleMatchingSkills from "./role-matching-skills";
 import RoleMatchPreview, { type MatchPreview } from "./role-match-preview";
-import RecommendationFeedbackPreview, {useFeedbackDesignPreview} from "./recommendation-feedback-preview";
+import RecommendationFeedback from "./recommendation-feedback";
 import { primary, secondary } from "./ui";
 import { CompanyLogo } from "./company-logo";
 export { CompanyLogo } from "./company-logo";
@@ -30,7 +30,6 @@ const REFRACTION: Record<keyof typeof TIER_HEX, string> = { common: "#7ae9db", r
 
 export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: (role: Role) => void }) {
   const w = useWorkspace();
-  const feedbackDesign = useFeedbackDesignPreview();
   const reduceMotion = useReducedMotion();
   const sheenPosition = useMotionValue(.5);
   const sheenIntensity = useMotionValue(.2);
@@ -79,10 +78,8 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
           <RoleMatchingSkills whyItFits={role.whyItFits} />
         </div>
         <RoleMatchPreview sample={w.demo ? role.matchPreview : role.matchAssessment} demo={w.demo} />
-        {feedbackDesign ? <div>
-          <RecommendationFeedbackPreview target={`${role.company} · ${role.title}`}/>
-          <ApplicationActions role={role} onPreview={onPreview}/>
-        </div> : <ApplicationActions role={role} onPreview={onPreview}/>}
+        <RecommendationFeedback targetId={role.id} target={`${role.company} · ${role.title}`} context={{searchProfileId:role.searchProfileId,evaluatedProfileVersion:role.evaluatedProfileVersion,discoveredDate:role.discoveredDate}}/>
+        <ApplicationActions role={role} onPreview={onPreview}/>
       </div>
     </motion.article>
   );

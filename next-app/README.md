@@ -22,6 +22,45 @@ The retired static frontend has been removed. React components own presentation 
 
 ## Profile verification and demo checks
 
+### Profile navigation
+
+My Profile uses a vertical desktop sidebar and retains the compact mobile section
+selector. Saved Preferences sits after My Agent and before Appearance.
+Its single Muse summary card is an honest empty
+state: summary storage, editing, and agent synchronization are not connected yet.
+Existing answers, writing settings, deep links, and preference storage are unchanged.
+
+### Recommendation feedback
+
+Discover cards and their collected/analyzed detail view, existing active Network
+suggestions, and Weekly prep tasks share `components/recommendation-feedback.tsx`.
+Feedback does not change Apply, Send, Dismiss, or Done. Account writes use
+`createBackend().saveRecommendationFeedback`; guests have no feedback writer.
+Reads are deduplicated and microtask-batched (at most 50 targets per request),
+cached only in memory per workspace/account, and guarded against account changes.
+Failed or uncertain saves require reloading the current feedback version before
+retrying. The negative-feedback draft remains available while reconciling.
+
+Target IDs follow the backend ownership boundary: job ID, owned contact ID, and
+`application:<canonical application UUID>:<taskId>` or `goal:<goal UUID>:<taskId>`.
+Grouped preparation sessions show one feedback control per owned task, not a
+derived day/session ID. Context carries the suggestion identity/revision or
+agenda item/task/plan version; `expectedVersion` is always the feedback version.
+Read responses are `{rows}` and save responses are normalized rows. Server-side
+ownership, recommendation snapshots, concurrency checks, and deployment remain
+backend responsibilities; UI checks alone do not establish deployed availability.
+
+The detached demo uses only `lib/recommendation-feedback-demo.mjs`, with fictional
+helpful and negative notes on existing roles and suggestions. Reset demo restores
+the fixtures. `?demo=1&demoApi=unavailable` exercises a first-read failure and a
+first-save conflict: reload, preserve/edit the note, then save again. Demo delays
+make loading/saving observable without any account service calls. Check, cross,
+toggle-to-clear, edit, cancel/Escape, and native dialog keyboard focus remain
+independent of the adjacent work actions. No browser recording was made for this
+implementation; browser work was outside the requested scope.
+
+Focused state tests: `node --test tests/recommendation-feedback-ui.test.mjs`.
+
 Profile panels stay mounted after first use so switching sections preserves unsaved fields; leaving the route still requires saving. The profile fallback resume lives in Job preferences; role/type assignments are managed only in About me / Documents. The existing account-wide submission default (`workflow.searchPreferences.defaultResumeId`) is retained in storage but is not editable on My Agent. Progress and leaderboard settings are reached through the header XP menu.
 
 In admin Demo mode, edit an About me field and use its section checkmark to save. Switch to Job preferences and return to verify the saved field remains; changed facts remain unverified. Application profile edits save automatically after a short pause, including across section switches. Inspect the fictional resume, unverified saved answer and preferences. Open My agent to inspect the six fictional search sources in a compact source list (including long names/URLs, all three source types, and expandable access details). Check a narrow screen, edit/add/remove a source, remove all sources to check the empty state, and inspect agent connection controls; switch sections and return to check draft preservation. Reset demo and confirm the original fixtures return without changing account records. Check Progress through the XP menu.
@@ -468,6 +507,9 @@ its next feed check. It does not establish a running scheduler or consent to ins
 a watcher. The existing `open_agent_permissions` handoff directs the human to settings;
 the agent reads the saved choice through personal context. The fictional demo keeps
 changes isolated and restores its pickup example on reset.
+The connection-check screen also offers an optional update frequency, saved to the
+account's quiet-mode settings without changing its other delivery preferences. It
+does not itself schedule or send notifications.
 
 
 ### Catalog role during setup

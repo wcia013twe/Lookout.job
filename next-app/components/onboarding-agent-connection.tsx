@@ -10,12 +10,15 @@ import { onboardingConnectionReady } from "../lib/onboarding-connection.mjs";
 import { Iphone } from "./iphone";
 import AgentConnections, { AgentPluginSteps } from "./agent-connections";
 import ApplicationPickup from "./application-pickup";
+import { useQuietSettings } from "../lib/quiet-settings";
+import { Field, control } from "./ui";
 import { Button, Dots, Icon, Quiet, Title } from "./onboarding-ui";
 
 type Props = { room: ReactNode; onFinish: () => void; onLater: () => void };
 
 export default function OnboardingAgentConnection({ room, onFinish, onLater }: Props) {
   const w = useWorkspace();
+  const updates = useQuietSettings();
   const reduced = useReducedMotion();
   const api = useMemo(() => w.demo ? w.services : w.client && w.user ? createBackend(w.client, w.user.id) : null, [w.demo, w.services, w.client, w.user?.id]);
   const checkPage = useRef<HTMLDivElement>(null);
@@ -66,7 +69,7 @@ export default function OnboardingAgentConnection({ room, onFinish, onLater }: P
     <Dots />
     <Title>{connected ? "You’re connected." : "Let’s check your connection."}</Title>
     <p className="lead">{connected ? "Your agent has checked in with Lookout." : "Add the connector in your agent, then ask it to test the Lookout connection."}</p>
-    <Iphone className="connection-device"><div className="connection-phone" role="status" aria-live="polite">
+    <div className="connection-layout"><Iphone className="connection-device"><div className="connection-phone" role="status" aria-live="polite">
       <div className="connection-phone-brand"><BrandMark /><strong>lookout</strong></div>
       <motion.div className={"connection-phone-indicator" + (connected ? " is-connected" : "")} animate={connected || reduced ? { scale: 1, opacity: 1 } : { scale: [1, 1.06, 1], opacity: [.55, 1, .55] }} transition={{ duration: 2, repeat: connected || reduced ? 0 : Infinity }}>
         {connected ? <Icon kind="check" /> : <Dots />}
@@ -74,7 +77,15 @@ export default function OnboardingAgentConnection({ room, onFinish, onLater }: P
       <strong>{connected ? "Your agent is here." : "Waiting for your agent…"}</strong>
       <p>{connected ? "Your agent is ready. Check its chat for setup confirmation." : "This updates after your agent completes its connection test."}</p>
       {w.demo && <span className="hint">Demo connection · simulated</span>}
-    </div></Iphone>
+    </div></Iphone><section className="connection-preferences" aria-labelledby="connection-preferences-heading">
+      <h2 id="connection-preferences-heading">Make it yours <span>Optional</span></h2>
+      <p>Choose how your agent picks up work and how often you’d like updates. You can leave these as they are.</p>
+      <ApplicationPickup disabled={updates.busy} />
+      <div className="connection-updates"><Field label="Update frequency"><select className={control} value={updates.quiet.cadence} disabled={w.locked || updates.busy || !!updates.error || !!w.state.workflow.cloudDirty || (!w.user && !w.demo)} onChange={event=>void updates.saveCadence(event.target.value)}><option value="immediate">As things happen</option><option value="daily">Daily</option><option value="weekly">Weekly</option></select></Field>
+        <p>Guidance for your agent, not a guarantee that updates are scheduled. {!w.user&&!w.demo ? "Sign in to save to your account." : updates.busy ? "Saving or loading…" : updates.error ? "Your setting could not be confirmed." : w.demo ? "Demo changes stay in this preview." : "Changes are saved to your settings."}</p>
+        {updates.error && <p role="alert">{updates.error} <button type="button" onClick={updates.reload}>Reload settings</button></p>}
+      </div>
+    </section></div>
     {error && <p className="hint" role="status">{error}</p>}
     {timedOut&&<Button secondary onClick={()=>{setError("");setRetry(value=>value+1);}}>Retry connection check</Button>}
     {connected && <div className="actions"><Button onClick={onFinish}>Continue</Button></div>}
@@ -85,7 +96,6 @@ export default function OnboardingAgentConnection({ room, onFinish, onLater }: P
     <Title sub="Choose who’s joining your search.">Meet your agent.</Title>
     {room}
     <div className="agent-connect-heading"><h2>Add a connector in your agent.</h2></div>
-    <ApplicationPickup />
     {w.demo ? <div className="agent-connect">
       <AgentPluginSteps />
       <p className="hint">Demo preview · no connector is created.</p>

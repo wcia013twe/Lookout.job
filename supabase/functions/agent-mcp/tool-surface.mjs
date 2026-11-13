@@ -1,6 +1,7 @@
 // Presentation only: scopes, validators and execution stay in protocol.mjs.
 export const DEFAULT_TOOL_NAMES = new Set([
   'check_context_versions','read_developer_context','read_personal_context','read_guide','discover_toolkit',
+  'read_recommendation_feedback','list_recommendation_feedback',
   'read_search_context','read_search_discoveries','save_search_document','submit_backend_job','read_backend_jobs','cancel_backend_job',
   'submit_search_leads','publish_batch','read_batch','remove_discover_job','set_discover_visibility',
   'queue_application_job','read_action_inbox','read_action_board','read_application_record','record_application_progress','request_human_action',

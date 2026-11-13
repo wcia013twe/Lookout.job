@@ -20,11 +20,12 @@ import {
   EligibilitySettings,
   WritingStyles,
 } from "./profile-settings";
-type ProfileSectionId = "about" | "preferences" | "agent" | "appearance";
+type ProfileSectionId = "about" | "preferences" | "agent" | "saved-preferences" | "appearance";
 const sections: [ProfileSectionId, string][] = [
   ["about", "About me"],
   ["preferences", "Job preferences"],
   ["agent", "My Agent"],
+  ["saved-preferences", "Saved Preferences"],
   ["appearance", "Appearance"],
 ];
 function ProfileContent() {
@@ -64,7 +65,8 @@ function ProfileContent() {
           ))}
         </select>
       </label>
-      <nav aria-label="Profile sections" className={profileStyles.tabs}>
+      <div className={profileStyles.profileLayout}>
+      <nav aria-label="Profile sections" className={profileStyles.sidebar}>
         {sections.map(([id, title]) => (
           <button
             key={id}
@@ -76,6 +78,7 @@ function ProfileContent() {
           </button>
         ))}
       </nav>
+      <div className={profileStyles.profileContent}>
       {visited.includes("about") && (
         <section
           className={profileStyles.panel}
@@ -113,10 +116,25 @@ function ProfileContent() {
           </DiscoverySetup>
         </section>
       )}
+      {visited.includes("saved-preferences") && (
+        <section className={profileStyles.panel} hidden={active !== "saved-preferences"} aria-label="Saved Preferences">
+          <div className={profileStyles.sectionIntro}>
+            <h2>Saved Preferences</h2>
+            <p>Your preferences and writing style, in one place.</p>
+          </div>
+          <section className={profileStyles.preferenceSummary} aria-labelledby="muse-preferences-title">
+            <h3 id="muse-preferences-title">What Muse knows about you</h3>
+            <p>No saved summary yet.</p>
+            <p>This card will show your current preferences and writing guidance. Muse summary updates are not connected yet. Your existing job preferences, writing settings, and saved answers remain unchanged.</p>
+          </section>
+        </section>
+      )}
       {visited.includes("appearance") && <section className={profileStyles.panel} hidden={active !== "appearance"} aria-label="Appearance"><AppearanceSettings /></section>}
       {a.saveError && <p role="alert" className="text-sm text-board-muted">
         {a.feedback} <button type="button" className={secondary} disabled={a.busy} onClick={a.retrySave}>Retry saving</button>
       </p>}
+      </div>
+      </div>
 
     </ProfileSurface>
   );
