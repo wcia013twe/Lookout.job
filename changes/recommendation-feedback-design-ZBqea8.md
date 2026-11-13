@@ -70,3 +70,7 @@ checks pass. The first integrated full run reports 1,403 passes and 55 failures 
 the imported Career Ops paths, including a missing MACOS_BROWSER_LIKE_USER_AGENT
 export and vendor-manifest mismatches. Newer local main contains a related export
 repair and will be integrated before final landing; no unrelated repair is added here.
+After integrating that newer main, 45 of 47 combined feedback/profile/Career Ops
+checks pass. The two remaining failures are Career Ops vendor-manifest integrity
+and provider loading (106 versus 108). Those vendor files and their test are
+byte-identical to imported local main; no changes to them are part of this feature.
