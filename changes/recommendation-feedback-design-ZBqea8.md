@@ -74,3 +74,13 @@ After integrating that newer main, 45 of 47 combined feedback/profile/Career Ops
 checks pass. The two remaining failures are Career Ops vendor-manifest integrity
 and provider loading (106 versus 108). Those vendor files and their test are
 byte-identical to imported local main; no changes to them are part of this feature.
+
+## Writing Style location
+
+Moved the existing Writing Style workspace, including Saved Answers, from My Agent
+to Saved Preferences beneath the Muse summary card. Answer deep links now open
+Saved Preferences. Existing settings, account boundaries, and persistence are unchanged.
+Focused regression coverage checks placement, a single component instance, and
+the answer deep-link destination. No hosted deployment or browser verification is implied.
+Validation: 13 focused/adjacent tests, frontend typecheck, static production build
+(442 offline assets), and diff whitespace checks pass.

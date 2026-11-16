@@ -13,3 +13,8 @@
 
 - Removed repetitive captions from Circle identity, overview cards, channel headings, entry and trophy room. Kept member avatars, active filters, and privacy and review guidance; improved composer disclosure readability and tightened heading spacing.
 - Validation: Impeccable detector reported no findings; desktop and mobile fictional demo interactions were recorded. Frontend typecheck, data validation and production build passed. Full `npm test`: 1,386 passed and 55 failed, including the existing vendored Career Ops manifest and search pipeline failures.
+
+## Circle settings banner
+
+- Moved the Circle identity banner and Customize action into Circle settings. Kept conversation, draft and Circle-switching controls available above the workspace.
+- Validation: typecheck, data validation, production build and Impeccable detector passed. Desktop and mobile demo checks covered customization and conversation controls. Full `npm test`: 1,456 passed and 3 failed in the vendored manifest, provider loading and generated edge codec synchronization checks.
