@@ -1,5 +1,13 @@
 # Cloud Run runtime and independent deployment root
 
+## Focused production release — November 16, 2026
+
+- Rebased only the Cloud Run migration and pinned user-agent repair onto published main; unrelated local UI commits are excluded.
+- Add `/health` for hosted probes because Google's frontend returns HTML 404 for `/healthz`; retain the local legacy route. The VM's APILayer key is empty, so there is no existing resume-parser secret to migrate; parsing remains an explicit pre-existing verification limit.
+- Current release checks: 30 focused runtime/discovery/staging tests pass; runtime and frontend typechecks, production static build, catalog validation (158 roles), Terraform format/validation and diff checks pass. Terraform initialization initially timed out contacting the registry; using the already verified local provider completed validation.
+- Full `npm test`: 1,436 tests, 1,432 pass, four failures: existing vendor manifest mismatch, 106/108 provider imports, stale generated search bundle, and an unchanged outreach test file failure under parallel load. The isolated outreach retry passes 2/2. These failures remain visible and may block protected CI; no checks or branch protections are bypassed.
+- Initial infrastructure is deployed with maintenance paused, existing scoped MCP authentication verified, and production VM traffic unchanged. Hosted queue recovery still requires the main-only migration release. Full hosted execution, recovery and cutover remain unverified at this point.
+
 - Reuse the Node image for a request-billed API and finite discovery Job. Enqueue wakes are awaited best-effort for both scoped submission tools/operations; browser SQL enqueues recover through authenticated Scheduler maintenance. Submission stays disabled, leases stay authoritative, and local polling remains unchanged.
 - Replace shared disk staging with private immutable GCS snapshots when configured. Separate API/worker permissions, generation-fenced cleanup and seven-day lifecycle protect the temporary pool. Existing owned reads and SQL checkpoints remain the domain boundary.
 - Request mode drains one finite MCP-event outbox batch before responding and starts no permanent Realtime listener. Google-signed exact-identity maintenance is an operator boundary, not a new agent action. Both maintenance branches settle before error responses.

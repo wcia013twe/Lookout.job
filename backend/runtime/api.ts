@@ -33,7 +33,7 @@ export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]
         res.statusCode=response.status;return res.end(Buffer.from(await response.arrayBuffer()));
       }catch{return json(503,{error:'Public resource unavailable'});}
     }
-    if(url.pathname==='/healthz' && req.method==='GET')return json(200,{status:'ok',service:'lookout-api'});
+    if(['/health','/healthz'].includes(url.pathname) && req.method==='GET')return json(200,{status:'ok',service:'lookout-api'});
     if(!['/mcp','/v1/operations','/v1/resume-import'].includes(url.pathname))return json(404,{error:'Not found'});
     const origin=req.headers.origin;
     if(origin && !allowedOrigins.includes(origin))return json(403,{error:'Origin forbidden'});

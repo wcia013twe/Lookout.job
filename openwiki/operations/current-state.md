@@ -42,6 +42,19 @@ generated: { by: "openwiki/0.7.2", at: "2026-11-07T02:52:01.830Z" }
 
 # Current implementation state and operational limits
 
+## Cloud Run staging — November 16, 2026
+
+The independent Cloud Run root has been provisioned in `job-board-511516`,
+`us-east1`, with maintenance paused and the existing VM endpoint unchanged.
+Existing scoped MCP authentication succeeds on the new API. Hosted recovery is
+blocked until the main-only workflow applies the queue recovery migration;
+provisioning is not cutover or hosted discovery proof. Use `/health` for Cloud
+Run probes (`/healthz` is intercepted upstream). The old VM has an empty
+APILayer key, so hosted resume parsing has no existing key to migrate; this
+pre-existing capability is not verified by the migration. No production OAuth issuer change is
+needed for the currently OAuth-disabled VM, but existing opaque credentials
+and client endpoints must still be verified during cutover.
+
 ## Cloud Run source support — November 13, 2026
 
 Focused manual update: `infra/cloud-run/` is an independent deployment root,
