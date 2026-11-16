@@ -70,6 +70,45 @@ generated: { by: "codex", at: "2026-11-16T19:47:28.069Z" }
 
 # Current implementation state and operational limits
 
+## Focused live acceptance update — November 16, 2026
+
+This manual follow-up records the five-workflow Muse CLI pass; it is not a full
+regeneration or a blanket launch-readiness claim. See
+[the acceptance report](../../docs/agent-acceptance-testing.md#main-workflow-pass-november-16-2026)
+for current outcomes and verification limits. Older staging/review sections below
+are historical snapshots and must not override this later execution evidence.
+
+- Muse saved December 2027 internship and May 2027 full-time guidance and an
+  internship résumé default. All seven uploaded PDFs have identical bytes; a
+  distinct May 2027 full-time PDF remains unverified.
+- A finite Cloud Run discovery job recovered after Muse closed a dormant sweep
+  through existing scoped run tools. Independent database reads show 48 saved
+  review-needed screenings, 68 completed sources and 54 blocked sources. This
+  proves backend execution with partial coverage. The shared inventory is
+  database-backed; GCS stores temporary staging/checkpoints.
+- Muse published a small subset. Independent employer requirements then exposed
+  a 2028 graduation requirement conflicting with the user's December 2027 date
+  and a separate 2–4-year experience requirement. Candidate eligibility and
+  recommendation quality therefore remain a release concern even when source
+  availability and persistence succeed. Muse hid the graduation-ineligible role
+  and saved an experience-stretch correction note; its original card score
+  remains unchanged.
+- One Figma preparation draft and a targeted answer correction persisted without
+  a duplicate application. Muse resumed with a persisted field-by-field draft
+  review, preserving the correction. It remains human-unreviewed, Awaiting approval, with an
+  unanswered human question and no submission recorded. An internal draft-review
+  follow-up dated November 17 is saved and linked to that application.
+- Muse still uses the legacy Edge MCP connection. Cloud Run worker execution
+  does not establish that Muse has migrated its MCP transport. No employer
+  submission or outreach was authorized or performed in this pass.
+
+The only product-source change in this pass clarifies existing `publish_batch`
+`jobFacts` requirements in the tool description; it does not relax validation.
+The full 1,483-test suite, 11 focused assessment tests, frontend typecheck and
+158-role data validation passed locally. Website rendering was not visually
+tested in this pass. These results support continued supervised draft testing;
+they do not establish unattended application or launch readiness.
+
 ## Cloud Run staging — November 16, 2026
 
 The independent Cloud Run root has been provisioned in `job-board-511516`,
