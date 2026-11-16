@@ -26,7 +26,7 @@ const navigation = [
   ["/", "Discover", "discover"],
   ["/applications/", "Applications", "applications"],
   ["/referrals/", "Network", "referrals"],
-  ["/career-toolkit/", "Career Toolkit", "toolkit"],
+  ["/career-toolkit/", "Prep", "toolkit"],
   ["/circles/", "Community", "circles"],
 ] as const;
 
