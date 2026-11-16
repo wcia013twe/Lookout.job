@@ -69,7 +69,7 @@ Observed results (private facts and record IDs retained outside Git):
 - **ON-05 partial:** Muse inspected the profile and compared existing facts; résumé/profile graduation framing still needs reconciliation before declaring the profile current.
 - **ON-06 passed for one correction:** Muse saved one previously explicit user fact; an independent owner-scoped database read confirmed the saved value and that human verification remains unset.
 - **ON-09 partial:** independently downloaded all seven owned résumé objects and verified their bytes against SHA-256. All seven are identical. A default is unset; identical bytes do not establish that this is the user's current intended résumé.
-- **ON-03/ON-04 pending:** Muse reported stale onboarding connection state; requested a bounded current-runtime connection test without starting search or changing schedules.
+- **ON-03/ON-04 blocked on external approval:** Muse prepared a read-only list-tools request against Cloud Run. Its egress gate paused POST /mcp because the new hostname is not covered by an allow rule. The user must review the one-time network request in Muse. This is not evidence of a Cloud Run failure. The bounded onboarding connection test is still pending.
 - **Audit logging blocked:** Muse reported append_agent_audit_events returning “the operation was not replayed.” Exact payload/error reconciliation is pending; this is not yet a diagnosed backend defect.
 - **CLI delivery limitation observed:** sends with --wait 0 returned accepted but were absent from subsequent transcript reads. A send with --wait 45 appeared and received a reply. Use explicit session IDs and verify transcript receipt before interpreting silence or resending.
 

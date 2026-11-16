@@ -4,4 +4,5 @@
 - Started the first real Muse CLI profile/onboarding audit. Recorded transport mismatch, stale onboarding, résumé identity checks and the audit-append blocker without storing private facts or credentials.
 - Independently verified the one profile correction and all seven owned résumé file checksums. No employer action occurred.
 - Validation: npm test (1,483 passed), npm --prefix next-app run typecheck, npm run validate:data (158 roles), git diff --check.
+- Muse Cloud Run list-tools test reached a network approval gate for the new hostname; no approval was forged or bypassed.
 - Limits: full checklist is not executed; profile freshness and current Cloud Run agent connection remain unresolved. Audit append error is reported, not reproduced or fixed. Documentation-only pass; no product behavior or demo fixture changes.
