@@ -35,3 +35,41 @@ The local SVG family uses a consistent 24-unit outline, rounded strokes and inhe
 Manuals and editable agent requests no longer expose upstream branding or source URLs; repository attribution remains the provenance boundary. The earlier recorded palette/navigation documentation drift remains unchanged. `DESIGN.md` and `.impeccable/design.json` are preserved because this is a local refinement of the incumbent system.
 
 “View all” category links move keyboard focus to the results heading and scroll it into view with a 24px margin, preserving orientation after the overview changes to a full category list.
+
+## Interview pipeline projection
+
+The workspace uses Interviews, Answer Bank and Practice tabs. URL parameters
+retain tab, application, round and search across refreshes and reader returns.
+Legacy view parameters open the same consolidated company workspace.
+Actual upcoming round dates lead, then undated active and previous processes.
+Only explicit interview-stage progress beyond screening enters the Interviews
+space. Initial applications and screening-only processes remain excluded; their
+saved materials stay accessible as personal prep. Previous interview processes remain.
+Opening a company shows its next action, preparation tasks, research, recorded
+rounds and notes together, without a second tab row. Opening a round keeps its
+focused preparation detail and a return to company preparation.
+These sections reuse owned applications and preparation plans.
+Latest linked company research is primary; older documents and immutable reader
+revisions remain accessible. Round materials require the same application/task link
+and a preparation task whose roundId matches the round. Unknown materials remain
+accessible without company/date inference.
+
+Answer Bank supports five categories and Draft / Needs Review / Ready states in
+versioned Markdown bodies.
+Six preset questions offer accessible write/edit pencil buttons. A preset opens
+a blank answer with its question and category filled; an exact saved-question
+match opens the existing answer instead. Presets never fabricate saved answers.
+Recognized answers receive structured editing; legacy
+layouts remain raw. Practice distinguishes coding, system design, behavioral and
+mock activities. Existing feedback and dedicated mock writers remain unchanged.
+Website editing maps to MCP save_artifact/read_artifact with ownership/version
+checks. Checklist progress asks for actual minutes through
+complete_preparation_session with existing budget/idempotency/version checks;
+opening material never completes work. No schema, dependency or orchestration change.
+Detached fictional demo tests cover categories, revisions, stale writes and reset.
+
+Focused tests, typecheck, static build and catalog validation passed. The preset
+follow-up was recorded in the fictional demo: create/save, return to Answer Bank,
+and reopen editing, including a 390px mobile viewport. No hosted release claimed.
+
+`lib/interview-prep.mjs` exports the pure `buildInterviewPipelines(items, applications, now?)` projection for grouping saved preparation artifacts by an explicit `content.links[].applicationId`. Materials without a matching explicit application link remain in `unassigned`; company names and dates are never used to guess an association. Each application includes separate upcoming, active-undated and previous material lists, material classifications, and the application's actual recorded rounds. This is a read-only projection over existing records: it introduces no persistence, API, or live deployment behavior. Employer rounds remain distinct from preparation tasks and mock practice.

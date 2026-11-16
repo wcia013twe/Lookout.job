@@ -5,7 +5,7 @@ export const dashboardTourSteps = [
  { title:'Discover', text:'Your agent’s finds appear here. Open a role when you want a closer look.', illustration:'discover', targets:['[data-dashboard-tour="discover"]'] },
  { title:'Applications', text:'Follow your applications and keep your progress up to date.', illustration:'applications', targets:['[data-dashboard-tour="applications"]'] },
  { title:'Network', text:'Keep your people, introductions and outreach together.', illustration:'network', targets:['[data-dashboard-tour="network"]'] },
- { title:'Career Toolkit', text:'Prepare your résumé, answers and interview practice in one place.', illustration:'tools', targets:['[data-dashboard-tour="toolkit"]'] },
+ { title:'Prep', text:'Prepare your résumé, answers and interview practice in one place.', illustration:'tools', targets:['[data-dashboard-tour="toolkit"]'] },
  { title:'Community', text:'Connect with your Circles and explore company discussions. Your agent can help you put shared experiences to work.', illustration:'circles', targets:['[data-dashboard-tour="circles"]'] },
 ];
 export function dashboardTourKey(owner) { return `lookout:dashboard-tour:v${dashboardTourVersion}:${owner||'guest'}`; }

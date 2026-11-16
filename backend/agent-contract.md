@@ -396,6 +396,8 @@ release has passed a hosted round trip. See README for bounds and supported form
 ### Lightweight connection setup
 
 `onboarding.submit_step(event=connection_test)` is an authenticated agent check-in, with the same revision/event replay boundary. It returns the owning account’s schedule definitions and connection ID and records `data.connectionTest`; it does not attest browsing, advance onboarding, create/claim tasks or authorize a submission. Human callers, revoked credentials, foreign owners, stale revisions and nonempty event data are rejected. `update_onboarding_step` advertises this boundary; the website reads it through `onboarding.get_state`. External runtime automation registration is requested only for saved enabled scheduled tasks assigned to this connection. Actual runtime scheduler receipts remain necessary; Lookout itself does not execute a scheduler.
+
+Application pickup is a human preference in `settings.preferences.search.applicationPickup`: `manual` (default), `periodic`, or `prompt`. Existing preference sync emits an owner-scoped `preferences_changed` pointer; agents read `read_personal_context` when they next check the feed. `open_agent_permissions` hands the human to My Agent settings without changing them. This preference neither installs a watcher nor proves a scheduler is running; background installation needs separate consent and submissions still require approval.
 ### Dynamic job research and previews
 
 `publish_batch` / `batches.publish` remains the scoped `batches:write` boundary.

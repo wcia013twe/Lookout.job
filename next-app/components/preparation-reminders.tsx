@@ -9,6 +9,7 @@ import { buildWeeklyPreparationAgenda, plannerToday, recordLocalPreparationSessi
 import { useWorkspace } from "../lib/workspace";
 import { subscribePreparationRefresh } from "../lib/action-board.mjs";
 import DraftReview from "./draft-review";
+import RecommendationFeedback from "./recommendation-feedback";
 import { TaskIcon } from "./needs-you-row";
 import type { Application, PreparationPlan } from "./workflow-types";
 import { Notice, control, primary, secondary } from "./ui";
@@ -75,6 +76,10 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
                 {item.needsMaterial&&!item.artifacts?.length&&<p className="mt-2">Supporting material hasn’t been prepared yet.</p>}
                 {item.learning&&<p className="mt-2">Learning goal · {item.targets[0]?.company}</p>}
               </div>
+              {item.targets.filter(target=>target.goalId||target.applicationId).map(target=><div key={`${target.goalId||target.applicationId}:${target.taskId}`}>
+                {item.targets.length>1&&<p className="mt-2 text-xs">Feedback for {target.company}</p>}
+                <RecommendationFeedback kind="planning" targetId={`${target.goalId?'goal':'application'}:${target.goalId||target.applicationId}:${target.taskId}`} target={`${item.title} · ${target.company}`} context={{agendaItemId:item.id,date:day.date,taskId:target.taskId,expectedPlanVersion:target.expectedVersion}}/>
+              </div>)}
             </details>
             {day.date === agenda.today && <button type="button" className="prep-complete" aria-label={`Done: ${item.minutes} minute session, ${item.title}`} disabled={busy || locked} onClick={() => onComplete(item)}>Done<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 4 4L19 6" /></svg></button>}
           </li>)}</ul>
@@ -90,7 +95,7 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
         <button type="submit" className={secondary} disabled={busy || locked || minutes === String(agenda.dailyMinutes)}>Save budget</button>
       </form>
       {!!(agenda.dormantCount || agenda.uncertainCount || agenda.expiredCount) && <p className="mt-4">Outside this week: {agenda.dormantCount} later interviews · {agenda.uncertainCount} dates to confirm · {agenda.expiredCount} past deadlines.</p>}
-      <p className="mt-3 leading-relaxed">Shared practice counts once. Dates come from Applications and Career Toolkit. The plan prioritizes interviews, then learning goals, within your daily budget.</p>
+      <p className="mt-3 leading-relaxed">Shared practice counts once. Dates come from Applications and Prep. The plan prioritizes interviews, then learning goals, within your daily budget.</p>
     </details>
   </>;
 }

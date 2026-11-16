@@ -11,6 +11,10 @@ export type Drop = {
 export type PackGroup = { key: string; drops: Drop[] };
 export type ApplyNowDrop = Drop & { packId: string };
 export const applyNowPackStamp = (roleId: string) => `apply-now:${roleId}`;
+export const APPLY_NOW_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+export function applyNowCooldownRemaining(lastActivatedAt: number | null | undefined, now: number): number {
+  return lastActivatedAt == null ? 0 : Math.max(0, lastActivatedAt + APPLY_NOW_COOLDOWN_MS - now);
+}
 export function applyNowDrops(roles: { id: string; priority: string; company: string; title: string; employmentType: string; discoveredDate: string; location: string; applicationUrl: string; whyItFits: string; searchProfileId?: string }[]): ApplyNowDrop[] {
   return roles.filter(role => role.priority === "Apply Now").map(role => ({
     packId: role.id, company: role.company, title: role.title, type: role.employmentType,

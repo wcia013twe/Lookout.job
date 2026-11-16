@@ -56,6 +56,8 @@ For the cross-cutting ownership and revision conventions, see [Data model, owner
 
 ## Private preparation and durable artifacts
 
+The interview-preparation pipeline is a pure client-side projection over saved artifacts and application records. It associates materials only through an explicit `content.links[].applicationId`; unmatched materials remain unassigned rather than being guessed from company or date. It presents dated upcoming, undated active and previous materials separately, while employer rounds remain the application's recorded round model and practice/mock artifacts do not become interview rounds. The projection does not add persistence or an API.
+
 ### What is stored
 
 `career_artifacts` stores the current owner-scoped document plus an incrementing version and archive flag; `career_artifact_revisions` preserves each saved content/archive snapshot. Artifact content is structured around `title`, `purpose`, `kind`, `format`, `body`, dated public sources, and typed links. The supported kinds distinguish preparation and research from cover letters and reusable application templates. This is intentional: an artifact is useful work, not evidence of completing a task, approving an application, reusing an answer, or submitting anything.
@@ -367,6 +369,38 @@ Network person details expose Delete contact beside Edit person. An inline confi
 
 ## Circle beta participation guidance (2026-11-11)
 
+### Interview Prep workspace — focused source update (2026-11-16)
+
+Follow-up: Interviews now requires explicit post-screening interview progress;
+screening-only materials remain accessible without creating a pipeline. Answer
+Bank includes six preset questions with write/edit icons that use the existing
+versioned material editor. New answers start blank; saved question matches reopen
+the owned answer. Demo interaction recording covers creation, return and editing.
+
+The career-toolkit workspace now offers URL-driven Interviews / Answer Bank /
+Practice. Company preparation groups next actions, tasks, research, rounds and
+notes on one page rather than adding another tab row; individual rounds still
+open focused details. Legacy view URLs show the consolidated page. The projection in
+lib/interview-prep.mjs sorts actual upcoming round dates, then undated active and
+previous processes. Explicit application/task links attach materials to rounds;
+company/date similarity never does. Unassigned materials remain accessible.
+Latest linked company research is primary, retaining other documents and revisions.
+
+material-editor.tsx saves structured Markdown answer categories/status/question/
+answer/experiences/adaptation, or preserves legacy/raw bodies. Existing
+save_artifact/read_artifact remain the scoped website/MCP boundary. Mock logistics
+retain their dedicated writer. Checklists record actual user-reported minutes via
+complete_preparation_session with existing budget/version/idempotency checks;
+reading never completes work. No schema, dependency or orchestration changes.
+
+Detached fictional demo/contract tests cover categories, revisions, stale writes,
+task progress and reset. Local focused tests/typecheck/build/data checks passed.
+Final browser/recording verification was blocked by unavailable T3 and alternate
+browser hosts. No hosted release is claimed. This focused manual update does not
+refresh the remainder of the generated page's recorded source revision.
+
+### Earlier Circle beta guidance
+
 Focused source update: `supabase/functions/agent-gateway/skills/circle-knowledge.json` now directs proactive, draft-first invitations after relevant career work. Interview preparation, job discovery, Toolkit materials and notification guidance route to it. Invitations show the exact share-safe draft and destination, with a direct authenticated review handoff; agents must not ask for permission at each drafting stage. Existing `list_circles`, `read_circle`, `search_circle_knowledge`, `read_circle_thread`, `propose_circle_contribution` and `request_circle_human_action` tools provide the path. Publication still requires the existing exact-revision consent boundary; chat assent is not approval.
 
 The guide covers answering from existing contributions before asking peers, contributor invitations, agent-synthesized write-ups, genuine help requests, peer momentum without rankings, chosen-goal follow-through and closing real help exchanges. A declined suggestion is not a permanent opt-out; explicit stop requests suppress prompts within available context. No durable opt-out storage, automatic outreach, scheduler or engagement analytics is added. Beta funnel stages are evaluation distinctions, not deployed instrumentation or evidence of effectiveness.
@@ -376,3 +410,11 @@ The guide covers answering from existing contributions before asking peers, cont
 ## Circles restoration verification (2026-11-11)
 
 Focused source update: `lib/feature-scope.mjs`, Circle UI entry points, gateway guide discovery and the enabling migration restore the existing service. Existing fictional Circle fixtures cover feed pagination, revision/withdrawal, resources and reset; detached-demo coverage also checks that Community routes remain accessible. The controlled admin MCP demo advertises `knowledge:read` and supports `circles.list` from the same fictional Circle fixture factory, with discovery and dispatch coverage. These fixtures remain isolated from account services. Local tests and the static export do not establish hosted migration or gateway/MCP deployment status. Earlier generated coverage retains its recorded source revision.
+
+### Circle progress sharing (local source)
+
+Each membership starts with progress sharing off. A human may choose to share a job-search stage and weekly counts with Circle members and authorized agents; the `circles.read` projection excludes company names and application identifiers. Stages are exploring, applying, interviewing and offer. The UTC week runs Monday 00:00 through the next Monday 00:00 (exclusive). Counts include applications with `submitted_at` in that window and completed recruiter-call, technical-round and interview milestones with `occurred_at` in the window; they are tracked records, not verified outcomes or deduplicated interviews. A human can revoke sharing; leaving or removal clears the choice. The scoped `read_circle` tool exposes the same projection, while agents cannot change consent. Fictional demo data is detached and resettable. Source changes alone do not establish deployment.
+
+### Personal saved resources (local source)
+
+Published root resources can be saved privately per user from the thread or via the scoped `save_circle_resource` MCP tool. Current Circle access is checked on reads and writes; optimistic state and event keys protect changes and retries. The demo keeps saved state in isolated resettable memory. Source: `supabase/migrations/20261116052928_circle_saved_resources.sql`, `tests/circle-saved-resources.test.mjs`. Deployment has not been verified.

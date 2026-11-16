@@ -158,6 +158,17 @@ Local runtime follow-up: migration `20261107210538` was applied to the existing 
 
 ## Connected human-decision boundary (source update)
 
+### Recommendation feedback boundary (implementation follow-up)
+
+The recommendation-feedback feature separates private evidence capture from
+external inference. Lookout owns authenticated storage and bounded incremental
+access; the connected host owns interpretation, memory, and any daily or weekly
+review. A feedback read is not proof of a memory update, and a rating is never
+Apply, Send, approval, or Done. Notes remain untrusted input. See
+`docs/recommendation-feedback-prd.md` and `mcp/README.md` for this feature's scope.
+Migrations and matching gateway/MCP deployment are prerequisites for hosted use;
+this source update does not establish hosted availability or agent learning.
+
 `read_action_board` / `actions.board.read` requires `workspace:read` and exposes deterministic pending decisions, source/version keys, current work holds, human decision history and exact website links. It is discoverable under applications and routes through the same Edge/SQL authority as browser reads. Agent credentials cannot call the authenticated-human review/response/resume operation. Existing `request_human_action` links now select the owned answer, application or outreach record. A declined application is a durable stop condition, never an invitation to repair it; only human Resume lifts the hold. Acceptance is neither submission nor message delivery. Canonical application/interview/outreach guides and change-feed guide versions carry these rules. Hosted parity requires migration plus gateway/MCP release and an authenticated check.
 
 ## Task text updates (notification guide v3)

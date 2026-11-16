@@ -3,6 +3,7 @@ import LocationSelector from "./location-selector";
 import BrandMark from "./brand-mark";
 import {useEffect,useRef,useState} from "react";
 import Link from "next/link";
+import {useRouter} from "next/navigation";
 import {AnimatePresence,motion,MotionConfig,useReducedMotion} from "framer-motion";
 import {useWorkspace} from "../lib/workspace";
 import {ApplicationProfileProvider,useApplicationProfile} from "./application-profile-context";
@@ -28,8 +29,9 @@ export default function Onboarding(){
 }
 function OnboardingFlow(){
  const w=useWorkspace(),a=useApplicationProfile(),profile=w.state.workflow.profile;
+ const router=useRouter();
  const [finishing,setFinishing]=useState(false);
- async function finish(){setFinishing(true);setError("");try{await w.websiteOnboarding.complete();clearOnboardingProgress(onboardingStorage(),progressKey);}catch(e){setError(e.message||"Could not save setup. Please retry.");setFinishing(false);}}
+ async function finish(){setFinishing(true);setError("");try{await w.websiteOnboarding.complete();clearOnboardingProgress(onboardingStorage(),progressKey);router.replace('/?tour=dashboard');}catch(e){setError(e.message||"Could not save setup. Please retry.");setFinishing(false);}}
  const [scene,setScene]=useState("start"),[method,setMethod]=useState(""),[linkedin,setLinkedin]=useState(profile.linkedin||"");
  const [work,setWork]=useState(readField(a.profile.prompt,"Role preferences","Roles").value);
  const [location,setLocation]=useState(readField(a.profile.prompt,"Search Filters","Location").value);

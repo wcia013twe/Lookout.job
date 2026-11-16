@@ -48,6 +48,13 @@ test('real migrated feed keeps events compact, atomic, owned, pending and indepe
   await t.test('old events are retained until all active consumers acknowledge, then cleaned with receipts',async()=>{
    const event=(await read()).items.find(i=>i.kind==='backend_job_finished');await db.query("update public.activity_events set occurred_at=now()-interval '40 days' where id=$1",[event.id]);await call(h,'changes.ack',{eventIds:[event.id]});assert.equal((await db.query('select count(*)::int n from public.activity_events where id=$1',[event.id])).rows[0].n,1);await call(h2,'changes.ack',{eventIds:[event.id]});assert.equal((await db.query('select count(*)::int n from public.activity_events where id=$1',[event.id])).rows[0].n,0);assert.equal((await db.query('select count(*)::int n from private.muse_change_receipts where event_id=$1',[event.id])).rows[0].n,0);
   });
+  await t.test('pickup preference changes reach the owned feed and personal context',async()=>{
+   await setOwner();const before=new Set((await read()).items.map(item=>item.id));
+   await db.query("update public.preferences set search=jsonb_set(search,'{applicationPickup}',to_jsonb('periodic'::text)),updated_at=clock_timestamp() where user_id=$1",[owner]);
+   const event=(await read()).items.find(item=>item.kind==='preferences_changed'&&!before.has(item.id));assert.ok(event);assert(!JSON.stringify(event).includes('periodic'));
+   const context=await call(h,'context.personal');assert.equal(context.settings.preferences.search.applicationPickup,'periodic');
+   assert(!(await call(hf,'changes.read')).items.some(item=>item.id===event.id));
+  });
   await t.test('bounded pending pages do not acknowledge unseen changes or store offsets',async()=>{
    for(let i=0;i<52;i++)await db.query("insert into public.activity_events(user_id,event_key,kind,actor,payload) values($1,$2,'muse.preferences_changed','system',$3)",[owner,'muse-feed:page:'+i,{entity:'preferences',recordId:owner,version:i,text:'Preferences changed'}]);
    const page=await call(h,'changes.read',{limit:2});assert.equal(page.items.length,2);assert.equal(page.hasMore,true);const again=await call(h,'changes.read',{limit:2});assert.deepEqual(page,again);await call(h,'changes.ack',{eventIds:page.items.map(i=>i.id)});const next=await call(h,'changes.read',{limit:2});assert.equal(next.items.length,2);assert(next.items.every(i=>!page.items.some(p=>p.id===i.id)));

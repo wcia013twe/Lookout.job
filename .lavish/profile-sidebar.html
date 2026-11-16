@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Profile · sidebar layout preview</title>
+<style>
+:root{color-scheme:dark;--color-board-text:var(--foreground);--color-board-muted:var(--muted-foreground);--color-board-line:var(--border);--color-board-panel:var(--card);--color-board-tag:var(--secondary);--color-board-accent:var(--primary)}
+*{box-sizing:border-box}body{margin:0;font-family:var(--font-sans);color:var(--foreground)}button,select{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible{outline:2px solid var(--ring);outline-offset:3px}
+.workspace{padding:24px 16px;background:var(--card);border-radius:var(--radius)}h1{margin:0 0 32px;font-size:26px;letter-spacing:-.8px}h2{font-size:24px;margin:0;letter-spacing:-.6px}h3{font-size:16px;margin:0}p{line-height:1.6;color:var(--muted-foreground);font-size:14px}.profileLayout{display:grid;grid-template-columns:184px minmax(0,1fr);gap:28px}.profileContent{min-width:0}.sidebar{display:flex;flex-direction:column;align-self:start;gap:4px;padding-right:20px;border-right:1px solid var(--color-board-line)}.sidebar button{border:0;background:transparent;width:100%;min-height:44px;padding:12px 16px;border-radius:8px;text-align:left;font-size:14px;font-weight:600;color:var(--color-board-muted)}.sidebar button:hover{color:var(--color-board-text);background:var(--color-board-tag)}.sidebar button[aria-pressed=true]{color:var(--color-board-text);background:var(--color-board-tag);box-shadow:inset 3px 0 var(--color-board-accent)}.sidebar button:disabled{cursor:default}.sidebar button:focus-visible{outline:2px solid var(--color-board-accent);outline-offset:2px}.sectionIntro{margin-bottom:24px}.sectionIntro p{margin:8px 0 0}.preferenceSummary{max-width:720px;padding:24px;border:1px solid var(--color-board-line);border-radius:12px;background:var(--color-board-panel)}.preferenceSummary h3{font-size:16px;font-weight:600}.preferenceSummary p{margin-top:12px;color:var(--color-board-muted);font-size:14px;line-height:1.6}.preferenceSummary p:last-child{margin-bottom:0}.mobileSelect{display:none}.theme{display:inline-flex;gap:12px;align-items:center;min-height:44px;background:var(--secondary);color:var(--foreground);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-top:14px}.guidance{margin-top:32px;padding-top:24px;border-top:1px solid var(--border)}.guidance span{display:inline-block;margin:16px 24px 0 0;text-decoration:underline;text-underline-offset:4px;font-size:14px}.preview-note{font-size:12px;margin:24px 0 0;color:var(--muted-foreground)}[hidden]{display:none!important}
+@media(max-width:600px){.profileLayout{grid-template-columns:minmax(0,1fr);gap:24px}.sidebar{display:none}.mobileSelect{display:grid;gap:8px;margin-bottom:24px;font-size:13px;color:var(--muted-foreground)}select{min-height:44px;padding:10px;background:var(--secondary);border:1px solid var(--border);border-radius:8px;color:var(--foreground)}.preferenceSummary{padding:20px}}
+</style>
+</head>
+<body>
+<div class="workspace">
+<h1>My Profile</h1>
+<label class="mobileSelect">Profile section<select aria-label="Profile section"><option disabled>About me</option><option disabled>Job preferences</option><option disabled>My Agent</option><option value="saved-preferences" selected>Saved Preferences</option><option value="appearance">Appearance</option></select></label>
+<div class="profileLayout">
+<nav class="sidebar" aria-label="Profile sections">
+<button type="button" disabled>About me</button>
+<button type="button" disabled>Job preferences</button>
+<button type="button" disabled>My Agent</button>
+<button type="button" data-section="saved-preferences" aria-pressed="true">Saved Preferences</button>
+<button type="button" data-section="appearance" aria-pressed="false">Appearance</button>
+</nav>
+<div class="profileContent">
+<section id="saved-preferences" aria-label="Saved Preferences">
+<div class="sectionIntro"><h2>Saved Preferences</h2><p>Your preferences and writing style, in one place.</p></div>
+<section class="preferenceSummary" aria-labelledby="muse-preferences-title"><h3 id="muse-preferences-title">What Muse knows about you</h3><p>No saved summary yet.</p><p>This card will show your current preferences and writing guidance. Muse summary updates are not connected yet. Your existing job preferences, writing settings, and saved answers remain unchanged.</p></section>
+</section>
+<section id="appearance" aria-label="Appearance" hidden>
+<div class="sectionIntro"><h2>Appearance</h2><p>Make Lookout feel like yours.</p></div>
+<h3>Color theme</h3><span class="theme">◐ <span>Theme</span> <strong>System</strong>⌄</span>
+<div class="guidance"><h3>Setup &amp; guidance</h3><span>Open onboarding</span><span>Dashboard tour</span></div>
+</section>
+</div>
+</div>
+<p class="preview-note">Layout preview · Switch between Saved Preferences and Appearance. Other sections are unchanged.</p>
+</div>
+<script>
+function selectSection(sectionId){document.querySelectorAll('[data-section]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.section===sectionId)));document.querySelectorAll('.profileContent > section').forEach(section=>section.hidden=section.id!==sectionId);document.querySelector('select').value=sectionId;}
+document.querySelectorAll('[data-section]').forEach(button=>button.addEventListener('click',()=>selectSection(button.dataset.section)));
+document.querySelector('select').addEventListener('change',event=>selectSection(event.target.value));
+</script>
+</body>
+</html>

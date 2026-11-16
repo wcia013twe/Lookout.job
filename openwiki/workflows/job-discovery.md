@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Job discovery, search runs, and private batch publishing"
+openwiki_generated: true
+---
+
 > Current direct path: pipeline 2 stages candidates on the Docker worker volume,
 > applies metadata gates before verification and full filters before permanent
 > owned storage, and saves only the deduplicated new/changed shortlist for agent analysis.
@@ -59,11 +65,13 @@ This page describes the backend `search_ats` path. For ownership and canonical w
 
 The cumulative private board uses the latest batch date as its current drop. Unapplied roles from older drops appear under the collapsed Hidden section, except Apply Now and Strong Consider recommendations, which remain visible. An expired posting appears in Hidden. People can hide or restore other roles; those overrides are saved in the owned search preferences as `discoverVisibility`, and synchronized through the existing owned preferences writer. Restore keeps a role on the board until the person hides it again; an expired posting cannot be restored while its saved observation remains expired. Applied and rejected filtering continues to use the existing application state. Date, posting-age and search filters also apply to Hidden. First discovery dates remain intact; the cumulative projection additionally records the latest recommendation date. No new publication or background job is created. There is no dedicated MCP hide/restore action.
 
-### Apply Now animated card activation (manual source update, November 12, 2026)
+### Apply Now animated card activation (manual source update, November 13, 2026)
 
-`next-app/components/discover.tsx` maps selected-profile, unapplied, nonhidden/nonexpired Apply Now roles through `applyNowDrops` to the existing pack reveal. This also covers an eligible role saved from onboarding. `next-app/components/apply-now-pack.tsx` snapshots the newly eligible cards and stamps each stable role ID under `drops.packStamps` as `apply-now:<roleId>` when activating the experience. It immediately flushes the existing browser store. Closing a sealed pack consumes activation too; returning, refreshing, rediscovery-date changes and reclassification cannot replay the same role. Later newly eligible IDs can activate independently, including after an earlier pack closes.
+`next-app/components/discover.tsx` maps selected-profile, unapplied, nonhidden/nonexpired Apply Now roles through `applyNowDrops` to the existing pack reveal. This also covers an eligible role saved from onboarding. `next-app/components/apply-now-pack.tsx` snapshots the newly eligible cards and stamps each stable role ID under `drops.packStamps` as `apply-now:<roleId>` when activating the experience. It immediately flushes the existing browser store. Closing a sealed pack consumes activation too; returning, refreshing, rediscovery-date changes and reclassification cannot replay the same role. Later newly eligible IDs can activate after the cooldown.
 
-This is a browser presentation preference, isolated by existing account namespaces; it is not a cloud-synchronized approval, application, submission receipt or new MCP mutation. Demo activation stays detached and memory-only. Other extra-feature pack configuration remains gated. `tests/next-pack.test.mjs`, `tests/account-store.test.cjs` and `scripts/check-apply-now-pack-ui.mjs` cover mapping, immediate reload/account boundaries, actual demo interaction, per-card reactivation suppression and unchanged application/tracker state. The recording uses fictional demo roles in a local production export, not a live employer or hosted-account run. This focused source update does not reverify the rest of this generated page.
+Later packs additionally wait for a rolling 24 hours from `drops.applyNowLastActivatedAt`, persisted in the existing drops slice. Dismissing an unopened pack starts the same cooldown; newly eligible cards remain unconsumed during it. The mounted Discover component schedules a cleaned-up timeout for expiry. This limits animation frequency, not card visibility, and does not replay already activated cards after expiry. Legacy caches without a timestamp start the cooldown on their next activation.
+
+This is a browser presentation preference, isolated by existing account namespaces; it is not a cloud-synchronized approval, application, submission receipt or new MCP mutation. Demo activation stays detached and memory-only. Other extra-feature pack configuration remains gated. `tests/next-pack.test.mjs`, `tests/account-store.test.cjs` and `scripts/check-apply-now-pack-ui.mjs` cover mapping, immediate reload/account boundaries, actual demo interaction, per-card reactivation suppression and unchanged application/tracker state. Controlled-clock checks cover the exact 24-hour boundary and queued cards. The recording uses fictional demo roles in a local production export, not a live employer or hosted-account run. This focused source update does not reverify the rest of this generated page.
 
 ## What is public, private, and immutable
 

@@ -12,7 +12,6 @@ import Settings from './settings';
 import Appearance from './appearance';
 import AgentContext from './agent-context';
 import CircleSearch from './search';
-import CompanyDiscussions from './company-discussions';
 import CircleDashboard from './circle-views';
 import ApiError from '../../../components/api-error';
 type Page<T>={items:T[];nextCursor:Cursor|null};
@@ -22,12 +21,11 @@ const date=(at:string)=>new Date(at).toLocaleDateString(undefined,{year:'numeric
 export default function CircleKnowledge(){
  const client=useKnowledgeClient();
  if(client.connectionState==='loading')return <Notice>Connecting to your Circle account…</Notice>;
- if(client.connectionState==='signed_out')return <><Heading title="Community">Sign in to open your Circles and company discussions.</Heading><div className="flex flex-wrap gap-3"><button className={primary} onClick={client.signIn}>Sign in</button><button className={secondary} onClick={client.openDemo}>Explore fictional demo</button></div></>;
+ if(client.connectionState==='signed_out')return <><Heading title="Community">Sign in to open your Circles.</Heading><div className="flex flex-wrap gap-3"><button className={primary} onClick={client.signIn}>Sign in</button><button className={secondary} onClick={client.openDemo}>Explore fictional demo</button></div></>;
  if(!client.ready)return <ApiError message="Circle client initialization failed [CLIENT_UNAVAILABLE]. Reload the page to reconnect." onRetry={()=>location.reload()}/>;
  return <KnowledgeSurface key={client.identity} request={client.request} demo={client.demo}/>;
 }
 export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
- const [view,setView]=useState<'circles'|'companies'>('circles');
  const [circles,setCircles]=useState<Circle[]>([]),[circleId,setCircleId]=useState(''),[threadId,setThreadId]=useState('');
  const [circleView,setCircleView]=useState<'clubhouse'|'settings'>('clubhouse');
  const [detail,setDetail]=useState<Detail|null>(null),[page,setPage]=useState<Page<Post>>({items:[],nextCursor:null}),[thread,setThread]=useState<Thread|null>(null);
@@ -48,8 +46,8 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
  },[request]);
  useEffect(()=>{
   let current=true;setLoading(true);
-  list().then(rows=>{if(!current||!rows)return;const params=new URL(location.href).searchParams;setView(params.get('view')==='companies'?'companies':'circles');setCircleId(params.get('circle')||'');setThreadId(params.get('thread')||'');}).catch(e=>{if(current)setError(errorText(e));}).finally(()=>{if(current)setLoading(false);});
-  const pop=()=>{version.current++;const p=new URL(location.href).searchParams;setDetail(null);setPage({items:[],nextCursor:null});setDraftPosts([]);setEditor(null);setThread(null);setThreadId(p.get('thread')||'');setCircleId(p.get('circle')||'');setCircleView('clubhouse');setView(p.get('view')==='companies'?'companies':'circles');};window.addEventListener('popstate',pop);
+  list().then(rows=>{if(!current||!rows)return;const params=new URL(location.href).searchParams;setCircleId(params.get('circle')||'');setThreadId(params.get('thread')||'');}).catch(e=>{if(current)setError(errorText(e));}).finally(()=>{if(current)setLoading(false);});
+  const pop=()=>{version.current++;const p=new URL(location.href).searchParams;setDetail(null);setPage({items:[],nextCursor:null});setDraftPosts([]);setEditor(null);setThread(null);setThreadId(p.get('thread')||'');setCircleId(p.get('circle')||'');setCircleView('clubhouse');};window.addEventListener('popstate',pop);
   return()=>{current=false;window.removeEventListener('popstate',pop);};
  },[list]);
  const refresh=useCallback(async()=>{
@@ -100,10 +98,9 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
  const privateDrafts=[...new Map([...draftPosts,...page.items].map(post=>[post.id,post])).values()].filter(post=>post.owned&&post.revision!==post.publishedRevision);
  return <div className="min-w-0">
   {circleId&&<button type="button" className={`${secondary} mb-4`} disabled={busy} onClick={()=>{setCircleView('clubhouse');locate('');}}>Back to your circles</button>}
-  {!circleId&&<><Heading title="Community" /><nav aria-label="Community views" className="mb-7 flex flex-wrap gap-2 border-b border-board-line pb-3">{([['circles','Circles'],['companies','Companies']] as const).map(([key,label])=><button key={key} type="button" aria-current={view===key?'page':undefined} className={view===key?primary:secondary} onClick={()=>{setView(key);const url=new URL(location.href);if(key==='companies')url.searchParams.set('view','companies');else url.searchParams.delete('view');history.pushState(null,'',url);}}>{label}</button>)}</nav></>}
+  {!circleId&&<Heading title="Community" />}
   <ApiError message={error} onRetry={()=>void (async()=>{setLoading(true);try{await list();await refresh();}catch(failure){setError(errorText(failure));}finally{if(mounted.current)setLoading(false);}})()}/><div role="status"><Notice>{notice||(loading?'Loading Circle…':'')}</Notice></div>
-  {available&&!circleId&&!loading&&view==='companies'&&<CompanyDiscussions request={request} openPost={post=>locate(post.circleId,post.id)}/>}
-  {available&&!circleId&&!loading&&view==='circles'&&<>
+  {available&&!circleId&&!loading&&<>
    {!error&&<section className="mb-8" aria-labelledby="your-circles-title">
     <h2 id="your-circles-title" className="mb-3 text-xl font-semibold">Your circles</h2>
     {circles.length?<ul className={listStyles.list}>{circles.map(circle=><CircleListItem key={circle.id} circle={circle} request={request} demo={demo} busy={busy} open={()=>{setCircleView('clubhouse');locate(circle.id);}} manage={()=>{setCircleView('settings');locate(circle.id);}}/>)}</ul>:<p className="py-4 text-board-muted">No circles yet. Join your people with an invite code, or start your own.</p>}
@@ -115,8 +112,7 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
   </>}
 
   {detail&&<>
-   <CircleDashboard initialChannel={circleView} pagination={page.nextCursor?<button className={secondary} disabled={busy} onClick={()=>void more('posts')}>More contributions</button>:null} settings={settingsPanel} key={circleId} busy={busy} save={save} detail={detail} posts={page.items} demo={demo} openPost={post=>locate(circleId,post.id)} focused={!!editor||!!thread} searching={Object.keys(filters).some(key=>key!=='sort')} search={<CircleSearch key={circleId} filters={filters} busy={busy||loading} search={setFilters}/>} controls={<div className="circle-header-controls">
-    <Appearance key={circleId} detail={detail} request={request} onSaved={refresh}/>
+   <CircleDashboard initialChannel={circleView} pagination={page.nextCursor?<button className={secondary} disabled={busy} onClick={()=>void more('posts')}>More contributions</button>:null} settings={settingsPanel} customize={<Appearance key={circleId} detail={detail} request={request} onSaved={refresh}/>} key={circleId} busy={busy} save={save} detail={detail} posts={page.items} demo={demo} openPost={post=>locate(circleId,post.id)} focused={!!editor||!!thread} searching={Object.keys(filters).some(key=>key!=='sort')} search={<CircleSearch key={circleId} filters={filters} busy={busy||loading} search={setFilters}/>} controls={<div className="circle-header-controls">
     {circles.length>1&&<select aria-label="Switch Circle" className={control} value={circleId} disabled={busy} onChange={event=>locate(event.target.value)}>{circles.map(circle=><option key={circle.id} value={circle.id}>{circle.name}</option>)}</select>}
     {privateDrafts.length===1?<button className={secondary} disabled={busy} onClick={()=>locate(circleId,privateDrafts[0].id)}>1 draft to review</button>:privateDrafts.length>1?<details className="circle-header-menu"><summary>{privateDrafts.length} drafts to review</summary><ul className="circle-header-panel">{privateDrafts.map(post=><li key={post.id}><button className="min-h-11 w-full py-3 text-left text-sm" disabled={busy} onClick={()=>locate(circleId,post.id)}>{post.content.title}</button></li>)}</ul></details>:null}
     <button type="button" className={composing?secondary:primary} disabled={busy} aria-expanded={composing} onClick={()=>{if(composing){setEditor(null);return;}setThreadId('');setThread(null);setEditor({});const url=new URL(location.href);url.searchParams.delete('thread');history.replaceState(null,'',url);}}>{composing?'Close conversation':'New conversation'}</button>
@@ -156,6 +152,7 @@ function Contribution({post,circleName,busy,edit,keepPrivate,act,commentsLabel}:
     {post.state==='published'&&<button type="button" aria-label={`Report ${reply?'reply':'contribution'} by ${name}`} title={`Report ${reply?'reply':'contribution'}`} aria-expanded={reportOpen} aria-controls={`report-${post.id}`} disabled={busy} onClick={()=>setReportOpen(!reportOpen)} className="flex min-h-11 min-w-11 items-center justify-center rounded-lg hover:bg-board-tag hover:text-board-text disabled:opacity-50"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"><path d="M5 21V3m0 1c5-3 9 3 14 0v10c-5 3-9-3-14 0"/></svg></button>}
    </div>
   </div>
+  {!reply&&post.content.type==='resource'&&post.state==='published'&&!draft&&<button type="button" className={secondary} disabled={busy} aria-pressed={!!post.saved} onClick={()=>void act('knowledge.save_resource',{postId:post.id,saved:!post.saved,expectedSaved:!!post.saved})}>{post.saved?'Saved · Remove':'Save resource'}</button>}
   {!reply&&<><h2 className="max-w-[38ch] break-words text-2xl font-bold leading-tight tracking-tight sm:text-[28px] sm:leading-[1.3]">{post.content.title}</h2><p className="mt-2 text-xs text-board-muted">{types[post.content.type]}</p></>}
   {reportOpen&&<form id={`report-${post.id}`} aria-label="Report contribution" className="my-4 space-y-3 border-y border-board-line py-4" onSubmit={event=>{event.preventDefault();void act('knowledge.report',{postId:post.id,reason});}}><Field label="Reason for the Circle owner"><input className={control} value={reason} onChange={event=>setReason(event.target.value)} required maxLength={1000}/></Field><div className="flex gap-3"><button className={secondary} disabled={busy}>Send report</button><button type="button" className={secondary} onClick={()=>setReportOpen(false)}>Cancel</button></div></form>}
   {post.owned&&draft&&<p className="mb-5 max-w-prose text-sm leading-relaxed text-board-muted">Review this version and its attached details before sharing with <strong className="text-board-text">{circleName}</strong>. Members and their permitted agents can read shared posts; members may copy them.</p>}

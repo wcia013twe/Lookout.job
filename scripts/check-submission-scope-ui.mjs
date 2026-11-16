@@ -23,7 +23,7 @@ try{
   await page.goto(`http://127.0.0.1:${server.address().port}/discover/?demo=1`);
   await page.getByRole('heading',{name:'Discover',exact:true}).waitFor();
   const nav=page.getByRole('navigation',{name:'Workspace pages'});
-  for(const label of ['Discover','Applications','Network','Career Toolkit'])assert.equal(await nav.getByRole('link',{name:label,exact:true}).count(),1,label);
+  for(const label of ['Discover','Applications','Network','Prep'])assert.equal(await nav.getByRole('link',{name:label,exact:true}).count(),1,label);
   assert.equal(await nav.getByRole('link',{name:/^Action board/}).count(),1);
   assert.equal(await nav.getByRole('link',{name:'Community',exact:true}).count(),0);
   assert.equal(await page.locator('#agent-panel-packs').count(),0);
