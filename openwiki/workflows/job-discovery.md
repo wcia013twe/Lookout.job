@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Job discovery, search runs, and private batch publishing"
+openwiki_generated: true
+---
+
 > Current direct path: pipeline 2 stages candidates on the Docker worker volume,
 > applies metadata gates before verification and full filters before permanent
 > owned storage, and saves only the deduplicated new/changed shortlist for agent analysis.

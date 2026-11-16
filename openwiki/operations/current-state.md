@@ -5,7 +5,7 @@ description: Evidence-qualified snapshot of implemented Job Signal Board surface
 tags: [operations, implementation-status, deployment, verification, limits]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T05:44:24.520Z
+    at: 2026-11-16T19:40:41.494Z
 sources:
   - id: openwiki-source-164e2da859b5277df81c7d94
     resource: repo://.github/workflows/ci.yml
@@ -23,6 +23,8 @@ sources:
     resource: repo://backend/runtime/README.md
   - id: openwiki-source-57291caf28bfcf2ec46b220f
     resource: repo://docs/schema.md
+  - id: openwiki-source-db036a0e1e76925b281387e0
+    resource: repo://infra/cloud-run/README.md
   - id: openwiki-source-012f2c78e3b1446dfc35803f
     resource: repo://Makefile
   - id: openwiki-source-70a16c09a9eb6e620cf00513
@@ -33,22 +35,87 @@ sources:
     resource: repo://next-app/components/appearance-settings.tsx
   - id: openwiki-source-70edbb94f068146a752dd992
     resource: repo://next-app/lib/demo-runtime.mjs
+  - id: openwiki-source-5093b074f16e0b77479219b2
+    resource: repo://package-lock.json
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
   - id: openwiki-source-d1a22cc381bbd73a73205d18
     resource: repo://runner/README.md
+  - id: openwiki-source-1248554ef211f2280fdf5a20
+    resource: repo://runner/vendor/career-ops/providers/_http.mjs
+  - id: openwiki-source-3e4c3f8513eeb0e0977bcc84
+    resource: repo://scripts/build-search-documents.mjs
   - id: openwiki-source-ebbea053bcf629bc5ea8601a
     resource: repo://scripts/check-appearance-ui.mjs
   - id: openwiki-source-5e0e032552d77cb40052782b
     resource: repo://supabase/functions/agent-gateway/instructions.json
   - id: openwiki-source-3cae6e3f5eeea02db512314f
     resource: repo://supabase/functions/agent-mcp/index.ts
-generated: { by: "codex", at: "2026-11-13T05:44:24.520Z" }
+  - id: openwiki-source-ee7807e71f4aaaf7d472231f
+    resource: repo://tests/career-execution.test.mjs
+  - id: openwiki-source-483fffc1ef60e28df22ee76f
+    resource: repo://tests/search-context.test.mjs
+generated: { by: "codex", at: "2026-11-16T19:40:41.494Z" }
 ---
 
 # Current implementation state and operational limits
+
+## Launch readiness review — November 16, 2026
+
+**Decision: not ready for a general production launch on the evidence reviewed.**
+The detached fictional demo is suitable for a bounded product walkthrough, but
+that is not evidence of an authenticated production workflow. This review uses
+committed local source `7d681bf2823239e309b02e620beb3048b815dd3b`; it does not
+establish which revision is currently deployed. Historical checkpoints below
+retain their original scope and must not be read as current environment probes.
+
+### Gates before launch
+
+1. Restore a green baseline. The current full-suite run reproduces failures in
+   `vendored executable files match the pinned import manifest`,
+   `all 108 network providers load in the credential-free worker`, and
+   `documents and generated edge codec stay in sync`. The missing macOS export
+   repair does not resolve these independent integrity/provider/bundle defects.
+2. Review and remediate dependency advisories. A fresh root `npm audit` reports
+   direct `undici` 6.28.1 as high severity (including TLS validation and denial
+   of service advisories; patched 6.29.1), and `js-yaml` 5.3.0 as moderate
+   (merge-source CPU exhaustion; patched 5.5.0). This is an audit finding, not
+   proof of exploitability. Provider HTTP helpers dynamically import `undici`;
+   assess actual reachable paths and rerun provider/bundle checks after repair.
+3. Establish one release revision across frontend, migrations, gateway/MCP and
+   the separately operated Node runtime. Pages deployment runs the main-only
+   backend workflow before CI/build/deploy, but local landing does not run it.
+   No current hosted deployment, migration ledger, or runtime provenance was
+   verified in this review. Older release notes do not establish latest parity.
+4. Verify the authenticated acceptance path with disposable data: sign-in,
+   profile/resume save and reload, scoped agent connection, discovery pickup,
+   persisted private recommendations, and application preparation with the
+   human approval boundary. Verify revocation, retry and interrupted-work
+   recovery in that intended environment. Include feedback readback and Circle
+   membership/consent if those surfaces are in launch scope. Do not submit a
+   real employer application as a smoke test.
+5. Keep Cloud Run cutover and autonomous execution claims gated by their own
+   runbooks. Real IAM/OIDC, GCS sharing, Scheduler recovery, webhook delivery,
+   OAuth reconnect and a bounded persisted search require environment evidence.
+   Agent scheduling/notifications remain host responsibilities. Automatic
+   submission must not be advertised from guarded runner source tests alone.
+
+### Scope and verification limits
+
+Frontend typecheck, catalog validation (158 roles), and the production static
+export (442 offline assets) pass on this checkout. Locked root and frontend
+installs completed; the frontend install audit reported no vulnerabilities.
+The full-suite result is recorded in this pass's change note. No browser,
+authenticated account, live Muse, employer, hosted deployment, or cloud cutover
+was exercised, and no credentials or live feature gates were changed.
+
+This is a focused operational-page refresh. The OpenWiki lifecycle detected
+80 stale/unresolved claims across 12 other pages; those are deferred rather
+than silently confirmed. Broader pages retain their recorded source revisions.
+The repository startup rule remains mandatory; an automatically inserted
+OpenWiki setup block describing startup reading as optional does not override it.
 
 ## Cloud Run source support — November 13, 2026
 

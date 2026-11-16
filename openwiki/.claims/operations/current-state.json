@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:637b15dfaefb3eaf0c9d284382fc29bac0abcae7617c1d24b82d02c48ddec4c8",
+  "pageVersion": "sha256:146b4af3225a36f797239829e73e8e224a6137d8cc4fe70eae1539e84af4d764",
   "claims": [
     {
       "id": "claim_99f2b5392c8a4d539e3fad30b0bfb234",
@@ -31,7 +31,7 @@
       "statement": "Remote MCP is a stateless Streamable HTTP transport that forwards every request to `agent-gateway`; the gateway is the authority for opaque-credential validation, scopes, ownership, expiry/revocation, write validation, and revisions, while tool discovery is scope-filtered.",
       "evidence": [
         {
-          "resource": "repo://mcp/README.md#L58-L64",
+          "resource": "repo://mcp/README.md#L72-L78",
           "version": "repo-lines-v1:sha256:f705b8726c03ae6916e73af008e8295639ef20888a79437084fb25f624b8387c:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2EwZDY1NzY0ZjJlMTVlZjI2NGIwMmI5M2I1OWYyNWI2OWMzZWZhZjhlYmZhOWNlYjQ1MTgwN2ZlZmQxYzMwYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzYxYTVmOGE1Zjc1NjQ4ZDRlNGJhYzlkMDY3M2ExZWQyMTdkOTM5MzcwYzY4ODlhODk1ZjY2YzZhZDRmMWJjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmUzNmViZWZkOWUxZjNmMmE2MzVjMzY1NTAzMGVhMmEyOWQwZDEzZTJjODhiNTExODFhZWRmYTRlZDczMjczYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2M4NjcwYzEyNDI1ZWVkNmIzOWYyMDAwZTc2OWQwYjgxNWUxMDVmYzM2ODQxYzczMmJkNzhiZjJjMTFjOTY5MiJ9"
         },
         {
@@ -49,7 +49,7 @@
           "version": "repo-lines-v1:sha256:4fcae8c0297345e378ba2c2abba4ca93882ae48b4e927bef81a2d5785657e300:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjg4MWM0MjlkOTUzYWMyNjlkZjUzYTM3YzM3YzNmZTYyMWMxMTA5MDNmMGM4YjJiMWU5ODc1ZmVhMGY5Y2Q4YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDFlZDkyOGNkZWZjNjBhYjlkM2YwOGI4YTRmYzlkZjMzMGMxMzg0YzdiODU5YWNkNTcxYzVjMzhkOTJiOTQ3MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmZmZDRhNjRkNDNhMzBlMDFjNjMwNjlhMWY1MTE2MmViODg3ZjE3MjI4NWFmMmNkMjRjZWQ3MzgxZDMzZmRiMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjQ0YTc3YzBjZTg2ZDBhM2M5OTEwYzhmMjcwOWJkZjc2MjUwMmU0YjhmNmJkNmU1Y2UwMTQ5MzUyYzAzNDI2NSJ9"
         },
         {
-          "resource": "repo://mcp/README.md#L53-L61",
+          "resource": "repo://mcp/README.md#L67-L75",
           "version": "repo-lines-v1:sha256:2c753e70d688829b1714741e9607ead7ec3572478bde7a4a92433d23559b2026:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzMxY2ZkOTZhY2U1MmQ3OTY5NTgyMzUzYTMxZDFkNTI2M2JiMDgyNmI2NzVkYmI1MzYxODg1MjNiNWE5ZTI3NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjYxYzAwMWY2MTJkYjY1OTYzOGRlODM4NTYyNzdkZTA4OGZmMTY5ODIwMDhhOWRjNjljZDU4NDU1ZmU3OWQ1NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjIyNWM2MDM5MGEyODYzMTQ0YWQyZTQyNjYxNmFlMzY1YTJkMWNiMjUzYjM3YzhiMzk0M2RkMTVkZWQyZDdjMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWUyN2Y3YjNhZGNiNWFhNGViYTY4NzQyNjY3ZjkxMjE5YTk5MjBkZjhlZmQzNGNjOGM2NTkwYjNjZDkzODgzOCJ9"
         }
       ]
@@ -59,7 +59,7 @@
       "statement": "The optional change-worker adapter does not install or activate an agent host: a host must provide authorized call, handling, and verification functions, and importing the adapter grants no new execution rights.",
       "evidence": [
         {
-          "resource": "repo://mcp/README.md#L98-L113",
+          "resource": "repo://mcp/README.md#L112-L127",
           "version": "repo-lines-v1:sha256:74c8805fffbe220b79c985cd7e1c735b9a5883b5ff745919808d445b86026b98:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0YTMzYjU2ZDQ5ZTliYWY0N2RjOTU5MDBiMmVjZTU1YzVmMmIxZjlkNzk4NWEwZTA0NDgyZTk4OWQ4YzAyNTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3NjdmMWFhNmQ2NjgxNzI4OTYwOTc0ZGVjN2ZjNDk3ODY5M2JhNjI3NWRlM2QxNTVmOTQ3ZTgzMDBmMDFhYzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVjYzJlMjcwODg2OTM0ZjBlNmI2ZDJjNDRmZGE4M2E1Y2I5ODM3NDQ2MGYzNThlZDRiZGM4MmE2OTU1YWU5MGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiNzA0YmU3MDFmM2Q0MmY3N2I0MDg3OGNiZTVkOTFkYzFlMTRmZGI1Y2I4MmFkOTYyZDk0ZjY4MWJlMTZhYmUifQ"
         }
       ]
@@ -221,10 +221,54 @@
           "version": "repo-lines-v1:sha256:cca8e4800169fc694a8d2384b6da562ea87027af1aa18d5caf6e3ddb402bd587:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDk0OWNkZTE2YzY1ZjAzODViNTBhZmMwNTI2YjhjMjEyODgxZDhmYzEyNDY1ZTM5YjlhMGY1ZDE3YWZmNjliNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTJiMzAxMDI5ZWE5YmU5ODEzNzZjYmJlMzE4YzU0Nzk4MzViZmNkN2U5ZGNiZjhhY2IxY2MxMTdjYjBjMDhkZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTc0YjY0YWU2MTlhZTIzYWQyY2NjMjI5NDE1ZjQ1YTRlMzBiN2M0NzFhNDJhZTdmMDgwNDM1OGFjYTE0YTQyNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTRlZDI4MjNmYjM1NjE4NjAyYmY5MTAwOGJjNThlNzkyOWVhOWNkYmYyZmZiMmNiMGRjYzA4YjIwZmE2ODI2MyJ9"
         }
       ]
+    },
+    {
+      "id": "claim_c08672176725447c9ea3a2c962e1dcb6",
+      "statement": "The production Pages workflow deploys the main-only Supabase backend before testing, building and deploying the frontend; the Node runtime has a separate deployment boundary, so local checks alone do not establish hosted release parity.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/deploy-backend.yml",
+          "version": "repo-file-v1:sha256:8db28d155fccd96070c7b443cf40e7383a7826dfdccc74da96b30387c875434e"
+        },
+        {
+          "resource": "repo://.github/workflows/deploy.yml",
+          "version": "repo-file-v1:sha256:c36201ec5eba8324d444e957275b6a1d484e89c3b1391fcbc6e4b4b2927e5755"
+        },
+        {
+          "resource": "repo://infra/cloud-run/README.md",
+          "version": "repo-file-v1:sha256:6be460e8c75d4583dfe4fffce730fb7a1ef609c4b6ae05efcaacc5b743a79842"
+        }
+      ]
+    },
+    {
+      "id": "claim_0a3a2e4482404094b691f46188ea37c3",
+      "statement": "Launch verification must account for provider/vendor integrity and generated search document consistency; provider HTTP helpers dynamically import the root undici dependency.",
+      "evidence": [
+        {
+          "resource": "repo://package-lock.json",
+          "version": "repo-file-v1:sha256:35e011869f6798c71a7b56eede109019736f326894379748a9ecbae41357b498"
+        },
+        {
+          "resource": "repo://runner/vendor/career-ops/providers/_http.mjs",
+          "version": "repo-file-v1:sha256:aca41bbf8f4131aa16af93e25a08b8b9bcb27ea5d2d4c164b95c0e1101d4af20"
+        },
+        {
+          "resource": "repo://scripts/build-search-documents.mjs",
+          "version": "repo-file-v1:sha256:a1bd4ae8479437e7eff855f4a55eb3b4383c367f8b32c6094abf63891c502e4d"
+        },
+        {
+          "resource": "repo://tests/career-execution.test.mjs",
+          "version": "repo-file-v1:sha256:3ddae4d2b683286111a83221c2aa7599b70cb398fbdc7597b5c7a8e17fe1b5b9"
+        },
+        {
+          "resource": "repo://tests/search-context.test.mjs",
+          "version": "repo-file-v1:sha256:9635a782f3e3c511705ffcf73ab3f5616c4a73b518ac964dda7ef5cdc02ab54d"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-13T05:44:24.520Z"
+    "at": "2026-11-16T19:40:41.494Z"
   }
 }
