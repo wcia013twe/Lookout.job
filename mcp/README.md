@@ -1,5 +1,19 @@
 # Job Board remote MCP
 
+Circle progress sharing is off by default per membership. `read_circle` includes
+`progressSettings` for the caller, `progressWeekStart`, and nullable `progress`
+for each consenting active member. Progress contains `careerStage`,
+`applications` and `interviews`, never employer or application identifiers. The optional self-selected stage is `exploring`, `applying`, `interviewing`, or `offer`. Circle members and their authorized agents can read the counts.
+Weeks start Monday 00:00 UTC. Applications count records whose `submitted_at`
+falls in the calendar week; interviews count completed `recruiter_call`,
+`technical_round` and `interview` milestones with `occurred_at` in that week.
+These are tracked records, not verified submissions or deduplicated interviews.
+Only the human can change their own per-Circle consent and optional stage through
+`circles.progress` (`shared`, `careerStage`, `expectedRevision`, `eventKey`,
+`circleId`); agents use `request_circle_human_action` with `manage`, not a write
+tool. Leaving or removal clears consent and stage, including on rejoining.
+Local source and tests do not establish deployment.
+
 Ordinary Discover reuses the agent-only employer inventory through
 `subscribe_shared_jobs` / `read_shared_jobs`, scoped to an active owned profile.
 Subscription writes require `workspace:read` and `preferences:write`; reads require
@@ -937,3 +951,7 @@ unchanged. No new persistence, browser, Calendar or scheduler integration is add
 Release the updated gateway/MCP guide package from main before claiming hosted
 availability; local tests exercise discovery -> guide read -> save -> read-back
 and read-only scope denial with detached fictional data.
+
+### Personal Circle resources (local source)
+
+`save_circle_resource({circleId,postId,saved,expectedSaved,eventKey})` requires `knowledge:read`, `knowledge:write` and current Circle access. It saves or removes a published root resource for the calling user only; `read_circle_thread` returns that user’s `saved` state. Stale expected state is rejected and retries use the same event key. Availability depends on deployment.

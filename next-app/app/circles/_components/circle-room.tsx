@@ -11,8 +11,8 @@ import {circleTheme} from '../../../../lib/circle-appearance.mjs';
 import {useRoomMotion} from './use-room-motion';
 import {AvatarPreview} from './appearance';
 
-type Props = {embedded?:boolean;activityControl?:ReactNode;detail:Detail; posts:Post[]; demo:boolean; person:string; selectPerson:(id:string)=>void;openPost:(post:Post)=>void};
-export default function CircleRoom({embedded=false,activityControl,detail,posts,demo,person,selectPerson,openPost}:Props) {
+type Props = {embedded?:boolean;activityControl?:ReactNode;detail:Detail; posts:Post[]; demo:boolean; person:string; selectPerson:(id:string)=>void;openPost:(post:Post)=>void;openStation:(station:'conversation'|'intel'|'resource')=>void};
+export default function CircleRoom({embedded=false,activityControl,detail,posts,demo,person,selectPerson,openPost,openStation}:Props) {
  const [memberPage,setMemberPage]=useState(0);
  const [paused,setPaused]=useState(false);
  const theme=circleTheme(detail.appearance?.themeId);
@@ -134,6 +134,7 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
   </section>}
   </div>
   <div className={styles.roomFooter}>{activityControl}</div>
-  <div className={styles.caption}><p>{demo?'Fictional clubhouse · Example activity, not live account data.':'Companion movement is decorative. Activity cards show only updates members have shared.'} <span>Tap a companion to see their person’s recent activity.</span></p>{selected&&<button type="button" onClick={()=>selectPerson('')}>Show everyone</button>}</div>
+  <nav className={styles.stations} aria-label="Clubhouse stations"><button type="button" onClick={()=>openStation('conversation')}>Conversation rug</button><button type="button" onClick={()=>openStation('intel')}>Practice board · Experiences</button><button type="button" onClick={()=>openStation('resource')}>Reading table · Resources</button></nav>
+  <div className={styles.caption}><p>{demo?'Fictional clubhouse · Example activity, not live account data.':'Companion movement is decorative.'} <span>Select a companion to see shared activity.</span></p>{selected&&<button type="button" onClick={()=>selectPerson('')}>Show everyone</button>}</div>
  </section>;
 }
