@@ -7,7 +7,7 @@ const workspaceWrites=[
   'onboarding.submit_step','tasks.create','tasks.claim','tasks.report_result',
   'preparation.update','preparation.complete','selection.record','outreach.prepare',
 ];
-const knowledgeWrites=['knowledge.propose','knowledge.publish','knowledge.withdraw','knowledge.report','knowledge.cite','knowledge.retract'];
+const knowledgeWrites=['knowledge.propose','knowledge.publish','knowledge.withdraw','knowledge.report','knowledge.cite','knowledge.retract','knowledge.save_resource'];
 export const ADDITIONAL_TOOL_SCOPES={
   ...Object.fromEntries(workspaceWrites.map(operation=>[operation,['workspace:read']])),
   ...Object.fromEntries(knowledgeWrites.map(operation=>[operation,['knowledge:read']])),

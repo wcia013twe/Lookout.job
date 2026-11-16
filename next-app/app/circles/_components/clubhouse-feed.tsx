@@ -10,7 +10,6 @@ export function isActivityUpdate(post:Post){const a=circleActivity(post.content)
 export default function ClubhouseFeed({posts,demo,openPost}:{posts:Post[];demo:boolean;openPost:(post:Post)=>void}){
  const updates=posts.filter(p=>!p.parentId&&p.state==='published'&&p.revision===p.publishedRevision&&(p.content.type!=='discussion'||isActivityUpdate(p))).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)||b.id.localeCompare(a.id));
  return <section aria-label="Shared Circle updates" className={styles.feed}>
-  <p className={styles.feedIntro}>{demo?'Fictional shared updates':'What your people chose to share.'}</p>
   {updates.length?<ul className={styles.feedList}>{updates.map(post=>{
    const activity=circleActivity(post.content),name=post.author.replace(' (demo)','');
    return <li key={post.id} className={styles.feedItem}>
@@ -24,6 +23,6 @@ export default function ClubhouseFeed({posts,demo,openPost}:{posts:Post[];demo:b
      <footer className={styles.postFooter}><span>{post.content.company||types[post.content.type]}{post.content.stage?` · ${post.content.stage}`:''}</span><button type="button" onClick={()=>openPost(post)}>{post.content.type==='milestone'?'Celebrate & reply':'Open thread & reply'}<span aria-hidden="true"> →</span></button></footer>
     </div>
    </li>;
-  })}</ul>:<p className={styles.empty}>No updates shared yet. Write an update to share progress, an experience, or something useful with your people.</p>}
+  })}</ul>:<p className={styles.empty}>No updates shared yet.</p>}
  </section>;
 }

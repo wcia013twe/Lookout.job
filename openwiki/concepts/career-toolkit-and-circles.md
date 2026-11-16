@@ -376,3 +376,11 @@ The guide covers answering from existing contributions before asking peers, cont
 ## Circles restoration verification (2026-11-11)
 
 Focused source update: `lib/feature-scope.mjs`, Circle UI entry points, gateway guide discovery and the enabling migration restore the existing service. Existing fictional Circle fixtures cover feed pagination, revision/withdrawal, resources and reset; detached-demo coverage also checks that Community routes remain accessible. The controlled admin MCP demo advertises `knowledge:read` and supports `circles.list` from the same fictional Circle fixture factory, with discovery and dispatch coverage. These fixtures remain isolated from account services. Local tests and the static export do not establish hosted migration or gateway/MCP deployment status. Earlier generated coverage retains its recorded source revision.
+
+### Circle progress sharing (local source)
+
+Each membership starts with progress sharing off. A human may choose to share a job-search stage and weekly counts with Circle members and authorized agents; the `circles.read` projection excludes company names and application identifiers. Stages are exploring, applying, interviewing and offer. The UTC week runs Monday 00:00 through the next Monday 00:00 (exclusive). Counts include applications with `submitted_at` in that window and completed recruiter-call, technical-round and interview milestones with `occurred_at` in the window; they are tracked records, not verified outcomes or deduplicated interviews. A human can revoke sharing; leaving or removal clears the choice. The scoped `read_circle` tool exposes the same projection, while agents cannot change consent. Fictional demo data is detached and resettable. Source changes alone do not establish deployment.
+
+### Personal saved resources (local source)
+
+Published root resources can be saved privately per user from the thread or via the scoped `save_circle_resource` MCP tool. Current Circle access is checked on reads and writes; optimistic state and event keys protect changes and retries. The demo keeps saved state in isolated resettable memory. Source: `supabase/migrations/20261116052928_circle_saved_resources.sql`, `tests/circle-saved-resources.test.mjs`. Deployment has not been verified.
