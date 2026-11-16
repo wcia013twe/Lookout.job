@@ -5,7 +5,7 @@ description: Evidence-qualified snapshot of implemented Job Signal Board surface
 tags: [operations, implementation-status, deployment, verification, limits]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-16T19:40:41.494Z
+    at: 2026-11-16T19:47:28.069Z
 sources:
   - id: openwiki-source-164e2da859b5277df81c7d94
     resource: repo://.github/workflows/ci.yml
@@ -25,6 +25,8 @@ sources:
     resource: repo://docs/schema.md
   - id: openwiki-source-db036a0e1e76925b281387e0
     resource: repo://infra/cloud-run/README.md
+  - id: openwiki-source-5171d9f87336369eafa2ef8c
+    resource: repo://lib/search/documents.mjs
   - id: openwiki-source-012f2c78e3b1446dfc35803f
     resource: repo://Makefile
   - id: openwiki-source-70a16c09a9eb6e620cf00513
@@ -45,22 +47,47 @@ sources:
     resource: repo://runner/README.md
   - id: openwiki-source-1248554ef211f2280fdf5a20
     resource: repo://runner/vendor/career-ops/providers/_http.mjs
+  - id: openwiki-source-966b25b37b598bc756eda27b
+    resource: repo://runner/vendor/career-ops/providers/weworkremotely.mjs
+  - id: openwiki-source-84831fc360a2d982228cac76
+    resource: repo://runner/vendor/career-ops/providers/workday.mjs
   - id: openwiki-source-3e4c3f8513eeb0e0977bcc84
     resource: repo://scripts/build-search-documents.mjs
   - id: openwiki-source-ebbea053bcf629bc5ea8601a
     resource: repo://scripts/check-appearance-ui.mjs
   - id: openwiki-source-5e0e032552d77cb40052782b
     resource: repo://supabase/functions/agent-gateway/instructions.json
+  - id: openwiki-source-4e22306855ca9cab10a08be5
+    resource: repo://supabase/functions/agent-gateway/search.mjs
   - id: openwiki-source-3cae6e3f5eeea02db512314f
     resource: repo://supabase/functions/agent-mcp/index.ts
   - id: openwiki-source-ee7807e71f4aaaf7d472231f
     resource: repo://tests/career-execution.test.mjs
   - id: openwiki-source-483fffc1ef60e28df22ee76f
     resource: repo://tests/search-context.test.mjs
-generated: { by: "codex", at: "2026-11-16T19:40:41.494Z" }
+generated: { by: "codex", at: "2026-11-16T19:47:28.069Z" }
 ---
 
 # Current implementation state and operational limits
+
+## Release-check repair — November 16, 2026
+
+Follow-up to the review below: the three failing checks are repaired locally.
+The cleanup in `5a09f33d` removed exports from pinned Career Ops files,
+including the Workday and We Work Remotely providers. Thirteen changed vendor
+files were restored byte-for-byte from the pre-cleanup revision, with every
+restored file verified against its existing SHA-256 manifest entry. The manifest
+and provider-count expectations were not weakened. All 108 network providers
+now load. The same cleanup removed the shared `discoveryFilterPlan` re-export;
+it is restored in `lib/search/documents.mjs`, and the Edge document bundle is
+regenerated from that source with the existing build script.
+
+The focused 24-test run passes, as do frontend typecheck, catalog validation
+(158 roles) and the production build. See this pass's change note for the final
+full-suite result. Existing fictional analytics/search demo coverage runs in the
+suite; fixtures and human submission boundaries do not change. These repairs
+do not resolve the dependency advisories or establish hosted release parity.
+The earlier failure counts below describe the pre-repair review, not this state.
 
 ## Launch readiness review — November 16, 2026
 

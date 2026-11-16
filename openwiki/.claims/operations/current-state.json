@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:146b4af3225a36f797239829e73e8e224a6137d8cc4fe70eae1539e84af4d764",
+  "pageVersion": "sha256:052c0efa73a6030f4daf0519a6be415fb88c118f1e0fc393f2e496114d97ab4f",
   "claims": [
     {
       "id": "claim_99f2b5392c8a4d539e3fad30b0bfb234",
@@ -265,10 +265,32 @@
           "version": "repo-file-v1:sha256:9635a782f3e3c511705ffcf73ab3f5616c4a73b518ac964dda7ef5cdc02ab54d"
         }
       ]
+    },
+    {
+      "id": "claim_504f559b74b04348b5c5433eeb26516c",
+      "statement": "The shared search document module re-exports discoveryFilterPlan for the gateway, and the Workday and We Work Remotely modules provide default provider objects with fetch implementations.",
+      "evidence": [
+        {
+          "resource": "repo://lib/search/documents.mjs",
+          "version": "repo-file-v1:sha256:f1a13ae3326703ab8457191ac3bd7f3b66edc004890ecac065afab1d8eabfdf0"
+        },
+        {
+          "resource": "repo://runner/vendor/career-ops/providers/weworkremotely.mjs",
+          "version": "repo-file-v1:sha256:7759a8ee3437368b8703171d8e231de00057e12f0b8b6654cff584eaf892dd61"
+        },
+        {
+          "resource": "repo://runner/vendor/career-ops/providers/workday.mjs",
+          "version": "repo-file-v1:sha256:6053bf1363766e10e6b899494cfff84dc0e3c26ea3e7c99f528651b75f497a47"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/search.mjs",
+          "version": "repo-file-v1:sha256:96e1847e114230c095eba6a4dc85b6f008df922e565956c8944d5fe905e97283"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-16T19:40:41.494Z"
+    "at": "2026-11-16T19:47:28.069Z"
   }
 }

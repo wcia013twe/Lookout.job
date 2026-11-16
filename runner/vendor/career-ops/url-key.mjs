@@ -444,3 +444,4 @@ export function postingKey(raw) {
   return agg ? `${agg.domain}:${agg.id}` : normalizeUrl(raw);
 }
 
+export default normalizeUrl;
