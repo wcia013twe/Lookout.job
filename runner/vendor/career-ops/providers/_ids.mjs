@@ -23,3 +23,4 @@ export function coerceId(raw) {
   return s === '' ? undefined : s;
 }
 
+export default coerceId;

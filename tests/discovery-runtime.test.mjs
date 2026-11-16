@@ -93,6 +93,7 @@ test('Node API routes approved queue and skill reads directly to SQL while legac
   try{
     const base='http://127.0.0.1:'+api.address().port;
     assert.equal((await fetch(base+'/healthz')).status,200);
+    assert.deepEqual(await (await fetch(base+'/health')).json(),{status:'ok',service:'lookout-api'});
     assert.equal((await fetch(base+'/v1/operations',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,401);
     assert.equal((await fetch(base+'/mcp',{method:'POST',headers:{'Content-Type':'application/json',Origin:'https://evil.example'},body:'{}'})).status,403);
   }finally{await new Promise(resolve=>api.close(resolve));}

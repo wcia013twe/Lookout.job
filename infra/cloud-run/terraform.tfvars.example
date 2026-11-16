@@ -1,0 +1,13 @@
+project_id           = "job-board-511516"
+region               = "us-east1"
+image                = "us-east1-docker.pkg.dev/job-board-511516/lookout/runtime@sha256:REPLACE_WITH_BUILT_DIGEST"
+staging_bucket       = "job-board-511516-lookout-search-staging"
+supabase_url         = "https://REPLACE.supabase.co"
+service_role_secret  = "lookout-supabase-service-role"
+service_role_version = "1"
+allowed_origins      = "https://wcia013twe.github.io"
+maintenance_paused   = true
+
+# Set only after the issuer, policy, signing keys and client consent path agree.
+# oauth_secret  = "lookout-oauth-config"
+# oauth_version = "1"
