@@ -56,6 +56,8 @@ For the cross-cutting ownership and revision conventions, see [Data model, owner
 
 ## Private preparation and durable artifacts
 
+The interview-preparation pipeline is a pure client-side projection over saved artifacts and application records. It associates materials only through an explicit `content.links[].applicationId`; unmatched materials remain unassigned rather than being guessed from company or date. It presents dated upcoming, undated active and previous materials separately, while employer rounds remain the application's recorded round model and practice/mock artifacts do not become interview rounds. The projection does not add persistence or an API.
+
 ### What is stored
 
 `career_artifacts` stores the current owner-scoped document plus an incrementing version and archive flag; `career_artifact_revisions` preserves each saved content/archive snapshot. Artifact content is structured around `title`, `purpose`, `kind`, `format`, `body`, dated public sources, and typed links. The supported kinds distinguish preparation and research from cover letters and reusable application templates. This is intentional: an artifact is useful work, not evidence of completing a task, approving an application, reusing an answer, or submitting anything.
@@ -366,6 +368,36 @@ Network person details expose Delete contact beside Edit person. An inline confi
 
 
 ## Circle beta participation guidance (2026-11-11)
+
+### Interview Prep workspace — focused source update (2026-11-16)
+
+Follow-up: Interviews now requires explicit post-screening interview progress;
+screening-only materials remain accessible without creating a pipeline. Answer
+Bank includes six preset questions with write/edit icons that use the existing
+versioned material editor. New answers start blank; saved question matches reopen
+the owned answer. Demo interaction recording covers creation, return and editing.
+
+The career-toolkit workspace now offers URL-driven Interviews / Answer Bank /
+Practice and application Overview / Research / Rounds / Notes. The projection in
+lib/interview-prep.mjs sorts actual upcoming round dates, then undated active and
+previous processes. Explicit application/task links attach materials to rounds;
+company/date similarity never does. Unassigned materials remain accessible.
+Latest linked company research is primary, retaining other documents and revisions.
+
+material-editor.tsx saves structured Markdown answer categories/status/question/
+answer/experiences/adaptation, or preserves legacy/raw bodies. Existing
+save_artifact/read_artifact remain the scoped website/MCP boundary. Mock logistics
+retain their dedicated writer. Checklists record actual user-reported minutes via
+complete_preparation_session with existing budget/version/idempotency checks;
+reading never completes work. No schema, dependency or orchestration changes.
+
+Detached fictional demo/contract tests cover categories, revisions, stale writes,
+task progress and reset. Local focused tests/typecheck/build/data checks passed.
+Final browser/recording verification was blocked by unavailable T3 and alternate
+browser hosts. No hosted release is claimed. This focused manual update does not
+refresh the remainder of the generated page's recorded source revision.
+
+### Earlier Circle beta guidance
 
 Focused source update: `supabase/functions/agent-gateway/skills/circle-knowledge.json` now directs proactive, draft-first invitations after relevant career work. Interview preparation, job discovery, Toolkit materials and notification guidance route to it. Invitations show the exact share-safe draft and destination, with a direct authenticated review handoff; agents must not ask for permission at each drafting stage. Existing `list_circles`, `read_circle`, `search_circle_knowledge`, `read_circle_thread`, `propose_circle_contribution` and `request_circle_human_action` tools provide the path. Publication still requires the existing exact-revision consent boundary; chat assent is not approval.
 
