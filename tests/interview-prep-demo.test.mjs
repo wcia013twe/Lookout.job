@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {createDemoWorkspace,createDemoServices} from '../next-app/lib/muse-demo-fixtures.mjs';
 import {createDemoStore} from '../next-app/lib/demo-store.mjs';
 import {validateArtifact} from '../lib/artifacts.mjs';
+import {interviewAnswerPresets,presetAnswer} from '../lib/interview-answer-presets.mjs';
+import {answerSections,buildInterviewPipelines} from '../lib/interview-prep.mjs';
 
 const fixture=()=>createDemoServices(createDemoStore(createDemoWorkspace('2026-11-16T12:00:00Z')));
 async function materials(service){
@@ -10,6 +12,20 @@ async function materials(service){
  do{const page=await service.artifactAction('artifacts.list',{shelf:'all',offset});items.push(...page.items);offset=page.nextOffset;}while(offset!==null);
  return items;
 }
+test('demo presets create a real answer and reopen it while screening stays out',async()=>{
+ const service=fixture(),preset=interviewAnswerPresets[1];
+ const body=answerSections.map((heading,index)=>`## ${heading}\n${[preset.category,'Draft',preset.question,'Fictional demo answer','',''][index]}`).join('\n\n');
+ const payload={id:'eeeeeeee-1002-4000-8000-111111111111',expectedVersion:0,kind:'story_bank',title:preset.question,purpose:'Reusable interview answer',format:'markdown',body,sources:[],links:[]};
+ assert.doesNotThrow(()=>validateArtifact('artifacts.save',payload));
+ await service.artifactAction('artifacts.save',payload);
+ const saved=await service.artifactAction('artifacts.read',{id:payload.id});
+ assert.equal(presetAnswer([saved],preset).id,payload.id);
+ assert.equal(saved.content.body,body);
+ const bundle=await service.readPreparationPlanner();
+ const applications=Object.values(bundle.applications);
+ assert(buildInterviewPipelines([],applications).pipelines.length<applications.length);
+ assert.equal(presetAnswer(await materials(fixture()),preset),undefined);
+});
 test('interview demo covers answer categories, statuses and independent practice',async()=>{
  const service=fixture(),items=await materials(service);
  const answers=await Promise.all(items.filter(row=>row.content.kind==='story_bank').map(row=>service.artifactAction('artifacts.read',{id:row.id})));

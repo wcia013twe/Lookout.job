@@ -371,6 +371,12 @@ Network person details expose Delete contact beside Edit person. An inline confi
 
 ### Interview Prep workspace — focused source update (2026-11-16)
 
+Follow-up: Interviews now requires explicit post-screening interview progress;
+screening-only materials remain accessible without creating a pipeline. Answer
+Bank includes six preset questions with write/edit icons that use the existing
+versioned material editor. New answers start blank; saved question matches reopen
+the owned answer. Demo interaction recording covers creation, return and editing.
+
 The career-toolkit workspace now offers URL-driven Interviews / Answer Bank /
 Practice and application Overview / Research / Rounds / Notes. The projection in
 lib/interview-prep.mjs sorts actual upcoming round dates, then undated active and

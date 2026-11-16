@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildInterviewPipelines,interviewPipelineOrder,latestCompanyResearch,answerEntry,practiceCategory,readStructuredAnswer,answerSections,roundMaterials} from '../lib/interview-prep.mjs';
+import {buildInterviewPipelines,interviewPipelineOrder,latestCompanyResearch,answerEntry,practiceCategory,readStructuredAnswer,answerSections,roundMaterials,isInterviewPrepEligible} from '../lib/interview-prep.mjs';
 
 const app=(id,company='Example')=>({id,company,title:'Engineer',milestones:[]});
+const progressed=(id,company='Example')=>({...app(id,company),milestones:[{id:`${id}-technical`,kind:'technical_round',phase:'scheduled',round:{stage:'INTERVIEW',type:'technical'}}]});
 const artifact=(id,kind,links=[],extra={})=>({id,content:{id,kind,title:id,links,...extra}});
 
 test('projects only explicit application links and preserves unassigned materials',()=>{
- const applications=[app('app-1','SameCo'),app('app-2','SameCo')];
+ const applications=[progressed('app-1','SameCo'),progressed('app-2','SameCo')];
  const linked=artifact('research','company_research',[{applicationId:'app-1'}]);
  const unlinked=artifact('guess','interview_brief',[],{company:'SameCo'});
  const unrelated=artifact('other-company','notes',[{company:'SameCo'}],{company:'SameCo'});
@@ -14,6 +15,34 @@ test('projects only explicit application links and preserves unassigned material
  assert.deepEqual(result.pipelines[0].active.map(row=>row.item.id),['research']);
  assert.deepEqual(result.pipelines[1].active,[]);
  assert.deepEqual(result.unassigned.map(row=>row.item.id),['guess','other-company']);
+});
+
+test('only applications with explicit progress beyond screening receive pipelines',()=>{
+ const initial=app('initial');
+ const screening={...app('screening'),milestones:[{id:'screen',kind:'phone_screen',phase:'scheduled',round:{stage:'SCREEN',type:'recruiter'}}]};
+ const confirmedNext={...app('next'),milestones:[{id:'tech',kind:'technical_round',phase:'scheduled',round:{stage:'INTERVIEW',type:'technical'}}]};
+ const completedScreen={...app('completed-screen'),milestones:[{id:'screen-done',kind:'phone_screen',phase:'completed',round:{stage:'SCREEN',type:'recruiter'}}]};
+ const nextAfterScreen={...app('next-after-screen'),milestones:[{id:'screen-done-2',kind:'phone_screen',phase:'completed',round:{stage:'SCREEN',type:'recruiter'}},{id:'behavioral',kind:'interview',phase:'scheduled',round:{stage:'INTERVIEW',type:'behavioral'}}]};
+ const rows=[artifact('initial-material','practice',[{applicationId:'initial'}]),artifact('screen-material','notes',[{applicationId:'screening'}]),artifact('completed-screen-material','notes',[{applicationId:'completed-screen'}])];
+ assert.equal(isInterviewPrepEligible(initial),false);
+ assert.equal(isInterviewPrepEligible(screening),false);
+ assert.equal(isInterviewPrepEligible(completedScreen),false);
+ assert.equal(isInterviewPrepEligible(confirmedNext),true);
+ assert.equal(isInterviewPrepEligible({...confirmedNext,archived:true,status:'Rejected'}),true);
+ assert.equal(isInterviewPrepEligible(nextAfterScreen),true);
+ const result=buildInterviewPipelines(rows,[initial,screening,completedScreen,confirmedNext,nextAfterScreen],'2026-11-16');
+ assert.deepEqual(result.pipelines.map(row=>row.application.id),['next','next-after-screen']);
+ assert.deepEqual(result.unassigned.map(row=>row.item.id),['initial-material','screen-material','completed-screen-material']);
+});
+
+test('completed screening alone remains out, completed screening plus an interview round qualifies',()=>{
+ const screening={...app('screen-complete'),imported:{record:{rounds:[{id:'s',label:'Recruiter screen',stage:'SCREEN',type:'recruiter',phase:'completed',date:null,notes:'',cancelled:false}]}}};
+ const progressed={...app('past-process'),status:'Submitted',imported:{record:{rounds:[{id:'s',label:'Recruiter screen',stage:'SCREEN',type:'recruiter',phase:'completed',date:null,notes:'',cancelled:false},{id:'t',label:'Technical round',stage:'INTERVIEW',type:'technical',phase:'completed',date:'2026-10-01',notes:'',cancelled:false}]}}};
+ assert.equal(isInterviewPrepEligible(screening),false);
+ assert.equal(isInterviewPrepEligible(progressed),true);
+ const [pipeline]=buildInterviewPipelines([artifact('past-notes','interview_debrief',[{applicationId:'past-process'}])],[progressed],'2026-11-16').pipelines;
+ assert.equal(pipeline.application.id,'past-process');
+ assert.equal(interviewPipelineOrder([pipeline],'2026-11-16')[0].group,'Previous');
 });
 
 test('classifies preparation and orders upcoming, undated active, then previous',()=>{
@@ -24,7 +53,7 @@ test('classifies preparation and orders upcoming, undated active, then previous'
   artifact('brief','interview_brief',[{applicationId:'app-1'}],{preparedFor:'2026-11-22'}),
   artifact('research','read_up',[{applicationId:'app-1'}]),
  ];
- const {pipelines}=buildInterviewPipelines(materials,[app('app-1')],'2026-11-13');
+ const {pipelines}=buildInterviewPipelines(materials,[progressed('app-1')],'2026-11-13');
  const pipeline=pipelines[0];
  assert.deepEqual(pipeline.upcoming.map(row=>[row.item.id,row.kind]),[['future','practice'],['brief','round brief']]);
  assert.deepEqual(pipeline.active.map(row=>[row.item.id,row.kind]),[['undated','reusable answer'],['research','research']]);
@@ -35,7 +64,7 @@ test('retains duplicate source rows and excludes completed or cancelled prep fro
  const duplicate=artifact('same','practice',[{applicationId:'app-1'}]);
  const completed=artifact('done','mock_interview',[{applicationId:'app-1'}],{sessionStatus:'completed'});
  const cancelled=artifact('cancelled','practice',[{applicationId:'app-1'}],{sessionStatus:'cancelled'});
- const {pipelines}=buildInterviewPipelines([duplicate,duplicate,completed,cancelled],[app('app-1')],'2026-11-13');
+ const {pipelines}=buildInterviewPipelines([duplicate,duplicate,completed,cancelled],[progressed('app-1')],'2026-11-13');
  assert.deepEqual(pipelines[0].active.map(row=>row.item.id),['same','same']);
  assert.deepEqual(pipelines[0].previous.map(row=>row.item.id),['done','cancelled']);
 });
@@ -51,7 +80,7 @@ test('does not infer links from company or round dates and exposes real applicat
 test('keeps unknown application links and unclassified saved materials accessible as unassigned',()=>{
  const unknown=artifact('unknown','practice',[{applicationId:'missing-app'}]);
  const unclassified=artifact('future-kind','new_saved_kind',[],{body:'Saved data'});
- const {unassigned,pipelines}=buildInterviewPipelines([unknown,unclassified],[app('app-1')],'2026-11-13');
+ const {unassigned,pipelines}=buildInterviewPipelines([unknown,unclassified],[progressed('app-1')],'2026-11-13');
  assert.deepEqual(unassigned.map(row=>row.item.id),['unknown','future-kind']);
  assert.deepEqual(pipelines[0].active,[]);
 });

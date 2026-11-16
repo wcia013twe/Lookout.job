@@ -5,7 +5,7 @@ import type {Artifact,ArtifactContent} from './artifact-viewer';
 import styles from '../toolkit.module.css';
 import {readStructuredAnswer} from '../../../../lib/interview-prep.mjs';
 
-export type MaterialEditorProps={artifact?:Artifact;kind?:string;onSave:(content:ArtifactContent)=>Promise<void>;onCancel:()=>void;busy?:boolean};
+export type MaterialEditorProps={artifact?:Artifact;kind?:string;preset?:{question:string;category:string};onSave:(content:ArtifactContent)=>Promise<void>;onCancel:()=>void;busy?:boolean};
 
 const answerCategories=['Introductions and motivation','Behavioral questions','Project and experience stories','Technical explanations','Questions to ask interviewers'] as const;
 const answerSections=['Category','Status','Question','Answer','Experiences','Company adaptation'] as const;
@@ -18,14 +18,14 @@ function readAnswerBody(body:string):AnswerDraft|null{
 
 function encodeAnswerBody(value:AnswerDraft){return answerSections.map(section=>`## ${section}\n${value[section]}`).join('\n\n');}
 
-export default function MaterialEditor({artifact,kind,onSave,onCancel,busy=false}:MaterialEditorProps){
+export default function MaterialEditor({artifact,kind,preset,onSave,onCancel,busy=false}:MaterialEditorProps){
  const content=artifact?.content;
  const actualKind=content?.kind||kind||'notes';
  const existingAnswer=useMemo(()=>actualKind==='story_bank'&&content?readAnswerBody(content.body):null,[actualKind,content]);
  const structuredAnswer=actualKind==='story_bank'&&(!artifact||existingAnswer!==null);
- const initialAnswer=existingAnswer||{Category:answerCategories[0],Status:'Draft',Question:'',Answer:'',Experiences:'','Company adaptation':''};
- const [title,setTitle]=useState(content?.title||'');
- const [purpose,setPurpose]=useState(content?.purpose||'');
+ const initialAnswer=existingAnswer||{Category:preset?.category||answerCategories[0],Status:'Draft',Question:preset?.question||'',Answer:'',Experiences:'','Company adaptation':''};
+ const [title,setTitle]=useState(content?.title||preset?.question||'');
+ const [purpose,setPurpose]=useState(content?.purpose||(preset?'Reusable interview answer':''));
  const [body,setBody]=useState(content?.body||'');
  const [practiceCategory,setPracticeCategory]=useState('Algorithms and coding');
  const [answer,setAnswer]=useState<AnswerDraft>(initialAnswer);

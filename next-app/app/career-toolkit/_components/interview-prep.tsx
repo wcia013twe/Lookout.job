@@ -4,12 +4,13 @@ import {usePathname,useRouter,useSearchParams} from 'next/navigation';
 import {applicationNextAction} from '../../../../lib/application-next-action.mjs';
 import {buildInterviewPipelines,interviewPipelineOrder,latestCompanyResearch,answerEntry,practiceCategory,roundMaterials} from '../../../../lib/interview-prep.mjs';
 import {artifactPath} from '../../../../lib/artifacts.mjs';
+import {interviewAnswerPresets,presetAnswer} from '../../../../lib/interview-answer-presets.mjs';
 import {CompanyLogo} from '../../../components/company-logo';
 import {ToolkitIcon} from './toolkit-icon';
 import {SavedMaterialRow,type ArtifactSummary} from './artifact-tile';
 import styles from '../interview-prep.module.css';
 
-type Props={items:any[];applications:any[];demo:boolean;plans?:any[];onCompleteTask?:(applicationId:string,taskId:string)=>Promise<void>;onCreate?:(kind:string)=>void;busy?:boolean};
+type Props={items:any[];applications:any[];demo:boolean;plans?:any[];onCompleteTask?:(applicationId:string,taskId:string)=>Promise<void>;onCreate?:(kind:string,preset?:{question:string;category:string})=>void;busy?:boolean};
 type Tab='interviews'|'answers'|'practice';
 type Pipeline='Overview'|'Research'|'Rounds'|'Notes';
 const tabs:{id:Tab;label:string}[]=[{id:'interviews',label:'Interviews'},{id:'answers',label:'Answer Bank'},{id:'practice',label:'Practice'}];
@@ -27,8 +28,8 @@ export default function InterviewPrep({items,applications,demo,plans=[],onComple
  const search=params.get('q')||'';
  const projection=useMemo(()=>buildInterviewPipelines(items,applications),[items,applications]);
  const appOrder=useMemo(()=>interviewPipelineOrder(projection.pipelines),[projection]);
- const application=applications.find(app=>app.id===selected||app.backendId===selected);
  const selectedPipeline=projection.pipelines.find(row=>row.application.id===selected||row.application.backendId===selected);
+ const application=selectedPipeline?.application;
  const roundFocus=selectedPipeline?.rounds.find((round:any)=>round.id===selectedRound);
  const matching=(text:string)=>!search||text.toLowerCase().includes(search.toLowerCase());
  const query=(next:Record<string,string|null>)=>{const value=new URLSearchParams(params.toString());for(const [key,v] of Object.entries(next)){if(v)value.set(key,v);else value.delete(key);}const suffix=value.toString();router.push(`${pathname}${suffix?`?${suffix}`:''}`,{scroll:false});};
@@ -37,7 +38,7 @@ export default function InterviewPrep({items,applications,demo,plans=[],onComple
  const answerItems=items.filter(item=>['story_bank','application_template'].includes(content(item).kind)&&matching(`${content(item).title||''} ${content(item).body||''} ${answerEntry(item).category}`));
  const practiceItems=items.filter(item=>(['practice','mock_interview'].includes(content(item).kind)||(['notes','resource','explainer'].includes(content(item).kind)&&practiceCategory(item)!=='Practice'))&&matching(`${content(item).title||''} ${content(item).body||''} ${practiceCategory(item)}`));
  const tabItems=tab==='answers'?answerItems:practiceItems;
- const countFor=(id:Tab)=>id==='interviews'?applications.length:id==='answers'?answerItems.length:practiceItems.length;
+ const countFor=(id:Tab)=>id==='interviews'?projection.pipelines.length:id==='answers'?answerItems.length:practiceItems.length;
  const taskPlan=plans.find(plan=>[application?.id,application?.backendId].filter(Boolean).includes(plan.applicationId));
  const roundTasks=taskPlan?.tasks?.filter((task:any)=>task.roundId===roundFocus?.id)||[];
  const roundItems=roundFocus?roundMaterials(items,[application?.id,application?.backendId].filter(Boolean),taskPlan?.tasks||[],roundFocus.id):[];
@@ -73,7 +74,8 @@ export default function InterviewPrep({items,applications,demo,plans=[],onComple
     {pipeline==='Notes'&&<ArtifactSection title="Unassigned notes & saved prep" items={projection.unassigned.filter((r:any)=>['notes','interview_debrief','interview_brief','weekly_prep'].includes(content(r.item).kind)).map((r:any)=>r.item).filter((i:any)=>matching(content(i).title||''))} demo={demo} empty="No unassigned notes or prep materials." onOpen={artifactHref}/ >}
    </>}
   </>}
-  {tab!=='interviews'&&<GroupedMaterials title={tab==='answers'?'Saved answers & stories':'Practice materials'} items={tabItems} demo={demo} empty={tab==='answers'?'Saved story banks and reusable answers will appear here.':'Practice activities and mock interview materials will appear here.'} onOpen={artifactHref} category={tab==='answers'?((i:any)=>answerEntry(i).category):practiceCategory} search={matching}/>}
+  {tab==='answers'&&<section className={styles.section}><h2>Reusable interview answers</h2><p className={styles.muted}>Start with a question. Your answers are reusable across companies.</p><ul className={styles.list}>{interviewAnswerPresets.filter(preset=>matching(`${preset.question} ${preset.category}`)).map(preset=>{const saved=presetAnswer(items,preset);return <li key={preset.question} className={styles.presetRow}><ToolkitIcon name="book"/><span><strong>{preset.question}</strong><small>{preset.category} · {saved?(answerEntry(saved).status||'Saved'):'Not started'}</small></span><button type="button" className={styles.presetInput} disabled={busy||(!saved&&!onCreate)} aria-label={`${saved?'Edit':'Write'} answer: ${preset.question}`} onClick={()=>{if(saved)router.push(`${artifactHref(saved)}&edit=1`);else onCreate?.('story_bank',preset);}}><ToolkitIcon name="edit"/><span className="sr-only">{saved?'Edit answer':'Write answer'}</span></button></li>;})}</ul></section>}
+  {tab!=='interviews'&&<GroupedMaterials title={tab==='answers'?'Saved answers & stories':'Practice materials'} items={tabItems} demo={demo} empty={tab==='answers'?'Your saved answers will appear here. Start with a preset question above or create your own.':'Practice activities and mock interview materials will appear here.'} onOpen={artifactHref} category={tab==='answers'?((i:any)=>answerEntry(i).category):practiceCategory} search={matching}/>}
   {!application&&tab==='interviews'&&pipeline==='Overview'&&<ArtifactSection title="Unassigned saved materials" items={projection.unassigned.map((r:any)=>r.item).filter((i:any)=>matching(`${content(i).title||''} ${content(i).kind||''}`))} demo={demo} empty="Every saved material remains accessible here until explicitly linked." onOpen={artifactHref}/>}
   {onCreate&&<div className={styles.create}><button type="button" onClick={()=>onCreate(tab==='interviews'?(pipeline==='Notes'?'notes':'company_research'):tab==='answers'?'story_bank':'practice')}>Create {tab==='answers'?'answer':tab==='practice'?'practice material':pipeline==='Notes'?'notes':'prep material'}</button></div>}
  </section>;

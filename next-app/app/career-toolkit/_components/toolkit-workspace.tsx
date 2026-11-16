@@ -34,6 +34,7 @@ export default function ToolkitWorkspace(){
 function Workspace({w,owner,artifactId,revision}:{w:ReturnType<typeof useWorkspace>;owner?:string;artifactId:string|null;revision:string|null}){
  const router=useRouter(),params=useSearchParams();
  const [planner,setPlanner]=useState<any>(null),[editing,setEditing]=useState(false),[newKind,setNewKind]=useState<string|null>(null);
+ const [answerPreset,setAnswerPreset]=useState<{question:string;category:string}|undefined>(undefined);
  const [session,setSession]=useState<{applicationId:string;taskId:string;minutes:number;sessionId:string}|null>(null);
  const mutation=useRef(false);
  const [items,setItems]=useState<Summary[]>([]),[artifact,setArtifact]=useState<Artifact|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState(''),[reload,setReload]=useState(0),[busy,setBusy]=useState(false),[feedback,setFeedback]=useState('');
@@ -50,7 +51,7 @@ function Workspace({w,owner,artifactId,revision}:{w:ReturnType<typeof useWorkspa
   services.readPreparationPlanner().then((value:any)=>{if(current&&stillOwner())setPlanner(value);}).catch(()=>{if(current&&stillOwner())setError('Preparation tasks could not load. Retry before recording practice.');});
   return()=>{current=false;};
  },[services,reload]);
- useEffect(()=>{setEditing(false);setNewKind(null);setSession(null);},[artifactId,revision]);
+ useEffect(()=>{setEditing(params.get('edit')==='1'&&!revision&&!w.locked);setNewKind(null);setSession(null);},[artifactId,revision,params.get('edit'),w.locked]);
  useEffect(()=>{
   const epoch=++generation.current;setLoading(true);setError('');setArtifact(null);setFeedback('');
   if(!services){setItems([]);setLoading(false);return;}
@@ -139,9 +140,9 @@ function Workspace({w,owner,artifactId,revision}:{w:ReturnType<typeof useWorkspa
   <ApiError message={error} onRetry={()=>setReload(n=>n+1)}/>
   {!owner&&<Notice><Link className="text-board-accent underline" href="/profile/">Sign in through Profile</Link> to see the materials your agent has prepared.</Notice>}
   {artifactId?<>{!artifact&&<Link className={styles.backLink} href="/career-toolkit/#workspace">Back to workspace</Link>}{artifact&&!loading&&(editing?<MaterialEditor artifact={artifact} busy={busy} onSave={saveMaterial} onCancel={()=>setEditing(false)}/>:<ArtifactViewer key={`${artifact.id}:${artifact.version}`} artifact={artifact} demo={!!w.demo} historical={!!revision} onEdit={()=>setEditing(true)} onVersion={v=>router.push(materialPath(artifact.id,v==='latest'?undefined:Number(v)))} onArchive={archive} onPrepDate={savePrepDate} onFeedback={saveMaterialFeedback} locked={w.locked} busy={busy}/>)} {artifact&&!loading&&!editing&&!!artifact.content.materials?.length&&<ArtifactCollection key={`collection:${artifact.id}:${artifact.version}`} materials={artifact.content.materials} read={readMaterial}/>}</>:<>
-   {newKind?<MaterialEditor kind={newKind} busy={busy} onSave={saveMaterial} onCancel={()=>setNewKind(null)}/>:<>
+   {newKind?<MaterialEditor kind={newKind} preset={answerPreset} busy={busy} onSave={saveMaterial} onCancel={()=>setNewKind(null)}/>:<>
    {session&&<form className="mb-6 space-y-3 rounded-xl border border-board-border p-4" onSubmit={event=>{event.preventDefault();void recordSession();}}><h2 className="font-semibold">Record completed practice</h2><p className="text-sm text-board-muted">Only record time you actually spent. Opening material does not complete a task.</p><label className="block">Minutes practiced <input className="ml-2 w-24 rounded border border-board-border bg-board-surface p-2" type="number" min="1" max="240" required value={session.minutes} onChange={event=>setSession({...session,minutes:Number(event.target.value)})}/></label><button className="mr-4 underline" disabled={busy||w.locked}>Save practice</button><button type="button" className="underline" disabled={busy} onClick={()=>setSession(null)}>Cancel</button></form>}
-   <InterviewPrep items={items} applications={Object.values({...planner?.applications,...w.state.workflow.applications})} plans={(planner?.plans||[]).map((row:any)=>({...row.plan,applicationId:row.application_id,version:row.version}))} onCompleteTask={chooseTask} onCreate={owner&&!w.locked?setNewKind:undefined} busy={busy||w.locked} demo={!!w.demo}/>
+   <InterviewPrep items={items} applications={Object.values({...planner?.applications,...w.state.workflow.applications})} plans={(planner?.plans||[]).map((row:any)=>({...row.plan,applicationId:row.application_id,version:row.version}))} onCompleteTask={chooseTask} onCreate={owner&&!w.locked?(kind,preset)=>{setAnswerPreset(preset);setNewKind(kind);}:undefined} busy={busy||w.locked} demo={!!w.demo}/>
    </>}
   </>}
   {loading&&<Notice>Loading your materials…</Notice>}
