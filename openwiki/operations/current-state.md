@@ -70,6 +70,21 @@ generated: { by: "codex", at: "2026-11-16T19:47:28.069Z" }
 
 # Current implementation state and operational limits
 
+## Cloud Run staging — November 16, 2026
+
+The independent Cloud Run root has been provisioned in `job-board-511516`,
+`us-east1`, with maintenance paused. At the user's request, the old
+`lookout-backend` VM is stopped (`TERMINATED`) with its disk retained; its
+endpoint is offline. Client endpoint cutover is not yet complete.
+Existing scoped MCP authentication succeeds on the new API. Hosted recovery is
+blocked until the main-only workflow applies the queue recovery migration;
+provisioning is not cutover or hosted discovery proof. Use `/health` for Cloud
+Run probes (`/healthz` is intercepted upstream). The old VM has an empty
+APILayer key, so hosted resume parsing has no existing key to migrate; this
+pre-existing capability is not verified by the migration. No production OAuth issuer change is
+needed for the currently OAuth-disabled VM, but existing opaque credentials
+and client endpoints must still be verified during cutover.
+
 ## Release-check repair — November 16, 2026
 
 Follow-up to the review below: the three failing checks are repaired locally.
@@ -157,14 +172,18 @@ Submission remains disabled; leases and existing consent boundaries are unchange
 See `infra/cloud-run/README.md` for the clean-main image build, pinned secret
 references, paused Scheduler smoke, issuer migration and disk-preserving rollback.
 Local source/container checks are not evidence of Google IAM, GCS, Scheduler,
-OAuth host reconnects or a production cutover. The VM and production endpoint
-remain unchanged. Broader generated wiki coverage retains its recorded revision.
+OAuth host reconnects or a production cutover. See the staging status above for
+the stopped VM. Broader generated wiki coverage retains its recorded revision.
 
 The Career Ops HTTP helper's missing macOS user-agent export is restored to its
 existing pinned manifest checksum. A regression test and rebuilt Docker image
-verify Feishu import and real discovery configuration validation. Separate vendor
-checksum mismatches and skipped Workday/We Work Remotely providers remain; this
-repair does not establish a successful live search or release readiness.
+verify Feishu import and real discovery configuration validation. The CI repair
+restores 13 further damaged files byte-for-byte from the existing pinned upstream
+commit, including the missing Workday and We Work Remotely provider exports.
+All 108 network providers now load and the unchanged manifest integrity check
+passes. The search-document source re-export and generated Edge bundle are also
+restored together. Focused tests pass; hosted release and discovery execution
+remain unverified until deployment and the independent cloud run finish.
 
 ## Private shadow recommendation logging — November 12, 2026
 

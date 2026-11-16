@@ -90,7 +90,8 @@ replaceable transport adapters, not a change to the domain data model.
 ## Required smoke and cutover evidence
 
 - Confirm Terraform's deterministic `api_url` is accepted by Cloud Run and
-  `/healthz`; the generated hashed URI is not in the Host allowlist. Verify
+  `/health`; Google intercepts `/healthz` before the application. The legacy
+  `/healthz` route remains available locally. The generated hashed URI is not in the Host allowlist. Verify
   anonymous/forged maintenance requests fail and a real Scheduler OIDC request
   succeeds. Scheduler is initially paused; use an explicit single run for smoke.
 - With disposable fictional account/profile/connection fixtures, submit via

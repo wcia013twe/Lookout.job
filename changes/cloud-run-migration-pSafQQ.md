@@ -1,5 +1,13 @@
 # Cloud Run runtime and independent deployment root
 
+## Focused production release — November 16, 2026
+
+- Rebased only the Cloud Run migration and pinned user-agent repair onto published main; unrelated local UI commits are excluded.
+- Add `/health` for hosted probes because Google's frontend returns HTML 404 for `/healthz`; retain the local legacy route. The VM's APILayer key is empty, so there is no existing resume-parser secret to migrate; parsing remains an explicit pre-existing verification limit.
+- Current release checks: 30 focused runtime/discovery/staging tests pass; runtime and frontend typechecks, production static build, catalog validation (158 roles), Terraform format/validation and diff checks pass. Terraform initialization initially timed out contacting the registry; using the already verified local provider completed validation.
+- Full `npm test`: 1,436 tests, 1,432 pass, four failures: existing vendor manifest mismatch, 106/108 provider imports, stale generated search bundle, and an unchanged outreach test file failure under parallel load. The isolated outreach retry passes 2/2. These failures remain visible and may block protected CI; no checks or branch protections are bypassed.
+- Initial infrastructure is deployed with maintenance paused, existing scoped MCP authentication verified, and production VM traffic unchanged. Hosted queue recovery still requires the main-only migration release. Full hosted execution, recovery and cutover remain unverified at this point.
+
 - Reuse the Node image for a request-billed API and finite discovery Job. Enqueue wakes are awaited best-effort for both scoped submission tools/operations; browser SQL enqueues recover through authenticated Scheduler maintenance. Submission stays disabled, leases stay authoritative, and local polling remains unchanged.
 - Replace shared disk staging with private immutable GCS snapshots when configured. Separate API/worker permissions, generation-fenced cleanup and seven-day lifecycle protect the temporary pool. Existing owned reads and SQL checkpoints remain the domain boundary.
 - Request mode drains one finite MCP-event outbox batch before responding and starts no permanent Realtime listener. Google-signed exact-identity maintenance is an operator boundary, not a new agent action. Both maintenance branches settle before error responses.
@@ -26,3 +34,10 @@
 - Focused execution/filter/wiring tests: 53 passed, two existing vendor-integrity/provider-count failures. Full `npm test`: 1,440 tests, 1,437 passed, three failed. Remaining failures also appear in the earlier baseline logs: vendor checksum mismatch, 106 rather than 108 loadable network providers, and stale generated search-document codec. Workday and We Work Remotely lack valid provider export shapes. Those separate defects are not changed here.
 - Runtime and Next TypeScript checks, `npm run validate:data` (158 roles), Docker image build and real in-container discovery configuration validation passed. The container also verifies the pinned HTTP checksum and Feishu import. No Google credentials, hosted writes, live source fetch, image push or deployment occurred.
 - The missing-export blocker is repaired, but the remaining failures and bounded live-search verification still gate discovery release. The earlier migration validation above is a historical record, not the current test outcome.
+
+## CI repair — November 16, 2026
+
+- Restore 13 damaged Career Ops files from the already-pinned upstream commit, verifying every downloaded file against the unchanged manifest before applying it. Workday and We Work Remotely regain their original provider implementations; all 108 network providers load. No version upgrade, checksum rewrite, disabled provider or relaxed assertion.
+- Restore the deleted `discoveryFilterPlan` source re-export and regenerate the Edge search-document bundle from that canonical source. Existing sync and gateway tests cover the shared boundary; no new product action, consent, dependency or demo state is introduced.
+- Focused vendor execution and search-context tests: 24 passed. Full `npm test`: 1,436 passed, zero failures or skips. Runtime and frontend TypeScript checks, catalog validation (158 roles), production static build (441 offline assets), all 249 pinned manifest hashes and `git diff --check` pass.
+- The old GCP VM is stopped at the user's explicit request, with its disk retained. The previous endpoint is offline; Cloud Run client cutover and hosted discovery proof remain pending the protected release.
