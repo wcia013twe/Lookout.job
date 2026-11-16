@@ -38,4 +38,27 @@ Manuals and editable agent requests no longer expose upstream branding or source
 
 ## Interview pipeline projection
 
+The workspace uses Interviews, Answer Bank and Practice tabs. URL parameters
+retain tab, application, view, round and search across refreshes and reader returns.
+Actual upcoming round dates lead, then undated active and previous processes.
+Overview, Research, Rounds and Notes reuse owned applications and preparation plans.
+Latest linked company research is primary; older documents and immutable reader
+revisions remain accessible. Round materials require the same application/task link
+and a preparation task whose roundId matches the round. Unknown materials remain
+accessible without company/date inference.
+
+Answer Bank supports five categories and Draft / Needs Review / Ready states in
+versioned Markdown bodies. Recognized answers receive structured editing; legacy
+layouts remain raw. Practice distinguishes coding, system design, behavioral and
+mock activities. Existing feedback and dedicated mock writers remain unchanged.
+Website editing maps to MCP save_artifact/read_artifact with ownership/version
+checks. Checklist progress asks for actual minutes through
+complete_preparation_session with existing budget/idempotency/version checks;
+opening material never completes work. No schema, dependency or orchestration change.
+Detached fictional demo tests cover categories, revisions, stale writes and reset.
+
+Focused tests, typecheck, static build and catalog validation passed. Both browser
+automation hosts were unavailable for the final interaction pass and fresh recording;
+earlier checkpoint captures do not cover the final editor. No hosted release claimed.
+
 `lib/interview-prep.mjs` exports the pure `buildInterviewPipelines(items, applications, now?)` projection for grouping saved preparation artifacts by an explicit `content.links[].applicationId`. Materials without a matching explicit application link remain in `unassigned`; company names and dates are never used to guess an association. Each application includes separate upcoming, active-undated and previous material lists, material classifications, and the application's actual recorded rounds. This is a read-only projection over existing records: it introduces no persistence, API, or live deployment behavior. Employer rounds remain distinct from preparation tasks and mock practice.

@@ -36,12 +36,12 @@ export default function ArtifactTile({artifact,featured=false,dated=false,demo=f
   <Context artifact={artifact} application={application}/>
  </article></li>;
 }
-export function SavedMaterialRow({artifact,application,demo=false}:{artifact:ArtifactSummary;application?:MaterialApplication;demo?:boolean}){
+export function SavedMaterialRow({artifact,application,demo=false,href,detail}:{artifact:ArtifactSummary;application?:MaterialApplication;demo?:boolean;href?:string;detail?:string}){
  const c=artifact.content,calendar=demo?mockCalendarPreview(artifact.content):null;
  return <li className={styles.rowItem}><article className={styles.compactMaterial}>
-  <Link href={calendar||(c.kind==='resource'&&c.resourceUrl?c.resourceUrl:artifact.path||artifactPath(artifact.id))} target={calendar||c.kind==='resource'?'_blank':undefined} rel={calendar||c.kind==='resource'?'noopener noreferrer':undefined} className={styles.savedMaterialRow}>
+  <Link href={href||calendar||(c.kind==='resource'&&c.resourceUrl?c.resourceUrl:artifact.path||artifactPath(artifact.id))} target={!href&&(calendar||c.kind==='resource')?'_blank':undefined} rel={!href&&(calendar||c.kind==='resource')?'noopener noreferrer':undefined} className={styles.savedMaterialRow}>
    <span className={styles.savedMaterialIcon}>{(application?.company||c.company)?<CompanyLogo company={application?.company||c.company||''}/>:<ToolkitIcon name={iconFor(c.kind)} size={22}/>}</span>
-   <div><h3>{c.title}</h3><p>{artifactPurpose(c)}</p></div><ToolkitIcon name="arrow" size={17}/>
+   <div><h3>{c.title}</h3><p>{artifactPurpose(c)}</p>{detail&&<p>{detail}</p>}</div><ToolkitIcon name="arrow" size={17}/>
   </Link>{c.kind==='resource'&&<Link className="text-xs text-board-accent underline" href={artifact.path||artifactPath(artifact.id)}>Details & prep date</Link>}<Context artifact={artifact} application={application} compact/>
  </article></li>;
 }

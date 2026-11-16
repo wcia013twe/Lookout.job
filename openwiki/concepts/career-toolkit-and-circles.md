@@ -369,6 +369,30 @@ Network person details expose Delete contact beside Edit person. An inline confi
 
 ## Circle beta participation guidance (2026-11-11)
 
+### Interview Prep workspace — focused source update (2026-11-16)
+
+The career-toolkit workspace now offers URL-driven Interviews / Answer Bank /
+Practice and application Overview / Research / Rounds / Notes. The projection in
+lib/interview-prep.mjs sorts actual upcoming round dates, then undated active and
+previous processes. Explicit application/task links attach materials to rounds;
+company/date similarity never does. Unassigned materials remain accessible.
+Latest linked company research is primary, retaining other documents and revisions.
+
+material-editor.tsx saves structured Markdown answer categories/status/question/
+answer/experiences/adaptation, or preserves legacy/raw bodies. Existing
+save_artifact/read_artifact remain the scoped website/MCP boundary. Mock logistics
+retain their dedicated writer. Checklists record actual user-reported minutes via
+complete_preparation_session with existing budget/version/idempotency checks;
+reading never completes work. No schema, dependency or orchestration changes.
+
+Detached fictional demo/contract tests cover categories, revisions, stale writes,
+task progress and reset. Local focused tests/typecheck/build/data checks passed.
+Final browser/recording verification was blocked by unavailable T3 and alternate
+browser hosts. No hosted release is claimed. This focused manual update does not
+refresh the remainder of the generated page's recorded source revision.
+
+### Earlier Circle beta guidance
+
 Focused source update: `supabase/functions/agent-gateway/skills/circle-knowledge.json` now directs proactive, draft-first invitations after relevant career work. Interview preparation, job discovery, Toolkit materials and notification guidance route to it. Invitations show the exact share-safe draft and destination, with a direct authenticated review handoff; agents must not ask for permission at each drafting stage. Existing `list_circles`, `read_circle`, `search_circle_knowledge`, `read_circle_thread`, `propose_circle_contribution` and `request_circle_human_action` tools provide the path. Publication still requires the existing exact-revision consent boundary; chat assent is not approval.
 
 The guide covers answering from existing contributions before asking peers, contributor invitations, agent-synthesized write-ups, genuine help requests, peer momentum without rankings, chosen-goal follow-through and closing real help exchanges. A declined suggestion is not a permanent opt-out; explicit stop requests suppress prompts within available context. No durable opt-out storage, automatic outreach, scheduler or engagement analytics is added. Beta funnel stages are evaluation distinctions, not deployed instrumentation or evidence of effectiveness.
