@@ -28,7 +28,8 @@ My Profile uses a vertical desktop sidebar and retains the compact mobile sectio
 selector. Saved Preferences sits after My Agent and before Appearance.
 Its single Muse summary card is an honest empty
 state: summary storage, editing, and agent synchronization are not connected yet.
-Existing answers, writing settings, deep links, and preference storage are unchanged.
+Writing Style and its Saved Answers live below that card in Saved Preferences,
+and existing answer deep links open this section. Settings and answer storage are unchanged.
 
 ### Recommendation feedback
 

@@ -34,7 +34,7 @@ function ProfileContent() {
     [visited, setVisited] = useState<ProfileSectionId[]>(["about"]);
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
-    const section = query.has("answer")?"agent":query.get("section");
+    const section = query.has("answer")?"saved-preferences":query.get("section");
     const requested = section === "kit" ? "preferences" : section === "overview" ? "about" : section;
     if (sections.some(([id]) => id === requested)) {
       setActive(requested as ProfileSectionId);
@@ -110,7 +110,6 @@ function ProfileContent() {
           aria-label="My agent"
         >
           <DiscoverySetup>
-          <WritingStyles />
           <CircleAgentSettings />
           <Preferences mode="agent" showDefaultResume={false} />
           </DiscoverySetup>
@@ -127,6 +126,7 @@ function ProfileContent() {
             <p>No saved summary yet.</p>
             <p>This card will show your current preferences and writing guidance. Muse summary updates are not connected yet. Your existing job preferences, writing settings, and saved answers remain unchanged.</p>
           </section>
+          <WritingStyles />
         </section>
       )}
       {visited.includes("appearance") && <section className={profileStyles.panel} hidden={active !== "appearance"} aria-label="Appearance"><AppearanceSettings /></section>}

@@ -34,3 +34,13 @@ test('profile sidebar provides responsive layout and keyboard focus styles', asy
   assert.match(css, /\.sidebar button:focus-visible/);
   assert.match(css, /\.sidebar\s*\{\s*display: none/);
 });
+
+test('Writing Style and answer deep links belong to Saved Preferences', async () => {
+  const source = await readFile(new URL('../next-app/components/profile-workspace.tsx', import.meta.url), 'utf8');
+  const agentPanel = source.slice(source.indexOf('{visited.includes("agent")'), source.indexOf('{visited.includes("saved-preferences")'));
+  const savedPanel = source.slice(source.indexOf('{visited.includes("saved-preferences")'), source.indexOf('{visited.includes("appearance")'));
+  assert.doesNotMatch(agentPanel, /<WritingStyles\s*\/>/);
+  assert.match(savedPanel, /<WritingStyles\s*\/>/);
+  assert.equal([...source.matchAll(/<WritingStyles\s*\/>/g)].length, 1);
+  assert.match(source, /query\.has\("answer"\)\s*\?\s*"saved-preferences"/);
+});
