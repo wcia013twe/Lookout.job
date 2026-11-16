@@ -378,7 +378,9 @@ versioned material editor. New answers start blank; saved question matches reope
 the owned answer. Demo interaction recording covers creation, return and editing.
 
 The career-toolkit workspace now offers URL-driven Interviews / Answer Bank /
-Practice and application Overview / Research / Rounds / Notes. The projection in
+Practice. Company preparation groups next actions, tasks, research, rounds and
+notes on one page rather than adding another tab row; individual rounds still
+open focused details. Legacy view URLs show the consolidated page. The projection in
 lib/interview-prep.mjs sorts actual upcoming round dates, then undated active and
 previous processes. Explicit application/task links attach materials to rounds;
 company/date similarity never does. Unassigned materials remain accessible.

@@ -39,12 +39,16 @@ Manuals and editable agent requests no longer expose upstream branding or source
 ## Interview pipeline projection
 
 The workspace uses Interviews, Answer Bank and Practice tabs. URL parameters
-retain tab, application, view, round and search across refreshes and reader returns.
+retain tab, application, round and search across refreshes and reader returns.
+Legacy view parameters open the same consolidated company workspace.
 Actual upcoming round dates lead, then undated active and previous processes.
 Only explicit interview-stage progress beyond screening enters the Interviews
 space. Initial applications and screening-only processes remain excluded; their
 saved materials stay accessible as personal prep. Previous interview processes remain.
-Overview, Research, Rounds and Notes reuse owned applications and preparation plans.
+Opening a company shows its next action, preparation tasks, research, recorded
+rounds and notes together, without a second tab row. Opening a round keeps its
+focused preparation detail and a return to company preparation.
+These sections reuse owned applications and preparation plans.
 Latest linked company research is primary; older documents and immutable reader
 revisions remain accessible. Round materials require the same application/task link
 and a preparation task whose roundId matches the round. Unknown materials remain
