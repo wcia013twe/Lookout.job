@@ -35,7 +35,7 @@ test('healthy saved local services still verify Docker is running',async()=>{
 });
 test('Docker Desktop starts automatically when its daemon is down',async()=>{
  const calls=[];
- const result=await startServices({cwd:'/fictional',saved:async()=>null,wait:async()=>{},log,run:async(file,args)=>{
+ const result=await startServices({cwd:'/fictional',saved:async()=>null,wait:async()=>{},platform:'darwin',log,run:async(file,args)=>{
   calls.push([file,args]);
   if(file==='docker'&&calls.filter(([name])=>name==='docker').length===1)throw Error('daemon unavailable');
   if(file==='supabase'&&args[0]==='status'){if(calls.filter(([name,argv])=>name==='supabase'&&argv[0]==='status').length===1)throw Error('not running');return JSON.stringify(config);}

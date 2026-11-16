@@ -13,3 +13,8 @@
 - Completed a focused OpenWiki lifecycle update documenting the repairs separately from the historical review.
 - Validation: focused career/search tests 24/24; full `npm test` 1,483/1,483 including database scenarios and existing fictional demo coverage; frontend typecheck; catalog validation (158 roles); production build (440 offline assets); `git diff --check` all passed.
 - Limits: no dependency upgrades, deployment, live account/agent tests or UI changes. Existing dependency advisories remain. No new demo interaction is needed for restoration of previously covered behavior.
+
+## Cross-platform CI follow-up
+
+- Explicitly select macOS in the Docker Desktop startup test so Linux CI tests the intended macOS branch rather than inheriting its host platform. Runtime behavior is unchanged.
+- Validation: focused startup tests, full suite, frontend typecheck and catalog validation rerun before publication.
