@@ -34,3 +34,10 @@
 - Focused execution/filter/wiring tests: 53 passed, two existing vendor-integrity/provider-count failures. Full `npm test`: 1,440 tests, 1,437 passed, three failed. Remaining failures also appear in the earlier baseline logs: vendor checksum mismatch, 106 rather than 108 loadable network providers, and stale generated search-document codec. Workday and We Work Remotely lack valid provider export shapes. Those separate defects are not changed here.
 - Runtime and Next TypeScript checks, `npm run validate:data` (158 roles), Docker image build and real in-container discovery configuration validation passed. The container also verifies the pinned HTTP checksum and Feishu import. No Google credentials, hosted writes, live source fetch, image push or deployment occurred.
 - The missing-export blocker is repaired, but the remaining failures and bounded live-search verification still gate discovery release. The earlier migration validation above is a historical record, not the current test outcome.
+
+## CI repair — November 16, 2026
+
+- Restore 13 damaged Career Ops files from the already-pinned upstream commit, verifying every downloaded file against the unchanged manifest before applying it. Workday and We Work Remotely regain their original provider implementations; all 108 network providers load. No version upgrade, checksum rewrite, disabled provider or relaxed assertion.
+- Restore the deleted `discoveryFilterPlan` source re-export and regenerate the Edge search-document bundle from that canonical source. Existing sync and gateway tests cover the shared boundary; no new product action, consent, dependency or demo state is introduced.
+- Focused vendor execution and search-context tests: 24 passed. Full `npm test`: 1,436 passed, zero failures or skips. Runtime and frontend TypeScript checks, catalog validation (158 roles), production static build (441 offline assets), all 249 pinned manifest hashes and `git diff --check` pass.
+- The old GCP VM is stopped at the user's explicit request, with its disk retained. The previous endpoint is offline; Cloud Run client cutover and hosted discovery proof remain pending the protected release.
