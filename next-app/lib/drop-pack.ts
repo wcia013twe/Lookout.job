@@ -4,7 +4,7 @@ export const tierOrder = ["common", "rare", "epic", "legendary", "mythic"] as co
 export type Tier = typeof tierOrder[number];
 export type Stage = "mystery" | "back" | Tier;
 export type Drop = {
-  searchProfileId?: string; displayTier?: Tier; packId?: string; company: string; title: string; dateSeen: string; type: string;
+  searchProfileId?: string; recommendedAt?: string; displayTier?: Tier; packId?: string; company: string; title: string; dateSeen: string; type: string;
   location?: string | null; comp?: string | null; status: string;
   note?: string | null; skipReason?: string | null; url?: string | null;
 };
@@ -15,11 +15,14 @@ export const APPLY_NOW_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 export function applyNowCooldownRemaining(lastActivatedAt: number | null | undefined, now: number): number {
   return lastActivatedAt == null ? 0 : Math.max(0, lastActivatedAt + APPLY_NOW_COOLDOWN_MS - now);
 }
-export function applyNowDrops(roles: { id: string; priority: string; company: string; title: string; employmentType: string; discoveredDate: string; location: string; applicationUrl: string; whyItFits: string; searchProfileId?: string }[]): ApplyNowDrop[] {
-  return roles.filter(role => role.priority === "Apply Now").map(role => ({
+export function applyNowDrops(roles: { id: string; priority: string; company: string; title: string; employmentType: string; discoveredDate: string; location: string; applicationUrl: string; whyItFits: string; searchProfileId?: string; recommendedAt?: string }[], now = Date.now()): ApplyNowDrop[] {
+  return roles.filter(role => {
+    const arrived = Date.parse(role.recommendedAt || "");
+    return role.priority === "Apply Now" && Number.isFinite(arrived) && arrived <= now && now - arrived < APPLY_NOW_COOLDOWN_MS;
+  }).map(role => ({
     packId: role.id, company: role.company, title: role.title, type: role.employmentType,
     dateSeen: role.discoveredDate, location: role.location, url: role.applicationUrl,
-    note: role.whyItFits, searchProfileId: role.searchProfileId, status: "added",
+    note: role.whyItFits, recommendedAt: role.recommendedAt, searchProfileId: role.searchProfileId, status: "added",
   }));
 }
 export const dropKey = (drop: Drop) => `${drop.packId?`${drop.packId}|`:""}${drop.dateSeen}|${drop.company}|${drop.title}`;

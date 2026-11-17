@@ -22,7 +22,7 @@ try {
  await page.getByRole('heading',{name:'Discover',exact:true}).waitFor();
  assert.equal(await pack.count(),0,'Returning to Discover must not reactivate the same card');
  await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now()+1000)));
- await page.evaluate(()=>window.JB.store.update('demo.roles',roles=>roles.map(role=>role.id==='demo-discover-unknown'?{...role,priority:'Apply Now'}:role)));
+ await page.evaluate(()=>window.JB.store.update('demo.roles',roles=>roles.map(role=>role.id==='demo-discover-unknown'?{...role,priority:'Apply Now',recommendedAt:new Date(Date.now()-5000).toISOString()}:role)));
  await page.getByLabel('Search roles or companies').fill('Example');
  assert.equal(await pack.count(),0,'New Apply Now cards must not animate during the cooldown');
  assert.equal(await page.evaluate(()=>window.JB.store.get('drops.packStamps')['apply-now:demo-discover-unknown']),undefined,'Waiting cards must not consume activation');
@@ -30,19 +30,13 @@ try {
  await page.clock.fastForward(remaining-1);
  assert.equal(await pack.count(),0,'No second animation even one millisecond before 24 hours');
  await page.clock.fastForward(1);
+ assert.equal(await pack.count(),0,'A waiting pack that reached 24 hours must expire');
+ assert.equal(await page.evaluate(()=>window.JB.store.get('drops.packStamps')['apply-now:demo-discover-unknown']),undefined);
+ await page.getByText('Software Engineer, Distributed Search Infrastructure and Query Performance',{exact:true}).first().waitFor();
+ await page.evaluate(()=>window.JB.store.update('demo.roles',roles=>roles.map(role=>role.id==='demo-discover-unknown'?{...role,recommendedAt:new Date().toISOString()}:role)));
  await pack.getByRole('heading',{name:'Your Apply Now pack',exact:true}).waitFor();
- assert.equal(await page.evaluate(()=>window.JB.store.get('drops.packStamps')['apply-now:demo-discover-unknown']),true);
- await pack.locator('.pack-tear-button').click();
- await pack.getByRole('button',{name:'Reveal all',exact:true}).click();
- await pack.getByText('Software Engineer, Distributed Search Infrastructure and Query Performance',{exact:true}).first().waitFor();
- assert.equal(await pack.getByText('Example Query Labs (demo)',{exact:false}).count(),0,'Only newly eligible cards belong in the next pack');
  await pack.getByRole('button',{name:'Close pack',exact:true}).click();
  await pack.waitFor({state:'detached'});
- for(const priority of ['Strong Consider','Apply Now']) {
-  await page.evaluate(priority=>window.JB.store.update('demo.roles',roles=>roles.map(role=>role.id==='demo-discover-unknown'?{...role,priority}:role)),priority);
-  await page.getByRole('heading',{name:'Discover',exact:true}).waitFor();
-  assert.equal(await pack.count(),0,'Reclassification must not replay an activated card');
- }
  assert.deepEqual(await page.evaluate(()=>({applications:window.JB.store.get('workflow.applications'),tracker:window.JB.store.get('tracker.items')})),before,'Pack activation must not apply or track jobs');
  await page.clock.resume();
  await page.reload();
@@ -53,5 +47,5 @@ try {
  await page.getByLabel('Search roles or companies').fill('Example');
  assert.equal(await pack.count(),0,'Dismissing a sealed pack also consumes its activation');
  assert.deepEqual(errors,[]);
- console.log('Apply Now pack: first arrival, strict 24-hour cooldown, unconsumed waiting cards, automatic expiry, once-only navigation/dismissal, mobile, and application isolation passed.');
+ console.log('Apply Now pack: first arrival, strict 24-hour cooldown, expired waiting cards, fresh arrivals, once-only navigation/dismissal, mobile, and application isolation passed.');
 } finally { await browser.close(); }

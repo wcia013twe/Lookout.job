@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useWorkspace } from "../lib/workspace";
-import { applyNowCooldownRemaining, applyNowPackStamp, type ApplyNowDrop, type Drop } from "../lib/drop-pack";
+import { applyNowCooldownRemaining, applyNowPackStamp, APPLY_NOW_COOLDOWN_MS, type ApplyNowDrop, type Drop } from "../lib/drop-pack";
 
 const PackOpening = dynamic(() => import("./pack-opening"), { ssr: false });
 
@@ -14,7 +14,7 @@ export default function ApplyNowPack({ drops, onOpened }: { drops: ApplyNowDrop[
   useEffect(() => {
     if (pack) return;
     const stamps = w.store.get("drops.packStamps") || {};
-    const unopened = drops.filter(drop => !stamps[applyNowPackStamp(drop.packId)]);
+    const unopened = drops.filter(drop => !stamps[applyNowPackStamp(drop.packId)] && drop.recommendedAt && Date.now() - Date.parse(drop.recommendedAt) < APPLY_NOW_COOLDOWN_MS);
     if (!unopened.length) return;
     const activatedAt = Date.now();
     const remaining = applyNowCooldownRemaining(w.store.get("drops.applyNowLastActivatedAt"), activatedAt);

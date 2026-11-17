@@ -15,12 +15,12 @@ test('Apply Now animation cooldown lasts exactly 24 hours, not until midnight', 
 });
 
 test('the first-open pack maps only Apply Now recommendations without inventing job facts', () => {
- const role={id:'job-one',priority:'Apply Now',company:'Example Systems',title:'Backend Engineer',employmentType:'FT',discoveredDate:'2026-11-10',location:'Remote',applicationUrl:'https://example.com/jobs/one',whyItFits:'Saved recommendation',searchProfileId:'general'};
- assert.deepEqual(applyNowDrops([role,{...role,id:'consider',priority:'Strong Consider'},{...role,id:'skip',priority:'Skip Unless Team Fit'}]),[{
-  packId:'job-one',company:role.company,title:role.title,type:'FT',dateSeen:role.discoveredDate,location:role.location,url:role.applicationUrl,note:role.whyItFits,searchProfileId:'general',status:'added',
+ const role={id:'job-one',priority:'Apply Now',company:'Example Systems',title:'Backend Engineer',employmentType:'FT',discoveredDate:'2026-11-10',location:'Remote',applicationUrl:'https://example.com/jobs/one',whyItFits:'Saved recommendation',searchProfileId:'general',recommendedAt:'2026-11-10T12:00:00Z'};
+ assert.deepEqual(applyNowDrops([role,{...role,id:'consider',priority:'Strong Consider'},{...role,id:'skip',priority:'Skip Unless Team Fit'}],Date.parse(role.recommendedAt)),[{
+  packId:'job-one',company:role.company,title:role.title,type:'FT',dateSeen:role.discoveredDate,location:role.location,url:role.applicationUrl,note:role.whyItFits,recommendedAt:role.recommendedAt,searchProfileId:'general',status:'added',
  }]);
  assert.deepEqual(applyNowDrops([]),[]);
- const duplicates=applyNowDrops([role,{...role,id:'job-two'}]);
+ const duplicates=applyNowDrops([role,{...role,id:'job-two'}],Date.parse(role.recommendedAt));
  assert.notEqual(dropKey(duplicates[0]),dropKey(duplicates[1]));
  assert.equal(applyNowPackStamp(role.id),'apply-now:job-one');
  assert.notEqual(applyNowPackStamp(role.id),applyNowPackStamp('job-two'));
@@ -61,4 +61,12 @@ test('historical replay and partial reveal never become eligible for today’s X
  assert.equal(canClaimPack(drops,stages,'2026-10-13','2026-10-14'),false);
  assert.equal(canClaimPack(drops,{},'2026-10-13','2026-10-13'),false);
  assert.equal(canClaimPack(drops,stages,'2026-10-13','2026-10-13'),true);
+});
+
+test('Apply Now packs expire exactly 24 hours after recommendation arrival',()=>{
+ const now=Date.parse('2026-11-17T12:00:00Z');
+ const role={id:'one',priority:'Apply Now',company:'Example',title:'Engineer',employmentType:'FT',discoveredDate:'2026-11-16',location:'Remote',applicationUrl:'https://example.com',whyItFits:'Fit',recommendedAt:new Date(now-86400000+1).toISOString()};
+ assert.equal(applyNowDrops([role],now).length,1);
+ assert.equal(applyNowDrops([role],now+1).length,0);
+ assert.equal(applyNowDrops([{...role,recommendedAt:undefined},{...role,recommendedAt:'invalid'}],now).length,0);
 });

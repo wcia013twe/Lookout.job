@@ -89,5 +89,5 @@ test('latest drop and priority determine default visibility, with personal overr
 });
 test('deduplicated roles retain latest recommendation date alongside first discovery',()=>{
  const log=cumulativeDiscoverBatch([batch('old','2026-11-01',[item('one')]),batch('new','2026-11-02',[item('one')])]);
- assert.equal(log.roles[0].discoveredDate,'2026-11-01'); assert.equal(log.roles[0].lastRecommendedDate,'2026-11-02');
+ assert.equal(log.roles[0].discoveredDate,'2026-11-01'); assert.equal(log.roles[0].lastRecommendedDate,'2026-11-02'); assert.equal(log.roles[0].recommendedAt,'2026-11-02T12:00:00Z');
 });

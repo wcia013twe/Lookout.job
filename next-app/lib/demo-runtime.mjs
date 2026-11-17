@@ -12,6 +12,7 @@ import {createDemoServices} from './demo.mjs';
 // No production store, auth client, cloud sync, account metadata or localStorage.
 export function createDetachedDemo({date,models,presets,apiScenario}) {
  const fixtures=withApplicationProfileDemo(demoFixtures(date));
+ fixtures.state.demo.roles=fixtures.state.demo.roles.map(role=>role.recommendedAt?{...role,recommendedAt:new Date().toISOString()}:role);
  fixtures.state.network.referrals=[...demoOutreachContacts(),...fixtures.state.network.referrals.filter(r=>r.collection==='companies'||r.collection==='network-demo')];
  fixtures.state.workflow.tierLists=presets.presets.map(p=>models.tierlistModel.seed(p));
  fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id||'';
