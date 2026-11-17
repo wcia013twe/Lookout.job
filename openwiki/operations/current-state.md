@@ -1936,3 +1936,9 @@ Application handoffs now preserve a validated `inspectionComplete` assertion wit
 All 1,485 aggregate tests passed, as did frontend/runtime/intelligence typechecks and catalog validation (158 roles). The orphan recovery scenario also passed against isolated local PostgreSQL; the full application-job scenario also passed there using its real Auth subject setting. The frontend build reached compilation and static generation but failed the Next.js security gate; launch readiness remains unproven.
 
 At the user's request, testing switched to a separate local stack (API 8082, Supabase 56321), without deploying or changing the existing shared local services. Scoped tool discovery and an onboarding read work through its development tunnel for a fictional account. Muse confirmed production writes paused; its development credential replacement and end-to-end recovery retest are still pending. No employer submission occurred.
+
+The local frontend uses the same email/password and Google authentication screen
+for signed-out workspace routes. Email signup requests a confirmation link when
+Supabase does not immediately issue a session; password recovery remains on the
+login screen. The demo keeps these actions fictional. Hosted email delivery,
+redirect configuration, provider linking and real sign-in remain unverified.

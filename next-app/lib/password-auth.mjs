@@ -17,3 +17,9 @@ export async function savePassword(client,password,confirmation) {
  const {error}=await requireClient(client).updateUser({password});
  if(error)throw Error('Could not save your password. Try a different password or request a new setup link.');
 }
+
+export async function passwordSignUp(client, email, password, redirectTo) {
+ const {data,error}=await requireClient(client).signUp({email:email.trim(),password,options:{emailRedirectTo:redirectTo}});
+ if(error)throw Error('Could not create your account. Check your details and try again.');
+ return Boolean(data.session);
+}

@@ -16,7 +16,6 @@ import { useWorkspace } from "../lib/workspace";
 import { Notice } from "./ui";
 import ColorModeControl from "./color-mode";
 import ProfileMenu from "./profile-menu";
-import GoogleSignInButton from "./google-sign-in-button";
 import { canViewWorkspace, isPublicReferencePage } from "../lib/workspace-access";
 import DashboardTour from "./dashboard-tour";
 import {pendingActions} from "../../lib/action-inbox.mjs";
@@ -39,7 +38,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
   useEffect(()=>{if(destination)router.replace(destination);},[destination,router]);
   const isPrivacy = /^\/privacy\/?$/.test(path);
   const hasAccess = canViewWorkspace(w);
-  const isOnboarding = /\/onboarding\/?$/.test(path);
   const isPasswordReset = /^\/reset-password\/?$/.test(path);
   const isAuthRoute = /^\/(login|signup)\/?$/.test(path);
   // An unresolved session is not a signed-out session. This also covers the
@@ -55,20 +53,12 @@ export default function AppShell({ children }: { children: ReactNode }) {
   if (isAuthRoute) return <AuthPage signup={path.startsWith("/signup")} />;
   if (!hasAccess && /^\/discover\/?$/.test(path)) return <AuthPage />;
   if (!hasAccess && path === "/") return <LandingPage />;
-  if (!hasAccess && !isOnboarding) {
-    return <main className="min-h-dvh bg-board-bg">
-      <div className="mx-auto w-full max-w-6xl px-4 pb-8 pt-4 md:px-6">
-        <header className="mb-8"><Link href="/" className="inline-flex min-h-11 items-center gap-2 text-xl font-bold"><BrandMark />Lookout</Link></header>
-        {isPublicReferencePage(path) ? children : <section className="mx-auto max-w-md py-16" aria-labelledby="workspace-sign-in-title">
-          <h1 id="workspace-sign-in-title" className="text-2xl font-bold tracking-tight">Sign in to your workspace</h1>
-          <p className="mt-3 text-base leading-relaxed text-board-muted">Your jobs, applications, and activity will appear after you sign in.</p>
-          {!w.authReady ? <Notice>{w.error || "Checking your sign-in…"}</Notice> : <>
-            {w.error && <Notice>{w.error}</Notice>}
-            <GoogleSignInButton className="mt-6" onClick={w.signIn}/>
-          </>}
-        </section>}
-      </div>
-    </main>;
+  if (!hasAccess && !isPublicReferencePage(path)) return <AuthPage />;
+  if (!hasAccess) {
+    return <main className="min-h-dvh bg-board-bg"><div className="mx-auto w-full max-w-6xl px-4 pb-8 pt-4 md:px-6">
+      <header className="mb-8"><Link href="/" className="inline-flex min-h-11 items-center gap-2 text-xl font-bold"><BrandMark />Lookout</Link></header>
+      {children}
+    </div></main>;
   }
   const isCurrent = (href: string) => path === href || path === href.slice(0, -1) || (href === "/career-toolkit/" && path.startsWith(href)) || (href === "/" && /^\/discover\/?$/.test(path));
   const needs = (board.snapshot

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {passwordSignIn,requestPasswordSetup,savePassword} from '../next-app/lib/password-auth.mjs';
+import {passwordSignIn,passwordSignUp,requestPasswordSetup,savePassword} from '../next-app/lib/password-auth.mjs';
 test('password login uses the existing email identity and preserves password characters',async()=>{
  const calls=[];const client={auth:{async signInWithPassword(input){calls.push(input);return {error:null};}}};
  await passwordSignIn(client,' person@example.com ',' secret pass ');
@@ -25,4 +25,10 @@ test('password changes require a matching strong-enough pair and use the authent
  await savePassword(client,'long-password','long-password');
  assert.deepEqual(calls,[{password:'long-password'}]);
  await assert.rejects(savePassword({auth:{async updateUser(){return {error:{message:'expired'}};}}},'long-password','long-password'),/new setup link/);
+});
+
+test('email signup sends credentials and confirmation destination to Auth',async()=>{
+ const calls=[]; const client={auth:{async signUp(input){calls.push(input);return {data:{session:null},error:null};}}};
+ assert.equal(await passwordSignUp(client,' person@example.com ','long-password','https://example.com/'),false);
+ assert.deepEqual(calls,[{email:'person@example.com',password:'long-password',options:{emailRedirectTo:'https://example.com/'}}]);
 });
