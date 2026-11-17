@@ -6,6 +6,7 @@ import {navigateWorkspaceMode} from "./workspace-mode.mjs";
 import { createClient } from "@supabase/supabase-js";
 import { connectCloud } from "../../lib/cloud.mjs";
 import presets from "../../data/tierlist-presets.json";
+import {hasPendingCircleInvite,rememberCircleInvite,circleInviteFromHash} from "./circle-invites.mjs";
 import {rememberOnboardingReturn,takeOnboardingReturn} from "./onboarding-auth.mjs";
 import catalog from "../../data/jobs.json";
 import {useWebsiteOnboarding} from "./use-website-onboarding";
@@ -174,8 +175,12 @@ export default function AccountWorkspaceProvider({ children }) {
     };
   }, []);
   useEffect(()=>{
+    if(!/\/circles\/?$/.test(location.pathname)||!circleInviteFromHash(location.hash))return;
+    try {rememberCircleInvite(window.sessionStorage,location.hash);}catch{ /* The link still works with password sign-in in this tab. */ }
+  },[]);
+  useEffect(()=>{
     if(!authReady||!user)return;
-    try {if(takeOnboardingReturn(window.sessionStorage,{signedIn:true,path:location.pathname}))location.replace(asset("onboarding/"));}catch{ /* Direct OAuth return still works if tab storage is blocked. */ }
+    try {if(hasPendingCircleInvite(window.sessionStorage)&&!/\/(circles|onboarding)\/?$/.test(location.pathname))location.replace(asset("circles/"));else if(takeOnboardingReturn(window.sessionStorage,{signedIn:true,path:location.pathname}))location.replace(asset("onboarding/"));}catch{ /* Direct OAuth return still works if tab storage is blocked. */ }
   },[authReady,user?.id]);
   const store = typeof window !== "undefined" ? window.JB?.store : null;
   async function signIn() {
@@ -186,9 +191,13 @@ export default function AccountWorkspaceProvider({ children }) {
       if (error) setError("Local test sign-in failed. Check the saved test account credentials.");
       return;
     }
+    if (/\/circles\/?$/.test(location.pathname)&&circleInviteFromHash(location.hash)) {
+      try {rememberCircleInvite(window.sessionStorage,location.hash);} catch {setError("Your browser blocked session storage. Copy the invite code from the link, then sign in and paste it into the Circle join form.");return;}
+    }
     try {rememberOnboardingReturn(window.sessionStorage,location.pathname);}catch{ /* No private data is stored here. */ }
     const returnToOnboarding = /\/onboarding\/?$/.test(location.pathname);
-    const redirect = new globalThis.URL(asset(returnToOnboarding ? "onboarding/" : ""), location.origin);
+    const returnToCircle = /\/circles\/?$/.test(location.pathname) && (()=>{try{return hasPendingCircleInvite(window.sessionStorage);}catch{return false;}})();
+    const redirect = new globalThis.URL(asset(returnToOnboarding ? "onboarding/" : returnToCircle ? "circles/" : ""), location.origin);
     const id = new globalThis.URL(location.href).searchParams.get("batch");
     if (id) redirect.searchParams.set("batch", id);
     const { error } = await clientRef.current.auth.signInWithOAuth({
