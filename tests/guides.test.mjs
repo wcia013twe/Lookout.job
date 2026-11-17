@@ -167,7 +167,7 @@ test('AI Apply conditionally prepares changed or incomplete work and reuses unch
 
 test('routine consent follows explicit saved instructions while login and host access remain separate from submission',()=>{
  const guide=readGuide('application-workspace');
- assert.equal(guide.version,42);
+ assert.equal(guide.version,43);
  for(const phrase of ['Application consent instructions','accept those routine required notices','Decline optional marketing','Do not infer this permission from AI Apply','save_search_profile','background/credit checks','review nonexistent answers','Recheck real host/employer access'])assert.ok(guide.instructions.includes(phrase),phrase);
 });
 

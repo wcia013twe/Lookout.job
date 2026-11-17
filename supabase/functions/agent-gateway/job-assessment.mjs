@@ -9,7 +9,7 @@ const compact=value=>value && dimensionKeys.some(key=>Object.hasOwn(value,key));
 // Render metadata only after the complete stored record passes validation.
 export function assessmentFactors(value) {
  if(!savedJobAssessment(value))return [];
- return compact(value)?ASSESSMENT_DIMENSIONS.map(([key,label])=>({label,value:value[key].score,reason:value[key].reasoning})):value.factors;
+ return compact(value)?ASSESSMENT_DIMENSIONS.map(([key,label])=>({label,value:value[key].score,reason:value[key].reasoning})):(value.factors || []);
 }
 // Private recommendation display data; never grants approval or submission permission.
 export function validateJobRecommendation(value = {}) {
@@ -28,6 +28,10 @@ export function validateJobRecommendation(value = {}) {
  if (assessment === undefined) return value;
  const text=(v,n)=>typeof v==='string' && Boolean(v.trim()) && v.length<=n;
  const score=v=>typeof v==='number' && Number.isFinite(v) && v>=0 && v<=100;
+ if (assessment && typeof assessment==='object' && !Array.isArray(assessment) && !compact(assessment) && !Object.hasOwn(assessment,'factors')) {
+  if(Object.keys(assessment).some(key=>!['percent','assessedAt','evidence'].includes(key)) || !score(assessment.percent) || !text(assessment.assessedAt,40) || !/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/.test(assessment.assessedAt) || !Number.isFinite(Date.parse(assessment.assessedAt)) || (assessment.evidence!==undefined&&!text(assessment.evidence,1000))) throw Error('Assessment needs percent 0–100, an assessedAt timestamp and optional evidence.');
+  return value;
+ }
  if (compact(assessment)) {
   const allowed=[...dimensionKeys,'assessedAt','percent','evidence'];
   if(Array.isArray(assessment) || Object.keys(assessment).some(key=>!allowed.includes(key)) || !dimensionKeys.every(key=>Object.hasOwn(assessment,key)) || !text(assessment.assessedAt,40) || !/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/.test(assessment.assessedAt) || !Number.isFinite(Date.parse(assessment.assessedAt)) || (assessment.percent!==undefined&&!score(assessment.percent)) || (assessment.evidence!==undefined&&!text(assessment.evidence,1000))) throw Error('Assessment needs exactly four dimensions, an assessedAt timestamp and optional percent/evidence metadata.');

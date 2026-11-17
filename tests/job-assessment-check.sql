@@ -19,11 +19,21 @@ begin
    raise exception 'Malformed recommendation accepted';
   exception when invalid_parameter_value then null;end;
  end loop;
+ -- The new single score survives the same MCP publication and database trigger.
+ assessment:='{"percent":71,"assessedAt":"2026-11-17T12:00:00Z","evidence":"Matches the saved profile."}';
+ perform public.agent_dispatch(h,'batches.publish',jsonb_set(jsonb_set(payload,'{eventKey}','"single-score"'),'{jobs,0,recommendation,matchAssessment}',assessment));
+ if not exists(select 1 from public.batch_items where user_id=u and recommendation->'matchAssessment'=assessment) then raise exception 'Single score was not preserved';end if;
+ foreach bad in array array[assessment-'percent',assessment||'{"percent":101}',assessment||'{"percent":"71"}',assessment||'{"assessedAt":"yesterday"}',assessment||'{"evidence":""}',assessment||'{"extra":true}'] loop
+  begin
+   perform public.agent_dispatch(h,'batches.publish',jsonb_set(jsonb_set(payload,'{eventKey}',to_jsonb('bad-single-'||gen_random_uuid()::text)),'{jobs,0,recommendation,matchAssessment}',bad));
+   raise exception 'Malformed single score accepted';
+  exception when invalid_parameter_value then null;end;
+ end loop;
  -- The new card format persists inside the same private recommendation document.
  compact:='{"priority":"Strong Consider","matchAssessment":{"skillsExperience":{"score":81,"reasoning":"Systems project matches; production scale remains unverified."},"compensation":{"score":null,"reasoning":"Employer has not disclosed compensation."},"wellbeingCulture":{"score":62,"reasoning":"Team workload needs direct verification."},"locationWorkSetting":{"score":94,"reasoning":"Listed location matches the saved preference."},"assessedAt":"2026-10-26T17:00:00Z"}}';
  compact_payload:=jsonb_build_object('eventKey','compact-assessment','label','Compact research','jobs',jsonb_build_array(jsonb_build_object('jobId','assessment-job','recommendation',compact)));
  result:=public.agent_dispatch(h,'batches.publish',compact_payload);
- select batch_id into compact_bid from public.batch_items where user_id=u and job_id='assessment-job' and batch_id<>bid;
+ select batch_id into compact_bid from public.batch_items where user_id=u and job_id='assessment-job' and recommendation=compact;
  if compact_bid is null or not exists(select 1 from public.batch_items where batch_id=compact_bid and recommendation=compact) then raise exception 'Compact assessment was not preserved';end if;
  perform public.agent_dispatch(h,'batches.publish',jsonb_set(compact_payload,'{jobs,0,recommendation,matchAssessment,skillsExperience,score}','12'));
  if not exists(select 1 from public.batch_items where batch_id=compact_bid and recommendation=compact) then raise exception 'Retry rewrote compact card';end if;

@@ -25,8 +25,9 @@ test('documents expose expandable captured employer fields and pinned résumé w
 test('draft documents show only recorded employer answers and selected draft résumé, never an inferred profile submission',()=>{
  const html=render(Documents,{...props,application:{...app,status:'Draft'}});assert(html.includes('Application draft'));assert(html.includes('Current draft question'));assert(!html.includes('private-current@example.test'));assert(!html.includes('Current employer'));
 });
-test('application fit always shows four dimensions, using N/A without saved scores and retaining real zero scores',()=>{
- const empty=render(Fit,{});assert.equal((empty.match(/>N\/A</g)||[]).length,4);assert(!empty.includes('Not disclosed'));
- const assessment={assessedAt:'2026-11-07T12:00:00Z',skillsExperience:{score:0,reasoning:'Recorded skills gap.'},compensation:{score:null,reasoning:'Pay unknown.'},wellbeingCulture:{score:80,reasoning:'Saved culture research.'},locationWorkSetting:{score:65,reasoning:'Saved location comparison.'}};
- const html=render(Fit,{assessment});for(const value of ['0/100','80/100','65/100','N/A','Recorded skills gap.'])assert(html.includes(value),value);
+test('application fit displays saved preference match and handles missing scores',()=>{
+ const empty=render(Fit,{});assert(empty.includes('Not assessed'));
+ const assessment={percent:0,assessedAt:'2026-11-07T12:00:00Z',skillsExperience:{score:0,reasoning:'Recorded skills gap.'},compensation:{score:null,reasoning:'Pay unknown.'},wellbeingCulture:{score:80,reasoning:'Saved culture research.'},locationWorkSetting:{score:65,reasoning:'Saved location comparison.'}};
+ const html=render(Fit,{assessment});assert(html.includes('0% preference match'));assert(!html.includes('80/100'));
+ assert(render(Fit,{assessment:{...assessment,percent:undefined}}).includes('Overall score unavailable'));
 });

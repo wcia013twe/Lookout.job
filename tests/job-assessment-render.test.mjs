@@ -2,27 +2,21 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {React,renderToStaticMarkup,bundleComponent} from './helpers/render.mjs';
 const Preview=(await bundleComponent('next-app/components/role-match-preview.tsx'))();
-test('live assessment renders saved custom factors and evidence, while empty assessments have no invented factors',()=>{
- const sample={percent:67,assessedAt:'2026-10-23T19:00:00Z',evidence:'A supported profile fact.',factors:[{label:'Query planning',value:67,rating:'Good',reason:'Database project.'},{label:'Team scope',value:null,rating:'Unknown',reason:'Not disclosed.'}]};
+test('preference match uses only a saved overall percentage and preserves evidence in expanded view',()=>{
+ const sample={percent:67,assessedAt:'2026-10-23T19:00:00Z',evidence:'A supported profile fact.',factors:[{label:'Query planning',value:67,rating:'Good',reason:'Database project.'}]};
  const html=renderToStaticMarkup(React.createElement(Preview,{sample,expanded:true}));
- for(const text of ['67% job match','Saved agent assessment','Query planning','Team scope','A supported profile fact.','Database project.'])assert.ok(html.includes(text),text);
- assert.ok(!html.includes('Illustrative demo'));
+ for(const text of ['67% preference match','Saved agent assessment','A supported profile fact.'])assert.ok(html.includes(text),text);
+ assert.ok(!html.includes('Query planning'));
  const empty=renderToStaticMarkup(React.createElement(Preview,{expanded:true}));
- assert.ok(empty.includes('Match not assessed'));assert.ok(!empty.includes('Compensation'));assert.ok(!empty.includes('<details'));
+ assert.ok(empty.includes('Not assessed'));assert.ok(!empty.includes('% preference match'));
  const demo=renderToStaticMarkup(React.createElement(Preview,{sample,demo:true}));assert.ok(demo.includes('Illustrative demo'));
 });
 
-test('compact card renders exactly four numeric/unrated scores and reveals reasoning only in expanded preview',()=>{
- const sample={assessedAt:'2026-10-26T18:00:00Z',skillsExperience:{score:82,reasoning:'Database evidence maps to this role.'},compensation:{score:null,reasoning:'$27–$50/hour is disclosed; an internship benchmark is unavailable.'},wellbeingCulture:{score:60,reasoning:'On-call needs clarification.'},locationWorkSetting:{score:0,reasoning:'Recorded location preference differs.'}};
- const card=renderToStaticMarkup(React.createElement(Preview,{sample}));
- for(const label of ['Skills &amp; experience','Compensation','Wellbeing &amp; culture','Location &amp; work setting'])assert.ok(card.includes(label),label);
- for(const value of ['82 out of 100','60 out of 100','0 out of 100','Not rated'])assert.ok(card.includes(value),value);
- assert.ok(!card.includes('Database evidence'));assert.ok(!card.includes('<details'));assert.ok(!card.includes('% job match'));
- const preview=renderToStaticMarkup(React.createElement(Preview,{sample,expanded:true}));
- assert.equal((preview.match(/<details/g)||[]).length,4);
- assert.equal((preview.match(/<details open=""/g)||[]).length,1,'Unrated explanation is expanded without implying missing pay');
- assert.ok(preview.includes('$27–$50/hour is disclosed'));assert.ok(!preview.includes('>Unknown<'));
- for(const factor of Object.values(sample).filter(value=>typeof value==='object'))assert.ok(preview.includes(factor.reasoning));
+test('older assessments do not invent an overall score and zero remains a valid score',()=>{
+ const sample={assessedAt:'2026-10-26T18:00:00Z',skillsExperience:{score:82,reasoning:'Database evidence.'},compensation:{score:null,reasoning:'Unknown.'},wellbeingCulture:{score:60,reasoning:'Clarify.'},locationWorkSetting:{score:0,reasoning:'Differs.'}};
+ const html=renderToStaticMarkup(React.createElement(Preview,{sample,expanded:true}));
+ assert.ok(html.includes('Overall score unavailable'));assert.ok(!html.includes('% preference match'));
+ const zero=renderToStaticMarkup(React.createElement(Preview,{sample:{...sample,percent:0}}));assert.ok(zero.includes('0% preference match'));
 });
 
 const JobFacts=(await bundleComponent('next-app/components/role-job-facts.tsx',{plugins:[{name:'css-test',setup(build){build.onLoad({filter:/\.module\.css$/},()=>({contents:'export default {};',loader:'js'}));}}]}))();

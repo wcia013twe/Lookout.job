@@ -1,28 +1,19 @@
 "use client";
-import {motion,useReducedMotion} from "framer-motion";
-import ProfileIcon from "./profile-icon";
-import {assessmentFactors} from "../../lib/job-assessment.mjs";
+import {savedJobAssessment} from "../../lib/job-assessment.mjs";
 type ScoreReason = {score: number | null; reasoning: string};
 type AssessmentMetadata = {percent?: number; assessedAt?: string; evidence?: string};
-export type MatchPreview = AssessmentMetadata & ({skillsExperience: ScoreReason; compensation: ScoreReason; wellbeingCulture: ScoreReason; locationWorkSetting: ScoreReason} | {factors: {label:string; value:number|null; rating:string; reason:string}[]});
-export default function RoleMatchPreview({ sample, expanded = false, animate = false, active = true, demo = false }: { sample?: MatchPreview; demo?: boolean; expanded?: boolean; animate?: boolean; active?: boolean }) {
-  const reduced=useReducedMotion();
-  const factors=assessmentFactors(sample);
-  if (!sample || !factors.length) return <section aria-label="Job match preview" className="border-t border-board-line/60 pt-4">
-    <h4 className="text-sm font-semibold">Match not assessed</h4>
-    <p className="mt-1 text-xs leading-relaxed text-board-muted">Needs a comparison with your profile and preferences.</p>
-  </section>;
-  return <section aria-label="Job match preview" className="border-t border-board-line/60 pt-4">
-    <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-      <h4 className="text-base font-semibold tabular-nums">{typeof sample.percent === "number" ? `${sample.percent}% job match` : "Job match"}</h4>
-      <span className="text-xs text-board-muted">{demo ? "Illustrative demo" : "Saved agent assessment"}</span>
+export type MatchPreview = AssessmentMetadata & ({percent: number} | {skillsExperience: ScoreReason; compensation: ScoreReason; wellbeingCulture: ScoreReason; locationWorkSetting: ScoreReason} | {factors: {label:string; value:number|null; rating:string; reason:string}[]});
+export default function RoleMatchPreview({ sample, expanded = false, demo = false }: { sample?: MatchPreview; demo?: boolean; expanded?: boolean; animate?: boolean; active?: boolean }) {
+  const assessment = savedJobAssessment(sample);
+  const percent = assessment?.percent;
+  return <section aria-label="Preference match" className="border-t border-board-line/60 pt-4">
+    <div className="flex items-center gap-4">
+      {typeof percent === "number" && <div className="relative grid h-16 w-16 shrink-0 place-items-center" aria-label={`${percent}% preference match`}>
+        <svg aria-hidden="true" viewBox="0 0 64 64" className="absolute inset-0 h-full w-full -rotate-90"><circle cx="32" cy="32" r="27" fill="none" stroke="var(--color-board-line)" strokeWidth="6"/><circle cx="32" cy="32" r="27" fill="none" stroke="var(--color-board-accent)" strokeWidth="6" strokeLinecap="round" pathLength="100" strokeDasharray={`${percent} 100`}/></svg>
+        <span aria-hidden="true" className="text-sm font-semibold tabular-nums">{percent}%</span>
+      </div>}
+      <div><h4 className="text-sm font-semibold">Preference match</h4><p className="mt-1 text-xs text-board-muted">{typeof percent === "number" ? (demo ? "Illustrative demo" : "Saved agent assessment") : (assessment ? "Overall score unavailable" : "Not assessed")}</p></div>
     </div>
-    <div className="space-y-3">
-      {factors.map((factor: {label:string; value:number|null; reason:string},index: number) => {
-        const content = <><div className="flex justify-between gap-3 text-xs leading-5"><span className="inline-flex items-center gap-1.5">{factor.label}{expanded && <ProfileIcon name="chevron" width={13} height={13} />}</span><span className="shrink-0 tabular-nums text-board-muted" aria-label={factor.value === null ? "Not rated" : `${factor.value} out of 100`}>{factor.value === null ? "Not rated" : factor.value}</span></div><div className="mt-1 h-1 overflow-hidden rounded-full bg-board-line">{factor.value !== null && <motion.div initial={animate&&!reduced?{scaleX:0}:false} animate={{scaleX:animate&&!active?0:1}} transition={{duration:reduced?0:.75,delay:animate&&!reduced?index*.1:0}} className="h-full origin-left rounded-full bg-board-accent" style={{ width: `${factor.value}%` }} />}</div></>;
-        return expanded ? <details key={factor.label} open={factor.value === null}><summary className="min-h-11 cursor-pointer list-none rounded-md py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-board-accent">{content}</summary><p className="mt-2 max-w-prose text-sm leading-relaxed text-board-muted">{factor.reason}</p></details> : <div key={factor.label}>{content}</div>;
-      })}
-    </div>
-    {expanded && <p className="mt-4 text-xs leading-relaxed text-board-muted">{demo ? "Illustrative scores only; not a live assessment or hiring prediction." : `Recorded ${sample.assessedAt || "date unavailable"}. ${sample.evidence || ""} Scores are an assessment, not a hiring prediction.`}</p>}
+    {expanded && assessment && <p className="mt-4 text-xs leading-relaxed text-board-muted">{demo ? "Illustrative example only; not a live assessment or hiring prediction." : `Recorded ${assessment.assessedAt || "date unavailable"}. ${assessment.evidence || ""} This assessment is not a hiring prediction.`}</p>}
   </section>;
 }

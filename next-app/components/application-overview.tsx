@@ -47,7 +47,7 @@ export default function ApplicationOverview({ application, role, workflow, item,
       </dl>
     </div>
     {attention && attentionContent}
-    <ApplicationFitAssessment assessment={demo?facts.matchPreview||facts.matchAssessment:facts.matchAssessment}/>
+    <ApplicationFitAssessment assessment={demo?facts.matchPreview||facts.matchAssessment:facts.matchAssessment} demo={demo}/>
     <div className="application-overview-facts"><h3>Job details</h3><RoleJobFacts role={facts} unrecorded={Boolean(application.imported)} />
       {!demo && url ? <a className="application-overview-posting" href={url} target="_blank" rel="noopener noreferrer">View job posting<ProfileIcon name="arrow" width={17} height={17} /></a> : <p className="application-overview-caption">{demo ? "Fictional demo listing" : "Posting URL not recorded"}</p>}
     </div>

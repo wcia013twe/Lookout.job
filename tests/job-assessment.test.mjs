@@ -107,3 +107,12 @@ test('MCP publication accepts employer pay on an existing catalog job and preser
  const response=await handler(new Request('http://local/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'publish_batch',arguments:payload}})}));
  const result=await response.json();assert(result.result&&!result.result.isError,JSON.stringify(result));assert.deepEqual(calls,[payload]);
 });
+
+test('single preference score is accepted through MCP and malformed scores are rejected',async()=>{
+ const single={percent:71,assessedAt:'2026-11-17T12:00:00Z',evidence:'Matches the saved profile.'};
+ const payload={...batch,jobs:[{jobId:'role',recommendation:{matchAssessment:single}}]};
+ const calls=[];const handler=createHandler(async(_token,operation,data)=>{if(operation==='credentials.verify')return {status:200,data:{scopes:['batches:write']}};validateRequest({operation,payload:data});calls.push(data);return {status:200,data:{saved:true}};});
+ const response=await handler(new Request('http://local/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+ 'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'publish_batch',arguments:payload}})}));
+ const result=await response.json();assert.ok(result.result&&!result.result.isError,JSON.stringify(result));assert.deepEqual(calls[0].jobs[0].recommendation.matchAssessment,single);
+ for(const bad of [{...single,percent:101},{...single,percent:'71'},{...single,assessedAt:'yesterday'},{...single,evidence:''},{...single,extra:true},{assessedAt:single.assessedAt}])assert.throws(()=>validateJobRecommendation({matchAssessment:bad}));
+});

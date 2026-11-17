@@ -130,7 +130,7 @@ answers stay shared. Multiple active profiles are supported; paused profiles rem
 editable. Unsaved drafts survive switching profiles and Profile sections, and reset
 when the account or demo epoch changes.
 
-What your agent knows has four optional notes using the same labels as Discover:
+What your agent knows has four optional notes covering:
 Skills & experience, Compensation, Wellbeing & culture, and Location & work setting.
 Each is a short, current decision brief: what matters, what makes a role a good
 fit, and important tradeoffs or unknowns. Agents synthesize rather than append,
@@ -142,10 +142,10 @@ is automatically reclassified. The Discover link retains demo mode.
 The notes remain labeled fields under `## What your agent knows` in private profile
 instructions. Website autosave and MCP `save_search_profile` share the existing
 owner/version boundary; there is no new store, permission or endpoint. The canonical
-`career-find-jobs` guide maps each note to its `matchAssessment` dimension, requires
-personal and employer evidence, explicit gaps, null for unsupported scores and
-the evaluated profile version. The two Discover narrative fields synthesize the
-strongest match and most consequential concern from those same four assessments,
+`career-find-jobs` guide uses these notes to assess one overall preference match,
+grounded in personal and employer evidence and the evaluated profile version.
+The two Discover narrative fields synthesize the
+strongest match and most consequential concern from that evidence,
 using the same profile and employer evidence. The publish tool routes agents to
 that writing contract, including a conditional good example. Unsupported concerns
 are omitted instead of invented. Agent writes preserve unrelated fields and legacy
@@ -235,8 +235,7 @@ My Agent has one Writing style workspace with Employer answers / Outreach tabs. 
 
 ## Discover match and job preview
 
-Discover cards show four fit dimensions: skills and experience, compensation,
-wellbeing and culture, and location and work setting. Real catalog roles remain
+Discover cards show one saved overall preference match percentage. Real catalog roles remain
 unassessed, without an invented percentage. The admin demo adds resettable,
 fictional strong, partial and unknown match examples with labeled sample scores.
 These are UI fixtures, not Glassdoor or Simplify ratings or a live AI evaluator.
@@ -465,7 +464,7 @@ individual guide pages remain readable without signing in.
 `scripts/check-signed-out-ui.mjs` checks these boundaries using fictional sessions
 and intercepted API responses; no real account or external write is required.
 
-Compact card assessments extend the existing private `batch_items.recommendation.matchAssessment` JSON. New assessments carry exactly four named dimensions (`skillsExperience`, `compensation`, `wellbeingCulture`, `locationWorkSetting`), each `{score:0–100|null, reasoning:1–240 characters}`, plus an `assessedAt` timestamp. Optional overall `percent` and short `evidence` are agent supplied. Cards display numeric scores or Unknown; reasoning is available only in expanded Preview. There is no backend scoring engine, separate table or synthesized aggregate. Legacy factor assessments and immutable historical batches remain readable. The existing publish_batch tool validates/persists both formats; the compact-score migration and gateway56 must be released before claiming hosted support.
+Compact card assessments extend the existing private `batch_items.recommendation.matchAssessment` JSON. New assessments carry an agent-supplied `percent` and `assessedAt` timestamp, with optional short `evidence`. Cards and application views show the saved overall percentage as a preference match; assessments without an overall percentage show Overall score unavailable. The four stored dimensions remain available in existing records, but are no longer displayed as separate scores. There is no backend scoring engine, separate table or synthesized aggregate. Legacy factor assessments and immutable historical batches remain readable. The existing publish_batch tool validates/persists the new and historical formats; the preference-score migration and gateway173 must be released before claiming hosted support.
 
 
 ### Tracker application flow
