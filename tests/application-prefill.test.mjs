@@ -92,3 +92,20 @@ test('compact preparation omits the full saved draft and failed writes never ret
  const failed=await prepareDraftWithPrefill((op,p)=>op==='drafts.prepare'?Promise.resolve(failure):h.call(op,p),{...payload,responseMode:'full'},{loadJob:async()=>({employer:{}})});
  assert.deepEqual(failed,failure);assert.equal(failed.data,undefined);
 });
+
+test('inspection observation closes only browser prerequisite and survives answer-only updates',async()=>{
+ const job={id:'j',canonical_url:'https://job-boards.greenhouse.io/example/jobs/1',employer:{company:'Example'}};
+ const h=service(),draft={url:job.canonical_url,inspectionComplete:true,questions:[q('Why us?','why','textarea')]};
+ const first=await prepareDraftWithPrefill(h.call,{responseMode:'full',jobId:'j',expectedRevision:0,draft},{loadJob:async()=>job});
+ assert.equal(first.data.handoff.requiresBrowserInspection,false);assert.equal(first.data.draft.inspectionComplete,true);assert.equal(first.data.draft.questionsReviewed,false);
+ const existing={revision:1,draft:first.data.draft};
+ const next=await prepareDraftWithPrefill(h.call,{responseMode:'full',jobId:'j',expectedRevision:1,draft:{answerUpdates:[{fieldId:'why',answer:'Draft for review'}]}},{loadJob:async()=>job,loadApplication:async()=>existing});
+ assert.equal(next.data.handoff.requiresBrowserInspection,false);assert.equal(next.data.draft.questions[0].answer,'Draft for review');assert.equal(next.data.draft.questionsReviewed,false);
+ const changed=await prepareDraftWithPrefill(h.call,{responseMode:'full',jobId:'j',expectedRevision:1,draft:{questions:[]}},{loadJob:async()=>job,loadApplication:async()=>existing});
+ assert.equal(changed.data.handoff.requiresBrowserInspection,true);assert.equal(changed.data.draft.inspectionComplete,false);
+ for(const patch of [{url:'https://other.example',questions:[]},{url:job.canonical_url},{url:job.canonical_url,questions:[],inspectionComplete:'true'}]){
+  const bad=await prepareDraftWithPrefill(h.call,{jobId:'j',draft:{inspectionComplete:true,...patch}},{loadJob:async()=>job});assert.equal(bad.error.code,'22023');
+ }
+ const {applicationHandoffFromSavedApplication}=await import('../lib/application-handoff.mjs');
+ assert.equal(applicationHandoffFromSavedApplication({application:{draft:next.data.draft},jobRecord:job}).requiresBrowserInspection,false);
+});

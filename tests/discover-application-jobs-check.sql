@@ -44,6 +44,7 @@ begin
  execute 'drop trigger test_reject_finalization on private.backend_jobs';execute 'drop function private.test_reject_finalization()';
  perform set_config('test.reject_job_id','',true);
  result:=public.backend_job_dispatch(h,'applications.request.finalize',final_payload);
+ if result->'application'->'draft'->>'inspectionComplete' is distinct from 'true' or result->'application'->'draft'->>'questionsReviewed' is distinct from 'false' then raise exception 'Inspection lost or manufactured answer approval';end if;
  if result->'application'->>'revision'<>'1' or result->'application'->>'status'<>'Awaiting approval' or result->'application'->'draft'->>'questionsReviewed'<>'false' or result->'job'->'result'->>'outcome'<>'prepared' or result->>'approved'<>'false' or result->>'verifiedSubmission'<>'false' then raise exception 'Finalization misrepresented readiness or submission';end if;
  if not exists(select 1 from jsonb_array_elements(result->'actionBoardItems') x where x->>'applicationId'=final_app::text and x->>'kind'='review_application') or exists(select 1 from jsonb_array_elements(result->'actionBoardItems') x where x->>'applicationId'<>final_app::text) then raise exception 'Prepared review card was missing or foreign board item leaked';end if;
  if public.backend_job_dispatch(h,'applications.request.finalize',final_payload)<>result then raise exception 'Exact finalization replay changed';end if;

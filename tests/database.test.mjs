@@ -53,6 +53,7 @@ for (const [file, behavior] of [
   ['work-experience','entry-level work history preserves facts, versions, scopes, ownership and website/MCP parity'],
   ['search-pipeline','scoped lead intake and screening replay atomically, isolate owners and rescreen current settings'],
   ['careerops-discovery','copied CareerOps native identities and functional URL parameters survive persisted resume reads'],
+  ['abandoned-search','idle unowned sweeps recover without losing checkpoints, stealing live work or crossing owners'],
   ['backend-jobs','backend execution isolates owners, replays writes, fences leases and dispatch, and rejects retired scheduling'],
   ['agent-connection-test','lightweight agent check-in exposes owned automation settings without advancing onboarding or creating tasks'],
   ['discover-removal','Discover removal isolates owners, scopes and batches and preserves applications'],

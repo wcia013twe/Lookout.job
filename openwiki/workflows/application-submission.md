@@ -74,6 +74,12 @@ Draft edits are concurrency-controlled. Answer-only updates merge only into exis
 
 The preparation handoff is deliberately bounded: it identifies unresolved controls, their routing (human, agent, optional, or browser), and relevant profile evidence without emitting filled answers, file bytes, or signed URLs. Treat it as a review aid—not submission evidence.
 
+### Inspection recovery (local source, November 16, 2026)
+
+`prepare_draft` accepts `draft.inspectionComplete: true` only with a complete observed question array and the exact current canonical employer URL. The saved handoff then clears `requiresBrowserInspection`; `questionsReviewed` stays false for human review. An answer-only correction preserves that inspection assertion for the same URL. Replacing the question set without a new assertion, or explicitly setting the flag false, clears it. The backend finalizer persists its existing `browserInspected` assertion into the draft through migration `20261117005319_recover_inspection_and_abandoned_search.sql`.
+
+This is an agent assertion about completed inspection, not independently verified browser evidence or submission authorization. Unit and database scenarios cover persistence, invalidation, URL validation and human-review separation. Local Muse verification is pending its development connection; these changes have not been deployed.
+
 ### 2. Review and authorization are independent gates
 
 Policy decides *whether review is required*, not whether a browser may execute. Excluded companies and role types are skipped. Unknown company/role facts, ambiguous tier placement, invalid or conflicting automation configuration, auto-apply-off, and important matches require review. A routine match may qualify for automatic authorization only under current configured policy; it still requires a verified profile, a permitted selected resume, and every answer to have allowed provenance.

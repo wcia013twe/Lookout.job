@@ -1928,3 +1928,11 @@ authorized MCP/operation replies and access denials, not deployed coverage.
 ## One-second watcher polling
 
 Package 0.2.2 defaults to one-second count polling with up to 10% jitter; the wake cooldown remains 10 seconds. Existing explicit configuration must be updated and the host service restarted. This source change does not establish remote installation or activation.
+
+## Narrow recovery follow-up (local source, November 16, 2026)
+
+Application handoffs now preserve a validated `inspectionComplete` assertion without granting human answer approval. The existing backend finalizer writes the same flag from `browserInspected`. Search run creation automatically closes an active same-owner/profile sweep as partial only after 15 minutes and no source progress in that interval, and only when no queued/running backend job owns the sweep. Saved source checkpoints and counts remain intact. Recovery runs under the existing owner lock; it does not steal backend-owned work. See `supabase/migrations/20261117005319_recover_inspection_and_abandoned_search.sql`, `tests/abandoned-search-check.sql`, and the application workflow page.
+
+All 1,485 aggregate tests passed, as did frontend/runtime/intelligence typechecks and catalog validation (158 roles). The orphan recovery scenario also passed against isolated local PostgreSQL; the full application-job scenario also passed there using its real Auth subject setting. The frontend build reached compilation and static generation but failed the Next.js security gate; launch readiness remains unproven.
+
+At the user's request, testing switched to a separate local stack (API 8082, Supabase 56321), without deploying or changing the existing shared local services. Scoped tool discovery and an onboarding read work through its development tunnel for a fictional account. Muse confirmed production writes paused; its development credential replacement and end-to-end recovery retest are still pending. No employer submission occurred.

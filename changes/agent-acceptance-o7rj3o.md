@@ -14,3 +14,10 @@
 - Profile graduation guidance/default résumé, shared-pool batch and one draft correction are independently verified. Cloud Run discovery recovered after Muse closed a dormant sweep through scoped tools; independent reads confirm 48 review-needed screenings, 68 completed sources and 54 blocked sources. A three-role subset was published; independent employer checks exposed a graduation mismatch and an experience stretch. Muse hid the ineligible role and saved an honest correction note; the immutable stretch-role card score remains unchanged. Draft review continuation and a November 17 internal follow-up are independently verified.
 - Added a focused manual OpenWiki current-state update with live evidence and historical staging limits. No blanket launch claim: full-time résumé variant, human draft answer/review, recommendation presentation and Cloud Run MCP host migration remain unresolved.
 - Validation: npm test (1,483/1,483), focused job-assessment tests (11/11), frontend typecheck, npm run validate:data (158 roles), git diff --check. No employer action; no demo fixture change for tool-description/documentation only.
+
+## Narrow recovery and local retest
+
+- Persist completed employer-form inspection across preparation/finalization and answer-only corrections while retaining human review and canonical URL checks. Update the scoped MCP contract to developer version 172 and demo fixtures to show inspected and uninspected drafts.
+- Close only idle orphaned search sweeps when starting a replacement, preserving saved checkpoints and respecting active backend ownership.
+- Validation: 1,485 tests passed; frontend, runtime and intelligence typechecks; 158-role data validation; isolated PostgreSQL orphan recovery and application-job scenarios; local and tunneled MCP discovery/onboarding read. Full frontend build blocked by Next.js security gate after static generation.
+- User requested local Muse testing instead of deployment. Separate fictional account and stack are ready; Muse paused production writes and requested a development credential replacement. End-to-end Muse recovery remains unverified. No push/deploy or employer action.

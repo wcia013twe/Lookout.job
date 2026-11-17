@@ -149,6 +149,7 @@ export function validateRequest(input) {
   }
   if (input.operation === 'applications.policy' && (Object.keys(p).some(k=>!['jobId','profileId'].includes(k)) || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(p.jobId || '') || (p.profileId!==undefined&&(typeof p.profileId!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(p.profileId))))) throw new Error('Job ID and optional application profile ID required');
   if(input.operation==='drafts.prepare'&&p.draft?.answerUpdates!==undefined){if(p.draft.questions!==undefined)throw Error('Use questions or answerUpdates, not both.');validateApplicationAnswerUpdates(p.draft.answerUpdates);}
+  if(input.operation==='drafts.prepare'&&p.draft?.inspectionComplete!==undefined&&typeof p.draft.inspectionComplete!=='boolean')throw Error('inspectionComplete must be boolean.');
   if(input.operation==='drafts.prepare'&&p.responseMode!==undefined&&!['compact','full'].includes(p.responseMode))throw Error('Choose compact or full draft response.');
   if(input.operation==='drafts.prepare'&&p.draft?.searchProfileId!==undefined&&(typeof p.draft.searchProfileId!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(p.draft.searchProfileId)))throw Error('Valid searchProfileId required in the draft.');
   if (input.operation.startsWith('context.') && Object.keys(p).length) throw new Error('No context arguments allowed');
