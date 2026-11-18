@@ -2,8 +2,8 @@
 import {useState, type FormEvent} from "react";
 import {Field, control, primary} from "../../../components/ui";
 
-export default function CircleEntry({busy, demo, submit}: {
-  busy: boolean; demo: boolean;
+export default function CircleEntry({busy, demo, invite, submit}: {
+  busy: boolean; demo: boolean; invite: string;
   submit: (event: FormEvent<HTMLFormElement>, join: boolean) => Promise<void>;
 }) {
   const [join, setJoin] = useState(true);
@@ -15,7 +15,7 @@ export default function CircleEntry({busy, demo, submit}: {
       <h2 id="circle-entry-title" className="text-2xl font-semibold tracking-tight">{join ? "Join a Circle" : "Create a Circle"}</h2>
       <form aria-labelledby="circle-entry-title" onSubmit={event => void submit(event, join)} className="mt-7">
         <fieldset disabled={busy} className="min-w-0 space-y-5">
-          {join ? <Field label="Invite code"><input key="invite" name="token" className={`${control} font-mono tracking-wide`} required maxLength={100} placeholder={demo ? "demo-invite" : "Paste your invite code"} autoCapitalize="none" autoCorrect="off" spellCheck={false}/></Field>
+          {join ? <Field label="Invite code"><input key={`invite-${invite}`} name="token" defaultValue={invite} className={`${control} font-mono tracking-wide`} required maxLength={100} placeholder={demo ? "demo-invite" : "Paste your invite code"} autoCapitalize="none" autoCorrect="off" spellCheck={false}/></Field>
             : <Field label="Circle name"><input key="circle-name" name="name" className={control} required maxLength={100} placeholder="Give your Circle a name"/></Field>}
           <div><Field label="Your name"><input name="alias" className={control} required maxLength={80} autoComplete="nickname" placeholder="What your people call you" aria-describedby="circle-alias-help"/></Field>
           <p id="circle-alias-help" className="mt-2 text-xs leading-5 text-board-muted">This is how you’ll appear in this Circle.</p></div>

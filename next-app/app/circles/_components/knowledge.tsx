@@ -8,6 +8,7 @@ import AuthorshipLabel from './authorship-label';
 import CircleListItem from './circle-list-item';
 import CircleEntry from './circle-entry';
 import listStyles from './circle-list.module.css';
+import {rememberCircleInvite,takeCircleInvite} from '../../../lib/circle-invites.mjs';
 import Settings from './settings';
 import Appearance from './appearance';
 import AgentContext from './agent-context';
@@ -20,12 +21,16 @@ const errorText=(e:unknown)=>e instanceof Error?e.message:'Something went wrong.
 const date=(at:string)=>new Date(at).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
 export default function CircleKnowledge(){
  const client=useKnowledgeClient();
+ const [signInError,setSignInError]=useState('');
+ function signIn(){try{rememberCircleInvite(window.sessionStorage,location.hash);client.signIn();}catch{setSignInError('Your browser blocked session storage. Copy the invite code from the link and paste it after signing in.');}}
  if(client.connectionState==='loading')return <Notice>Connecting to your Circle account…</Notice>;
- if(client.connectionState==='signed_out')return <><Heading title="Community">Sign in to open your Circles.</Heading><div className="flex flex-wrap gap-3"><button className={primary} onClick={client.signIn}>Sign in</button><button className={secondary} onClick={client.openDemo}>Explore fictional demo</button></div></>;
+ if(client.connectionState==='signed_out')return <><Heading title="Community">Sign in to open your Circles.</Heading><div className="flex flex-wrap gap-3"><button className={primary} onClick={signIn}>Sign in</button><button className={secondary} onClick={client.openDemo}>Explore fictional demo</button></div><Notice>{signInError}</Notice>{signInError&&<button className={secondary} onClick={client.signIn}>Sign in without the invite</button>}</>;
  if(!client.ready)return <ApiError message="Circle client initialization failed [CLIENT_UNAVAILABLE]. Reload the page to reconnect." onRetry={()=>location.reload()}/>;
  return <KnowledgeSurface key={client.identity} request={client.request} demo={client.demo}/>;
 }
 export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
+ const [invite,setInvite]=useState('');
+ useEffect(()=>{let token='';try{token=takeCircleInvite(window.sessionStorage,location.hash);}catch{token=takeCircleInvite(null,location.hash);}if(token){setInvite(token);const url=new URL(location.href);url.hash='';url.searchParams.delete('circle');url.searchParams.delete('thread');history.replaceState(null,'',url);}},[]);
  const [circles,setCircles]=useState<Circle[]>([]),[circleId,setCircleId]=useState(''),[threadId,setThreadId]=useState('');
  const [circleView,setCircleView]=useState<'clubhouse'|'settings'>('clubhouse');
  const [detail,setDetail]=useState<Detail|null>(null),[page,setPage]=useState<Page<Post>>({items:[],nextCursor:null}),[thread,setThread]=useState<Thread|null>(null);
@@ -105,9 +110,9 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
     <h2 id="your-circles-title" className="mb-3 text-xl font-semibold">Your circles</h2>
     {circles.length?<ul className={listStyles.list}>{circles.map(circle=><CircleListItem key={circle.id} circle={circle} request={request} demo={demo} busy={busy} open={()=>{setCircleView('clubhouse');locate(circle.id);}} manage={()=>{setCircleView('settings');locate(circle.id);}}/>)}</ul>:<p className="py-4 text-board-muted">No circles yet. Join your people with an invite code, or start your own.</p>}
    </section>}
-   <details className="border-b border-board-line py-2" open={!circles.length}>
+   <details className="border-b border-board-line py-2" open={!circles.length||!!invite}>
     <summary className="min-h-11 cursor-pointer py-2 text-sm font-semibold">Join or create a Circle</summary>
-    <CircleEntry busy={busy} demo={demo} submit={createOrJoin}/>
+    <CircleEntry busy={busy} demo={demo} invite={invite} submit={createOrJoin}/>
    </details>
   </>}
 
