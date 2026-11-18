@@ -120,3 +120,5 @@ an edit requiring new review, a declined suggestion, duplicate retry, withdrawal
 private aggregate use and no-contribution state. Future conversational and delivery
 scenarios must be marked as previews until their authorization/runtime support is
 implemented and verified. No demo action may write real accounts or send messages.
+
+New Circle memberships default to allowing the closed preparation-resource and opportunity-link templates. Members can change these permissions in Circle settings; existing saved choices are not changed. Rejoining an inactive membership retains the existing reset-to-empty behavior. Other contribution types continue to require individual review.
