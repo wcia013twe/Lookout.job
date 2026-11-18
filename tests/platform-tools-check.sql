@@ -24,6 +24,12 @@ begin
  r:=public.agent_dispatch(h,'preferences.notifications.save','{"settings":{"quietMode":{"cadence":"weekly"}},"expectedUpdatedAt":null}');
  stamp:=r->>'updated_at';
  begin
+  perform public.agent_dispatch(h,'preferences.tiers.save','{"tierLists":[],"activeTierListId":null,"expectedUpdatedAt":null}');
+  raise exception 'Stale agent preferences accepted';
+ exception when sqlstate 'PT409' then
+  if sqlerrm <> 'Preferences changed' then raise; end if;
+ end;
+ begin
   perform public.agent_dispatch(h,'preferences.notifications.save',jsonb_build_object('settings','{"autoSubmitApproved":true}'::jsonb,'expectedUpdatedAt',stamp));
   raise exception 'Permission injection allowed';
  exception when invalid_parameter_value then null; end;
