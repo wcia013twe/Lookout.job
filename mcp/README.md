@@ -414,7 +414,7 @@ not establish deployed availability.
 
 The fixed tool registry includes scoped Circle search/read, contribution proposals,
 approved publication, withdrawal/reporting and private citation use/receipts. Agents
-need `knowledge:read` and, for mutations, `knowledge:write`. Existing connections
+need `knowledge:read` and, for mutations, `knowledge:write`. New website connections offer both permissions enabled by default when a writable access level is selected; users can deselect them. New Circle memberships default to the resource and opportunity link sharing policies, which remain human-managed. Existing saved permissions are unchanged. Existing connections
 remain unchanged. `request_circle_human_action` returns a membership-checked link;
 it cannot manage members, approve revisions, moderate, or grant sharing permission.
 See [operation mapping and release gate](../backend/circle-knowledge.md).

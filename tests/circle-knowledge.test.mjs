@@ -63,6 +63,10 @@ test('private Circles, exact sharing consent, retrieval and citation privacy',as
   invite=await human(A,'circles.invite',{circleId,eventKey:key()});
   await human(B,'circles.join',{token:invite.token,alias:'Bailey',eventKey:key()});
   assert.equal((await human(B,'circles.read',{circleId})).members.length,2);
+  assert.deepEqual((await human(A,'circles.read',{circleId})).policy,['resource','opportunity']);
+  assert.deepEqual((await human(B,'circles.read',{circleId})).policy,['resource','opportunity']);
+  await human(A,'circles.policy',{circleId,allowedTypes:[],eventKey:key()});
+  assert.deepEqual((await human(A,'circles.read',{circleId})).policy,[]);
   assert.deepEqual((await agent('a','circles.read',{circleId})).invites,[]);
   await db.exec('set role authenticated');
   try{await rejects(()=>db.exec('select * from private.knowledge_citations'),/permission denied/);}finally{await db.exec('reset role');}

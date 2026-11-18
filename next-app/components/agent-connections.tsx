@@ -266,7 +266,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
                 <legend className="sr-only">Additional agent permissions</legend>
                 {additionalPermissions.map(([scope,label]) => (
                   <label key={scope} className="flex min-h-11 items-start gap-3 py-2 text-sm leading-relaxed">
-                    <input className="mt-1 size-4 shrink-0 accent-board-accent" type="checkbox" name={scope} />
+                    <input className="mt-1 size-4 shrink-0 accent-board-accent" type="checkbox" name={scope} defaultChecked={scope === "knowledge:read" || scope === "knowledge:write"} />
                     <span>{label}</span>
                   </label>
                 ))}
