@@ -1,3 +1,4 @@
+import {asset} from '../../../lib/workspace';
 import {useState} from 'react';
 import type {Detail,Post} from '../_lib/types';
 import {activityGoalProgress,parseCircleActivity} from '../../../../lib/circle-activity.mjs';
@@ -19,7 +20,7 @@ export default function ClubhouseProgress({posts,detail,demo,openPost,milestones
   {view==='journey'?<div><details className={styles.countDetails}><summary>How counts work</summary><p>UTC week: Monday 00:00 to next Monday 00:00. Counts include submitted applications and completed recruiter calls, technical rounds, and interviews with a recorded date. These are tracked records, not verified outcomes or deduplicated interviews.</p></details>{detail.members.some(member=>member.progress)?stages.map(stage=>{const members=detail.members.filter(member=>member.progress&&member.progress.careerStage===stage.value);return members.length?<section key={stage.label} className={styles.stageGroup}><h4>{stage.label}</h4><ul>{members.map(member=><li key={member.id}><strong>{member.alias.replace(' (demo)','')}</strong><span>{member.progress!.applications} applications · {member.progress!.interviews} interview activities</span></li>)}</ul></section>:null;}):<p className={styles.week}>No one has shared counts yet. Manage sharing in Circle settings.</p>}</div>:<>{visible.length?<ul id="clubhouse-progress-updates" className={styles.updates}>{visible.map(post=>{
    const activity=parseCircleActivity(post.content.body),goal=activityGoalProgress(activity.goal),name=post.author.replace(' (demo)','');
    return <li key={post.id} className={styles.update}>
-    <span className={styles.avatar} aria-hidden="true">{demo?<span style={{backgroundImage:`url('/circles/${companionForMember(post.author).id}.webp')`}}/>:name.trim().split(/\s+/).slice(0,2).map(part=>part[0]).join('')}</span>
+    <span className={styles.avatar} aria-hidden="true">{demo?<span style={{backgroundImage:`url('${asset(`circles/${companionForMember(post.author).id}.webp`)}')`}}/>:name.trim().split(/\s+/).slice(0,2).map(part=>part[0]).join('')}</span>
     <div className={styles.content}>
      <div className={styles.meta}><strong>{name}</strong><AuthorshipLabel post={post}/><time dateTime={post.createdAt}>{new Date(post.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/New_York'})}</time></div>
      <button type="button" onClick={()=>openPost(post)} className={styles.title}>{post.content.title}</button>

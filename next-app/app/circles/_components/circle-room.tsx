@@ -1,4 +1,5 @@
 'use client';
+import {asset} from '../../../lib/workspace';
 
 import {formatPostDate} from "../_lib/post-date";
 import {useEffect, useLayoutEffect, useMemo, useState, useRef, type ReactNode, type CSSProperties} from 'react';
@@ -88,13 +89,13 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
   <div ref={sceneRef} className={styles.roomWithActivity}>
   <div className={styles.viewport}>
    <div ref={roomRef} className={styles.room} data-paused={paused||!!selectedCompanion} data-gathered={gathered} data-ambience={theme.ambience} data-selected={!!selectedCompanion} style={{'--room-accent':theme.palette.accent} as CSSProperties}>
-    <div className={styles.backdrop} style={{backgroundImage:`url('${theme.background}')`}} role="img" aria-label={`${theme.name} clubhouse`}/>
+    <div className={styles.backdrop} style={{backgroundImage:`url('${asset(theme.background.slice(1))}')`}} role="img" aria-label={`${theme.name} clubhouse`}/>
     <div className={styles.roomPlaque}><span className={styles.lamp}/><span>{theme.name}</span><span className={styles.plaqueNote}>Circle clubhouse</span></div>
     {occupants.map(({companion,member,key},index)=>{
      const routine=roomRoutines[index%roomRoutines.length];
      const reacting=greeting?.id===companion.id;
      const avatar=member?.avatar;
-     const image=avatar?.kind==='builtin'?`/circles/${avatar.id}.webp`:avatar?.dataUrl||`/circles/${companion.id}.webp`;
+     const image=avatar?.kind==='builtin'?asset(`circles/${avatar.id}.webp`):avatar?.dataUrl||asset(`circles/${companion.id}.webp`);
      const style={'--move-x':`${routine.station.x}cqw`,'--move-y':`${routine.station.y*2/3}cqw`,'--companion-image':`url("${image}")`} as CSSProperties;
      return <button key={key} type="button" className={styles.character} style={style} data-routine={index} data-task={routine.task} data-mode="working" data-reaction={reacting} aria-pressed={selectedCompanion===key} aria-expanded={selectedCompanion===key} aria-controls="companion-activity" onClick={event=>{triggerRef.current=event.currentTarget;setSelectedCompanion(selectedCompanion===key?null:key);setGreeting({id:companion.id,at:Date.now()});}} aria-label={`See ${member?.alias.replace(' (demo)','')||companion.name}’s recent activity`}>
       <span className={styles.bubble} data-bubble><strong>{member?.alias.replace(' (demo)','')||companion.name}</strong><span className={styles.activity}>{gathered?'Hanging out together':member?'View shared activity':companion.station}</span><span className={styles.journey} data-journey/><span className={styles.sessionDetail}>{demo?companion.detail:'Decorative companion'}</span></span>
