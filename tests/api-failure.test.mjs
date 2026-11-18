@@ -16,7 +16,7 @@ test('missing APIs retain operation, code and HTTP status without exposing raw s
  assert.doesNotMatch(apiFailure('token=private',{code:'private data',message:'secret'}).message,/token=|private|secret/);
 });
 test('actionable explanations distinguish auth, permission, conflict, network and service failures',()=>{
- for(const [input,status,pattern] of [[{code:'PGRST301'},401,/Sign in again/],[{code:'42501'},403,/denied access/],[{code:'40001'},409,/reconcile your edits/],[new TypeError('Failed to fetch'),undefined,/could not be reached/],[{},0,/could not be reached/],[{code:'FEATURE_UNAVAILABLE'},200,/not enabled/],[{},500,/server could not complete/]])assert.match(apiFailure('circles.list',input,status).message,pattern);
+ for(const [input,status,pattern] of [[{code:'PGRST301'},401,/Sign in again/],[{code:'42501'},403,/denied access/],[{code:'40001'},409,/reconcile your edits/],[{code:'PT409'},409,/reconcile your edits/],[new TypeError('Failed to fetch'),undefined,/could not be reached/],[{},0,/could not be reached/],[{code:'FEATURE_UNAVAILABLE'},200,/not enabled/],[{},500,/server could not complete/]])assert.match(apiFailure('circles.list',input,status).message,pattern);
 });
 test('successful empty data is valid while failed and malformed responses never become empty data',async()=>{
  assert.deepEqual(await callApi('contacts.read',async()=>({data:[],error:null,status:200}),Array.isArray),[]);

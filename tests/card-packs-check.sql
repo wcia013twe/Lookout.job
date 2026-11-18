@@ -11,7 +11,7 @@ begin
  cfg:=jsonb_build_array(jsonb_build_object('id',pack,'title','My pack','enabled',true,'taskId','discovery','archive','none'));
  saved:=public.configure_card_pack_preferences('preferences.theme.save',jsonb_build_object('theme',jsonb_build_object('pack','solar','cardPacks',cfg,'cardPacksVersion',1),'expectedUpdatedAt',saved->>'updated_at'));
  begin perform public.configure_card_pack_preferences('profile.save','{}');raise exception 'Unscoped browser operation accepted';exception when invalid_parameter_value then null;end;
- begin perform public.configure_card_pack_preferences('preferences.notifications.save',jsonb_build_object('settings',jsonb_build_object('schedule',schedule),'expectedUpdatedAt',stamp));raise exception 'Stale browser settings accepted';exception when serialization_failure then null;end;
+ begin perform public.configure_card_pack_preferences('preferences.notifications.save',jsonb_build_object('settings',jsonb_build_object('schedule',schedule),'expectedUpdatedAt',stamp));raise exception 'Stale browser settings accepted';exception when sqlstate 'PT409' then null;end;
  if saved#>>'{theme,cardPacks,0,taskId}'<>'discovery' then raise exception 'Browser setup failed';end if;
  begin
   perform public.agent_dispatch(h,'preferences.theme.save',jsonb_build_object('theme',jsonb_build_object('cardPacks',cfg,'cardPacksVersion',3),'expectedUpdatedAt',saved->>'updated_at'));
