@@ -2,8 +2,7 @@
 import BoardReturn from "./board-return";
 import {useEffect,useRef,useState,type FormEvent} from 'react';
 import {useWorkspace} from '../lib/workspace';
-import {useOutreach} from '../lib/outreach';
-import {useNetworkCompanies} from '../lib/network';
+import {useOutreach,useNetworkCompanies} from '../lib/workspace-network';
 import {useSimplifyImports} from '../lib/simplify-import';
 import {importedApplication} from '../../lib/simplify-import.mjs';
 import type {Application} from './workflow-types';
@@ -55,7 +54,7 @@ function PersonDetail({person,update,remove,onBack,onCompany,companyAvailable,di
 }
 export default function Network(){const w=useWorkspace();return <PeoplePage key={w.demo?'demo':w.user?.id||'guest'}/>;}
 function PeoplePage(){
- const w=useWorkspace(),outreach=useOutreach(),network=useNetworkCompanies(outreach),imports=useSimplifyImports();
+ const w=useWorkspace(),outreach=useOutreach(),network=useNetworkCompanies(),imports=useSimplifyImports();
  const [query,setQuery]=useState(''),[companyFilter,setCompanyFilter]=useState(''),[selected,setSelected]=useState(''),[companyDetail,setCompanyDetail]=useState(''),[process,setProcess]=useState(''),[adding,setAdding]=useState(false),[showAll,setShowAll]=useState(false),[notice,setNotice]=useState(''),[relationship,setRelationship]=useState('');
  const detailRef=useRef<HTMLDivElement>(null),owner=w.demo?'demo':w.user?.id||'guest';
  const people:Person[]=outreach.contacts;

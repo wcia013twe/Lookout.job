@@ -5,13 +5,14 @@ import {useEffect,useRef,useState} from 'react';
 import {useSlice,useWorkspace} from './workspace';
 import {validateCompany} from '../../lib/network-model.mjs';
 import {createCompanySync} from '../../lib/company-sync.mjs';
-export function useNetworkCompanies(_outreach){
+export function useNetworkCompaniesState(started){
  const w=useWorkspace(),owner=w.demo?'demo':w.user?.id||'guest';
  const [rows,setRows]=useSlice('network.companies');
  const [ready,setReady]=useState(false),[error,setError]=useState('');
  const session=useRef(null);
  const current=s=>session.current===s&&(w.demo||window.JB?.auth?.userId===s.owner);
  useEffect(()=>{
+  if(!started)return;
   setError('');setReady(false);
   if(!w.store)return;
   if(w.demo||!w.user){session.current=null;setReady(true);return;}
@@ -25,7 +26,7 @@ export function useNetworkCompanies(_outreach){
   const retry=()=>{if(s.failed||(w.store.get('network.companies')||[]).some(row=>row.dirty))void sync();};
   window.addEventListener('online',retry);window.addEventListener('focus',retry);
   return()=>{stop();window.removeEventListener('online',retry);window.removeEventListener('focus',retry);if(session.current===s)session.current=null;};
- },[owner,w.store,w.client,w.demo]);
+ },[started,owner,w.store,w.client,w.demo]);
  async function save(row){
   validateCompany(row.record);
   const s=session.current;

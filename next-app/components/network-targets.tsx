@@ -3,8 +3,7 @@ import ApiError from './api-error';
 import {apiErrorText} from '../../lib/api-failure.mjs';
 import {useEffect,useRef,useState,type FormEvent} from 'react';
 import {useWorkspace} from '../lib/workspace';
-import {useOutreach} from '../lib/outreach';
-import {useNetworkCompanies} from '../lib/network';
+import {useOutreach,useNetworkCompanies} from '../lib/workspace-network';
 import {companyIndex,companyKey,emptyCompany,COMPANY_PRIORITIES} from '../../lib/network-model.mjs';
 import ProfileSection, {ProfileValues} from './profile-section';
 import ProfileSurface from './profile-surface';
@@ -44,7 +43,7 @@ function CompanyEditor({row,contacts,applications,onSave,onCancel,onReload,disab
  {(!inline||dirty)&&<div className="company-save-actions"><p className="text-xs text-board-muted">{inline?"Saves all pending company edits.":"Private company details."}</p><div className="flex flex-wrap gap-3"><button className={primary}>{busy?'Saving…':'Save company'}</button><button type="button" className={secondary} onClick={discard}>{inline?"Discard changes":"Cancel"}</button></div></div>}</fieldset><Notice>{error}</Notice>{error&&<button type="button" className={secondary} onClick={reload}>Discard draft & reload saved company</button>}</form>;
 }
 export default function NetworkTargets({onBack}: {onBack?:()=>void} = {}){
- const w=useWorkspace(),outreach=useOutreach(),network=useNetworkCompanies(outreach);
+ const w=useWorkspace(),outreach=useOutreach(),network=useNetworkCompanies();
  const [selected,setSelected]=useState<string|null>(null),[editing,setEditing]=useState(false),[tab,setTab]=useState('Overview'),[query,setQuery]=useState(''),[archived,setArchived]=useState(false),[draft,setDraft]=useState<Row|null>(null),[feedback,setFeedback]=useState('');
  const applications:Application[]=[...new Set<string>([...w.state.tracker.ids,...Object.keys(w.state.workflow.applications)])].map(id=>({...w.roles.find((r:Application)=>r.id===id),...w.state.workflow.applications[id],id,status:w.state.workflow.applications[id]?.status||w.state.tracker.items[id]?.status||'New',questions:w.state.workflow.applications[id]?.questions||[]})).filter(a=>a.company&&a.title&&(!w.demo||['robinhood','stripe'].includes(companyKey(a.company))));
  const contacts=[...outreach.contacts,...(w.state.network.people||[])];

@@ -26,9 +26,9 @@ export default function CircleKnowledge(){
  if(client.connectionState==='loading')return <Notice>Connecting to your Circle account…</Notice>;
  if(client.connectionState==='signed_out')return <><Heading title="Community">Sign in to open your Circles.</Heading><div className="flex flex-wrap gap-3"><button className={primary} onClick={signIn}>Sign in</button><button className={secondary} onClick={client.openDemo}>Explore fictional demo</button></div><Notice>{signInError}</Notice>{signInError&&<button className={secondary} onClick={client.signIn}>Sign in without the invite</button>}</>;
  if(!client.ready)return <ApiError message="Circle client initialization failed [CLIENT_UNAVAILABLE]. Reload the page to reconnect." onRetry={()=>location.reload()}/>;
- return <KnowledgeSurface key={client.identity} request={client.request} demo={client.demo}/>;
+ return <KnowledgeSurface key={client.identity} request={client.request} refreshReads={client.refreshReads} demo={client.demo}/>;
 }
-export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
+export function KnowledgeSurface({request,refreshReads,demo}:{request:Request;refreshReads?:()=>void;demo:boolean}){
  const [invite,setInvite]=useState('');
  useEffect(()=>{let token='';try{token=takeCircleInvite(window.sessionStorage,location.hash);}catch{token=takeCircleInvite(null,location.hash);}if(token){setInvite(token);const url=new URL(location.href);url.hash='';url.searchParams.delete('circle');url.searchParams.delete('thread');history.replaceState(null,'',url);}},[]);
  const [circles,setCircles]=useState<Circle[]>([]),[circleId,setCircleId]=useState(''),[threadId,setThreadId]=useState('');
@@ -64,10 +64,10 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
  },[circleId,threadId,filters,request]);
  useEffect(()=>{
   if(!circleId)return;setLoading(true);refresh().catch(()=>{}).finally(()=>{if(mounted.current)setLoading(false);});
-  const timer=setInterval(()=>{if(document.visibilityState==='visible')refresh().catch(()=>{});},30000);
-  const focus=()=>{if(document.visibilityState==='visible')refresh().catch(()=>{});};document.addEventListener('visibilitychange',focus);
+  const focus=()=>{if(document.visibilityState==='visible'){refreshReads?.();refresh().catch(()=>{});}};
+  const timer=setInterval(focus,30000);document.addEventListener('visibilitychange',focus);
   return()=>{version.current++;clearInterval(timer);document.removeEventListener('visibilitychange',focus);};
- },[refresh,circleId]);
+ },[refresh,circleId,refreshReads]);
  async function write<T>(operation:string,payload:Record<string,unknown>):Promise<T>{
   const previous=pending.current;const key=previous?.operation===operation&&JSON.stringify(previous.payload)===JSON.stringify(payload)?previous.key:crypto.randomUUID();
   pending.current={operation,payload,key};const result=await request<T>(operation,{...payload,eventKey:key});pending.current=null;return result;
@@ -98,13 +98,13 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
 
   }catch(e){if(mounted.current&&generation===version.current){setError(errorText(e));setThread(null);setPage({items:[],nextCursor:null});}}finally{if(mounted.current&&generation===version.current)setBusy(false);}
  }
- const settingsPanel=detail?<><Settings detail={detail} busy={busy} act={act} embedded/><div className="flex flex-wrap gap-3 border-t border-board-line py-4"><button className={secondary} disabled={busy||loading} onClick={()=>void (async()=>{await list();await refresh();})().catch(error=>setError(errorText(error)))}>Refresh Circle</button></div></>:null;
+ const settingsPanel=detail?<><Settings detail={detail} busy={busy} act={act} embedded/><div className="flex flex-wrap gap-3 border-t border-board-line py-4"><button className={secondary} disabled={busy||loading} onClick={()=>void (async()=>{refreshReads?.();await list();await refresh();})().catch(error=>setError(errorText(error)))}>Refresh Circle</button></div></>:null;
  const composing=!!editor&&!editor.post&&!editor.reply;
  const privateDrafts=[...new Map([...draftPosts,...page.items].map(post=>[post.id,post])).values()].filter(post=>post.owned&&post.revision!==post.publishedRevision);
  return <div className="min-w-0">
   {circleId&&<button type="button" className={`${secondary} mb-4`} disabled={busy} onClick={()=>{setCircleView('clubhouse');locate('');}}>Back to your circles</button>}
   {!circleId&&<Heading title="Community" />}
-  <ApiError message={error} onRetry={()=>void (async()=>{setLoading(true);try{await list();await refresh();}catch(failure){setError(errorText(failure));}finally{if(mounted.current)setLoading(false);}})()}/><div role="status"><Notice>{notice||(loading?'Loading Circle…':'')}</Notice></div>
+  <ApiError message={error} onRetry={()=>void (async()=>{setLoading(true);try{refreshReads?.();await list();await refresh();}catch(failure){setError(errorText(failure));}finally{if(mounted.current)setLoading(false);}})()}/><div role="status"><Notice>{notice||(loading?'Loading Circle…':'')}</Notice></div>
   {available&&!circleId&&!loading&&<>
    {!error&&<section className="mb-8" aria-labelledby="your-circles-title">
     <h2 id="your-circles-title" className="mb-3 text-xl font-semibold">Your circles</h2>

@@ -36,7 +36,7 @@ export function withActionBoardDemo(services,store){
    else if(r.work_connection_id!=='demo-agent'||!r.work_state)throw Error('Start this approved work first');
    r.work_state=payload.stage;r.work_note=payload.note||null;r.work_version=(r.work_version||1)+1;
    if(payload.stage==='completed'&&current){
-    if(services.simplifyImport){const snapshot=await services.simplifyImport('list');await services.simplifyImport('update',{id:row.id,expectedVersion:snapshot.version,eventKey:'progress:'+payload.eventKey,changes:{needsAction:false}});store.set('demo.boardImports',(await services.simplifyImport('list')).records);}
+    if(services.simplifyImport){const snapshot=await services.simplifyImport('list');await services.simplifyImport('update',{id:row.id,expectedVersion:snapshot.version,eventKey:'progress:'+payload.eventKey,changes:{needsAction:false}});}
     else store.update('demo.boardImports',rows=>rows.map(i=>i.id===row.id?{...i,record:{...i.record,needsAction:false}}:i));
    }
    const result={key:payload.key,state:payload.stage,version:r.work_version,sourceCurrent:!!current,verifiedSubmission:false};events.set(payload.eventKey,{payload:req,result});return copy(result);
