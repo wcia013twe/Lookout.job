@@ -1,3 +1,4 @@
+import {asset} from '../../../lib/workspace';
 import {formatPostDate} from "../_lib/post-date";
 import type {Post} from '../_lib/types';
 import {types} from '../_lib/types';
@@ -13,7 +14,7 @@ export default function ClubhouseFeed({posts,demo,openPost}:{posts:Post[];demo:b
   {updates.length?<ul className={styles.feedList}>{updates.map(post=>{
    const activity=circleActivity(post.content),name=post.author.replace(' (demo)','');
    return <li key={post.id} className={styles.feedItem}>
-    <span className={styles.avatar} aria-hidden="true">{demo?<span style={{backgroundImage:`url('/circles/${companionForMember(name).id}.webp')`}}/>:name.trim().split(/\s+/).slice(0,2).map(p=>p[0]).join('')}</span>
+    <span className={styles.avatar} aria-hidden="true">{demo?<span style={{backgroundImage:`url('${asset(`circles/${companionForMember(name).id}.webp`)}')`}}/>:name.trim().split(/\s+/).slice(0,2).map(p=>p[0]).join('')}</span>
     <div className={styles.feedContent}>
      <div className={styles.meta}><strong>{name}</strong><AuthorshipLabel post={post}/><time dateTime={post.createdAt}>{formatPostDate(post.createdAt)}</time></div>
      <button type="button" className={styles.postTitle} onClick={()=>openPost(post)}>{post.content.title}</button>
