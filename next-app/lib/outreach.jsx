@@ -7,7 +7,7 @@ import { outreachDemoMessages } from './outreach-demo.mjs';
 import { useEffect, useRef, useState } from 'react';
 import { useSlice, useWorkspace } from './workspace';
 const recordOf = row => { const {id,_revision,_updatedAt,_outreachDirty,origin,...record}=row; return record; };
-export function useOutreach() {
+export function useOutreachState(started) {
  const {client,user,store,demo}=useWorkspace(); const [contacts,setLocal]=useSlice('network.referrals');
  const [requests,setRequests]=useState([]),[status,setStatus]=useState(''),[error,setError]=useState(''),[ready,setReady]=useState(false);
  const session=useRef(null),latest=useRef(contacts||[]); latest.current=contacts||[];
@@ -53,6 +53,7 @@ export function useOutreach() {
   clearTimeout(s.timer); s.timer=setTimeout(()=>flush().catch(()=>{}),500); setStatus('Saving outreach…');
  }
  useEffect(()=>{
+  if(!started)return;
   setReady(false);setRequests([]);setError('');const owner=user?.id;
   if(demo){session.current=null;setReady(true);setStatus('Demo contacts — changes stay in memory.');return;}
   if(!owner || !client || !store) {session.current=null;setStatus('Saved in this browser. Sign in to ask Muse to prepare outreach.');return;}
@@ -81,7 +82,7 @@ export function useOutreach() {
   const retry=()=>{if(s.pending.size||s.failed)void sync();};
   window.addEventListener('online',retry);window.addEventListener('focus',retry);
   return()=>{stop();clearTimeout(s.timer);window.removeEventListener('online',retry);window.removeEventListener('focus',retry);if(isCurrent(s))session.current=null;};
- },[user?.id,client,store,demo]);
+ },[started,user?.id,client,store,demo]);
  async function request(companies) {
   if(demo){const next=companies.map((company,i)=>{const example=outreachDemoMessages[i%outreachDemoMessages.length];return {...example,id:crypto.randomUUID(),company:company.trim(),contact:example.name,message:example.message.replaceAll(example.company,company.trim()),title:i%2?'Infrastructure Engineer':'Backend Engineer',status:'Not asked',source:'Demo'};});setContacts([...latest.current,...next]);setStatus('Demo outreach prepared. No backend request was sent.');return;}
   const s=session.current;if(!s||!ready)throw Error('Sign in and wait for your outreach account to connect.');

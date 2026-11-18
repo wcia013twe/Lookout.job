@@ -2,8 +2,7 @@
 import ApiError from './api-error';
 import {useEffect,useState,type FormEvent} from 'react';
 import {useWorkspace} from '../lib/workspace';
-import {useOutreach} from '../lib/outreach';
-import {useNetworkCompanies} from '../lib/network';
+import {useOutreach,useNetworkCompanies} from '../lib/workspace-network';
 import {companyIndex,companyKey,contactsForProcess,processContactDraft} from '../../lib/network-model.mjs';
 import {trackerProgress} from '../../lib/tracker-display.mjs';
 import {sortApplications} from '../../lib/application-timeline.mjs';
@@ -17,7 +16,7 @@ import {Field,Notice,control,primary,secondary} from './ui';
 import type {Application} from './workflow-types';
 
 export default function NetworkProcesses({onOpenTarget}:{onOpenTarget:(id:string)=>void}){
- const w=useWorkspace(),outreach=useOutreach(),network=useNetworkCompanies(outreach);
+ const w=useWorkspace(),outreach=useOutreach(),network=useNetworkCompanies();
  const [selected,setSelected]=useState(''),[person,setPerson]=useState(''),[adding,setAdding]=useState(false),[feedback,setFeedback]=useState(''),[review,setReview]=useState<string|null>(null),[query,setQuery]=useState('');
  const all:Application[]=[...new Set<string>([...w.state.tracker.ids,...Object.keys(w.state.workflow.applications)])].map(id=>({...w.roles.find((r:Application)=>r.id===id),...w.state.workflow.applications[id],id,status:w.state.workflow.applications[id]?.status||w.state.tracker.items[id]?.status||'New',questions:w.state.workflow.applications[id]?.questions||[]})).filter(a=>a.company&&a.title&&(!w.demo||['robinhood','stripe'].includes(companyKey(a.company))));
  const active:Application[]=sortApplications(all).filter((a:Application)=>{const stage=trackerProgress(a,w.state.tracker.items[a.id]);return stage.level>=1&&!['Rejected','Withdrawn'].includes(stage.status);});

@@ -3,7 +3,7 @@ import {OwnedDecisionActions} from './decision-buttons';
 import ApiError from './api-error';
 import { useState, type ReactNode } from "react";
 import { CompanyLogo } from "./role-card";
-import { useOutreach } from "../lib/outreach";
+import { useOutreach } from "../lib/workspace-network";
 import { Field, Notice, control, primary, secondary } from "./ui";
 import { OUTREACH_STATUSES, contactType, safeUrl } from "../../lib/outreach-model.mjs";
 

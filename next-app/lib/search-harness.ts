@@ -1,12 +1,14 @@
 "use client";
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {useWorkspace} from './workspace';
+import {useReadRevision,useWorkspaceReads} from './workspace-reads';
 import {prepareSearch,searchResponse} from '../../supabase/functions/agent-gateway/search.mjs';
 import {searchDemo,synchronizeSearchDemo} from '../../lib/search/demo.mjs';
 export type SearchDocument={kind:string;id:string;version:number;content:string;projection:Record<string,any>};
 export type SearchRun={id:string;profile_id:string;state:string;version:number;mode:string;days:number;summary:string;created_at?:string;contextChanged?:boolean;sources?:Record<string,any>[]};
 export function useSearchHarness(profileId?:string){
  const w=useWorkspace(),[context,setContext]=useState<any>(null),[runs,setRuns]=useState<SearchRun[]>([]),[listings,setListings]=useState<any[]>([]),[error,setError]=useState(''),[busy,setBusy]=useState(false);
+ const reads=useWorkspaceReads(),revision=useReadRevision('search');
  const generation=useRef(0);const owner=w.demo?`demo-${w.demoEpoch}`:w.user?.id||'guest';const currentOwner=useRef(owner);currentOwner.current=owner;
 
  const action=useCallback(async(operation:string,payload:Record<string,unknown>={})=>{
@@ -37,13 +39,26 @@ export function useSearchHarness(profileId?:string){
   if(currentOwner.current!==expected||window.JB.auth.userId!==expected)throw Error('Account changed. Reload this view.');
   if(failure)throw Error(failure.code==='40001'?'Saved state changed. Reload before retrying; your draft is kept.':failure.code==='42883'?'Search context is not deployed on this backend yet.':'Could not complete this request. Your draft is kept; check the connection and retry.');
   return searchResponse(operation,data);
- },[owner,w.demo,w.user,w.client]);
- const reload=useCallback(async()=>{
+ },[owner,w.demo,w.user,w.client,w.store]);
+ const load=useCallback(async()=>{
   const token=++generation.current;setBusy(true);setError('');
-  try{const [c,r]=await Promise.all([action('search.context',profileId?{profileId}:{}),action('search.run.read')]);if(token!==generation.current)return;if(!Array.isArray(c?.documents)||!Array.isArray(r))throw Error("Search data is unavailable. Reload after the backend release.");setContext(c);setRuns(r);}
+  try{
+   const [c,r]=await Promise.all([
+    reads.read('search',JSON.stringify(['context',profileId]),()=>action('search.context',profileId?{profileId}:{}),60000),
+    reads.read('search','runs',()=>action('search.run.read'),60000),
+   ]);
+   if(token!==generation.current)return;
+   if(!Array.isArray(c?.documents)||!Array.isArray(r))throw Error("Search data is unavailable. Reload after the backend release.");
+   setContext(c);setRuns(r);
+  }
   catch(e){if(token===generation.current)setError(e instanceof Error?e.message:'Could not load context.');}
   finally{if(token===generation.current)setBusy(false);}
- },[action,profileId]);
- useEffect(()=>{generation.current++;setContext(null);setRuns([]);setListings([]);if(w.demo||w.user)void reload();return()=>{generation.current++;};},[owner,profileId]); // account/profile boundary, not each local store render
+ },[action,profileId,reads]);
+ const reload=useCallback(()=>{
+  reads.invalidate('search',false);
+  return load();
+ },[reads,load]);
+ useEffect(()=>{setContext(null);setRuns([]);setListings([]);},[owner,profileId]);
+ useEffect(()=>{if(w.demo||w.user)void load();return()=>{generation.current++;};},[owner,revision,load,w.demo,w.user]);
  return {context,runs,listings,setListings,action,reload,error,setError,busy,setBusy,owner};
 }

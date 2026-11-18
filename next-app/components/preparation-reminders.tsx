@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createBackend } from "../../backend/client.mjs";
 import { buildWeeklyPreparationAgenda, plannerToday, recordLocalPreparationSession, validatePlannerMinutes } from "../../lib/preparation-planner.mjs";
 import { useWorkspace } from "../lib/workspace";
-import { subscribePreparationRefresh } from "../lib/action-board.mjs";
+import { useReadRevision, useWorkspaceReads } from "../lib/workspace-reads";
 import DraftReview from "./draft-review";
 import RecommendationFeedback from "./recommendation-feedback";
 import { TaskIcon } from "./needs-you-row";
@@ -107,30 +107,26 @@ export default function PreparationReminders() {
 function Planner() {
   const w = useWorkspace(), owner = w.demo ? "demo" : w.user?.id || null;
   const [bundle, setBundle] = useState<Bundle | null>(null), [loading, setLoading] = useState(true), [error, setError] = useState(""), [feedback, setFeedback] = useState("");
-  const [minutes, setMinutes] = useState("45"), [busy, setBusy] = useState(false), [retry, setRetry] = useState(0), [review, setReview] = useState<string | null>(null);
+  const [minutes, setMinutes] = useState("45"), [busy, setBusy] = useState(false), [review, setReview] = useState<string | null>(null);
   const [reviewRound,setReviewRound]=useState<string|undefined>(undefined);
   const [clock, setClock] = useState(() => new Date());
   const generation = useRef(0), mutation = useRef(false), sessionRequest = useRef<{ key: string; input: SessionInput } | null>(null);
   const loadedBudget = useRef<number | null>(null);
+  const mounted = useRef(false);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
   const services = useMemo(() => owner ? w.services || createBackend(w.client, owner) : null, [owner, w.services, w.client]);
+  const reads = useWorkspaceReads(), revision = useReadRevision('planner');
   const timeZone = bundle?.timeZone || w.state.workflow.searchPreferences?.quietMode?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
   const today = plannerToday(clock, timeZone);
   const localPlans = w.state.workflow.preparationPlans, localPlanner = w.state.workflow.preparationPlanner;
   const applicationKey = Object.values(w.state.workflow.applications as Record<string, Application>).map(a => `${a.id}:${a.backendId || ""}`).sort().join("|");
   useEffect(() => { const timer = setInterval(() => { setClock(new Date()); }, 60000); return () => clearInterval(timer); }, []);
   useEffect(() => {
-    if (!owner) return;
-    return subscribePreparationRefresh(document, window, owner, () => {
-      if (!mutation.current && (w.demo || window.JB?.auth?.userId === owner)) setRetry(n => n + 1);
-    });
-  }, [owner, w.demo]);
-  useEffect(() => {
     const epoch = ++generation.current;
     setLoading(true);
-    setBusy(false);
-    const load = services ? services.readPreparationPlanner() : Promise.resolve({
+    const load = services ? reads.read<Bundle>('planner','bundle',()=>services.readPreparationPlanner()) : Promise.resolve({
       settings: localPlanner?.settings || {dailyMinutes:45,version:0},sessions:localPlanner?.sessions || [],timeZone,
-      plans:Object.entries(localPlans || {}).map(([id, plan]) => ({application_id:id,version:0,plan})),
+      plans:Object.entries<PreparationPlan>(localPlans || {}).map(([id, plan]) => ({application_id:id,version:0,plan})),
     });
     load.then((value: Bundle) => { if (generation.current === epoch) {
       const previousBudget = loadedBudget.current;
@@ -140,7 +136,7 @@ function Planner() {
       loadedBudget.current = value.settings.dailyMinutes;
     } }).catch(() => { if (generation.current === epoch) setError("Your prep planner could not load. Reload to try again."); }).finally(() => { if (generation.current === epoch) setLoading(false); });
     return () => { generation.current++; };
-  }, [services, applicationKey, retry, today, w.demo && w.state, !owner && localPlans, !owner && localPlanner]);
+  }, [services, applicationKey, reads, revision, !owner && localPlans, !owner && localPlanner]);
   const applications = Object.fromEntries(Object.entries({ ...bundle?.applications, ...w.state.workflow.applications, ...bundle?.applications } as Record<string, Application>).map(([id, app]) => [id, { ...app, ...(['Rejected','Withdrawn'].includes(w.state.tracker.items[id]?.status) ? {status:w.state.tracker.items[id].status} : {}) }]));
   const rawAgenda = bundle ? agendaFor({ ...bundle, applications, today }) : null;
   const agenda = rawAgenda && bundle ? {...rawAgenda,days:rawAgenda.days.map(day => ({...day,items:day.items.map(item => {
@@ -150,10 +146,21 @@ function Planner() {
   async function mutate(action: () => Promise<Bundle>, message: string) {
     if (mutation.current || loading || w.locked) return;
     mutation.current = true; setBusy(true); setError(""); setFeedback("");
-    const epoch = generation.current;
-    try { const next = await action(); if (generation.current === epoch) { setBundle(next); loadedBudget.current = next.settings.dailyMinutes; setMinutes(String(next.settings.dailyMinutes)); setFeedback(message); } }
-    catch { if (generation.current === epoch) setError("Preparation changed or could not save. Reload the planner before trying again."); }
-    finally { mutation.current = false; if (generation.current === epoch) setBusy(false); }
+    try {
+      const next = await action();
+      if (mounted.current) {
+        setBundle(next);
+        loadedBudget.current = next.settings.dailyMinutes;
+        setMinutes(String(next.settings.dailyMinutes));
+        setFeedback(message);
+      }
+      if (services && !w.demo) reads.invalidate('planner');
+    } catch {
+      if (mounted.current) setError("Preparation changed or could not save. Reload the planner before trying again.");
+    } finally {
+      mutation.current = false;
+      if (mounted.current) setBusy(false);
+    }
   }
   function saveLocal(next: Bundle) {
     w.store.update('workflow', (current: { preparationPlans: Record<string, PreparationPlan> }) => ({ ...current, preparationPlans:{...current.preparationPlans,...Object.fromEntries(next.plans.map(row => [row.plan.applicationId,row.plan]))},preparationPlanner:{settings:next.settings,sessions:next.sessions} }));
@@ -175,8 +182,8 @@ function Planner() {
   }
   return <SurfacePanel className="action-widget prep-widget" aria-labelledby="prep-planner-heading" aria-busy={loading || busy}>
     {loading && !bundle ? <><h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2><p role="status" className="mt-4 text-sm text-board-muted">Building your week…</p></> : agenda ? <WeeklyPreparation agenda={agenda} timeZone={timeZone} minutes={minutes} onMinutes={setMinutes} onBudget={saveBudget} onComplete={complete} onOpen={(id,roundId)=>{setReviewRound(roundId);setReview(id);}} busy={busy || loading || !!error} locked={w.locked} /> : <h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2>}
-    {error && <div role="alert"><Notice>{error}</Notice><button type="button" className={`${secondary} mt-3`} onClick={() => {setBusy(false);setRetry(n => n + 1);}}>Reload planner</button></div>}
+    {error && <div role="alert"><Notice>{error}</Notice><button type="button" className={`${secondary} mt-3`} onClick={() => {setBusy(false);reads.invalidate('planner');}}>Reload planner</button></div>}
     {feedback && <p role="status" className="mt-3 text-sm text-board-muted">{feedback}</p>}
-    {review && <DraftReview key={review} id={review} initialTab="Interview" initialRoundId={reviewRound} onClose={() => {setReview(null);setRetry(n => n + 1);}} />}
+    {review && <DraftReview key={review} id={review} initialTab="Interview" initialRoundId={reviewRound} onClose={() => {setReview(null);reads.invalidate('planner');}} />}
   </SurfacePanel>;
 }

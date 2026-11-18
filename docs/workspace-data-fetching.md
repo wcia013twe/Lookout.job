@@ -44,3 +44,25 @@ When adopting this pattern on another tab, use a production build in a browser.
 Check first entry, several warm returns, matching and unrelated changes,
 refresh failure, and account or demo reset. Count route assets separately from
 data reads and measure time from the navigation click to usable data.
+
+## Workspace tabs
+
+- Discover, Applications and Network share the imported application list.
+  Discover also retains the search context and recent runs. Preference, agent
+  task and posting updates invalidate the search summary. A one-minute expiry
+  covers search changes that do not appear in the workspace sync cursor.
+- Action Board, Applications and Prep use one preparation planner bundle.
+  Application and planner changes invalidate it. Prep retains the assembled
+  material list and caches individual artifact reads by ID and revision.
+- Network starts its contact and company synchronization on first use. The
+  layout keeps both sessions active across tabs so reconciliation, revisions
+  and pending saves survive navigation.
+- Community reuses its Circle list, member summaries and opened threads for
+  up to 30 seconds. Circle writes, explicit refresh and the visible Circle's
+  existing polling still revalidate data. The expiry also limits reuse after
+  another member changes data or permissions.
+
+All readers use the current workspace identity and reset generation. The
+browser check counts data requests during unchanged, warm navigation. Initial
+reads, expired entries, relevant writes and explicit refresh can trigger new
+requests. No server interfaces or database schema changes are required.
