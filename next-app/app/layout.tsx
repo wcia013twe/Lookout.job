@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { ReactNode } from "react";
 import type { Viewport } from "next";
+import { ActionBoardProvider } from "../lib/use-action-board";
 import { WorkspaceProvider } from "../lib/workspace";
 import { colorModeScript } from "../lib/color-mode";
 import AppShell from "../components/app-shell";
@@ -24,7 +25,9 @@ export default function Layout({ children }: { children: ReactNode }) {
       <head><meta httpEquiv="Content-Security-Policy" content="frame-src 'self'" /><script dangerouslySetInnerHTML={{ __html: colorModeScript }} /></head>
       <body>
         <WorkspaceProvider>
-          <AppShell>{children}</AppShell>
+          <ActionBoardProvider>
+            <AppShell>{children}</AppShell>
+          </ActionBoardProvider>
         </WorkspaceProvider>
       </body>
     </html>

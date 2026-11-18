@@ -29,6 +29,6 @@ export function createDetachedDemo({date,models,presets,apiScenario}) {
  withApplicationFlowDemo(fixtures,apiScenario);
  if(!apiScenario||apiScenario==='action-board')enableActionBoardScenario(fixtures,date);
  const store=createDemoStore(fixtures.state);
- const simplifyImport=createDemoSimplifyImport(store.get('demo.boardImports')||[]);
+ const simplifyImport=createDemoSimplifyImport(store.get('demo.boardImports')||[],records=>store.set('demo.boardImports',records));
  return {store,services:{...demoApiScenario(withActionBoardDemo({...createDemoServices(store),simplifyImport},store),apiScenario),simplifyImport,readApplicationRoundStats:async()=>roundStatsFromContext({applications:Object.values(store.get('workflow.applications')),imports:(await simplifyImport('list')).records})}};
 }
